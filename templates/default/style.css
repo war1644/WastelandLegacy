@@ -1,0 +1,766 @@
+
+/*
+
+Program: phpore
+Author: Jeremy Faivre
+Contact: http://www.jeremyfaivre.com/about
+Year: 2005
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+*/
+
+body
+{
+	background-color: #f3f7ff;
+	color: #000000;
+	margin: 6px;
+	padding: 0;
+}
+
+body, font, th, td, p, table, textarea, input, select
+{
+	font: 12px Arial, Helvetica, Verdana, sans-serif;
+}
+
+div#noscript
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	margin: 0;
+	padding: 25px;
+	z-index: 10000;
+}
+
+div#real_body
+{
+	visibility: hidden;
+}
+
+.gensmall, .mainmenu
+{
+	font-size: 11px;
+}
+
+td.genmed, .genmed
+{
+	font-size: 12px;
+}
+
+.genbig
+{
+	font-size: 15px;
+}
+
+.explaintitle
+{
+	font-size: 11px;
+	font-weight: bold;
+	color: #5c81b1;
+}
+
+a:link, a:active, a:visited, a.postlink
+{
+	color: #2b529b;
+	text-decoration: none;
+}
+
+a:hover
+{
+	color: #638cd4;
+	text-decoration: underline;
+}
+
+.topictitle
+{
+	font-size: 11px;
+	font-weight: bold;
+}
+
+a.topictitle:visited
+{
+	color: #496687;
+}
+
+a.topictitle:hover
+{
+	color: #839fbc;
+}
+
+.name
+{
+	font-size: 11px;
+	font-weight: bold;
+}
+
+hr
+{
+	border: 0 solid #ffffff;
+	border-top-width: 1px;
+	height: 0;
+}
+
+td.cat,td.catHead,td.catSides,td.catLeft,td.catRight,td.catBottom,td.rowpic
+{
+	font-weight: bold;
+	font-size: 11px;
+	letter-spacing: 1px;
+	color: black;
+	background: #f0f4fb url(images/cellpic1.gif);
+	background-repeat: repeat-x;
+	height: 27px;
+	text-align: center;
+	text-indent: 4px;
+}
+
+.row1
+{
+	background-color: #f3f7ff;
+}
+
+.row3, .row3Right
+{
+	background-color: #cbd8ef;
+}
+
+.row2, .spacerow, .spaceRow, .helpline
+{
+	background-color: #dde6f4;
+}
+
+th
+{
+	background: #bccdeb url(images/cellpic3.gif);
+	background-repeat: repeat-x;
+	color: #ffffff;
+	font-size: 11px;
+	font-weight: bold;
+	height: 27px;
+	text-align: center;
+	padding-left: 8px;
+	padding-right: 8px;
+	/*border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-right: 1px solid #ffffff;*/
+}
+
+.bodyline
+{
+	background-color: #ebf2ff;
+	border: 1px solid #5f89d5;
+}
+
+.portaline, .forumline
+{
+	background-color: #ffffff;
+	border: 1px solid #5f89d5;
+}
+
+.forumdash
+{
+	background-color: #ffffff;
+	border: 1px dashed #486386;
+}
+
+.maintitle, h1
+{
+	font: bold 20px/120% "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #839fbc;
+}
+
+.subtitle, h2
+{
+	font: bold 18px/180% "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+
+.nav
+{
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.postbody
+{
+	font-size: 12px;
+	line-height: 125%;
+}
+
+.details, .postdetails
+{
+	font-size: 10px;
+	color: #00396a;
+}
+
+.quote
+{
+	background-color: #fafafa;
+	border: 1px solid #d1d7dc;
+	color: #1b345f;
+	font-size: 11px;
+	line-height: 125%;
+}
+
+/*.offtopic
+{
+	font-size: 8pt;
+	font-family: "Comic Sans MS";
+	color: white;
+	background-color: #5e89d4;
+	border-width: 1px;
+	border-color: black;
+	border-style: dashed;
+}
+
+.code
+{
+	background-color: #1b345f;
+	border: 1px solid #638cd4;
+	color: #96b3e2;
+	font: 12px Courier, "Courier New", sans-serif;
+	padding: 5px;
+}*/
+
+/*.code_php
+{
+	background-color: #fefefe;
+	border: 1px solid #cccccc;
+	color: black;
+	font: 12px Courier, "Courier New", sans-serif;
+	padding: 5px;
+}*/
+
+/*div#event_script a:link, a:active, a:visited, a.postlink
+{
+	color: black;
+	text-decoration: none;
+}
+
+div#event_script a:hover
+{
+	background-color: #f3f7ff;
+	text-decoration: none;
+}*/
+
+.errorline
+{
+	background-color: #ffacac;
+	border: 3px solid #ca0000;
+	color: #ca0000;
+}
+
+.action_done
+{
+	background-color: #f3f7ff;
+	border: 2px solid #5f89d5;
+	color: #5f89d5;
+}
+
+form
+{
+	display: inline;
+}
+
+input
+{
+	font-size: 11px;
+}
+
+select
+{
+	background-color: #ffffff;
+	font-size: 11px;
+}
+
+input.post, textarea.post, #editor_options input
+{
+	background-color: #ffffff;
+	border: 1px solid #1b345f;
+	font-size: 11px;
+}
+
+input.button, input.liteoption, .fakebut, button.button
+{
+	border: 1px solid #1b345f;
+	background-color: #fafafa;
+	font-size: 11px;
+	color: #1b345f;
+}
+
+input.catbutton
+{
+	border: 1px solid #1b345f;
+	background-color: #fafafa;
+	font-size: 10px;
+}
+
+input.mainoption
+{
+	border: 1px solid #1b345f;
+	background-color: #fafafa;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+a.but, a.but:hover, a.but:visited
+{
+	color: #000000;
+	text-decoration: none;
+}
+
+.helpline
+{
+	border: 0 solid;
+	font-size: 10px;
+}
+
+.topbkg
+{
+	background: #cfdef9 url(images/cellpic_bkg.jpg) repeat-x;
+	border: 0; 
+}
+
+.topnav
+{
+	font-size: 10px;
+	background: #cfdef9 url(images/cellpic_nav.gif) repeat-x;
+	height: 21px;
+	white-space: nowrap;
+	border: 0 solid #5f89d5;
+	border-width: 1px 0;
+}
+
+.admin, .mod
+{
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.admin, a.admin, a.admin:visited
+{
+	color: #ff0000;
+}
+
+.mod, a.mod, a.mod:visited
+{
+	color: #006600;
+}
+
+a.admin:hover, a.mod:hover
+{
+	color: #839fbc;
+}
+
+.imgtopic, .imgicon
+{
+	margin-left: 3px;
+}
+
+.imgspace
+{
+	margin-left: 1px;
+	margin-right: 2px;
+}
+
+.imgfolder
+{
+	margin: 1px 4px;
+}
+
+.copyright
+{
+	font-size: 9px;
+	color: #444444;
+}
+
+a.copyright
+{
+	color: #444444;
+	text-decoration: none;
+}
+
+a.copyright:hover
+{
+	color: #000000;
+	text-decoration: underline;
+}
+
+img
+{
+	border: 0 solid;
+}
+
+div#lower_bloc div
+{
+	position: absolute;
+	/*width: 32px;
+	height: 32px;*/
+}
+
+div#upper_bloc div
+{
+	position: absolute;
+	/*width: 32px;
+	height: 32px;*/
+}
+
+div#player_bloc div
+{
+	position: absolute;
+}
+
+div#event_bloc div
+{
+	position: absolute;
+	/*width: 48px;
+	height: 64px;*/
+}
+
+div#action_bloc div
+{
+	position: absolute;
+	/*width: 32px;
+	height: 32px;*/
+}
+
+/*div.playerdiv
+{
+	display: inline;
+}*/
+
+div.playername
+{
+	color: white;
+	font-weight: bold;
+	font-size: 10px;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	left: -2px;
+	top: -14px;
+}
+
+div.playerspacer
+{
+	color: white;
+	font-weight: bold;
+	font-size: 10px;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	left: 0px;
+	top: -5px;
+	width: 150px;
+	height: 50px;
+	background-image: url(images/engine/spacer.gif);
+}
+
+div.playersprite, div.eventsprite
+{
+	position: relative;
+	left: 0px;
+	top: 0px;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+}
+
+div.playermain, div.eventmain
+{
+	padding: 0;
+	margin: 0;
+}
+
+div.playercharaset, div.eventcharaset
+{
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+
+#action_bloc_cursor
+{
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+	width: 32px;
+	height: 32px;
+	background-image: url(../../images/overbloc.png);
+	z-index: 5;
+}
+
+#battle_actions
+{
+	padding: 0;
+	margin: 10px;
+	border: 1px solid gray;
+	background-color: white;
+	font-size: 13px;
+	line-height: 15px;
+	height: 100px;
+	overflow: auto;
+}
+
+#cachepictures
+{
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+
+/*#scripttoup1
+{
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}*/
+
+/*#scripttoup2
+{
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}*/
+
+input.movermap
+{
+	width: 64px;
+	height: 64px;
+}
+
+div.message
+{
+	width: 250px;
+}
+
+.m_top_left
+{
+	background-image: url(images/w_top_left.png);
+	width: 3px;
+	height: 3px;
+	padding:0;
+	margin:0;
+}
+
+div.m_top_left_corner
+{
+	padding:0;
+	margin:0;
+	width: 3px;
+	height: 3px;
+}
+
+.m_top_center
+{
+	background-image: url(images/w_top_center.png);
+	height: 3px;
+	padding:0;
+	margin:0;
+}
+
+.m_top_right
+{
+	background-image: url(images/w_top_right.png);
+	width: 3px;
+	height: 3px;
+	padding:0;
+	margin:0;
+}
+
+.m_middle_left
+{
+	background-image: url(images/w_middle_left.png);
+	width: 3px;
+	padding:0;
+	margin:0;
+}
+
+.m_middle_center
+{
+	background-image: url(images/window_bg.jpg);
+	background-color: #424477;
+	color: white;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 12px;
+}
+
+.m_middle_right
+{
+	background-image: url(images/w_middle_right.png);
+	width: 3px;
+	padding:0;
+	margin:0;
+}
+
+.m_bottom_left
+{
+	background-image: url(images/w_bottom_left.png);
+	width: 3px;
+	height: 3px;
+	padding:0;
+	margin:0;
+}
+
+.m_bottom_center
+{
+	background-image: url(images/w_bottom_center.png);
+	height: 3px;
+	padding:0;
+	margin:0;
+}
+
+.m_bottom_right
+{
+	background-image: url(images/w_bottom_right.png);
+	width: 3px;
+	height: 3px;
+	padding:0;
+	margin:0;
+}
+
+div.m_bottom_right_corner
+{
+	padding:0;
+	margin:0;
+	width: 3px;
+	height: 3px;
+}
+
+.message input
+{
+	border: 1px solid #cccccc;
+	background-color: transparent;
+	font-size: 11px;
+	color: white;
+	margin-top: 5px;
+	margin-bottom: 2px;
+	margin-left: 0;
+	margin-right: 0;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+div.hidden_layer
+{
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+
+div#map_loading
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background-color: white;
+	z-index: 9998;
+	text-align: center;
+}
+
+div#chatbox
+{
+	overflow: auto;
+	width: 235px;
+	height: 300px;
+	background-color: white;
+	border: 1px solid #CCCCEE;
+	text-align: left;
+	padding: 5px;
+}
+
+div#chatbox div
+{
+	width: 215px;
+}
+
+/* ADMIN */
+
+div#global_tileset
+{
+	padding: 10px;
+	/*height: 375px;*/
+	overflow: visible;
+	text-align: left;
+}
+div#global_tileset td div
+{
+	font-size: 10px;
+	color: black;
+}
+
+div#edit_event
+{
+	padding: 10px;
+	float: right;
+	text-align: left;
+}
+
+div#lower_tileset
+{
+	margin: 0;
+	padding: 0;
+}
+
+div#upper_tileset
+{
+	margin: 0;
+	padding: 0;
+}
+
+div#lower_tileset div, div#upper_tileset div
+{
+	margin: 0;
+	padding: 0;
+	background-color: white;
+	color: white;
+	font-weight: bold;
+	font-size: 12;
+}
+
+div#demo_tile
+{
+	margin: 10px;
+}
+
+table#lower_tileset, table#upper_tileset
+{
+	background-color: #CCCCCC;
+}
+
+textarea#text_script
+{
+	font-size: 10px;
+	line-height: 15px;
+}
+
+.map_editor_tile
+{
+	border-color: gray;
+	border-style: solid;
+	border-top-width: 0;
+	border-left-width: 0;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+}
