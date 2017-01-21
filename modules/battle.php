@@ -11,7 +11,12 @@ if ( !$user->logged_in ) {
 
     $template->assign_vars( ['PAGE_NAME' => $lang->reception] );
 
-}elseif ( $mode == 'GET.action' ) {
+}
+if ( $mode == 'GET.stop' )
+{
+    message_die($lang->session_stop, $lang->session_stop_explain);
+}
+if ( $mode == 'GET.action' ) {
     //执行战斗动作
     $refresh_id = 2;
     switch ($_GET['type']){
@@ -80,7 +85,7 @@ if ( !$user->logged_in ) {
         $refresh_id = 2;
     }
 
-
+    $user->set('map_last_visit', time());
 
     if ( isset($_GET['chat_pos']) && preg_match('`^([0-9]+)-([0-9]+)-([0-9]+)$`', $_GET['chat_pos'], $matches) )
     {
@@ -171,6 +176,7 @@ if ( !$user->logged_in ) {
             $javascript = 'battle_session_refresh();' . $javascript;
 
         }
+        var_dump($refresh_id);
         js_eval($javascript, $refresh_id);
 
 
@@ -198,6 +204,14 @@ if ( !$user->logged_in ) {
     }
 
 } else {
+    if ( $user->refresh == 1 ) {
+        $user->set('refresh', 0);
+    }
+
+    if ( $user->teleport == 1 ) {
+        $user->set('teleport', 0);
+    }
+
     if ( $config->chat_history == 0 ) // no chat history
     {
         $result = $db->sql_query('SELECT MAX(id) AS last_id FROM ' . CHATBOX_TABLE . " WHERE cat_id ='b$user->battle_id'");
@@ -310,16 +324,16 @@ if ( !$user->logged_in ) {
         Session('enemy',json_encode($enemy));
     }
 
+    $template->set_filenames(array(
+        'header' => 'page_header.tpl',
+        'footer' => 'page_footer.tpl',
+        'body' => 'battle.tpl'
+    ));
+
+    $template->pparse('header');
+    $template->pparse('body');
+    $template->pparse('footer');
 
 
 }
 
-$template->set_filenames(array(
-	'header' => 'page_header.tpl',
-	'footer' => 'page_footer.tpl',
-	'body' => 'battle.tpl'
-	));
-
-$template->pparse('header');
-$template->pparse('body');
-$template->pparse('footer');

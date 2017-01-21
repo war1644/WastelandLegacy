@@ -24,7 +24,7 @@ $config->phpex = 'php';
 $config->path = './';
 //引入全局方法
 require_once INC.'common.php';
-require_once INC.'MYDB.php';
+require_once INC.'MFDB.php';
 
 $config->table_prefix = 'phpore_';
 

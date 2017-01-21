@@ -22,8 +22,8 @@
  </tr>
 
  <tr>
-  <td class="cat" align="center" width="50%">{L_ALLIES}</td>
   <td class="cat" align="center" width="50%">{L_OPPONENTS}</td>
+  <td class="cat" align="center" width="50%">{L_ALLIES}</td>
  </tr>
 
  <tr>

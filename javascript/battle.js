@@ -64,6 +64,7 @@ else if ( debug )
 }
 else if ( !window.XMLHttpRequest && !window.ActiveXObject )
 {
+	alert(1);
 	document.write('<div id="scripttoup1" class="hidden_layer"></div><div id="scripttoup2" class="hidden_layer"></div>');
 	refresh_method = 0;
 	method_forcing = '&amp;method_forcing=1';

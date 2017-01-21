@@ -117,7 +117,7 @@ elseif ( $mode == 'GET.submit' )
 }
 elseif ( $mode == 'GET.refresh' || $mode == 'GET.event')
 {
-	require($config->path . 'includes/functions_map.' . $config->phpex);
+	require(INC . 'functions_map.php');
 
 	$result = $db->sql_query('SELECT m.id, m.name, m.blocs, t.tiles FROM ' . MAPS_TABLE . ' m, ' . TILESETS_TABLE . ' t WHERE m.id = ' . $user->map_id . ' AND m.tileset = t.id');
 
@@ -401,30 +401,33 @@ elseif ( $mode == 'GET.refresh' || $mode == 'GET.event')
 
 		if ( count($players_sql) > 0 )
 		{
-			$players_sql = ' OR ( ( u.map_previous_id = ' . $user->map_id . ' OR u.map_id = ' . $user->map_id . ' ) AND ( u.id = ' . implode(' OR u.id = ', $players_sql) . ' ) )';
+			$players_sql = ' OR ( ( map_previous_id = ' . $user->map_id . ' OR map_id = ' . $user->map_id . ' ) AND ( id = ' . implode(' OR id = ', $players_sql) . ' ) )';
 		}
 		else
 		{
 			$players_sql = '';
 		}
+$time = time()-30;
+        $sql = 'SELECT * FROM '. USERS_TABLE ." WHERE id != $user->id and (map_last_visit > ($config->server_time - 30) and map_id = $user->map_id AND teleport = 0) $players_sql";
+        $rs = $db->sql_query($sql,1);
+        $rows = $db->sql_fetchrows($rs);
 
-		//js_eval('alert(\'' . quotes('SELECT u.name, u.id, u.map_left, u.map_id, u.map_top, u.map_dir, u.map_moves, u.map_moves_table, u.charaset, c.class_charaset FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.id != ' . $user->id . ' AND ( u.map_id = ' . $user->map_id . ' OR ( u.map_previous_id = ' . $user->map_id . ' AND ( u.id = ' . implode(' OR u.id = ', $players_sql) . ' ) ) ) AND c.classname = u.classname') . '\');', 1);
-
-		$result = $db->sql_query('SELECT u.name, u.id, u.map_last_visit, u.map_left, u.map_id, u.map_top, u.map_dir, u.map_moves, u.map_moves_table, u.charaset, u.pic_width, u.pic_height, u.battle_id, u.battle_state, c.charaset AS class_charaset, c.pic_width AS class_pic_width, c.pic_height AS class_pic_height FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.id != ' . $user->id . ' AND ( ( u.map_last_visit > ' . ($config->server_time - 16) . ' AND u.map_id = ' . $user->map_id . ' AND u.teleport = 0 )' . $players_sql . ' ) AND c.classname = u.classname');
+//		$result = $db->sql_query('SELECT u.name, u.id, u.map_last_visit, u.map_left, u.map_id, u.map_top, u.map_dir, u.map_moves, u.map_moves_table, u.charaset, u.pic_width, u.pic_height, u.battle_id, u.battle_state, c.charaset AS class_charaset, c.pic_width AS class_pic_width, c.pic_height AS class_pic_height FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.id != ' . $user->id . ' AND ( ( u.map_last_visit > ' . ($config->server_time - 16) . ' AND u.map_id = ' . $user->map_id . ' AND u.teleport = 0 )' . $players_sql . ' ) AND c.classname = u.classname');
 
 		//echo 'SELECT u.name, u.id, u.last_visit, u.map_left, u.map_id, u.map_top, u.map_dir, u.map_moves, u.map_moves_table, u.charaset, u.pic_width, u.pic_height, c.charaset AS class_charaset, c.pic_width AS class_pic_width, c.pic_height AS class_pic_height FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.id != ' . $user->id . ' AND ( ( u.last_visit > ' . ($config->server_time - 16) . ' AND u.map_id = ' . $user->map_id . ' )' . $players_sql . ' ) AND c.classname = u.classname';
 
-		while ( $row = $db->sql_fetchrow($result) )
+//		while ( $row = $db->sql_fetchrow($result) )
+        foreach ($rows as $row)
 		{
 			// this is a new player, add it
 			if ( !isset($players[$row['id']]) )
 			{
-				if ( empty($row['charaset']) )
-				{
-					$row['charaset'] = $row['class_charaset'];
-					$row['pic_width'] = $row['class_pic_width'];
-					$row['pic_height'] = $row['class_pic_height'];
-				}
+//				if ( empty($row['charaset']) )
+//				{
+//					$row['charaset'] = $row['class_charaset'];
+//					$row['pic_width'] = $row['class_pic_width'];
+//					$row['pic_height'] = $row['class_pic_height'];
+//				}
 
 				$javascript .= 'add_player(' . $row['id'] . ', \'' . quotes($row['name']) . '\', \'' . quotes($row['charaset']) . '\', ' . $row['map_left'] . ', ' . $row['map_top'] . ', ' . $row['map_dir'] . ', ' . $row['map_moves'] . ', ' . ceil($row['pic_width'] / 4) . ', ' . ceil($row['pic_height'] / 4) . ');';
 				$javascript .= 'setTimeout(\'' . quotes('chat_add(player[' . $row['id'] . '].name, \'' . quotes($lang->join_map) . '\', true);') . '\', 1000);';
@@ -432,7 +435,7 @@ elseif ( $mode == 'GET.refresh' || $mode == 'GET.event')
 			}
 			else // the player exists, check if he has moved
 			{
-				if ( $row['map_last_visit'] < ($config->server_time - 15) )
+				if ( $row['map_last_visit'] < ($config->server_time - 30) )
 				{
 					$javascript .= 'chat_add(player[' . $row['id'] . '].name, \'' . quotes($lang->quit_map) . '\', true);';
 					$javascript .= 'remove_player(' . $row['id'] . ');';
@@ -597,15 +600,12 @@ elseif ( $mode == 'GET.refresh' || $mode == 'GET.event')
 		));
 
 	// 地图里的精灵图
-	$result = $db->sql_query('SELECT u.name, u.id, u.map_left, u.map_top, u.map_dir, u.map_moves, u.charaset, u.pic_width, u.pic_height, u.battle_id, u.battle_state, c.charaset AS class_charaset, c.pic_width AS class_pic_width, c.pic_height AS class_pic_height FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.map_last_visit > ' . ($config->server_time - 16) . ' AND u.id != ' . $user->id . ' AND u.map_id = ' . $user->map_id . ' AND c.classname = u.classname');
-
-	while ( $row = $db->sql_fetchrow($result) ) {
-        if (empty($row['charaset'])) {
-            $row['charaset'] = $row['class_charaset'];
-            $row['pic_width'] = $row['class_pic_width'];
-            $row['pic_height'] = $row['class_pic_height'];
-        }
-
+//	$result = $db->sql_query('SELECT u.name, u.id, u.map_left, u.map_top, u.map_dir, u.map_moves, u.charaset, u.pic_width, u.pic_height, u.battle_id, u.battle_state, c.charaset AS class_charaset, c.pic_width AS class_pic_width, c.pic_height AS class_pic_height FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.map_last_visit > ' . ($config->server_time - 16) . ' AND u.id != ' . $user->id . ' AND u.map_id = ' . $user->map_id . ' AND c.classname = u.classname');
+    $time = time();
+    $sql = 'SELECT `name`, id, map_left, map_top, map_dir, map_moves, charaset, pic_width, pic_height, battle_id, battle_state FROM '. USERS_TABLE ." WHERE id != $user->id and map_id = $user->map_id and battle_id>0 and map_last_visit > ($config->server_time - 30)";
+    $rs = $db->sql_query($sql,1);
+    $rows = $db->sql_fetchrows($rs);
+    foreach ($rows as $row){
         $template->assign_block_vars('add_player_bloc', array(
             'ID' => $row['id'],
             'BATTLE_ID' => $row['battle_id'],

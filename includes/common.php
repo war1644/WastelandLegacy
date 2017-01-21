@@ -937,7 +937,7 @@ class Template {
 
 //				fclose($fp);
 
-                file_put_contents($cache_file,$data,FILE_APPEND);
+                file_put_contents($cache_file,$data);
                 touch($cache_file, filemtime($this->files[$handle]));
                 //				@chmod($cache_file, 0777);
 
