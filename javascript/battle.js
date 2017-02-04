@@ -50,7 +50,7 @@ else
 document.getElementById('drag_layer2').style.left = chatbox_state[0] + 'px';
 document.getElementById('drag_layer2').style.top = chatbox_state[1] + 'px';
 
-var debug = true;
+var debug = false;
 
 if ( refresh_method == 0 )
 {
@@ -64,7 +64,6 @@ else if ( debug )
 }
 else if ( !window.XMLHttpRequest && !window.ActiveXObject )
 {
-	alert(1);
 	document.write('<div id="scripttoup1" class="hidden_layer"></div><div id="scripttoup2" class="hidden_layer"></div>');
 	refresh_method = 0;
 	method_forcing = '&amp;method_forcing=1';
@@ -76,86 +75,29 @@ var actual_music = '';
 
 function refresh_loop(refresh_id)
 {
-	eval('if ( content_to_refresh_' + refresh_id + ' ) { /*if ( refresh_id == 2 ) { alert(content_to_refresh_' + refresh_id + '); }*/ eval(content_to_refresh_' + refresh_id + '); content_to_refresh_' + refresh_id + ' = false; }');
+	eval('if ( content_to_refresh_' + refresh_id + ' ) {  eval(content_to_refresh_' + refresh_id + '); content_to_refresh_' + refresh_id + ' = false; }');
 	setTimeout('refresh_loop(' + refresh_id + ');', 200);
 }
 
-function refresh_action(refresh_id, file_name, refresh_time)
-{
-	if ( refresh_method == 1 )// XMLHttpRequest
-	{
-		var request = false;
+/**
+ * ajax请求
+ */
+function refresh_action(refresh_id, file_name, refresh_time) {
+    var url = str_replace(file_name, '&amp;', '&') + 'refresh_var=' + refresh_var + '&refresh_id=' + refresh_id;
 
-		if ( window.XMLHttpRequest ) // branch for native XMLHttpRequest object
-		{
-			try
-			{
-				request = new XMLHttpRequest();
-			}
-			catch(e)
-			{
-				request = false;
-			}
-		}
-		else if ( window.ActiveXObject ) // branch for IE/Windows ActiveX version
-		{
-			try
-			{
-				request = new ActiveXObject('Msxml2.XMLHTTP');
-			}
-			catch(e)
-			{
-				try
-				{
-					request = new ActiveXObject('Microsoft.XMLHTTP');
-				}
-				catch(e)
-				{
-					request = false;
-				}
-			}
-		}
+    $.get(url,function (res) {
+        if (res) {
+            eval('content_to_refresh_' + refresh_id + ' = res;');
+        }else{
+            battle_session_restart();
+        }
+    });
+    refresh_var++;
 
-		if ( request )
-		{
-			//request.onload = null;
-			//request.onreadystatechange = processReqChange;
-			//alert( + 'refresh_var=' + refresh_var + map_sid + '&refresh_id=' + refresh_id);
-			request.open('GET', str_replace(file_name, '&amp;', '&') + 'refresh_var=' + refresh_var + '&refresh_id=' + refresh_id, true);
-			request.onreadystatechange = function()
-			{
-				if (request.readyState == 4)
-				{
-					if (request.status != 200)
-					{
-						battle_session_restart();
-					}
-					else
-					{
-						eval('content_to_refresh_' + refresh_id + ' = request.responseText;');
-						//document.body.innerHTML = request.responseText;
-						//alert(request.responseText);
-					}
-				}
-			};
-			request.send('');
-			refresh_var++;
-		}
-		else
-		{
-			battle_session_restart();
-		}
-	}
-	else // dnrefresh
-	{
-		document.getElementById('scripttoup' + refresh_id).innerHTML = '<iframe src="' + file_name + 'refresh_var=' + refresh_var + '&amp;refresh_id=' + refresh_id + '' + method_forcing + '"></' + 'iframe>';
-		refresh_var++;
-	}
 
-	if ( refresh_time )
-	{
-		setTimeout('refresh_action(' + refresh_id + ', \'' + file_name + '\', ' + refresh_time + ')', refresh_time);
-	}
+    if ( refresh_time ) {
+        setTimeout('refresh_action(' + refresh_id + ', \'' + file_name + '\', ' + refresh_time + ')', refresh_time);
+    }
 }
 
 function win_battle(gain_exp, gain_points, level_up)
@@ -176,6 +118,12 @@ function battle_session_stop()
 {
 	stopped_battle = true;
 	document.location.href = u_index + '?mod=battle&mode=stop';
+}
+
+function battle_session_restart()
+{
+    stopped_battle = true;
+    document.location.href = u_index + '?mod=battle';
 }
 
 function battle_session_refresh()

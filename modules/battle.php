@@ -1,10 +1,5 @@
 <?php
 
-if ( !defined('IN_PHPORE') )
-{
-	exit;
-}
-
 $lang->load_keys('battle');
 $mode = ( isset($_GET['mode']) ) ? 'GET.' . trim($_GET['mode']) : '';
 if ( !$user->logged_in ) {
@@ -38,7 +33,7 @@ if ( $mode == 'GET.action' ) {
     }
 
 
-}elseif ( $mode == 'GET.submit' ) {
+}else if ( $mode == 'GET.submit' ) {
 
     $refresh_id = 2;
 

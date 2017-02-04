@@ -257,21 +257,15 @@ function change_chat_state()
 // drag n drop 拖拽
 function start_drag(layer_name)
 {
-	/*var f_drag_func = function() { drag_func(e, layer_name); };
-	var f_do_drag = function() { do_drag(e, layer_name); };
-	var f_end_drag = function() { end_drag(e, layer_name); };*/
-
 	actual_layer = layer_name;
 
 	if ( document.all )
 	{
-		// lance ma_fonction quand on appuie sur le bouton de la souris
 		// 在按下鼠标按钮时启动 ma_fonction
 		document.getElementById(layer_name).onmousedown = drag_func;
 	}
 	else
 	{
-		// lance ma_fonction quand on appuie sur le bouton de la souris
 		// 在按下鼠标按钮时启动 ma_fonction
 		document.getElementById(layer_name).addEventListener('mousedown', drag_func, false);
 	}
@@ -281,32 +275,24 @@ function drag_func(e)
 {
 	if ( document.all )
 	{
-		//R�cup�ration de la position de la souris
-		window.lastX = event.clientX; 
+		window.lastX = event.clientX;
 		window.lastY = event.clientY;
-		// lance do_drag tant que l'on appuie sur le bouton de la souris en la bougeant
 		document.onmousemove = do_drag;
-		// lance end_drag quand on relache le bouton de la souris
 		document.onmouseup = end_drag;
 	}
 	else
 	{
-		//R�cup�ration de la position de la souris
 		window.lastX = e.clientX;
 		window.lastY = e.clientY;
-		// lance do_drag tant que l'on appuie sur le bouton de la souris en la bougeant
 		window.onmousemove = do_drag;
-		// lance end_drag quand on relache le bouton de la souris
 		window.onmouseup = end_drag;
 	}
 }
 
-// D�placement des Divs-Layers
 function do_drag(e)
 {
 	if ( document.all )
 	{
-		// Calcul de l'�cart de position de la souris
 		var difX = event.clientX - window.lastX;
 		var difY = event.clientY - window.lastY;
 		if ( actual_layer == 'message_layer' )
@@ -314,19 +300,15 @@ function do_drag(e)
 			window_x += difX;
 			window_y += difY;
 		}
-		//R�cup�ration de la position du div et ajout de l'�cart de position de la souris
 		var newX1 = parseInt(document.getElementById(actual_layer).style.left) + difX;
 		var newY1 = parseInt(document.getElementById(actual_layer).style.top) + difY;
-		// Assignation des nouvelles coordonn�es au div
 		document.getElementById(actual_layer).style.left = newX1 + 'px';
 		document.getElementById(actual_layer).style.top = newY1 + 'px';
-		//Assignation de l'anci�nne position de la souris
 		window.lastX = event.clientX;
 		window.lastY = event.clientY;
 	}
 	else
 	{
-		// Calcul de l'�cart de position de la souris
 		var difX = e.clientX - window.lastX;
 		var difY = e.clientY - window.lastY;
 		if ( actual_layer == 'message_layer' )
@@ -334,29 +316,23 @@ function do_drag(e)
 			window_x += difX;
 			window_y += difY;
 		}
-		//R�cup�ration de la position du div et ajout de l'�cart de position de la souris
 		var newX1 = parseInt(document.getElementById(actual_layer).style.left) + difX;
 		var newY1 = parseInt(document.getElementById(actual_layer).style.top) + difY;
-		// Assignation des nouvelles coordonn�es au div
 		document.getElementById(actual_layer).style.left = newX1 + 'px';
 		document.getElementById(actual_layer).style.top = newY1 + 'px';
-		//Assignation de l'anci�nne position de la souris
 		window.lastX = e.clientX;
 		window.lastY = e.clientY;
 	}
 }
 
-//Et pour finir, voici la fonction qui traite le relachement du bouton : 
 function end_drag(e)
 {
 	if ( document.all )
 	{
-		//R�initialisation du onmousemove
 		document.onmousemove = null;
 	}
 	else
 	{
-		//R�initialisation du onmousemove
 		window.onmousemove = null;
 	}
 }

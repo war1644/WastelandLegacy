@@ -132,80 +132,28 @@ function refresh_loop(refresh_id)
 	setTimeout('refresh_loop(' + refresh_id + ');', 200);
 }
 
-function refresh_action(refresh_id, file_name, refresh_time)
-{
-	if ( refresh_method == 1 )// XMLHttpRequest
-	{
-		var request = false;
+/**
+ * ajax请求
+ */
+function refresh_action(refresh_id, file_name, refresh_time) {
+	var url = str_replace(file_name, '&amp;', '&') + 'refresh_var=' + refresh_var + '' + map_sid + '&refresh_id=' + refresh_id;
 
-		if ( window.XMLHttpRequest ) // branch for native XMLHttpRequest object
-		{
-			try
-			{
-				request = new XMLHttpRequest();
-			}
-			catch(e)
-			{
-				request = false;
-			}
+	$.get(url,function (res) {
+        if (res) {
+            eval('content_to_refresh_' + refresh_id + ' = res;');
+        }else{
+            map_session_restart();
 		}
-		else if ( window.ActiveXObject ) // branch for IE/Windows ActiveX version
-		{
-			try
-			{
-				request = new ActiveXObject('Msxml2.XMLHTTP');
-			}
-			catch(e)
-			{
-				try
-				{
-					request = new ActiveXObject('Microsoft.XMLHTTP');
-				}
-				catch(e)
-				{
-					request = false;
-				}
-			}
-		}
+    });
+    refresh_var++;
 
-		if ( request )
-		{
-			request.open('GET', str_replace(file_name, '&amp;', '&') + 'refresh_var=' + refresh_var + '' + map_sid + '&refresh_id=' + refresh_id, true);
-			request.onreadystatechange = function()
-			{
-				if (request.readyState == 4)
-				{
-					if (request.status != 200)
-					{
-						map_session_restart();
-					}
-					else
-					{
-						eval('content_to_refresh_' + refresh_id + ' = request.responseText;');
-						//document.body.innerHTML = request.responseText;
-						//alert(request.responseText);
-					}
-				}
-			};
-			request.send('');
-			refresh_var++;
-		}
-		else
-		{
-			map_session_restart();
-		}
-	}
-	else // dnrefresh
-	{
-		document.getElementById('scripttoup' + refresh_id).innerHTML = '<iframe src="' + file_name + 'refresh_var=' + refresh_var + '' + map_sid + '&amp;refresh_id=' + refresh_id + '' + method_forcing + '"></' + 'iframe>';
-		refresh_var++;
-	}
 
-	if ( refresh_time )
-	{
-		setTimeout('refresh_action(' + refresh_id + ', \'' + file_name + '\', ' + refresh_time + ')', refresh_time);
-	}
+    if ( refresh_time ) {
+        setTimeout('refresh_action(' + refresh_id + ', \'' + file_name + '\', ' + refresh_time + ')', refresh_time);
+    }
 }
+
+
 
 function show_message(message, key, script, align, time, face)
 {
@@ -802,19 +750,14 @@ function move_map_player(bloc_id, move_id, user_id, loop)
 
 		if ( player[user_id].moves + 1 == move_id && !player[user_id].moving )
 		{
-			if ( bloc_id == 'teleport' )
-			{
+			if ( bloc_id == 'teleport' ) {
 				player[user_id].moving = true;
 				remove_player(user_id);
-			}
-			else if ( (parseInt(document.getElementById('p' + user_id).style.left) + player[user_id].left_gain) < parseInt(document.getElementById(bloc_id).style.left) && (parseInt(document.getElementById('p' + user_id).style.top) + player[user_id].top_gain) == parseInt(document.getElementById(bloc_id).style.top) )
-			{
+			} else if ( (parseInt(document.getElementById('p' + user_id).style.left) + player[user_id].left_gain) < parseInt(document.getElementById(bloc_id).style.left) && (parseInt(document.getElementById('p' + user_id).style.top) + player[user_id].top_gain) == parseInt(document.getElementById(bloc_id).style.top) ) {
 				player[user_id].moving = true;
 				player[user_id].moves++;
 				player_move_right(user_id, bloc_id, player[user_id].charaset, 'p');
-			}
-			else if ( (parseInt(document.getElementById('p' + user_id).style.left) + player[user_id].left_gain) > parseInt(document.getElementById(bloc_id).style.left) && (parseInt(document.getElementById('p' + user_id).style.top) + player[user_id].top_gain) == parseInt(document.getElementById(bloc_id).style.top) )
-			{
+			} else if ( (parseInt(document.getElementById('p' + user_id).style.left) + player[user_id].left_gain) > parseInt(document.getElementById(bloc_id).style.left) && (parseInt(document.getElementById('p' + user_id).style.top) + player[user_id].top_gain) == parseInt(document.getElementById(bloc_id).style.top) ) {
 				player[user_id].moving = true;
 				player[user_id].moves++;
 				player_move_left(user_id, bloc_id, player[user_id].charaset, 'p');

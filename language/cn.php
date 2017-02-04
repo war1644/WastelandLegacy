@@ -1,7 +1,6 @@
 <?php
 class CN
 {
-	// constructeur
     function __construct() {
         $this->this_language = 'cn';
         $this->screenDirection = 'ltr';

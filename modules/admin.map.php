@@ -31,7 +31,7 @@ if ( $mode == 'GET.synchro_pic' )
 
 	while ( $row = $db->sql_fetchrow($result) )
 	{
-		if ( !empty($row['charaset']) && $size = @getimagesize(MFPATH . 'images/charasets/' . $row['charaset']) )
+		if ( !empty($row['charaset']) && $size = getimagesize(MFPATH . 'images/charasets/' . $row['charaset']) )
 		{
 			$db->sql_query('UPDATE ' . CLASSES_TABLE . ' SET pic_width = ' . $size[0] . ', pic_height = ' . $size[1] . ' WHERE classname = \'' . quotes($row['classname']) . '\'');
 		}
@@ -368,7 +368,7 @@ elseif ( $mode == 'GET.event_editor' ) // �diteur d'�v�nement
 		9 => $lang->teleport_character,
 		10 => $lang->exec_javascript,
 		11 => $lang->exec_php
-		);
+    );
 
 	foreach ( $commands as $key => $val )
 	{
