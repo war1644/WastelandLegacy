@@ -28,7 +28,8 @@ if ( $mode == 'GET.action' ) {
             $db->sql_query('UPDATE ' . USERS_TABLE . " SET battle_id = 0,battle_state = 0 WHERE id = $users");
             $user->set('in_battle',false);
             $user->update_db();
-            js_eval('battle_session_restart();', $refresh_id);
+            $javascript = "document.location.href = u_index + '?mod=map'";
+            js_eval($javascript, $refresh_id);
             break;
     }
 
@@ -171,7 +172,6 @@ if ( $mode == 'GET.action' ) {
             $javascript = 'battle_session_refresh();' . $javascript;
 
         }
-        var_dump($refresh_id);
         js_eval($javascript, $refresh_id);
 
 

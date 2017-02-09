@@ -73,8 +73,8 @@ else if ( !window.XMLHttpRequest && !window.ActiveXObject )
 document.write('<div id="musicstream" class="hidden_layer"></div>');
 var actual_music = '';
 
-function refresh_loop(refresh_id)
-{
+//循环执行，如果脚本代码传入，则执行
+function refresh_loop(refresh_id) {
 	eval('if ( content_to_refresh_' + refresh_id + ' ) {  eval(content_to_refresh_' + refresh_id + '); content_to_refresh_' + refresh_id + ' = false; }');
 	setTimeout('refresh_loop(' + refresh_id + ');', 200);
 }

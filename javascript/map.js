@@ -1125,7 +1125,10 @@ function player_move_up(user_id, bloc_id, charaset, prefix)
 			move_update(bloc_id, 0, -1);
 		}
 		document.getElementById(player_id).style.zIndex--;
+
+		//改变方向
 		document.getElementById('charaset_' + user_id).style.top = -(player[user_id].height * 3) + 'px';
+		//循环动画开始
 		setTimeout('document.getElementById(\'' + player_id + '\').style.zIndex--;', 1000 / speed);
 		setTimeout('document.getElementById(\'' + player_id + '\').style.top = (parseInt(document.getElementById(\'' + player_id + '\').style.top) - ' + division[1] + ') + \'px\';', 62 / speed);
 		setTimeout('document.getElementById(\'' + player_id + '\').style.top = (parseInt(document.getElementById(\'' + player_id + '\').style.top) - ' + division[2] + ') + \'px\';', 125 / speed);
@@ -1217,6 +1220,7 @@ function player_move_down(user_id, bloc_id, charaset, prefix)
 		}
 		document.getElementById(player_id).style.zIndex++;
 		document.getElementById('charaset_' + user_id).style.top = '0px';
+
 		setTimeout('document.getElementById(\'' + player_id + '\').style.zIndex++;', 1000 / speed);
 		setTimeout('document.getElementById(\'' + player_id + '\').style.top = (parseInt(document.getElementById(\'' + player_id + '\').style.top) + ' + division[1] + ') + \'px\';', 62 / speed);
 		setTimeout('document.getElementById(\'' + player_id + '\').style.top = (parseInt(document.getElementById(\'' + player_id + '\').style.top) + ' + division[2] + ') + \'px\';', 125 / speed);
