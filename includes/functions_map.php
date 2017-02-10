@@ -662,494 +662,344 @@ class EventScript
     /**
      * 转换文本格式,优化数据,准备 evalued 中的脚本
      */
-	function compile($content)
-	{
-		global $lang;
+	function compile($content) {
+        global $lang;
 
-		$lang->load_keys('compile_script');
+        $lang->load_keys('compile_script');
 
-		$text_script = explode("\n", str_replace("\r", '', $content));
-		$script = array();
-		$count = count($text_script);
-		$count_condition = 0;
+        $text_script = explode("\n", str_replace("\r", '', $content));
+        $script = array();
+        $count = count($text_script);
+        $count_condition = 0;
 
-		$i = 0;
-		while ( $i < $count && isset($text_script[$i]) )
-		{
-			if ( substr(ltrim($text_script[$i]), 0, 2) == '//' )
-			{
-				// comment !
-			}
-			elseif ( preg_match('`^([A-Z_]+)`', ltrim($text_script[$i]), $command) )
-			{
-				$code = trim($text_script[$i]);
-				$command = $command[1];
+        $i = 0;
+        while ($i < $count && isset($text_script[$i])) {
+            if (substr(ltrim($text_script[$i]), 0, 2) == '//') {
+                // comment !
+            } elseif (preg_match('`^([A-Z_]+)`', ltrim($text_script[$i]), $command)) {
+                $code = trim($text_script[$i]);
+                $command = $command[1];
 
-				if ( $command == 'MESSAGE' )
-				{
-					if ( substr(trim(substr($code, 7)), 0, 4) == 'HTML' )
-					{
-						$text = trim(substr(trim(substr($code, 7)), 4));
-						$html = true;
-					}
-					else
-					{
-						$text = trim(substr($code, 7));
-						$html = false;
-					}
+                if ($command == 'MESSAGE') {
+                    if (substr(trim(substr($code, 7)), 0, 4) == 'HTML') {
+                        $text = trim(substr(trim(substr($code, 7)), 4));
+                        $html = true;
+                    } else {
+                        $text = trim(substr($code, 7));
+                        $html = false;
+                    }
 
-					if ( $text != '' )
-					{
-						if ( !$html )
-						{
-							$text = nl2br(htmlspecialchars($text));
-						}
+                    if ($text != '') {
+                        if (!$html) {
+                            $text = nl2br(htmlspecialchars($text));
+                        }
 
-						$script[] = array(1, array($text));
-					}
-					else
-					{
-						$text_on = true;
-						$text = '';
-						$i++;
+                        $script[] = array(1, array($text));
+                    } else {
+                        $text_on = true;
+                        $text = '';
+                        $i++;
 
-						while ( isset($text_script[$i]) )
-						{
-							if ( preg_match('`^END *MESSAGE$`', trim($text_script[$i])) )
-							{			
-								if ( !$html )
-								{
-									$text = nl2br(trim(htmlspecialchars($text)));
-								}
+                        while (isset($text_script[$i])) {
+                            if (preg_match('`^END *MESSAGE$`', trim($text_script[$i]))) {
+                                if (!$html) {
+                                    $text = nl2br(trim(htmlspecialchars($text)));
+                                }
 
-								$script[] = array(1, array(str_replace(array("\n", "\r"), '', $text)));
-								$text_on = false;
-								break;
-							}
-							else
-							{
-								$text .= "\n" . $text_script[$i];
-								$i++;
-							}
-						}
+                                $script[] = array(1, array(str_replace(array("\n", "\r"), '', $text)));
+                                $text_on = false;
+                                break;
+                            } else {
+                                $text .= "\n" . $text_script[$i];
+                                $i++;
+                            }
+                        }
 
-						if ( $text_on )
-						{
-							return array(false, $lang->not_closed_message);
-						}
-					}
-				}
-				elseif ( $command == 'MESSAGE_ALIGN' && in_array(trim(substr($code, 13)), array('left', 'right', 'center', 'justify')) )
-				{
-					$value = trim(substr($code, 13));
+                        if ($text_on) {
+                            return array(false, $lang->not_closed_message);
+                        }
+                    }
+                } elseif ($command == 'MESSAGE_ALIGN' && in_array(trim(substr($code, 13)), array('left', 'right', 'center', 'justify'))) {
+                    $value = trim(substr($code, 13));
 
-					if ( $value == 'left' )
-					{
-						$args = array(0);
-					}
-					elseif ( $value == 'right' )
-					{
-						$args = array(1);
-					}
-					elseif ( $value == 'center' )
-					{
-						$args = array(2);
-					}
-					elseif ( $value == 'justify' )
-					{
-						$args = array(3);
-					}
+                    if ($value == 'left') {
+                        $args = array(0);
+                    } elseif ($value == 'right') {
+                        $args = array(1);
+                    } elseif ($value == 'center') {
+                        $args = array(2);
+                    } elseif ($value == 'justify') {
+                        $args = array(3);
+                    }
 
-					$script[] = array(2, $args);
-				}
-				elseif ( $command == 'MESSAGE_TIME' && ( is_numeric(trim(substr($code, 12))) ) || trim(substr($code, 12)) == 'false' )
-				{
-					$value = trim(substr($code, 12));
+                    $script[] = array(2, $args);
+                } elseif ($command == 'MESSAGE_TIME' && (is_numeric(trim(substr($code, 12)))) || trim(substr($code, 12)) == 'false') {
+                    $value = trim(substr($code, 12));
 
-					if ( $value == 'false' || $value == 0 )
-					{
-						$args = array(false);
-					}
-					else
-					{
-						$args = array(intval($value));
-						if ( $args[0] < 1000 )
-						{
-							$args[0] = 1000;
-						}
-					}
-					
-					$script[] = array(3, $args);
-				}
-				elseif ( $command == 'MESSAGE_FACE' && trim(substr($code, 12)) != '' )
-				{
-					$value = trim(substr($code, 12));
+                    if ($value == 'false' || $value == 0) {
+                        $args = array(false);
+                    } else {
+                        $args = array(intval($value));
+                        if ($args[0] < 1000) {
+                            $args[0] = 1000;
+                        }
+                    }
 
-					if ( $value == 'false' )
-					{
-						$args = array(false);
-					}
-					else
-					{
-						$args = array($value);
-					}
-					
-					$script[] = array(4, $args);
-				}
-				elseif ( $command == 'WAIT' && is_numeric(trim(substr($code, 4))) )
-				{
-					$args = array(intval(substr($code, 4)));
-					$script[] = array(7, $args);
-				}
-				elseif ( $command == 'VAR' && preg_match('`^\$([A-Za-z0-9_]+) *(=|\+|\-|\*|/|\.) *(.*?)$`', trim(substr($code, 3)), $matches) )
-				{
-					$args = array();
-					$args[0] = $matches[1];
+                    $script[] = array(3, $args);
+                } elseif ($command == 'MESSAGE_FACE' && trim(substr($code, 12)) != '') {
+                    $value = trim(substr($code, 12));
 
-					if ( $matches[2] == '=' )
-					{
-						$args[1] = 0;
-					}
-					elseif ( $matches[2] == '+' )
-					{
-						$args[1] = 1;
-					}
-					elseif ( $matches[2] == '-' )
-					{
-						$args[1] = 2;
-					}
-					elseif ( $matches[2] == '*' )
-					{
-						$args[1] = 3;
-					}
-					elseif ( $matches[2] == '/' )
-					{
-						$args[1] = 4;
-					}
-					elseif ( $matches[2] == '.' )
-					{
-						$args[1] = 5;
-					}
+                    if ($value == 'false') {
+                        $args = array(false);
+                    } else {
+                        $args = array($value);
+                    }
 
-					if ( preg_match('`^\$([A-Za-z0-9_]+)$`', $matches[3], $matches2) )
-					{
-						$args[2] = true;
-						$args[3] = $matches2[1];
-					}
-					else
-					{
-						$args[2] = false;
-						$args[3] = ( is_numeric($matches[3]) ) ? doubleval($matches[3]) : $matches[3];
-					}
+                    $script[] = array(4, $args);
+                } elseif ($command == 'WAIT' && is_numeric(trim(substr($code, 4)))) {
+                    $args = array(intval(substr($code, 4)));
+                    $script[] = array(7, $args);
+                } elseif ($command == 'VAR' && preg_match('`^\$([A-Za-z0-9_]+) *(=|\+|\-|\*|/|\.) *(.*?)$`', trim(substr($code, 3)), $matches)) {
+                    $args = array();
+                    $args[0] = $matches[1];
 
-					$script[] = array(8, $args);
-				}
-				elseif ( $command == 'IF' && preg_match('`^\$([A-Za-z0-9_]+) *(\\<\\=|\\>\\=|\\<\\>|\\!\\=|\\=\\=|\\=|\\<|\\>) *(.*?)$`', trim(substr($code, 2)), $matches) )
-				{
-					$args = array();
-					$args[0] = $matches[1];
+                    if ($matches[2] == '=') {
+                        $args[1] = 0;
+                    } elseif ($matches[2] == '+') {
+                        $args[1] = 1;
+                    } elseif ($matches[2] == '-') {
+                        $args[1] = 2;
+                    } elseif ($matches[2] == '*') {
+                        $args[1] = 3;
+                    } elseif ($matches[2] == '/') {
+                        $args[1] = 4;
+                    } elseif ($matches[2] == '.') {
+                        $args[1] = 5;
+                    }
 
-					if ( $matches[2] == '<=' )
-					{
-						$args[1] = 4;
-					}
-					elseif ( $matches[2] == '>=' )
-					{
-						$args[1] = 5;
-					}
-					elseif ( $matches[2] == '!=' || $matches[2] == '<>' )
-					{
-						$args[1] = 0;
-					}
-					elseif ( $matches[2] == '=' || $matches[2] == '==' )
-					{
-						$args[1] = 1;
-					}
-					elseif ( $matches[2] == '<' )
-					{
-						$args[1] = 2;
-					}
-					elseif ( $matches[2] == '>' )
-					{
-						$args[1] = 3;
-					}
+                    if (preg_match('`^\$([A-Za-z0-9_]+)$`', $matches[3], $matches2)) {
+                        $args[2] = true;
+                        $args[3] = $matches2[1];
+                    } else {
+                        $args[2] = false;
+                        $args[3] = (is_numeric($matches[3])) ? doubleval($matches[3]) : $matches[3];
+                    }
 
-					if ( preg_match('`^\$([A-Za-z0-9_]+)$`', $matches[3], $matches2) )
-					{
-						$args[2] = true;
-						$args[3] = $matches2[1];
-					}
-					else
-					{
-						$args[2] = false;
-						$args[3] = ( is_numeric($matches[3]) ) ? doubleval($matches[3]) : $matches[3];
-					}
+                    $script[] = array(8, $args);
+                } elseif ($command == 'IF' && preg_match('`^\$([A-Za-z0-9_]+) *(\\<\\=|\\>\\=|\\<\\>|\\!\\=|\\=\\=|\\=|\\<|\\>) *(.*?)$`', trim(substr($code, 2)), $matches)) {
+                    $args = array();
+                    $args[0] = $matches[1];
 
-					//js_eval('alert(\'' . quotes($matches[3]) .'\');', 1, 1);
+                    if ($matches[2] == '<=') {
+                        $args[1] = 4;
+                    } elseif ($matches[2] == '>=') {
+                        $args[1] = 5;
+                    } elseif ($matches[2] == '!=' || $matches[2] == '<>') {
+                        $args[1] = 0;
+                    } elseif ($matches[2] == '=' || $matches[2] == '==') {
+                        $args[1] = 1;
+                    } elseif ($matches[2] == '<') {
+                        $args[1] = 2;
+                    } elseif ($matches[2] == '>') {
+                        $args[1] = 3;
+                    }
 
-					$script[] = array(0, $args);
-					$count_condition++;
-				}
-				elseif ( $command == 'ELSE' && trim(substr($code, 4)) == '' && $count_condition > 0 )
-				{
-					$script[] = array(0, array(false));
-				}
-				elseif ( ( $command == 'ENDIF' && trim(substr($code, 5)) == '' ) || ( $command == 'END' && trim(substr($code, 3)) == 'IF' ) )
-				{
-					$script[] = array(0, array(false, false));
-					$count_condition--;
-				}
-				elseif ( $command == 'INPUT' && preg_match('`^\$([A-Za-z0-9_]+) *(MESSAGE *(HTML)? *(.*?))?$`', trim(substr($code, 5)), $matches) )
-				{
-					if ( !empty($matches[2]) )
-					{
-						if ( empty($matches[4]) || trim($matches[4]) == '' )
-						{
-							$text_on = true;
-							$text = '';
-							$i++;
+                    if (preg_match('`^\$([A-Za-z0-9_]+)$`', $matches[3], $matches2)) {
+                        $args[2] = true;
+                        $args[3] = $matches2[1];
+                    } else {
+                        $args[2] = false;
+                        $args[3] = (is_numeric($matches[3])) ? doubleval($matches[3]) : $matches[3];
+                    }
 
-							while ( isset($text_script[$i]) )
-							{
-								if ( preg_match('`^END *MESSAGE$`', trim($text_script[$i])) )
-								{
-									$text_on = false;
-									break;
-								}
-								else
-								{
-									$text .= "\n" . $text_script[$i];
-									$i++;
-								}
-							}
+                    //js_eval('alert(\'' . quotes($matches[3]) .'\');', 1, 1);
 
-							if ( $text_on )
-							{
-								return array(false, $lang->not_closed_message);
-							}
-						}
-						else
-						{
-							$text = $matches[4];
-						}
+                    $script[] = array(0, $args);
+                    $count_condition++;
+                } elseif ($command == 'ELSE' && trim(substr($code, 4)) == '' && $count_condition > 0) {
+                    $script[] = array(0, array(false));
+                } elseif (($command == 'ENDIF' && trim(substr($code, 5)) == '') || ($command == 'END' && trim(substr($code, 3)) == 'IF')) {
+                    $script[] = array(0, array(false, false));
+                    $count_condition--;
+                } elseif ($command == 'INPUT' && preg_match('`^\$([A-Za-z0-9_]+) *(MESSAGE *(HTML)? *(.*?))?$`', trim(substr($code, 5)), $matches)) {
+                    if (!empty($matches[2])) {
+                        if (empty($matches[4]) || trim($matches[4]) == '') {
+                            $text_on = true;
+                            $text = '';
+                            $i++;
 
-						if ( empty($matches[3]) )
-						{
-							$text = nl2br(trim(htmlspecialchars($text)));
-						}
-					}
-					else
-					{
-						$text = '';
-					}
+                            while (isset($text_script[$i])) {
+                                if (preg_match('`^END *MESSAGE$`', trim($text_script[$i]))) {
+                                    $text_on = false;
+                                    break;
+                                } else {
+                                    $text .= "\n" . $text_script[$i];
+                                    $i++;
+                                }
+                            }
 
-					$script[] = array(6, array(str_replace(array("\n", "\r"), '', $text), $matches[1], false));
-				}
-				elseif ( $command == 'INPUT_NUMBER' && preg_match('`^\$([A-Za-z0-9_]+) *(MESSAGE *(HTML)? *(.*?))?$`', trim(substr($code, 12)), $matches) )
-				{
-					if ( !empty($matches[2]) )
-					{
-						if ( empty($matches[4]) || trim($matches[4]) == '' )
-						{
-							$text_on = true;
-							$text = '';
-							$i++;
+                            if ($text_on) {
+                                return array(false, $lang->not_closed_message);
+                            }
+                        } else {
+                            $text = $matches[4];
+                        }
 
-							while ( isset($text_script[$i]) )
-							{
-								if ( preg_match('`^END *MESSAGE$`', trim($text_script[$i])) )
-								{
-									$text_on = false;
-									break;
-								}
-								else
-								{
-									$text .= "\n" . $text_script[$i];
-									$i++;
-								}
-							}
+                        if (empty($matches[3])) {
+                            $text = nl2br(trim(htmlspecialchars($text)));
+                        }
+                    } else {
+                        $text = '';
+                    }
 
-							if ( $text_on )
-							{
-								return array(false, $lang->not_closed_message);
-							}
-						}
-						else
-						{
-							$text = $matches[4];
-						}
+                    $script[] = array(6, array(str_replace(array("\n", "\r"), '', $text), $matches[1], false));
+                } elseif ($command == 'INPUT_NUMBER' && preg_match('`^\$([A-Za-z0-9_]+) *(MESSAGE *(HTML)? *(.*?))?$`', trim(substr($code, 12)), $matches)) {
+                    if (!empty($matches[2])) {
+                        if (empty($matches[4]) || trim($matches[4]) == '') {
+                            $text_on = true;
+                            $text = '';
+                            $i++;
 
-						if ( empty($matches[3]) )
-						{
-							$text = nl2br(trim(htmlspecialchars($text)));
-						}
-					}
-					else
-					{
-						$text = '';
-					}
+                            while (isset($text_script[$i])) {
+                                if (preg_match('`^END *MESSAGE$`', trim($text_script[$i]))) {
+                                    $text_on = false;
+                                    break;
+                                } else {
+                                    $text .= "\n" . $text_script[$i];
+                                    $i++;
+                                }
+                            }
 
-					$script[] = array(6, array(str_replace(array("\n", "\r"), '', $text), $matches[1], true));
-				}
-				elseif ( $command == 'TELEPORT' && preg_match('`^([0-9]*) *, *([0-9]*) *, *([0-9]*) *(left|right|up|down)?$`', trim(substr($code, 8)), $matches) )
-				{
-					$args = array();
+                            if ($text_on) {
+                                return array(false, $lang->not_closed_message);
+                            }
+                        } else {
+                            $text = $matches[4];
+                        }
 
-					$args[0] = ( $matches[1] == '' ) ? false : intval($matches[1]);
-					$args[1] = ( $matches[2] == '' ) ? false : intval($matches[2]);
-					$args[2] = ( $matches[3] == '' ) ? false : intval($matches[3]);
+                        if (empty($matches[3])) {
+                            $text = nl2br(trim(htmlspecialchars($text)));
+                        }
+                    } else {
+                        $text = '';
+                    }
 
-					if ( isset($matches[4]) )
-					{
-						if  ( $matches[4] == 'down' )
-						{
-							$args[3] = 0;
-						}
-						elseif ( $matches[4] == 'left' )
-						{
-							$args[3] = 1;
-						}
-						elseif  ( $matches[4] == 'up' )
-						{
-							$args[3] = 2;
-						}
-						elseif  ( $matches[4] == 'right' )
-						{
-							$args[3] = 3;
-						}
-					}
+                    $script[] = array(6, array(str_replace(array("\n", "\r"), '', $text), $matches[1], true));
+                } elseif ($command == 'TELEPORT' && preg_match('`^([0-9]*) *, *([0-9]*) *, *([0-9]*) *(left|right|up|down)?$`', trim(substr($code, 8)), $matches)) {
+                    $args = array();
 
-					$script[] = array(9, $args);
-				}
-				elseif ( $command == 'CHOICE' && preg_match('`^\$([A-Za-z0-9_]+)$`', trim(substr($code, 6)), $matches) )
-				{
-					$args = array();
-					$args[0] = $matches[1];
-					$choice_on = true;
-					$i++;
-					$i2 = $i;
-					$args[1] = array();
+                    $args[0] = ($matches[1] == '') ? false : intval($matches[1]);
+                    $args[1] = ($matches[2] == '') ? false : intval($matches[2]);
+                    $args[2] = ($matches[3] == '') ? false : intval($matches[3]);
 
-					while ( isset($text_script[$i]) )
-					{
-						if ( preg_match('`^END *CHOICE$`', trim($text_script[$i])) )
-						{
-							if ( $i2 == $i )
-							{
-								return array(false, $lang->no_choice);
-							}
+                    if (isset($matches[4])) {
+                        if ($matches[4] == 'down') {
+                            $args[3] = 0;
+                        } elseif ($matches[4] == 'left') {
+                            $args[3] = 1;
+                        } elseif ($matches[4] == 'up') {
+                            $args[3] = 2;
+                        } elseif ($matches[4] == 'right') {
+                            $args[3] = 3;
+                        }
+                    }
 
-							$script[] = array(5, $args);
-							$choice_on = false;
-							break;
-						}
-						else
-						{
-							$args[1][] = htmlspecialchars(str_replace(array("\n", "\r"), '', $text_script[$i]));
-							$i++;
-						}
-					}
+                    $script[] = array(9, $args);
+                } elseif ($command == 'CHOICE' && preg_match('`^\$([A-Za-z0-9_]+)$`', trim(substr($code, 6)), $matches)) {
+                    $args = array();
+                    $args[0] = $matches[1];
+                    $choice_on = true;
+                    $i++;
+                    $i2 = $i;
+                    $args[1] = array();
 
-					if ( $choice_on )
-					{
-						return array(false, $lang->not_closed_choice);
-					}
-				}
-				elseif ( $command == 'JAVASCRIPT' || $command == 'JS' )
-				{
-					$value = trim(substr($code, 10));
+                    while (isset($text_script[$i])) {
+                        if (preg_match('`^END *CHOICE$`', trim($text_script[$i]))) {
+                            if ($i2 == $i) {
+                                return array(false, $lang->no_choice);
+                            }
 
-					if ( $value != '' )
-					{
-						$args = array($value);
-						$script[] = array(10, $args);
-					}
-					else
-					{
-						$script_on = true;
-						$code = '';
-						$i++;
+                            $script[] = array(5, $args);
+                            $choice_on = false;
+                            break;
+                        } else {
+                            $args[1][] = htmlspecialchars(str_replace(array("\n", "\r"), '', $text_script[$i]));
+                            $i++;
+                        }
+                    }
 
-						while ( isset($text_script[$i]) )
-						{
-							if ( preg_match('`^END *' . $command . '$`', trim($text_script[$i])) )
-							{
-								$args = array('eval(htmlspecialchars_decode(\'' . quotes(htmlspecialchars(str_replace(array("\n", "\r"), '', $code))) . '\'));');
-								$script[] = array(10, $args);
-								$script_on = false;
-								break;
-							}
-							else
-							{
-								$code .= $text_script[$i];
-								$i++;
-							}
-						}
+                    if ($choice_on) {
+                        return array(false, $lang->not_closed_choice);
+                    }
+                } elseif ($command == 'JAVASCRIPT' || $command == 'JS') {
+                    $value = trim(substr($code, 10));
 
-						if ( $script_on )
-						{
-							return array(false, $lang->not_closed_javascript);
-						}
-					}
-				}
-				elseif ( $command == 'PHP' )
-				{
-					$value = trim(substr($code, 3));
+                    if ($value != '') {
+                        $args = array($value);
+                        $script[] = array(10, $args);
+                    } else {
+                        $script_on = true;
+                        $code = '';
+                        $i++;
 
-					if ( $value != '' )
-					{
-						$args = array($value);
-						$script[] = array(11, $args);
-					}
-					else
-					{
-						$script_on = true;
-						$code = '';
-						$i++;
+                        while (isset($text_script[$i])) {
+                            if (preg_match('`^END *' . $command . '$`', trim($text_script[$i]))) {
+                                $args = array('eval(htmlspecialchars_decode(\'' . quotes(htmlspecialchars(str_replace(array("\n", "\r"), '', $code))) . '\'));');
+                                $script[] = array(10, $args);
+                                $script_on = false;
+                                break;
+                            } else {
+                                $code .= $text_script[$i];
+                                $i++;
+                            }
+                        }
 
-						while ( isset($text_script[$i]) )
-						{
-							if ( preg_match('`^END *PHP$`', trim($text_script[$i])) )
-							{
-								$args = array($code);
-								$script[] = array(11, $args);
-								$script_on = false;
-								break;
-							}
-							else
-							{
-								$code .= $text_script[$i] . "\n";
-								$i++;
-							}
-						}
+                        if ($script_on) {
+                            return array(false, $lang->not_closed_javascript);
+                        }
+                    }
+                } elseif ($command == 'PHP') {
+                    $value = trim(substr($code, 3));
 
-						if ( $script_on )
-						{
-							die($lang->not_closed_php);
-						}
-					}
-				}
-				else
-				{
-					return array(false, sprintf($lang->syntax_error_at_line, ($i + 1)) . ' code="' . $code . '"');
-				}
-			}
-			elseif ( trim($text_script[$i]) != '' )
-			{
-				return array(false, sprintf($lang->syntax_error_at_line, ($i + 1)));
-			}
+                    if ($value != '') {
+                        $args = array($value);
+                        $script[] = array(11, $args);
+                    } else {
+                        $script_on = true;
+                        $code = '';
+                        $i++;
 
-			$i++;
-		}
+                        while (isset($text_script[$i])) {
+                            if (preg_match('`^END *PHP$`', trim($text_script[$i]))) {
+                                $args = array($code);
+                                $script[] = array(11, $args);
+                                $script_on = false;
+                                break;
+                            } else {
+                                $code .= $text_script[$i] . "\n";
+                                $i++;
+                            }
+                        }
 
-		if ( $count_condition != 0 )
-		{
-			return array(false, $lang->not_closed_condition);
-		}
-		else
-		{
-			$script[] = array(-1, array());
-			return array(true, $script);
-		}
-	}
+                        if ($script_on) {
+                            die($lang->not_closed_php);
+                        }
+                    }
+                } else {
+                    return array(false, sprintf($lang->syntax_error_at_line, ($i + 1)) . ' code="' . $code . '"');
+                }
+            } elseif (trim($text_script[$i]) != '') {
+                return array(false, sprintf($lang->syntax_error_at_line, ($i + 1)));
+            }
+
+            $i++;
+        }
+
+        if ($count_condition != 0) {
+            return array(false, $lang->not_closed_condition);
+        } else {
+            $script[] = array(-1, array());
+            return array(true, $script);
+        }
+    }
 }
