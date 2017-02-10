@@ -72,31 +72,31 @@
    </tr>
    <tr>
     <td align="right" width="50%">{L_EXPERIENCE_CURVE} :</td>
-    <td align="left" width="50%"><input type="text" maxlength="128" name="exp_curve" value="{CLASS_EXP_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=exp&function='+urlencode(exp_curve.value),'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
+    <td align="left" width="50%"><input type="text" maxlength="128" name="exp_curve" value="{CLASS_EXP_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=exp&function='+exp_curve.value,'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
    </tr>
    <tr>
     <td align="right" width="50%">{L_HP_CURVE} :</td>
-    <td align="left" width="50%"><input type="text" maxlength="128" name="hp_curve" value="{CLASS_HP_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=hp&function='+urlencode(hp_curve.value),'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
+    <td align="left" width="50%"><input type="text" maxlength="128" name="hp_curve" value="{CLASS_HP_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=hp&function='+hp_curve.value,'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
    </tr>
    <tr>
     <td align="right" width="50%">{L_MP_CURVE} :</td>
-    <td align="left" width="50%"><input type="text" maxlength="128" name="mp_curve" value="{CLASS_MP_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=mp&function='+urlencode(mp_curve.value),'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
+    <td align="left" width="50%"><input type="text" maxlength="128" name="mp_curve" value="{CLASS_MP_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=mp&function='+mp_curve.value,'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
    </tr>
    <tr>
     <td align="right" width="50%">{L_ATTACK_CURVE} :</td>
-    <td align="left" width="50%"><input type="text" maxlength="128" name="attack_curve" value="{CLASS_ATTACK_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=attack&function='+urlencode(attack_curve.value),'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
+    <td align="left" width="50%"><input type="text" maxlength="128" name="attack_curve" value="{CLASS_ATTACK_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=attack&function='+attack_curve.value,'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
    </tr>
    <tr>
     <td align="right" width="50%">{L_DEFENSE_CURVE} :</td>
-    <td align="left" width="50%"><input type="text" maxlength="128" name="defense_curve" value="{CLASS_DEFENSE_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=defense&function='+urlencode(defense_curve.value),'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
+    <td align="left" width="50%"><input type="text" maxlength="128" name="defense_curve" value="{CLASS_DEFENSE_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=defense&function='+defense_curve.value,'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
    </tr>
    <tr>
     <td align="right" width="50%">{L_MIND_CURVE} :</td>
-    <td align="left" width="50%"><input type="text" maxlength="128" name="mind_curve" value="{CLASS_MIND_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=mind&function='+urlencode(mind_curve.value),'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
+    <td align="left" width="50%"><input type="text" maxlength="128" name="mind_curve" value="{CLASS_MIND_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=mind&function='+mind_curve.value,'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
    </tr>
    <tr>
     <td align="right" width="50%">{L_AGILITY_CURVE} :</td>
-    <td align="left" width="50%"><input type="text" maxlength="128" name="agility_curve" value="{CLASS_AGILITY_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=agility&function='+urlencode(agility_curve.value),'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
+    <td align="left" width="50%"><input type="text" maxlength="128" name="agility_curve" value="{CLASS_AGILITY_CURVE}" style="width:200px" /> <input type="button" onclick="window.open('{U_INDEX}?mod=admin.general&mode=class_curve&type=agility&function='+agility_curve.value,'class_curve','left=10,top=10,toolbar=0,location=0,directories=0,status=0,scrollbars=0,resizable=0,copyhistory=0,menuBar=0,width=550,height=550');" value="{L_VIEW_CURVE}" class="button" /></td>
    </tr>
   </table>
 

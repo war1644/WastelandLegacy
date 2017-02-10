@@ -12,7 +12,7 @@ Online RPG Editor written in php. Personal project from 2005.
 
 Project update from 2017.
 
-**[author : war1644](https://github.com/war1644)**
+**[author : war1644](https://github.com/war1644/phpore)**
 
 项目结构
 ======

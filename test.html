@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="description" content="废土战记">
+    <meta name="author" content="路漫漫">
     <title>Title</title>
+    <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <style>
     @-webkit-keyframes aniMove{
@@ -13,7 +17,6 @@
         width: 24px;
         height: 24px;
         background-image: url("images/charasets/NPC (6).png");
-        background-position-y:24px;
         -webkit-animation: aniMove steps(3,end) 0.5s infinite;
     }
 </style>
@@ -21,6 +24,34 @@
 <div id="sprite"></div>
 </body>
 <script>
+    // 页面重绘前，通知浏览器调用一个指定的函数
+    // 具体看https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame
+    var requestAnimFrame = (function(){
+        return window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function(callback){
+                window.setTimeout(callback, 1000 / 60);//一秒60帧
+            };
+    })();
+
+    // The main game loop
+    var lastTime;
+    function main() {
+        var now = Date.now();
+        var dt = (now - lastTime) / 1000.0;
+
+        handleInput(dt);
+
+        lastTime = now;
+//        requestAnimFrame(main);
+        window.setTimeout(main, 1000 / 60);//一秒60帧
+
+    }
+
+    //input对象，保存用户按键动作，供全局调用
     (function() {
         var pressedKeys = {};
 
@@ -67,32 +98,25 @@
     })();
 
 
-    function handleInput() {
+    function handleInput(dt) {
         if(input.isDown('DOWN') || input.isDown('s')) {
-            player.pos[1] += playerSpeed * dt;
+            console.log('DOWN');
+            $("#sprite").css("background-position-y","0px");
         }
 
         if(input.isDown('UP') || input.isDown('w')) {
-            player.pos[1] -= playerSpeed * dt;
+            $("#sprite").css("background-position-y","72px");
         }
 
         if(input.isDown('LEFT') || input.isDown('a')) {
-            player.pos[0] -= playerSpeed * dt;
+            $("#sprite").css("background-position-y","24px");
         }
 
         if(input.isDown('RIGHT') || input.isDown('d')) {
-            player.pos[0] += playerSpeed * dt;
+            $("#sprite").css("background-position-y","48px");
         }
 
     }
-
-    function OBJ(name) {
-        this.name = name;
-    }
-
-    var obj = new OBJ('wxy');
-    obj.name;
-
-
+    main();
 </script>
 </html>
