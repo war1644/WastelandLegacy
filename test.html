@@ -9,7 +9,11 @@
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <style>
-    @-webkit-keyframes aniMove{
+    @keyframes aniMove{
+        100%{background-position-x:72px;}
+    }
+
+    @keyframes aniFrame{
         100%{background-position-x:72px;}
     }
 
@@ -17,7 +21,8 @@
         width: 24px;
         height: 24px;
         background-image: url("images/charasets/NPC (6).png");
-        -webkit-animation: aniMove steps(3,end) 0.5s infinite;
+        animation: aniMove steps(3,end) 0.3s infinite;
+        animation-play-state:paused;
     }
 </style>
 <body>
@@ -46,6 +51,7 @@
         handleInput(dt);
 
         lastTime = now;
+        //注意该API是在canvas下作用的，所以替换为setTimeout,但是setTimeout是不精确的不精确的不精确的！！！;
 //        requestAnimFrame(main);
         window.setTimeout(main, 1000 / 60);//一秒60帧
 
@@ -84,6 +90,9 @@
 
         document.addEventListener('keyup', function(e) {
             setKey(e, false);
+            $("#sprite").css({
+                "animation-play-state" : "paused"
+            });
         });
 
         window.addEventListener('blur', function() {
@@ -98,25 +107,36 @@
     })();
 
 
-    function handleInput(dt) {
+    function handleInput() {
         if(input.isDown('DOWN') || input.isDown('s')) {
-            console.log('DOWN');
-            $("#sprite").css("background-position-y","0px");
+            $("#sprite").css({
+                "background-position-y" : "0px",
+                "animation-play-state" : "running"
+            });
         }
 
         if(input.isDown('UP') || input.isDown('w')) {
-            $("#sprite").css("background-position-y","72px");
+            $("#sprite").css({
+                "background-position-y" : "24px",
+                "animation-play-state" : "running"
+            });
         }
 
         if(input.isDown('LEFT') || input.isDown('a')) {
-            $("#sprite").css("background-position-y","24px");
+            $("#sprite").css({
+                "background-position-y" : "72px",
+                "animation-play-state" : "running"
+            });
         }
 
         if(input.isDown('RIGHT') || input.isDown('d')) {
-            $("#sprite").css("background-position-y","48px");
+            $("#sprite").css({
+                "background-position-y" : "48px",
+                "animation-play-state" : "running"
+            });
         }
-
     }
+
     main();
 </script>
 </html>
