@@ -24,42 +24,36 @@
         animation: aniMove steps(3,end) 0.3s infinite;
         animation-play-state:paused;
     }
+
 </style>
 <body>
-<div id="sprite"></div>
+<!--<div id="sprite"></div>-->
 <!--<button id="restart" onclick="reset();">重新开始</button>-->
 </body>
 <script src="javascript/resources.js"></script>
 <script src="javascript/sprite.js"></script>
 <script src="javascript/input.js"></script>
 <script src="javascript/collision.js"></script>
-
+<script src="javascript/mapTest.js"></script>
 <script>
-    var urlArr = ["cache/map_3_0.png","cache/map_3_1.png","cache/map_3_2.png","images/charasets/NPC (6).png"];
+    //地图
+    var urlArr = [];
+    <?php  foreach ( $data['mapImg'] as $v){  ?>
+        urlArr.push(<?php echo $v; ?>);
+    <?php } ?>
+
+    //地图碰撞标识
+    <?php  foreach ( $data['downMapPass'] as $v){  ?>
+        mapPass[<?php echo $v['x']; ?>][<?php echo $v['y']; ?>] = (<?php echo $v['pass']; ?>);
+    <?php } ?>
+
+    <?php  foreach ( $data['upMapPass'] as $v){ if(!$v['pass']){  ?>
+        mapPass[<?php echo $v['x']; ?>][<?php echo $v['y']; ?>] = (<?php echo $v['pass']; ?>);
+    <?php }} ?>
+
     var mapWidth,mapHeight,tileSize=24,img,mapSize = {x:0,y:0};
 
-    var mapPass = [
-        [true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,true,true,true,true,false,false,false,true,true],
-        [true,true,true,false,true,true,true,true,true,false,false,false,false,true,true,true,true,true,false,true,false,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,false,false,false,false,true,false,false,true,true,true,true,true,true,true,true,false,false,false,false,true,true],
-        [true,true,true,false,true,true,true,true,false,false,true,false,false,false,true,true,true,true,true,true,true,true,true,true,false,true,false,false,true,true],
-        [true,true,true,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,false,true,false,true,true,true,true,true,true,false,false,false,false,true,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,false,false,true,true,true,false,false,false,false,true,true,true,false,false,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,false,true,true,true,false,false,false,false,false,true,true,true,true,false,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,false,false,false,false,false,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,false,false,true,true,true,true,true,true,false,false,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,false,false,true,true,true,true,true,false,false,true,false,false,true,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,false,true,true,true,true,true,true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,true,true,false,false,true,true],
-        [true,true,true,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
-        [true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],
-        [true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]
-    ];
+    var mapPass =
 
     //加载资源
     resources.load(urlArr);
@@ -116,6 +110,8 @@
 
         ctx2.fillStyle = terrainPattern1;
         ctx2.fillRect(0, 0, mapWidth, mapHeight);
+
+
 
     }
 
@@ -221,13 +217,19 @@
         ctx.fillStyle = terrainPattern2;
         ctx.fillRect(0, 0, mapWidth, mapHeight);
         renderEntity(player);
+        renderEntities(eventData);
 
     }
 
     function renderEntities(list) {
-        for(var i=0; i<list.length; i++) {
-            renderEntity(list[i]);
+//        var len = list.length;
+//        for(var i=0; i<len; i++) {
+//            renderEntity(list[i]);
+//        }
+        for (var k in list) {
+            renderEntity(list[k]);
         }
+
     }
 
     function renderEntity(entity) {
@@ -235,7 +237,6 @@
         ctx.translate(entity.p.x, entity.p.y);
         entity.sprite.render(ctx);
         ctx.restore();
-
     }
 
 

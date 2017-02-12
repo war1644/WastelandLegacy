@@ -79,40 +79,37 @@ var message_box = new Object();
 message_box.begin = '<table cellspacing="0" cellpadding="0" border="0"><tr><td class="m_top_left"><img class="m_top_left_corner" src="images/spacer.gif" width="3" height="3" /></td><td class="m_top_center"></td><td class="m_top_right"></td></tr><tr><td class="m_middle_left"></td><td class="m_middle_center">';
 message_box.end = '</td><td class="m_middle_right"></td></tr><tr><td class="m_bottom_left"></td><td class="m_bottom_center"></td><td class="m_bottom_right"><img class="m_bottom_right_corner" src="images/spacer.gif" width="3" height="3" /></td></tr></table>';
 
-function map_preload()
-{
-<!-- BEGIN lower_bloc -->
-	l_bloc('{lower_bloc.ID}', {lower_bloc.LEFT}, {lower_bloc.TOP}, '[lower_bloc.BACKGROUND_IMAGE]', {lower_bloc.Z_INDEX});
-<!-- END lower_bloc -->
-	document.getElementById('lower_bloc').innerHTML = lower_buffer;
-	lower_buffer = false;
-<!-- BEGIN upper_bloc -->
-	u_bloc('{upper_bloc.ID}', {upper_bloc.LEFT}, {upper_bloc.TOP}, '[upper_bloc.BACKGROUND_IMAGE]', {upper_bloc.Z_INDEX});
-<!-- END upper_bloc -->
-	document.getElementById('upper_bloc').innerHTML = upper_buffer;
-	upper_buffer = false;
-<!-- BEGIN add_chat -->
-	chat_add('[add_chat.NAME]', '[add_chat.MESSAGE]');
-<!-- END add_chat -->
-	chat_history = false;
-	a_bloc({MAP_WIDTH}, {MAP_HEIGHT});
-	setTimeout('check_loading();', 1000);
-	return true;
+function map_preload() {
+    <!-- BEGIN lower_bloc -->
+    l_bloc('{lower_bloc.ID}', {lower_bloc.LEFT}, {lower_bloc.TOP}, '[lower_bloc.BACKGROUND_IMAGE]', {lower_bloc.Z_INDEX});
+    <!-- END lower_bloc -->
+    document.getElementById('lower_bloc').innerHTML = lower_buffer;
+    lower_buffer = false;
+    <!-- BEGIN upper_bloc -->
+    u_bloc('{upper_bloc.ID}', {upper_bloc.LEFT}, {upper_bloc.TOP}, '[upper_bloc.BACKGROUND_IMAGE]', {upper_bloc.Z_INDEX});
+    <!-- END upper_bloc -->
+    document.getElementById('upper_bloc').innerHTML = upper_buffer;
+    upper_buffer = false;
+    <!-- BEGIN add_chat -->
+    chat_add('[add_chat.NAME]', '[add_chat.MESSAGE]');
+    <!-- END add_chat -->
+    chat_history = false;
+    a_bloc({MAP_WIDTH}, {MAP_HEIGHT});
+    setTimeout('check_loading();', 1000);
+    return true;
 }
 
-function map_start()
-{
-<!-- BEGIN event_bloc -->
-	add_event('[event_bloc.ID]', {event_bloc.LEFT}, {event_bloc.TOP}, {event_bloc.LAYER}, {event_bloc.WIDTH}, {event_bloc.HEIGHT}, '[event_bloc.PICTURE]', {event_bloc.DIR});
-<!-- END event_bloc -->
-<!-- BEGIN add_player_bloc -->
-	add_player({add_player_bloc.ID}, '[add_player_bloc.NAME]', '[add_player_bloc.CHARASET]', {add_player_bloc.LEFT}, {add_player_bloc.TOP}, {add_player_bloc.DIR}, {add_player_bloc.MOVES}, {add_player_bloc.WIDTH}, {add_player_bloc.HEIGHT});
-	battle({add_player_bloc.ID}, {add_player_bloc.BATTLE_ID}, {add_player_bloc.BATTLE_STATE})
-<!-- END add_player_bloc -->
-	if ( trim(event_status) != '' )
-	{
-		continue_event(event_status);
-	}
+function map_start() {
+    <!-- BEGIN event_bloc -->
+    add_event('[event_bloc.ID]', {event_bloc.LEFT}, {event_bloc.TOP}, {event_bloc.LAYER}, {event_bloc.WIDTH}, {event_bloc.HEIGHT}, '[event_bloc.PICTURE]', {event_bloc.DIR});
+    <!-- END event_bloc -->
+    <!-- BEGIN add_player_bloc -->
+    add_player({add_player_bloc.ID}, '[add_player_bloc.NAME]', '[add_player_bloc.CHARASET]', {add_player_bloc.LEFT}, {add_player_bloc.TOP}, {add_player_bloc.DIR}, {add_player_bloc.MOVES}, {add_player_bloc.WIDTH}, {add_player_bloc.HEIGHT});
+    battle({add_player_bloc.ID}, {add_player_bloc.BATTLE_ID}, {add_player_bloc.BATTLE_STATE})
+    <!-- END add_player_bloc -->
+    if (trim(event_status) != '') {
+        continue_event(event_status);
+    }
 }
 </script>
 <script type="text/javascript" src="javascript/map.js"></script>

@@ -1295,42 +1295,36 @@ function player_move_down(user_id, bloc_id, charaset, prefix)
 	}
 }
 
-function l_bloc(id, left, top, background_image, z_index)
-{
-	if ( left == 0 )
-	{
-		map_pass[top] = new Array();
-		events_placement[top] = new Array();
-	}
-	
-	events_placement[top][left] = new Array();
-	events_placement[top][left][0] = new Array();
-	events_placement[top][left][1] = new Array();
+function l_bloc(id, left, top, background_image, z_index) {
+    if (left == 0) {
+        map_pass[top] = new Array();
+        events_placement[top] = new Array();
+    }
 
-	if ( z_index == 2 )
-	{
-		map_pass[top][left] = false;
-	}
-	else
-	{
-		map_pass[top][left] = true;
-	}
+    events_placement[top][left] = new Array();
+    events_placement[top][left][0] = new Array();
+    events_placement[top][left][1] = new Array();
 
-	left = left * tile_size;
-	top = top * tile_size;
+    if (z_index == 2) {
+        map_pass[top][left] = false;
+    }
+    else {
+        map_pass[top][left] = true;
+    }
 
-	if ( background_image != '' )
-	{
-		if ( !map_images[background_image] )
-		{
-			document.getElementById('cache_images').innerHTML += '<img src="images/tiles/' + background_image + '" width="1" height="1" onload="all_loaded--;" />';
-			map_images[background_image] = true;
-			all_loaded++;
-		}
+    left = left * tile_size;
+    top = top * tile_size;
+
+    if (background_image != '') {
+        if (!map_images[background_image]) {
+            document.getElementById('cache_images').innerHTML += '<img src="images/tiles/' + background_image + '" width="1" height="1" onload="all_loaded--;" />';
+            map_images[background_image] = true;
+            all_loaded++;
+        }
         var img = '\'images/tiles/' + background_image + '\'';
-		background_image = 'background-image:url(' + img + ');';
-		lower_buffer += '<div id="' + id + '" style="left:' + left + 'px;top:' + top + 'px;' + background_image + 'z-index:' + z_index + ';width:' + tile_size + 'px;height:' + tile_size + 'px"></div>';
-	}
+        background_image = 'background-image:url(' + img + ');';
+        lower_buffer += '<div id="' + id + '" style="left:' + left + 'px;top:' + top + 'px;' + background_image + 'z-index:' + z_index + ';width:' + tile_size + 'px;height:' + tile_size + 'px"></div>';
+    }
 }
 
 function u_bloc(id, left, top, background_image, z_index) {
@@ -1523,16 +1517,13 @@ function map_loaded() {
     setTimeout('map_start();', 100);
 }
 
-function check_loading()
-{
-	if ( all_loaded > 0 )
-	{
-		setTimeout('check_loading()', 200);
-	}
-	else
-	{
-		map_loaded();
-	}
+function check_loading() {
+    if (all_loaded > 0) {
+        setTimeout('check_loading()', 200);
+    }
+    else {
+        map_loaded();
+    }
 }
 
 map_preload();

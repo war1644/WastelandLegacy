@@ -52,3 +52,11 @@
         }
     };
 })();
+
+//监听鼠标点击的canvas的坐标
+function getMousePos(canvas) {
+    canvas.addEventListener('click', function(e) {
+        var rect = canvas.getBoundingClientRect();
+        return {x: e.clientX - rect.left,y:e.clientY - rect.top}
+    }, false);
+}
