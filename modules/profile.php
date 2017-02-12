@@ -1,6 +1,7 @@
 <?php
 
 $lang->load_keys('profile');
+MFlog(json_encode($_POST));
 
 $mode = ( isset($_POST['mode']) ) ? 'POST.' . trim($_POST['mode']) : (( isset($_GET['mode']) ) ? 'GET.' . trim($_GET['mode']) : '' );
 
@@ -125,7 +126,7 @@ elseif ( !$user->logged_in && ( $mode == 'GET.register' || $mode == 'POST.regist
 
 		$first = false;
 	}
-
+/*
 	$template->assign_vars(array(
 		'PAGE_NAME' => $lang->registering
 		));
@@ -133,12 +134,13 @@ elseif ( !$user->logged_in && ( $mode == 'GET.register' || $mode == 'POST.regist
 	$template->set_filenames(array(
 		'header' => 'page_header.tpl',
 		'footer' => 'page_footer.tpl',
-		'body' => 'profile_register.tpl'
+		'body' => 'default.tpl'
 		));
 
 	$template->pparse('header');
 	$template->pparse('body');
 	$template->pparse('footer');
+	*/
 }
 elseif ( $user->logged_in && ( $mode == 'GET.logout' || $mode == 'POST.logout' ) )
 {
