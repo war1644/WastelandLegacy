@@ -1333,226 +1333,194 @@ function l_bloc(id, left, top, background_image, z_index)
 	}
 }
 
-function u_bloc(id, left, top, background_image, z_index)
-{
-	if ( z_index == 6 )
-	{
-		map_pass[top][left] = false;
-	}
+function u_bloc(id, left, top, background_image, z_index) {
+    if (z_index == 6) {
+        map_pass[top][left] = false;
+    }
 
-	left = left * tile_size;
-	top = top * tile_size;
+    left = left * tile_size;
+    top = top * tile_size;
 
-	if ( background_image != '' )
-	{
-		if ( !map_images[background_image] )
-		{
-			document.getElementById('cache_images').innerHTML += '<img src="images/tiles/' + background_image + '" width="1" height="1" onload="all_loaded--;" />';
-			map_images[background_image] = true;
-			all_loaded++;
-		}
+    if (background_image != '') {
+        if (!map_images[background_image]) {
+            document.getElementById('cache_images').innerHTML += '<img src="images/tiles/' + background_image + '" width="1" height="1" onload="all_loaded--;" />';
+            map_images[background_image] = true;
+            all_loaded++;
+        }
         var img = '\'images/tiles/' + background_image + '\'';
-		background_image = 'background-image:url(' + img + ');';
-		upper_buffer += '<div id="' + id + '" style="left:' + left + 'px;top:' + top + 'px;' + background_image + 'z-index:' + z_index + ';width:' + tile_size + 'px;height:' + tile_size + 'px"></div>';
-	}
+        background_image = 'background-image:url(' + img + ');';
+        upper_buffer += '<div id="' + id + '" style="left:' + left + 'px;top:' + top + 'px;' + background_image + 'z-index:' + z_index + ';width:' + tile_size + 'px;height:' + tile_size + 'px"></div>';
+    }
 }
 
-function a_bloc(width, height)
-{
-	var left = 0;
-	var top = 0;
-	var buffer = '';
-	var mouseout = '';
-	while ( top * tile_size < height )
-	{
-		while ( left * tile_size < width )
-		{
-			if ( left == 0 || left * tile_size - tile_size == width || top == 0 || top * tile_size - tile_size == height )
-			{
-				mouseout = ' onmouseout="bloc_out(this.id)"';
-			}
-			else
-			{
-				mouseout = '';
-			}
-			buffer += '<div id="a' + left + '-' + top + '" style="left:' + (left * tile_size) + 'px;top:' + (top * tile_size) + 'px;z-index:9997;width:' + tile_size + 'px;height:' + tile_size + 'px" onclick="bloc_click(this.id)"></div>';
-			left++;
-		}
-		left = 0;
-		top++;
-	}
-	document.getElementById('action_bloc').innerHTML = buffer;
+function a_bloc(width, height) {
+    var left = 0;
+    var top = 0;
+    var buffer = '';
+    var mouseout = '';
+    while (top * tile_size < height) {
+        while (left * tile_size < width) {
+            if (left == 0 || left * tile_size - tile_size == width || top == 0 || top * tile_size - tile_size == height) {
+                mouseout = ' onmouseout="bloc_out(this.id)"';
+            }
+            else {
+                mouseout = '';
+            }
+            buffer += '<div id="a' + left + '-' + top + '" style="left:' + (left * tile_size) + 'px;top:' + (top * tile_size) + 'px;z-index:9997;width:' + tile_size + 'px;height:' + tile_size + 'px" onclick="bloc_click(this.id)"></div>';
+            left++;
+        }
+        left = 0;
+        top++;
+    }
+    document.getElementById('action_bloc').innerHTML = buffer;
 }
 
-function heuristic(x0, y0, x1, y1)
-{
-		return Math.abs(x1 - x0) + Math.abs(y1 - y0);
+function heuristic(x0, y0, x1, y1) {
+    return Math.abs(x1 - x0) + Math.abs(y1 - y0);
 }
 
-function make_pnt(x0, y0, x1, y1, pathcost, openlist, closelist, px, py)
-{
-	this.x = x0;
-	this.y = y0;
-	this.pathcost = pathcost;
-	//需要的格子数
-	this.togocost = heuristic(x0, y0, x1, y1);
-	this.openlist = openlist;
-	this.closelist = closelist;
-	this.px = px;
-	this.py = py;
+function make_pnt(x0, y0, x1, y1, pathcost, openlist, closelist, px, py) {
+    this.x = x0;
+    this.y = y0;
+    this.pathcost = pathcost;
+    //需要的格子数
+    this.togocost = heuristic(x0, y0, x1, y1);
+    this.openlist = openlist;
+    this.closelist = closelist;
+    this.px = px;
+    this.py = py;
 }
 
-function find_path(bloc_id, user_id)
-{
-	var clonemap = new Array();
-	var min;
-	var nearestind;
-	var curopenind;
-	var curpnt;
-	var curtotcost;
-	var i = 0;
-	var j = 0;
-	var curpathcost;
-	var newpt;
-	var curx;
-	var cury;
-	//tile个数
-	var width_tile = Math.floor(map_width / tile_size);
-	var height_tile = Math.floor(map_height / tile_size);
-    for ( i = 0; i <= height_tile; i++ )
-	{
-		clonemap[i] = new Array();
+//寻路
+function find_path(bloc_id, user_id) {
+    var clonemap = new Array();
+    var min;
+    var nearestind;
+    var curopenind;
+    var curpnt;
+    var curtotcost;
+    var i = 0;
+    var j = 0;
+    var curpathcost;
+    var newpt;
+    var curx;
+    var cury;
+    //tile个数
+    var width_tile = Math.floor(map_width / tile_size);
+    var height_tile = Math.floor(map_height / tile_size);
+    for (i = 0; i <= height_tile; i++) {
+        clonemap[i] = new Array();
 
-		for ( j = 0; j <= width_tile; j++ )
-		{
-			clonemap[i][j] = false;
-		}
-	}
+        for (j = 0; j <= width_tile; j++) {
+            clonemap[i][j] = false;
+        }
+    }
 
-	//点击位置
-	var x1 = Math.floor(parseInt(document.getElementById(bloc_id).style.left) / tile_size);
-	var y1 = Math.floor(parseInt(document.getElementById(bloc_id).style.top) / tile_size);
-	//玩家位置
-	var x0 = Math.floor((parseInt(document.getElementById('p' + user_id).style.left) + player[user_id].left_gain) / tile_size);
-	var y0 = Math.floor((parseInt(document.getElementById('p' + user_id).style.top) + player[user_id].top_gain) / tile_size);
+    //点击位置
+    var x1 = Math.floor(parseInt(document.getElementById(bloc_id).style.left) / tile_size);
+    var y1 = Math.floor(parseInt(document.getElementById(bloc_id).style.top) / tile_size);
+    //玩家位置
+    var x0 = Math.floor((parseInt(document.getElementById('p' + user_id).style.left) + player[user_id].left_gain) / tile_size);
+    var y0 = Math.floor((parseInt(document.getElementById('p' + user_id).style.top) + player[user_id].top_gain) / tile_size);
 
-	var x = x0;
-	var y = y0;
-	var openlist = new Array();
-	var closelist = new Array();
+    var x = x0;
+    var y = y0;
+    var openlist = new Array();
+    var closelist = new Array();
 
-	var pnt = new make_pnt(x0, y0, x1, y1, 0, true, false, 'stop', 'stop');
+    var pnt = new make_pnt(x0, y0, x1, y1, 0, true, false, 'stop', 'stop');
 
-	clonemap[y0][x0] = pnt;
-	openlist.push(pnt);
-	// 开始搜索路径
-	while ( openlist.length > 0 )
-	{
-		min = 99999999999;
-		
-		nearestind = 0;
-		curopenind = openlist.length;
-		curpnt = null;
-		while ( curopenind-- )
-		{
-			curpnt = clonemap[openlist[curopenind].y][openlist[curopenind].x];
-			curtotcost = curpnt.pathcost + curpnt.togocost;
-			if ( curtotcost < min )
-			{
-				nearestind = curopenind;
-				min = curtotcost;
-			}
-		}
+    clonemap[y0][x0] = pnt;
+    openlist.push(pnt);
+    // 开始搜索路径
+    while (openlist.length > 0) {
+        min = 99999999999;
 
-		curpnt = openlist[nearestind];
-		curpnt.openlist = false;
-		curpnt.closelist = true;
+        nearestind = 0;
+        curopenind = openlist.length;
+        curpnt = null;
+        while (curopenind--) {
+            curpnt = clonemap[openlist[curopenind].y][openlist[curopenind].x];
+            curtotcost = curpnt.pathcost + curpnt.togocost;
+            if (curtotcost < min) {
+                nearestind = curopenind;
+                min = curtotcost;
+            }
+        }
+
+        curpnt = openlist[nearestind];
+        curpnt.openlist = false;
+        curpnt.closelist = true;
 
         // 玩家与点击位置重合时，停止循环
-		if ( curpnt.x == x1 && curpnt.y == y1 )
-		{
-			break;
-		}
+        if (curpnt.x == x1 && curpnt.y == y1) {
+            break;
+        }
 
-		closelist[closelist.length] = curpnt;
-		openlist.splice(nearestind, 1);
+        closelist[closelist.length] = curpnt;
+        openlist.splice(nearestind, 1);
 
-		//开始寻找可行路径
-		for ( i = -1; i <= 1; i++ )
-		{
-			for ( j = -1; j <= 1; j++ )
-			{
-				curx = curpnt.x + i;
-				cury = curpnt.y + j;
+        //开始寻找可行路径
+        for (i = -1; i <= 1; i++) {
+            for (j = -1; j <= 1; j++) {
+                curx = curpnt.x + i;
+                cury = curpnt.y + j;
 
-                if ( ( i || j ) && curx != -1 && curx != width_tile && cury != -1 && cury != height_tile && !( i && j ) && ( !clonemap[cury][curx] || !clonemap[cury][curx].closelist ) && ( map_pass[cury][curx] || ( !map_pass[cury][curx] && curx == x1 && cury == y1 ) ) )
-				{
-					curpathcost = curpnt.pathcost + heuristic(curx, cury, x1, y1);
-					if ( clonemap[cury][curx] && clonemap[cury][curx].openlist )
-					{
-						if ( curpathcost < clonemap[cury][curx].pathcost )
-						{
-							clonemap[cury][curx].px = curpnt.x;
-							clonemap[cury][curx].py = curpnt.y;
-						}
-					}
-					else
-					{
-						newpt = new make_pnt(curx, cury, x1, y1, curpathcost, true, false, curpnt.x, curpnt.y);
-						clonemap[cury][curx] = newpt;
-						openlist[openlist.length] = newpt;
-					}
-				}
-			}
-		}
-	}
-	// fin de boucle
-	if ( curpnt.x != x1 || curpnt.y != y1 )
-	{
-		return false;
-	}
-	else
-	{
-		var returnarray = new Array();
-		returnarray[returnarray.length] = 'a' + curpnt.x + '-' + curpnt.y;
-		while ( curpnt.px != 'stop' && curpnt.py != 'stop' )
-		{
-			curpnt = clonemap[curpnt.py][curpnt.px];
-			newpt = 'a' + curpnt.x + '-' + curpnt.y;
-			returnarray[returnarray.length] = newpt;
-		}
-		return returnarray.reverse();
-	}
+                if (( i || j ) && curx != -1 && curx != width_tile && cury != -1 && cury != height_tile && !( i && j ) && ( !clonemap[cury][curx] || !clonemap[cury][curx].closelist ) && ( map_pass[cury][curx] || ( !map_pass[cury][curx] && curx == x1 && cury == y1 ) )) {
+                    curpathcost = curpnt.pathcost + heuristic(curx, cury, x1, y1);
+                    if (clonemap[cury][curx] && clonemap[cury][curx].openlist) {
+                        if (curpathcost < clonemap[cury][curx].pathcost) {
+                            clonemap[cury][curx].px = curpnt.x;
+                            clonemap[cury][curx].py = curpnt.y;
+                        }
+                    }
+                    else {
+                        newpt = new make_pnt(curx, cury, x1, y1, curpathcost, true, false, curpnt.x, curpnt.y);
+                        clonemap[cury][curx] = newpt;
+                        openlist[openlist.length] = newpt;
+                    }
+                }
+            }
+        }
+    }
+    // fin de boucle
+    if (curpnt.x != x1 || curpnt.y != y1) {
+        return false;
+    }
+    else {
+        var returnarray = new Array();
+        returnarray[returnarray.length] = 'a' + curpnt.x + '-' + curpnt.y;
+        while (curpnt.px != 'stop' && curpnt.py != 'stop') {
+            curpnt = clonemap[curpnt.py][curpnt.px];
+            newpt = 'a' + curpnt.x + '-' + curpnt.y;
+            returnarray[returnarray.length] = newpt;
+        }
+        return returnarray.reverse();
+    }
 }
 
-function battle(id, battle_id, battle_state)
-{
-	if ( battle_id > 0 && battle_state < 3 && player[id].battle_id != battle_id )
-	{
-		player[id].battle_id = battle_id;
-		document.getElementById('name_' + id).style.color = 'red';
-	}
-	else if ( ( battle_id == 0 && player[id].battle_id != 0 ) || ( battle_state == 3 && player[id].battle_state != 3 ) )
-	{
-		player[id].battle_id = 0;
-		document.getElementById('name_' + id).style.color = 'white';
-	}
+function battle(id, battle_id, battle_state) {
+    if (battle_id > 0 && battle_state < 3 && player[id].battle_id != battle_id) {
+        player[id].battle_id = battle_id;
+        document.getElementById('name_' + id).style.color = 'red';
+    }
+    else if (( battle_id == 0 && player[id].battle_id != 0 ) || ( battle_state == 3 && player[id].battle_state != 3 )) {
+        player[id].battle_id = 0;
+        document.getElementById('name_' + id).style.color = 'white';
+    }
 }
 
-function map_loaded()
-{
-	//document.onkeypress = process_keypress;
-	refresh_loop(1);
-	refresh_loop(2);
-	start_drag('drag_layer2');
-	var map_buffer = document.getElementById('global_map').innerHTML;
-	document.getElementById('global_map').innerHTML = '';
-	document.getElementById('global_map').innerHTML = map_buffer;
-	document.getElementById('map_loader').innerHTML = '';
-	document.getElementById('cache_images').innerHTML = '';
-	setTimeout('refresh_process();', 5100);
-	setTimeout('map_start();', 100);
-	//setTimeout('script_eval(0, new Array(\'show_message(\\\'<img src=images/charasets/npcs/man_01.png alt="image" /> <strong>Salut mec, sa farte ? Moi, sa farte bien. Alors, l�-bas, cest une petite grotte toute mimi.</strong>\\\', key, script, 0, false, false);\'));', 1000);
+function map_loaded() {
+    refresh_loop(1);
+    refresh_loop(2);
+    start_drag('drag_layer2');
+    var map_buffer = document.getElementById('global_map').innerHTML;
+    document.getElementById('global_map').innerHTML = '';
+    document.getElementById('global_map').innerHTML = map_buffer;
+    document.getElementById('map_loader').innerHTML = '';
+    document.getElementById('cache_images').innerHTML = '';
+    setTimeout('refresh_process();', 5100);
+    setTimeout('map_start();', 100);
 }
 
 function check_loading()
