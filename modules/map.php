@@ -652,8 +652,8 @@ $time = time()-30;
 
             foreach ($event_coords[$row['id']] as $val) {
                 $template->assign_block_vars('event_bloc', array(
-//                    'ID' => 'i' . $val[0] . '-' . $val[1],
-                    'ID' => $row['id'],
+                    'ID' => 'i' . $val[0] . '-' . $val[1],
+//                    'ID' => $row['id'],
                     'LEFT' => $val[0],
                     'TOP' => $val[1],
                     'PICTURE' => $row['picture'],
