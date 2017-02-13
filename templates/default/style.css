@@ -140,7 +140,7 @@ td.cat,td.catHead,td.catSides,td.catLeft,td.catRight,td.catBottom,td.rowpic
 
 th
 {
-	background: #bccdeb url(images/cellpic3.gif);
+	/* background: #bccdeb url(images/cellpic3.gif); */
 	background-repeat: repeat-x;
 	color: #ffffff;
 	font-size: 11px;
@@ -162,8 +162,8 @@ th
 
 .portaline, .forumline
 {
-	background-color: #ffffff;
-	border: 1px solid #5f89d5;
+	/* background-color: #ffffff; */
+	/* border: 1px solid #5f89d5; */
 }
 
 .forumdash
@@ -773,7 +773,7 @@ textarea#text_script
 
 
 
-/*登录注册*/
+/*ç™»å½•æ³¨å†Œ*/
 
 .cont_login {
 	position: relative;
