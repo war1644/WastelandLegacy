@@ -19,7 +19,9 @@ else
 		'CHAR_HEIGHT' => ceil($user->pic_height/4)
 		));
 }
-
+$template->assign_block_vars('bgsound_ns', array(
+    'MUSIC' => 'Startup.mp3'
+));
 $template->set_filenames(array(
 	'header' => 'page_header.tpl',
 	'footer' => 'page_footer.tpl',
