@@ -116,16 +116,24 @@ elseif ( !$user->logged_in && ( $mode == 'GET.register' || $mode == 'POST.regist
 
 	while ( $row = $db->sql_fetchrow($result) )
 	{
-		$template->assign_block_vars('class_list', array(
-			'CLASSNAME' => $row['classname'],
-			'CLASS_TITLE' => $row['class_title'],
-			'BATTLER' => $row['battler'],
-			'DESCRIPTION' => nl2br($row['description']),
-			'CHECKED' => (( $first ) ? 'checked="checked" ' : '')
-			));
+//		$template->assign_block_vars('class_list', array(
+//			'CLASSNAME' => $row['classname'],
+//			'CLASS_TITLE' => $row['class_title'],
+//			'BATTLER' => $row['battler'],
+//			'DESCRIPTION' => nl2br($row['description']),
+//			'CHECKED' => (( $first ) ? 'checked="checked" ' : '')
+//			));
+		$data[] = [
+            'CLASSNAME' => $row['classname'],
+            'CLASS_TITLE' => $row['class_title'],
+            'BATTLER' => $row['battler'],
+            'DESCRIPTION' => nl2br($row['description']),
+            'CHECKED' => (( $first ) ? 'checked="checked" ' : '')
+        ];
 
 		$first = false;
 	}
+	echo json_encode($data);
 /*
 	$template->assign_vars(array(
 		'PAGE_NAME' => $lang->registering

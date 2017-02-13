@@ -18,7 +18,7 @@
           <div class="cont_ba_opcitiy">
             <h2>注册</h2>
             <p>没有账号，请注册</p>
-            <button class="btn_sign_up" onclick="cambiar_sign_up()"><a href="mod=register">注册</a></button>
+            <button class="btn_sign_up" onclick="cambiar_sign_up()">注册</button>
           </div>
         </div>
       </div>
@@ -48,10 +48,8 @@
               <input type="text" name="email" placeholder="邮箱">
               <input type="text" name="name" placeholder="用户名">
               <input type="password" name="password" placeholder="密码">
-              <input type="password" name="password_confirm" placeholder="确认密码"><br>
-              <!-- BEGIN class_list -->
-              <input class="typeradio" type="radio" name="classname" value="{class_list.CLASSNAME}" {class_list.CHECKED}/><img src="images/battlers/{class_list.BATTLER}" alt=""><b>{class_list.CLASS_TITLE}</b><i>{class_list.DESCRIPTION}</i>
-              <!-- END class_list -->
+              <input type="password" name="password_confirm" placeholder="确认密码">
+              <br id="cpass"/>
 
               <button class="btn_sign_up">注册</button>
             </div>
@@ -66,7 +64,7 @@
   <div class="row1" align="center">
 
     <br />{L_CHARACTER_NAME} : <b>{USER_NAME}</b><br /><br />
-    <div style="width:{CHAR_WIDTH}px;height:{CHAR_HEIGHT}px;background-image:url('imagesarasets/{CHARASET}')"></div><br /><br />
+    <div style="width:{CHAR_WIDTH}px;height:{CHAR_HEIGHT}px;background-image:url('images/charasets/{CHARASET}')"></div><br /><br />
     <a href="{U_INDEX}?mod=map">{L_GO_TO_MAP}</a><br /><br />
     <span class="gensmall"><a href="{U_INDEX}?mod=profile&mode=logout">{L_LOGOUT}</a></span><br /><br />
   </div>
@@ -116,8 +114,16 @@
 
 
 
-    $.get('{U_INDEX}?mod=profile&mode=register',{},function (res) {
-        console.log(res);
+    $.get('{U_INDEX}?mod=profile&mode=register','',function (res) {
+        if (res) {
+            var classList = JSON.parse(res);
+            for (var i in classList) {
+                var obj = classList[i];
+                var classnode = '<input class="typeradio" type="radio" name="classname" value="'+obj.CLASSNAME+'"'+ obj.CHECKED +'/><img src="images/battlers/'+obj.BATTLER+'" alt=""><b>'+obj.CLASS_TITLE+'</b><i>'+obj.DESCRIPTION+'</i>';
+                $("#cpass").after(classnode);
+            }
+        }
+
     });
 </script>
 
