@@ -27,7 +27,7 @@ function checkCollisions(x,y) {
     }
     var tmpX = x/tileSize;
     var tmpY = y/tileSize;
-    var x1 = Math.floor(tmpX);
+    var x1 = Math.ceil(tmpX);
     var y1 = Math.ceil(tmpY);
     // if ((tmpX+'').indexOf('.') && (tmpY+'').indexOf('.')){
     //     moveState = true;

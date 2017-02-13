@@ -155,7 +155,7 @@
 //                    if (moveState=true) return;
             player.sprite.running = true;
             player.sprite.pos = [0, 0 * tileSize];
-            var isMove = checkCollisions(player.p.x, player.p.y + playerSpeed * dt);
+            var isMove = checkCollisions(player.p.x, player.p.y + tileSize-5);
             if (isMove) {
                 player.p.y += playerSpeed * dt;
                 $("#sprite").css({
@@ -172,7 +172,7 @@
 
             player.sprite.running = true;
             player.sprite.pos = [0, 3 * tileSize];
-            var isMove = checkCollisions(player.p.x, player.p.y - playerSpeed * dt);
+            var isMove = checkCollisions(player.p.x, player.p.y - tileSize+5);
             if (isMove) {
                 player.p.y -= playerSpeed * dt;
                 $("#sprite").css({
@@ -187,7 +187,7 @@
 
             player.sprite.running = true;
             player.sprite.pos = [0, 1 * tileSize];
-            var isMove = checkCollisions(player.p.x - playerSpeed * dt, player.p.y);
+            var isMove = checkCollisions(player.p.x - tileSize+5, player.p.y);
             if (isMove) {
                 player.p.x -= playerSpeed * dt;
                 $("#sprite").css({
@@ -202,7 +202,7 @@
 
             player.sprite.running = true;
             player.sprite.pos = [0, 2 * tileSize];
-            var isMove = checkCollisions(player.p.x + playerSpeed * dt, player.p.y);
+            var isMove = checkCollisions(player.p.x + tileSize-5, player.p.y);
             if (isMove) {
                 player.p.x += playerSpeed * dt;
                 $("#sprite").css({
@@ -221,7 +221,6 @@
         ctx.fillStyle = terrainPattern2;
         ctx.fillRect(0, 0, mapWidth, mapHeight);
         renderEntity(player);
-
     }
 
     function renderEntities(list) {
@@ -237,8 +236,6 @@
         ctx.restore();
 
     }
-
-
 
 </script>
 </html>

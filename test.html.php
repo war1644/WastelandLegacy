@@ -44,12 +44,14 @@
     urlArr.push('images/charasets/<?php echo $data['pageVar']['CHARASET']; ?>');
 
     //地图碰撞标识
-    <?php foreach ( $data['downMapPass'] as $v){  ?>
-        mapPass[<?php echo $v['x']; ?>][<?php echo $v['y']; ?>] = <?php echo $v['pass']; ?>;
-    <?php } ?>
+    <?php foreach ( $data['downMapPass'] as $v){ if ($v['x']==0){ ?>
+        mapPass[<?php echo $v['y']; ?>] = [];
+    <?php }else{ ?>
+        mapPass[<?php echo $v['y']; ?>][<?php echo $v['x']; ?>] = <?php echo $v['pass']; ?>;
+    <?php }} ?>
 
     <?php foreach ( $data['upMapPass'] as $v){ if(!$v['pass']){  ?>
-        mapPass[<?php echo $v['x']; ?>][<?php echo $v['y']; ?>] = <?php echo $v['pass']; ?>;
+        mapPass[<?php echo $v['y']; ?>][<?php echo $v['x']; ?>] = <?php echo $v['pass']; ?>;
     <?php }} ?>
 
     var mapWidth,mapHeight,tileSize=24,img,mapSize = {x:0,y:0};
