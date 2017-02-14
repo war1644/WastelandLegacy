@@ -26,11 +26,160 @@ body, font, th, td, p, table, textarea, input, select
 {
 	font: 12px Arial, Helvetica, Verdana, sans-serif;
 }
+
 body#bacBody {
-	background-image:url('images/bgimg/07.jpg');
+	margin: 0;
+	background-image:url('images/bgimg/02.jpg');
 	background-repeat: no-repeat;
 	background-size:cover;
 }
+
+/*动态背景*/
+.slideshow {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	z-index: -1;
+}
+.slideshow-image {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: no-repeat 50% 50%;
+	background-size: cover;
+	-webkit-animation-name: kenburns;
+	animation-name: kenburns;
+	-webkit-animation-timing-function: linear;
+	animation-timing-function: linear;
+	-webkit-animation-iteration-count: infinite;
+	animation-iteration-count: infinite;
+	-webkit-animation-duration: 16s;
+	animation-duration: 16s;
+	opacity: 1;
+	-webkit-transform: scale(1.2);
+	transform: scale(1.2);
+}
+.slideshow-image:nth-child(1) {
+	-webkit-animation-name: kenburns-1;
+	animation-name: kenburns-1;
+	z-index: 3;
+}
+.slideshow-image:nth-child(2) {
+	-webkit-animation-name: kenburns-2;
+	animation-name: kenburns-2;
+	z-index: 2;
+}
+.slideshow-image:nth-child(3) {
+	-webkit-animation-name: kenburns-3;
+	animation-name: kenburns-3;
+	z-index: 1;
+}
+.slideshow-image:nth-child(4) {
+	-webkit-animation-name: kenburns-4;
+	animation-name: kenburns-4;
+	z-index: 0;
+}
+
+@keyframes kenburns-1 {
+	0% {
+		opacity: 1;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+	}
+	1.5625% {
+		opacity: 1;
+	}
+	23.4375% {
+		opacity: 1;
+	}
+	26.5625% {
+		opacity: 0;
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+	}
+	98.4375% {
+		opacity: 0;
+		-webkit-transform: scale(1.21176);
+		transform: scale(1.21176);
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes kenburns-2 {
+	23.4375% {
+		opacity: 1;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+	}
+	26.5625% {
+		opacity: 1;
+	}
+	48.4375% {
+		opacity: 1;
+	}
+	51.5625% {
+		opacity: 0;
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+	}
+}
+
+@keyframes kenburns-3 {
+	48.4375% {
+		opacity: 1;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+	}
+	51.5625% {
+		opacity: 1;
+	}
+	73.4375% {
+		opacity: 1;
+	}
+	76.5625% {
+		opacity: 0;
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+	}
+}
+
+@keyframes kenburns-4 {
+	73.4375% {
+		opacity: 1;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+	}
+	76.5625% {
+		opacity: 1;
+	}
+	98.4375% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
+}
+/*动态背景end*/
 
 div#noscript
 {
@@ -69,9 +218,13 @@ td.genmed, .genmed
 	color: #5c81b1;
 }
 
+table a:link,table a:active,table a:visited,table a.postlink{
+	color: #638cd4;
+}
 a:link, a:active, a:visited, a.postlink
 {
-	color: #2b529b;
+	color: #fff;
+	font-size: 14px;
 	text-decoration: none;
 }
 
@@ -154,10 +307,8 @@ th
 	border-right: 1px solid #ffffff;*/
 }
 
-.bodyline
-{
-	background-color: #ebf2ff;
-	border: 1px solid #5f89d5;
+.bodyline {
+	background-color: #8bb5c0;
 }
 
 .portaline, .forumline
@@ -380,8 +531,14 @@ a.admin:hover, a.mod:hover
 
 .copyright
 {
+	display: table;
+	width: 200px;
 	font-size: 9px;
 	color: #444444;
+	position: absolute;
+	bottom: 8%;
+	left: 50%;
+	margin-left: -100px;
 }
 
 a.copyright
@@ -773,12 +930,12 @@ textarea#text_script
 
 
 
-/*ç™»å½•æ³¨å†Œ*/
+/*登录注册*/
 
 .cont_login {
 	position: relative;
 	width: 640px;
-	margin: 10% auto 0;
+	margin: 0 auto;
 }
 .cont_login .close{
 	color: #000;
@@ -1005,4 +1162,37 @@ textarea#text_script
 	width: 15px;
 	color: #fff;
 }
+/*登录结束*/
+
+/*进入地图*/
+.come_map{
+	margin-top: 10%;
+	text-align: center;
+	width: 200px;
+	height: 240px;
+	background: #f79d00;
+	position: absolute;
+	top: 10%;
+	left: 50%;
+	margin-left: -100px;
+	opacity: 0.8;
+	border-radius: 10px;
+	box-shadow: 0 0 100px #000;
+}
+/*进入地图 end*/
+
+/*去管理面板*/
+.gogens{
+	position: absolute;
+	right: 50%;
+	bottom: 15%;
+	margin-right: -50px;
+	cursor:pointer;
+	width: 100px;
+	height: 30px;
+	background: #f79d00;
+	border-radius: 5px;
+	line-height: 30px;
+}
+/*去管理面板 end*/
 

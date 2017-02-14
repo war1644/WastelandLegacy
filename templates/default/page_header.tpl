@@ -33,7 +33,7 @@
 
 </head>
 
-<body id="bacBody">
+<body id="bacBody" style="width: 100vw;height: 100vh;">
 <noscript><div id="noscript">{L_JAVASCRIPT_REQUIRED}</div></noscript>
 <span id="top"></span>
 <!-- BEGIN bgsound_ie -->
@@ -42,6 +42,7 @@
 <!-- BEGIN bgsound_ns -->
 <audio src="music/{bgsound_ns.MUSIC}" autoplay loop></audio>
 <!-- END bgsound_ns -->
+
 
 
  <div id="display_body">

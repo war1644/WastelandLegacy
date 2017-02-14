@@ -77,7 +77,7 @@ $template->assign_vars(array(
 	'PATH' => MFPATH,
 	'USER_ID' => $user->id,
 	'USER_NAME' => $user->name,
-	'COPYRIGHT' => '<h3><a href="http://duanxq.cn"><strong>路漫漫</strong>版权所有 @2016-2099 </a></h3>',
+	'COPYRIGHT' => '<h3 style="margin:0"><a href="http://duanxq.cn"><strong>路漫漫</strong>版权所有 @2016-2099 </a></h3>',
 	'DIRECTION' => $lang->screenDirection,
 	'ENCODING' => $lang->encoding,
 ));

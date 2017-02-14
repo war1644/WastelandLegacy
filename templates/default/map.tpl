@@ -76,8 +76,12 @@ chatbox_header.reduce = '<div align="left"><div style="position:absolute"><form 
 chatbox_header.increase = '<form action="" onsubmit="return false"><input type="button" class="button" id="chat_state" value="[L_CHATBOX_INCREASE]" onclick="change_chat_state()" /></form> &nbsp; [L_CHATBOX]';
 
 var message_box = new Object();
-message_box.begin = '<table cellspacing="0" cellpadding="0" border="0"><tr><td class="m_top_left"><img class="m_top_left_corner" src="images/spacer.gif" width="3" height="3" /></td><td class="m_top_center"></td><td class="m_top_right"></td></tr><tr><td class="m_middle_left"></td><td class="m_middle_center">';
-message_box.end = '</td><td class="m_middle_right"></td></tr><tr><td class="m_bottom_left"></td><td class="m_bottom_center"></td><td class="m_bottom_right"><img class="m_bottom_right_corner" src="images/spacer.gif" width="3" height="3" /></td></tr></table>';
+
+
+
+message_box.begin = '<div style="border: 2px solid #fff;" class="m_middle_center">';
+message_box.end = '</div>';
+
 
 function map_preload() {
     <!-- BEGIN lower_bloc -->
