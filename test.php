@@ -140,23 +140,7 @@ $user = new User();
                 'HEIGHT' => ceil( $row['pic_height'] / 4 )
             ];
         }
-//        $event_ids = [];
-//        $event_coords = [];
-//        $i = 0;
-//        while ( $i < $map->count_x ) {
-//            $j = 0;
-//            while ( $j < $map->count_y ) {
-//                if ( $map->blocs[2][$j][$i] > 0 ) {
-//                    $event_ids[] = $map->blocs[2][$j][$i];
-//                    if ( !isset( $event_coords[$map->blocs[2][$j][$i]] ) ) {
-//                        $event_coords[$map->blocs[2][$j][$i]] = [];
-//                    }
-//                    $event_coords[$map->blocs[2][$j][$i]][] = [$i, $j];
-//                }
-//                $j++;
-//            }
-//            $i++;
-//        }
+
         if ( count( $event_ids ) > 0 ) {
             // events in map
             $result = $db->sql_query( 'SELECT * FROM ' . EVENTS_TABLE . ' WHERE id = ' . implode( ' OR id = ', $event_ids ) );
@@ -167,14 +151,14 @@ $user = new User();
                 }
                 foreach ( $event_coords[$row['id']] as $val ) {
                     $data['eventData'][] = [
-                        'ID' => $row['id'],
-                        'LEFT' => $val[0],
-                        'TOP' => $val[1],
-                        'PICTURE' => $row['picture'],
-                        'DIR' => (($row['dir'] == '') ? 'false' : '[' . $row['dir'] . ']'),
-                        'LAYER' => $row['layer'],
-                        'WIDTH' => $row['pic_width'],
-                        'HEIGHT' => $row['pic_height']
+                        'id' => $row['id'],
+                        'x' => $val[0],
+                        'y' => $val[1],
+                        'picUrl' => $row['picture'],
+                        'dir' => (($row['dir'] == '') ? 'false' : '[' . $row['dir'] . ']'),
+                        'layer' => $row['layer'],
+                        'width' => $row['pic_width'],
+                        'height' => $row['pic_height']
                     ];
                 }
             }
