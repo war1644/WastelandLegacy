@@ -84,6 +84,7 @@
 <!-- END logged_in -->
 <script>
     function cambiar_login() {
+        document.querySelector("#backMp3").src = "music/Startup.mp3";
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login cont_forms_ch";
         document.querySelector('.cont_form_login').style.display = "block";
         document.querySelector('.cont_form_sign_up').style.opacity = "0";
@@ -96,6 +97,8 @@
     }
 
     function cambiar_sign_up(at) {
+        document.querySelector("#backMp3").src = "music/NameSetting.mp3";
+
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_sign_up cont_forms_change";
         document.querySelector('.cont_form_sign_up').style.display = "block";
         document.querySelector('.cont_form_login').style.opacity = "0";

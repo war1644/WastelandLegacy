@@ -40,7 +40,7 @@
 <bgsound src="music/{bgsound_ie.MUSIC}" loop="-1" />
 <!-- END bgsound_ie -->
 <!-- BEGIN bgsound_ns -->
-<audio src="music/{bgsound_ns.MUSIC}" autoplay loop></audio>
+<audio id="backMp3" src="music/{bgsound_ns.MUSIC}" autoplay loop></audio>
 <!-- END bgsound_ns -->
 
 

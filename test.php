@@ -127,17 +127,17 @@ $user = new User();
         foreach ( $rows as $row ) {
 
             $data['players'][] = [
-                'ID' => $row['id'],
-                'BATTLE_ID' => $row['battle_id'],
-                'BATTLE_STATE' => $row['battle_state'],
-                'NAME' => $row['name'],
-                'CHARASET' => $row['charaset'],
+                'id' => $row['id'],
+                'battleId' => $row['battle_id'],
+                'battleState' => $row['battle_state'],
+                'name' => $row['name'],
+                'charaset' => $row['charaset'],
                 'x' => $row['map_left'],
                 'y' => $row['map_top'],
-                'DIR' => $row['map_dir'],
-                'MOVES' => $row['map_moves'],
-                'WIDTH' => ceil( $row['pic_width'] / 4 ),
-                'HEIGHT' => ceil( $row['pic_height'] / 4 )
+                'dir' => $row['map_dir'],
+                'moves' => $row['map_moves'],
+                'width' => ceil( $row['pic_width'] / 4 ),
+                'height' => ceil( $row['pic_height'] / 4 )
             ];
         }
 

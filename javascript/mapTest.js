@@ -11,7 +11,7 @@ function addEvent(id, x, y, layer, width, height, picture, dir) {
     eventData[id] = {p:{x:0,y:0}};
 
     if (layer == 1) {
-        mapPass[x][y] = false;
+        mapPass[y][x] = false;
     }
     eventData[id].p.x = x*tileSize;
     eventData[id].p.y = y*tileSize;
@@ -38,24 +38,25 @@ function addEvent(id, x, y, layer, width, height, picture, dir) {
 }
 
 //添加事件到地图
-function addPlayer(id, x, y, layer, width, height, picture, dir) {
+function addPlayer(id, x, y, layer, picture, dir) {
 
-    players[id] = {};
+    netPlayers[id] = {p:{x:0,y:0}};
 
     if (layer == 1) {
         mapPass[x][y] = false;
     }
-    players[id].p.x = x*tileSize;
-    players[id].p.y = y*tileSize;
+    netPlayers[id].p.x = x*tileSize;
+    netPlayers[id].p.y = y*tileSize;
 
-    resources.load(picture);
+    picUrl = 'images/charasets/'+picture;
+    resources.load(picUrl);
     resources.onReady(function () {
         eventData[id].sprite = new Sprite(picture,[dir[0] ,dir[1]],[24,24],10,[0,1,2,3]);
     })
 
 }
 
-function add_player(id, name, charaset, left, top, dir, moves, width, height) {
+function addNetPlayers(id, name, charaset, left, top, dir, moves, width, height) {
     //add_charaset(charaset);
     players_in_map[id] = 'p' + id + '-' + moves;
     player[id] = new Object();

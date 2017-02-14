@@ -38,8 +38,8 @@
 
 <script>
     var eventData=[],
-        playersInMap=[],
-        players=[],
+        netPlayersInMap=[],
+        netPlayers=[],
         backgroundImgUrl=[],
         mapPass=[],
         mapWidth,
@@ -70,6 +70,10 @@
 
         foreach ( $data['eventData'] as $v){
             echo "addEvent($v[id], $v[x], $v[y], $v[layer], $v[width], $v[height], '$v[picUrl]', $v[dir]);";
+        }
+
+        foreach ( $data['players'] as $v){
+            echo "addPlayer($v[id],'$v[name]', '$v[charaset]', $v[y], $v[x], $v[y], $v[layer], '$v[charaset]', $v[dir]);";
         }
     ?>
 
