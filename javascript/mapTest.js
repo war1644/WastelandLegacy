@@ -4,24 +4,24 @@
  * Date: 2017/2/12 14:29
  *
  */
-var eventData=[], playersInMap=[], players=[], backgroundImgUrl=[], mapPass=[];
 
 //添加事件到地图
 function addEvent(id, x, y, layer, width, height, picture, dir) {
 
-    eventData[id] = {};
+    eventData[id] = {p:{x:0,y:0}};
 
     if (layer == 1) {
         mapPass[x][y] = false;
     }
     eventData[id].p.x = x*tileSize;
     eventData[id].p.y = y*tileSize;
-
+    var picUrl;
     if (!dir) {
         eventData[id].changedir = false;
-        resources.load(picture);
+        picUrl = 'images/sprites/'+picture;
+        resources.load(picUrl);
         resources.onReady(function () {
-            eventData[id].sprite = new Sprite(picture,[0,0],[width,height]);
+            eventData[id].sprite = new Sprite(picUrl,[0,0],[width,height]);
         })
     } else {
         if (dir[2] == 1) {
@@ -29,10 +29,10 @@ function addEvent(id, x, y, layer, width, height, picture, dir) {
         } else {
             eventData[id].changedir = false;
         }
-
-        resources.load(picture);
+        picUrl = 'images/charasets/'+picture;
+        resources.load(picUrl);
         resources.onReady(function () {
-            eventData[id].sprite = new Sprite(picture,[dir[0] ,dir[1]],[24,24]);
+            eventData[id].sprite = new Sprite(picUrl,[dir[0] ,dir[1]],[24,24]);
         })
     }
 }

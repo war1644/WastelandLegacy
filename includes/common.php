@@ -510,7 +510,7 @@ class User
         // 会话角色
         //
         if ( !$where ) {
-            session_start();
+            @session_start();
 
             //是否为访客
             if ( empty($_SESSION['user_id']) ) {

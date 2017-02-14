@@ -29,34 +29,51 @@
 <body>
 <!--<div id="sprite"></div>-->
 <!--<button id="restart" onclick="reset();">重新开始</button>-->
+
 </body>
+<script src="javascript/mapTest.js"></script>
 <script src="javascript/resources.js"></script>
 <script src="javascript/sprite.js"></script>
-<script src="javascript/input.js"></script>
-<script src="javascript/collision.js"></script>
-<script src="javascript/mapTest.js"></script>
+
+
 <script>
+    var eventData=[],
+        playersInMap=[],
+        players=[],
+        backgroundImgUrl=[],
+        mapPass=[],
+        mapWidth,
+        mapHeight,
+        tileSize=24,
+        img,
+        mapSize = {x:0,y:0},
+        urlArr = [];
+
     //地图
-    var urlArr = [];
     <?php foreach ( $data['mapImg'] as $v){ ?>
         urlArr.push('<?php echo $v; ?>');
     <?php } ?>
     urlArr.push('images/charasets/<?php echo $data['pageVar']['CHARASET']; ?>');
 
     //地图碰撞标识
-    <?php foreach ( $data['downMapPass'] as $v){ if ($v['x']==0){ ?>
-        mapPass[<?php echo $v['y']; ?>] = [];
-    <?php }else{ ?>
-        mapPass[<?php echo $v['y']; ?>][<?php echo $v['x']; ?>] = <?php echo $v['pass']; ?>;
-    <?php }} ?>
+    <?php
+        foreach ( $data['downMapPass'] as $v) {
+            if ($v['x'] == 0) echo "mapPass[$v[y]] = [];";
+            echo "mapPass[$v[y]][$v[x]] = $v[pass];";
+        }
 
-    <?php foreach ( $data['upMapPass'] as $v){ if(!$v['pass']){  ?>
-        mapPass[<?php echo $v['y']; ?>][<?php echo $v['x']; ?>] = <?php echo $v['pass']; ?>;
-    <?php }} ?>
+        foreach ( $data['upMapPass'] as $v){
+            if(!$v['pass']){
+                echo "mapPass[$v[y]][$v[x]] = $v[pass];";
+            }
+        }
 
-    var mapWidth,mapHeight,tileSize=24,img,mapSize = {x:0,y:0};
+        foreach ( $data['eventData'] as $v){
+            echo "addEvent($v[id], $v[x], $v[y], $v[layer], $v[width], $v[height], '$v[picUrl]', $v[dir]);";
+        }
+    ?>
 
-    var mapPass =
+
 
     //加载资源
     resources.load(urlArr);
@@ -116,7 +133,7 @@
     }
 
     // The main game loop
-    var lastTime,moveState;
+    var lastTime;
     function main() {
         var now = Date.now();
         var dt = (now - lastTime) / 1000.0;
@@ -132,7 +149,8 @@
     var player = {
         pos: [0, 0],
         p: {x:0,y:0},
-        sprite: new Sprite(urlArr[3 ], [0, 0], [tileSize,tileSize], 10, [0, 1, 2, 3])
+        dir:1,
+        sprite: new Sprite(urlArr[3], [0, 0], [tileSize,tileSize], 10, [0, 1, 2, 3])
     };
 
     var gameTime = 0;
@@ -142,71 +160,70 @@
         gameTime += dt;
         handleInput(dt);
         player.sprite.update(dt);
-
     }
 
 
     function handleInput(dt) {
         if (input.isDown('DOWN') || input.isDown('s')) {
-//                    if (moveState=true) return;
             player.sprite.running = true;
             player.sprite.pos = [0, 0 * tileSize];
-            var isMove = checkCollisions(player.p.x, player.p.y + playerSpeed * dt);
+            player.dir = 1;
+            var isMove = checkCollisions(player.p.x, player.p.y + tileSize,1);
             if (isMove) {
                 player.p.y += playerSpeed * dt;
-                $("#sprite").css({
-                    "background-position-y": "0px",
-                    "animation-play-state": "running"
-                });
-            }
-
-
-        }
-
-        if (input.isDown('UP') || input.isDown('w')) {
-//                    if (moveState=true) return;
-
-            player.sprite.running = true;
-            player.sprite.pos = [0, 3 * tileSize];
-            var isMove = checkCollisions(player.p.x, player.p.y - playerSpeed * dt);
-            if (isMove) {
-                player.p.y -= playerSpeed * dt;
-                $("#sprite").css({
-                    "background-position-y": "24px",
-                    "animation-play-state": "running"
-                });
+//                $("#sprite").css({
+//                    "background-position-y": "0px",
+//                    "animation-play-state": "running"
+//                });
             }
         }
 
         if (input.isDown('LEFT') || input.isDown('a')) {
-//                    if (moveState=true) return;
-
             player.sprite.running = true;
             player.sprite.pos = [0, 1 * tileSize];
-            var isMove = checkCollisions(player.p.x - playerSpeed * dt, player.p.y);
+            player.dir = 2;
+            var isMove = checkCollisions(player.p.x - tileSize, player.p.y,2);
             if (isMove) {
                 player.p.x -= playerSpeed * dt;
-                $("#sprite").css({
-                    "background-position-y": "72px",
-                    "animation-play-state": "running"
-                });
+//                $("#sprite").css({
+//                    "background-position-y": "72px",
+//                    "animation-play-state": "running"
+//                });
             }
         }
 
         if (input.isDown('RIGHT') || input.isDown('d')) {
-//                    if (moveState=true) return;
-
+            player.dir = 3;
             player.sprite.running = true;
             player.sprite.pos = [0, 2 * tileSize];
-            var isMove = checkCollisions(player.p.x + playerSpeed * dt, player.p.y);
+            var isMove = checkCollisions(player.p.x + tileSize, player.p.y,3);
             if (isMove) {
                 player.p.x += playerSpeed * dt;
-                $("#sprite").css({
-                    "background-position-y": "48px",
-                    "animation-play-state": "running"
-                });
+//                $("#sprite").css({
+//                    "background-position-y": "48px",
+//                    "animation-play-state": "running"
+//                });
             }
         }
+
+        if (input.isDown('UP') || input.isDown('w')) {
+            player.dir = 4;
+            player.sprite.running = true;
+            player.sprite.pos = [0, 3 * tileSize];
+            var isMove = checkCollisions(player.p.x, player.p.y - tileSize,4);
+            if (isMove) {
+                player.p.y -= playerSpeed * dt;
+//                $("#sprite").css({
+//                    "background-position-y": "24px",
+//                    "animation-play-state": "running"
+//                });
+            }
+        }
+
+        if (input.isDown('SPACE') || input.isDown('ENTER')) {
+//            player.dir
+        }
+
 
     }
 
@@ -218,7 +235,6 @@
         ctx.fillRect(0, 0, mapWidth, mapHeight);
         renderEntity(player);
         renderEntities(eventData);
-
     }
 
     function renderEntities(list) {
@@ -229,7 +245,6 @@
         for (var k in list) {
             renderEntity(list[k]);
         }
-
     }
 
     function renderEntity(entity) {
@@ -242,4 +257,6 @@
 
 
 </script>
+<script src="javascript/input.js"></script>
+<script src="javascript/collision.js"></script>
 </html>
