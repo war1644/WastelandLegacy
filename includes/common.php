@@ -125,7 +125,7 @@ function CheckDir($dir, $mode=0777) {
 
 function Session($name,$value=''){
     @session_start();
-    if ($value === null){
+    if ($value === ''){
         unset($_SESSION[$name]);
     }else if($value){
         $_SESSION[$name] = $value;
@@ -325,6 +325,7 @@ function redirect($title, $content, $location, $time = 5)
 
 function create_battle($monsters, $users, $background = '', $music = '')
 {
+
 	global $user, $db;
 
 	if ( !is_array($monsters) )
@@ -334,8 +335,11 @@ function create_battle($monsters, $users, $background = '', $music = '')
 
 	if ( !is_array($users) )
 	{
-		$users = array($users);
-	}
+        $u = $users;
+	    $users = array($users);
+	}else{
+        $u = join(',',$users);
+    }
 
 	foreach ( $users as $key => $id )
 	{
@@ -350,7 +354,7 @@ function create_battle($monsters, $users, $background = '', $music = '')
 		die('warning : 创建战斗所需的一个有效的用户 id');
 	}
 
-    $u = join(',',$users);
+
 	$db->sql_query("INSERT INTO ".BATTLES_TABLE." (users,music,background) VALUES ('$u','$music','$background')");
 
 	$battle_id = $db->lastId();
@@ -968,7 +972,7 @@ class Template {
 		return true;
 	}
 
-	// 输出变量到模版
+	// 输出数组变量到模版
 	function assign_block_vars($blockname, $vararray)
 	{
 		if ( strstr($blockname, '.') )

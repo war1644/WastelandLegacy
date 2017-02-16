@@ -1,4 +1,20 @@
+<style>
+ @keyframes aniFrame{
+ 100%{background-position-x:100%;}
+ }
 
+ #sprite {
+  width: 192px;
+  height: 192px;
+  background-image: url("images/sprites/mAttack.png");
+  animation: aniFrame steps(14,end) 2s infinite;
+  animation-play-state:paused;
+  position: absolute;
+ }
+
+
+</style>
+<audio id="sfx" src="music/sfx/Cannon.wav"></audio>
 <div id="drag_layer2" onmouseover="actual_layer=this.id" style="position:absolute;left:0;top:0;z-index:9999">
  <table cellspacing="1" cellpadding="2" class="portaline">
   <tr>
@@ -64,7 +80,7 @@
   </div>
   </td>
  </tr>
-
+<div id="sprite"></div>
 </table>
 <script type="text/javascript">
 var my_user_id = {USER_ID};
@@ -84,6 +100,7 @@ chatbox_header.increase = '<form action="" onsubmit="return false"><input type="
 var message_box = new Object();
 message_box.begin = '<table cellspacing="0" cellpadding="0" border="0"><tr><td class="m_top_left"><div class="m_top_left_div"></div></td><td class="m_top_center"></td><td class="m_top_right"></td></tr><tr><td class="m_middle_left"></td><td class="m_middle_center">';
 message_box.end = '</td><td class="m_middle_right"></td></tr><tr><td class="m_bottom_left"></td><td class="m_bottom_center"></td><td class="m_bottom_right"><div class="m_bottom_right_div"></div></td></tr></table>';
+
 
 var player_tools = '<form onsubmit="return false;">' +
     '[L_BASIC_ACTION] : <select name="basic_action_select" id="basic_action_select">' +

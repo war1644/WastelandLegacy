@@ -412,26 +412,16 @@ $time = time()-30;
         $rs = $db->sql_query($sql,1);
         $rows = $db->sql_fetchrows($rs);
 
-//		$result = $db->sql_query('SELECT u.name, u.id, u.map_last_visit, u.map_left, u.map_id, u.map_top, u.map_dir, u.map_moves, u.map_moves_table, u.charaset, u.pic_width, u.pic_height, u.battle_id, u.battle_state, c.charaset AS class_charaset, c.pic_width AS class_pic_width, c.pic_height AS class_pic_height FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.id != ' . $user->id . ' AND ( ( u.map_last_visit > ' . ($config->server_time - 16) . ' AND u.map_id = ' . $user->map_id . ' AND u.teleport = 0 )' . $players_sql . ' ) AND c.classname = u.classname');
 
-		//echo 'SELECT u.name, u.id, u.last_visit, u.map_left, u.map_id, u.map_top, u.map_dir, u.map_moves, u.map_moves_table, u.charaset, u.pic_width, u.pic_height, c.charaset AS class_charaset, c.pic_width AS class_pic_width, c.pic_height AS class_pic_height FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.id != ' . $user->id . ' AND ( ( u.last_visit > ' . ($config->server_time - 16) . ' AND u.map_id = ' . $user->map_id . ' )' . $players_sql . ' ) AND c.classname = u.classname';
 
-//		while ( $row = $db->sql_fetchrow($result) )
         foreach ($rows as $row)
 		{
 			// this is a new player, add it
 			if ( !isset($players[$row['id']]) )
 			{
-//				if ( empty($row['charaset']) )
-//				{
-//					$row['charaset'] = $row['class_charaset'];
-//					$row['pic_width'] = $row['class_pic_width'];
-//					$row['pic_height'] = $row['class_pic_height'];
-//				}
 
 				$javascript .= 'add_player(' . $row['id'] . ', \'' . quotes($row['name']) . '\', \'' . quotes($row['charaset']) . '\', ' . $row['map_left'] . ', ' . $row['map_top'] . ', ' . $row['map_dir'] . ', ' . $row['map_moves'] . ', ' . ceil($row['pic_width'] / 4) . ', ' . ceil($row['pic_height'] / 4) . ');';
 				$javascript .= 'setTimeout(\'' . quotes('chat_add(player[' . $row['id'] . '].name, \'' . quotes($lang->join_map) . '\', true);') . '\', 1000);';
-				//$javascript .= 'alert(\'' . quotes('add_player(' . $row['id'] . ', \'' . quotes($row['name']) . '\', \'' . quotes((( empty($row['charaset']) ) ? $row['class_charaset'] : $row['charaset'] )) . '\', ' . $row['map_left'] . ', ' . $row['map_top'] . ', ' . $row['map_dir'] . ', ' . $row['map_moves'] . ', ' . $size[0] . ', ' . $size[1] . ');') . '\');';
 			}
 			else // the player exists, check if he has moved
 			{
@@ -477,7 +467,8 @@ $time = time()-30;
 
 		if ( ( $layer == 1 && isset($events['i' . $event_pos]) && ( $event_pos == $user->map_left . '-' . ($user->map_top + 1) || $event_pos == ($user->map_left - 1) . '-' . $user->map_top || $event_pos == $user->map_left . '-' . ($user->map_top - 1) || $event_pos == ($user->map_left + 1) . '-' . $user->map_top ) ) || ( $layer == 0 && isset($events['i' . $event_pos]) && $event_pos == $user->map_left . '-' . $user->map_top ) )
 		{
-			$event_script = new EventScript($event_script_data['i' . $event_pos]);
+		    $event_script = new EventScript($event_script_data['i' . $event_pos]);
+
 			$script = array();
 
 			while ( $data = $event_script->script(true, false) )
@@ -561,25 +552,29 @@ $time = time()-30;
         ));
     }
 
+    $event_ids = array();
+    $event_coords = array();
 	for ( $x = 0; $x < $map->count_x; $x++ ) {
         for ($y = 0; $y < $map->count_y; $y++) {
+            if ( $map->blocs[2][$y][$x] > 0 ) {
+                $event_ids[] = $map->blocs[2][$y][$x];
+                if ( !isset( $event_coords[$map->blocs[2][$y][$x]] ) ) {
+                    $event_coords[$map->blocs[2][$y][$x]] = [];
+                }
+                $event_coords[$map->blocs[2][$y][$x]][] = [$x, $y];
+            }
             // 地图下图层
             $template->assign_block_vars('lower_bloc', array(
                 'ID' => 'l' . $x . '-' . $y,
                 'LEFT' => $x,
                 'TOP' => $y,
-                'BACKGROUND_IMAGE' => (($map->blocs[0][$y][$x] == 0 || ($map->optimized && strtolower(substr($map->tiles[0][0][$map->blocs[0][$y][$x]], -4)) == '.png')) ? '' : $map->tiles[0][0][$map->blocs[0][$y][$x]]),
                 'Z_INDEX' => (($map->tiles[0][1][$map->blocs[0][$y][$x]] == 0) ? 1 : 2)
             ));
-//            if ($map->blocs[1][$y][$x]===''){
-//                continue;
-//            }
             // 地图上图层
             $template->assign_block_vars('upper_bloc', array(
                 'ID' => 'u' . $x . '-' . $y,
                 'LEFT' => $x,
                 'TOP' => $y,
-                'BACKGROUND_IMAGE' => (($map->blocs[1][$y][$x] == 0 || ($map->optimized && strtolower(substr($map->tiles[1][0][$map->blocs[1][$y][$x]], -4)) == '.png')) ? '' : $map->tiles[1][0][$map->blocs[1][$y][$x]]),
                 'Z_INDEX' => (($map->tiles[1][1][$map->blocs[1][$y][$x]] == 0) ? 3 : (($map->tiles[1][1][$map->blocs[1][$y][$x]] == 1) ? 6 : 9995))
             ));
         }
@@ -600,7 +595,6 @@ $time = time()-30;
 		));
 
 	// 地图里的精灵图
-//	$result = $db->sql_query('SELECT u.name, u.id, u.map_left, u.map_top, u.map_dir, u.map_moves, u.charaset, u.pic_width, u.pic_height, u.battle_id, u.battle_state, c.charaset AS class_charaset, c.pic_width AS class_pic_width, c.pic_height AS class_pic_height FROM ' . USERS_TABLE . ' u, ' . CLASSES_TABLE . ' c WHERE u.map_last_visit > ' . ($config->server_time - 16) . ' AND u.id != ' . $user->id . ' AND u.map_id = ' . $user->map_id . ' AND c.classname = u.classname');
     $time = time();
     $sql = 'SELECT `name`, id, map_left, map_top, map_dir, map_moves, charaset, pic_width, pic_height, battle_id, battle_state FROM '. USERS_TABLE ." WHERE id != $user->id and map_id = $user->map_id and battle_id>0 and map_last_visit > ($config->server_time - 30)";
     $rs = $db->sql_query($sql,1);
@@ -621,24 +615,7 @@ $time = time()-30;
         ));
     }
 
-	$event_ids = array();
-	$event_coords = array();
 
-	$i = 0;
-	while ( $i < $map->count_x ) {
-        $j = 0;
-        while ($j < $map->count_y) {
-            if ($map->blocs[2][$j][$i] > 0) {
-                $event_ids[] = $map->blocs[2][$j][$i];
-                if (!isset($event_coords[$map->blocs[2][$j][$i]])) {
-                    $event_coords[$map->blocs[2][$j][$i]] = array();
-                }
-                $event_coords[$map->blocs[2][$j][$i]][] = array($i, $j);
-            }
-            $j++;
-        }
-        $i++;
-    }
 
 	if ( count($event_ids) > 0 ) {
         // events in map

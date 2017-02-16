@@ -12,20 +12,25 @@ if ( $mode == 'GET.stop' )
     message_die($lang->session_stop, $lang->session_stop_explain);
 }
 if ( $mode == 'GET.action' ) {
+    global $db;
     //执行战斗动作
     $refresh_id = 2;
     switch ($_GET['type']){
         case 'basic' :
             //敌人ID
             $id = $_GET['op_id'];
-//            json_decode(session('enemy'),true);
+            $enemy = json_decode(Session('enemy'),true);
+            $enemy[$id]['hp'] -=100;
             break;
         case 'tank' :
             break;
         case 'flee' :
+            $id = $user->battle_id;
             $users = explode(',',$_GET['allies']);
             $users = implode(' OR id = ', $users);
             $db->sql_query('UPDATE ' . USERS_TABLE . " SET battle_id = 0,battle_state = 0 WHERE id = $users");
+            $db->sql_query("DELETE FORM phpore_battles where id = $id");
+            $db->sql_query("DELETE FORM phpore_opponents where battle_id = $id");
             $user->set('in_battle',false);
             $user->update_db();
             $javascript = "document.location.href = u_index + '?mod=map'";
@@ -263,7 +268,7 @@ if ( $mode == 'GET.action' ) {
         'CHATBOX_STATE' => $user->chatbox_state,
         'LAST_CHAT_ID' => $last_id,
         'BATTLE_BACKGROUND' => $rs['background'],
-        'USER_SPEED' => 0,
+        'USER_SPEED' => 3,
         'L_BASIC_ACTION' => $lang->basic_action,
         'L_ACT_ATTACK' => $lang->act_attack,
         'L_ACT_DEFEND' => $lang->act_defend,

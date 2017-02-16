@@ -13,8 +13,8 @@ the Free Software Foundation; either version 2 of the License, or
 
 */
 
-var ally = new Array();
-var opponent = new Array();
+var allys = new Array();
+var opponents = new Array();
 var allies_in_battle = new Array();
 var opponents_in_battle = new Array();
 var battle_refresh_2 = false;
@@ -179,9 +179,12 @@ function refresh_process()
 function add_ally(id, name, picture)
 {
 	allies_in_battle.push(id);
-	ally[id] = new Object();
+	allys[id] = {};
+    allys[id].name = name;
+    allys[id].picture = picture;
 
-	if ( document.getElementById('ally_' + id) )
+
+    if ( document.getElementById('ally_' + id) )
 	{
 		document.getElementById('ally_' + id).innerHTML = '<div style="padding:10px"><span style="color:white"><b>' + name + '</b></span><br /><br /><img src="images/battlers/' + picture + '" alt="" /></div>';
 	}
@@ -195,9 +198,12 @@ function add_ally(id, name, picture)
 function add_opponent(id, name, picture)
 {
 	opponents_in_battle.push(id);
-	opponent[id] = new Object();
+	opponents[id] = {};
+    opponents[id].name = name;
+    opponents[id].picture = picture;
 
-	if ( document.getElementById('opponent_' + id) )
+
+    if ( document.getElementById('opponent_' + id) )
 	{
 		document.getElementById('opponent_' + id).innerHTML = '<div style="padding:10px"><span style="color:white"><b>' + name + '</b></span><br /><br /><img src="images/monsters/' + picture + '" alt="" /></div>';
 	}
@@ -227,20 +233,41 @@ function battler_click(id)
 {
 	if ( actual_mode == 1 )
 	{
-		if ( opponent[id] )
+		if ( opponents[id] )
 		{
+            $("#sprite").show();
+			animation();
 			actual_mode = 0;
-            alert(id);
+            // alert(id);
             document.getElementById('battle_tools').innerHTML = player_waiting;
+            message_action(allys[my_user_id].name+' 攻击 '+opponents[id].name,message_id++);
 			//刷新
-			refresh_action(2, u_index + '?mod=battle&amp;mode=action&amp;type=basic&amp;op_id=' + id + '&amp;');
-			setTimeout('check_timeout(' + timeouts + ');', 5000);
-		}
+			// refresh_action(2, u_index + '?mod=battle&amp;mode=action&amp;type=basic&amp;op_id=' + id + '&amp;');
+			// setTimeout('check_timeout(' + timeouts + ');', 5000);
+            battle_timeout(user_speed);
+        }
 		else
 		{
 			document.getElementById('battle_tools').innerHTML = l_click_opponent;
 		}
 	}
+}
+var sfx = 'music/sfx/';
+function animation() {
+    var p = $('#ally_' + my_user_id).offset();
+    console.log(p);
+
+    $("#sprite").css({'left':p.x,'top':p.y});
+    $("#sfx")[0].play();
+    // $("#sfx").attr('src',sfx+'Cannon.wav');
+    $("#sprite").css('animation-play-state','running');
+    setTimeout(function () {
+        $("#sfx").attr({'src':sfx+'CannonEnd.wav','autoplay':'true'});
+    },1300);
+    setTimeout(function () {
+        $("#sprite").hide();
+    },2000)
+
 }
 
 function check_timeout(k)
@@ -271,7 +298,7 @@ function battle_timeout(time)
 
 function basic_action()
 {
-	id = parseInt(document.getElementById('basic_action_select').value);
+	var id = parseInt(document.getElementById('basic_action_select').value);
 	switch (id){
         case 1:
             document.getElementById('battle_tools').innerHTML = l_click_to_attack;
@@ -282,14 +309,16 @@ function basic_action()
             refresh_action(2, u_index + '?mod=battle&mode=action&type=flee&allies=' + allies_in_battle.join(',') + '&opponents=' + opponents_in_battle.join(','));
             break;
 		case 2:
-            document.getElementById('battle_tools').innerHTML = my_user_name + ' 进行防御';
+            // document.getElementById('battle_tools').innerHTML = my_user_name + ' 进行防御';
+            message_action(my_user_name + ' 进行防御',message_id++);
+            // document.getElementById('battle_tools').innerHTML =player_tools;
 			break;
 	}
 }
 
 function tank_action()
 {
-    id = parseInt(document.getElementById('tank_action_select').value);
+    var id = parseInt(document.getElementById('tank_action_select').value);
 
     if ( id == 1 )
     {
