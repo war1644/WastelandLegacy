@@ -97,6 +97,17 @@
     }
 
     function cambiar_sign_up(at) {
+        $.get('{U_INDEX}?mod=profile&mode=register','',function (res) {
+            if (res) {
+                var classList = JSON.parse(res);
+                for (var i in classList) {
+                    var obj = classList[i];
+                    var classnode = '<input class="typeradio" type="radio" name="classname" value="'+obj.CLASSNAME+'"'+ obj.CHECKED +'/><img src="images/battlers/'+obj.BATTLER+'" alt=""><b>'+obj.CLASS_TITLE+'</b><i>'+obj.DESCRIPTION+'</i>';
+                    $("#cpass").after(classnode);
+                }
+            }
+
+        });
         document.querySelector("#backMp3").src = "music/NameSetting.mp3";
 
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_sign_up cont_forms_change";
@@ -108,12 +119,7 @@
 
         setTimeout(function(){   document.querySelector('.cont_form_login').style.display = "none";
         },400);
-
-
     }
-
-
-
     function ocultar_login_sign_up() {
 
         document.querySelector('.cont_forms').className = "cont_forms";
@@ -127,23 +133,7 @@
 
     }
 
-
-
-    $.get('{U_INDEX}?mod=profile&mode=register','',function (res) {
-        if (res) {
-            var classList = JSON.parse(res);
-            for (var i in classList) {
-                var obj = classList[i];
-                var classnode = '<input class="typeradio" type="radio" name="classname" value="'+obj.CLASSNAME+'"'+ obj.CHECKED +'/><img src="images/battlers/'+obj.BATTLER+'" alt=""><b>'+obj.CLASS_TITLE+'</b><i>'+obj.DESCRIPTION+'</i>';
-                $("#cpass").after(classnode);
-            }
-        }
-
-    });
 </script>
-
-
-</div>
 
 
 
