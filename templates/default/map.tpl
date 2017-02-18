@@ -2,6 +2,8 @@
 <div id="cache_images" class="hidden_layer"></div>
 
 <div id="drag_layer2" onmouseover="actual_layer=this.id" style="position:absolute;left:0;top:0;z-index:9999">
+
+
  <table cellspacing="1" cellpadding="2" class="portaline">
   <tr>
    <th id="chat_title"></th>
@@ -70,6 +72,7 @@ var player_y = {PLAYER_Y};
 var chatbox_state = new Array({CHATBOX_STATE});
 var event_status = '[EVENT_STATUS]';
 var player_moving = {PLAYER_MOVING};
+
 
 var chatbox_header = new Object();
 chatbox_header.reduce = '<div align="left"><div style="position:absolute"><form action="" onsubmit="return false"><input type="button" class="button" id="chat_state" value="[L_CHATBOX_REDUCE]" onclick="change_chat_state()" /></form></div></div>[L_CHATBOX]';

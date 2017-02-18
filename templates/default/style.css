@@ -1165,7 +1165,7 @@ textarea#text_script
 /*登录结束*/
 
 /*进入地图*/
-.come_map{
+.come_map , .come_game{
 	margin-top: 10%;
 	text-align: center;
 	width: 200px;
@@ -1185,7 +1185,7 @@ textarea#text_script
 .gogens{
 	position: absolute;
 	right: 50%;
-	bottom: 15%;
+	bottom: 12%;
 	margin-right: -50px;
 	cursor:pointer;
 	width: 100px;
