@@ -366,6 +366,19 @@ class EventScript
 
 				$texts = array();
 
+	            foreach ($args[1] as $key => $value) {
+
+	            	if (preg_match('`\$([A-Za-z0-9_]+)`', $args[1][$key])) {
+	            		
+
+	            		$a = substr(trim($args[1][$key]),1);
+
+	         			$args[1][$key] = $this->vars[$a];
+
+	            	}
+            	
+	            }
+
 				foreach ( $args[1] as $text )
 				{
 					$texts[] = '\'' . quotes($text) . '\'';

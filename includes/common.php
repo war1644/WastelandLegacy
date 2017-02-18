@@ -325,7 +325,6 @@ function redirect($title, $content, $location, $time = 5)
 
 function create_battle($monsters, $users, $background = '', $music = '')
 {
-
 	global $user, $db;
 
 	if ( !is_array($monsters) )
@@ -383,6 +382,63 @@ function create_battle($monsters, $users, $background = '', $music = '')
 	}
     header('Location: ' . BASE_URL . 'index.php?mod=battle');
 }
+
+
+
+
+
+// 获取物品商人的物品 传入 类型type 值 1.人类装备；2.人类道具；3.坦克装备；4.坦克道具
+
+
+function equipment_query($type='')
+{
+	global $user, $db;
+	$map_id = $user->map_id;
+	$result = $db->getAll("SELECT * FROM phpore_equipment WHERE type =  $type and  place =  2 ");//测试
+	// $result = $db->getAll("SELECT * FROM phpore_equipment WHERE type =  $type and  place =  $map_id ");
+	return $result;
+}
+
+
+
+
+
+// 人物物品的添加    $equipment_id 物品id  $num 数量   。。。 以后加上个减少 
+
+
+function user_equipment_add($equipment_id,$num)
+{
+	global $user, $db;
+	$id = $user->id;
+
+	$result = $db->getRow("SELECT equipment FROM phpore_users WHERE id =  $id ");
+
+	$equipment = json_decode($result['equipment'], true);
+
+// return $equipment;exit();
+
+
+	if (array_key_exists($equipment_id,$equipment)){
+
+		$equipment[$equipment_id] = $equipment[$equipment_id]+$num;
+
+	}
+	else{
+	  
+	    $equipment[$equipment_id] = $num;
+
+	}
+
+	$equipment = json_encode($equipment);
+
+    return $db->execSql("UPDATE phpore_users SET equipment = '$equipment' WHERE id = $id");
+	// return $result;
+
+}
+
+
+
+
 
 //
 // configuration
