@@ -236,7 +236,9 @@ function battler_click(id)
 		if ( opponents[id] )
 		{
             $("#sprite").show();
-			animation();
+            var p1= $('#ally_' + my_user_id);
+            var p2 = $('#opponent_' + id);
+			animation(p1,p2);
 			actual_mode = 0;
             // alert(id);
             document.getElementById('battle_tools').innerHTML = player_waiting;
@@ -253,19 +255,30 @@ function battler_click(id)
 	}
 }
 var sfx = 'music/sfx/';
-function animation() {
-    var p = $('#ally_' + my_user_id).offset();
-    console.log(p);
+function animation(attacker,defender) {
+    var attackerP = attacker.offset();
+    var defenderP = defender.offset();
+    $('#ally_' + my_user_id + ' img').css({
+        'position': 'relative',
+        "animation": "burst 0.1s"
+	});
 
-    $("#sprite").css({'left':p.x,'top':p.y});
+    $('#ally_' + my_user_id + ' img').css({
+        'position': 'relative',
+        "animation": "burst 0.1s"
+    });
+
     $("#sfx")[0].play();
+
+    $("#css").append("@keyframes ppp {0%{left:"+(startP.left+50)+"px;top:"+(startP.top-45)+"px;} 100%{top: "+(endP.top-10)+"px;left:"+(endP.left+50)+"px;}}")
+    $(".sprite_dad").css("animation", "ppp 1s linear infinite");
     // $("#sfx").attr('src',sfx+'Cannon.wav');
     $("#sprite").css('animation-play-state','running');
     setTimeout(function () {
         $("#sfx").attr({'src':sfx+'CannonEnd.wav','autoplay':'true'});
     },1300);
     setTimeout(function () {
-        $("#sprite").hide();
+        // $("#sprite").hide();
     },2000)
 
 }

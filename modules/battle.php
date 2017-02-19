@@ -268,7 +268,7 @@ if ( $mode == 'GET.action' ) {
         'CHATBOX_STATE' => $user->chatbox_state,
         'LAST_CHAT_ID' => $last_id,
         'BATTLE_BACKGROUND' => $rs['background'],
-        'USER_SPEED' => 3,
+        'USER_SPEED' => 1,
         'L_BASIC_ACTION' => $lang->basic_action,
         'L_ACT_ATTACK' => $lang->act_attack,
         'L_ACT_DEFEND' => $lang->act_defend,

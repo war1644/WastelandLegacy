@@ -1,11 +1,27 @@
-<style>
+<style id="css">
  @keyframes aniFrame{
- 100%{background-position-x:100%;}
+  100%{background-position-x:100%;}
+ }
+ @keyframes burstPlayer{
+ 0%{left:0;}
+ 100%{left:25px;}
  }
 
- #sprite {
+ @keyframes burstEnemy{
+ 0%{left:0;}
+ 100%{left:-25px;}
+ }
+
+ .sprite_dad{
   width: 192px;
   height: 192px;
+  position: relative;
+ }
+
+
+ #sprite {
+  width: 100%;
+  height: 100%;
   background-image: url("images/sprites/mAttack.png");
   animation: aniFrame steps(14,end) 2s infinite;
   animation-play-state:paused;
@@ -14,6 +30,7 @@
 
 
 </style>
+
 <audio id="sfx" src="music/sfx/Cannon.wav"></audio>
 <div id="drag_layer2" onmouseover="actual_layer=this.id" style="position:absolute;left:0;top:0;z-index:9999">
  <table cellspacing="1" cellpadding="2" class="portaline">
@@ -80,7 +97,10 @@
   </div>
   </td>
  </tr>
-<div id="sprite"></div>
+ <div class="sprite_dad">
+    <div id="sprite"></div>
+ </div>
+
 </table>
 <script type="text/javascript">
 var my_user_id = {USER_ID};
