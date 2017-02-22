@@ -258,27 +258,35 @@ var sfx = 'music/sfx/';
 function animation(attacker,defender) {
     var attackerP = attacker.offset();
     var defenderP = defender.offset();
-    $('#ally_' + my_user_id + ' img').css({
+    var img = attacker.find('img');
+    var img2 = defender.find('img');
+    //攻击者开炮动作
+    img.css({
         'position': 'relative',
-        "animation": "burst 0.1s"
-	});
+        "animation": "burstPlayer 0.1s"
+	})
 
-    $('#ally_' + my_user_id + ' img').css({
-        'position': 'relative',
-        "animation": "burst 0.1s"
-    });
 
     $("#sfx")[0].play();
 
-    $("#css").append("@keyframes ppp {0%{left:"+(startP.left+50)+"px;top:"+(startP.top-45)+"px;} 100%{top: "+(endP.top-10)+"px;left:"+(endP.left+50)+"px;}}")
+    $("#css").append("@keyframes ppp {0%{left:"+(attackerP.left+50)+"px;top:"+(attackerP.top-45)+"px;} 100%{top: "+(defenderP.top-10)+"px;left:"+(defenderP.left+50)+"px;}}");
     $(".sprite_dad").css("animation", "ppp 1s linear infinite");
-    // $("#sfx").attr('src',sfx+'Cannon.wav');
+
     $("#sprite").css('animation-play-state','running');
-    setTimeout(function () {
+    var forTime = [];
+    forTime[0] = setTimeout(function () {
+        img2.css({
+            'position': 'relative',
+            "animation": "burstEnemy 0.1s"
+        })
         $("#sfx").attr({'src':sfx+'CannonEnd.wav','autoplay':'true'});
+        img.css({
+            "animation": "none"
+        })
     },1300);
-    setTimeout(function () {
-        // $("#sprite").hide();
+    forTime[1] = setTimeout(function () {
+        $("#sprite").css('animation-play-state','paused');
+        $("#sprite").hide();
     },2000)
 
 }
