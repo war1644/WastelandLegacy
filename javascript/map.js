@@ -966,21 +966,13 @@ function player_move_right(user_id, bloc_id, charaset, prefix)
 		setTimeout('document.getElementById(\'charaset_' + user_id + '\').style.left = \'-' + (player[user_id].width * 3) + 'px\';', 813 / speed);
 		setTimeout('document.getElementById(\'charaset_' + user_id + '\').style.left = \'0px\';', 938 / speed);
 
-		/*if ( (parseInt(document.getElementById(player_id).style.left) + tile_size + player[user_id].left_gain) < parseInt(document.getElementById(bloc_id).style.left) )
-		{
-			setTimeout('player_move_right(\'' + user_id + '\', \'' + bloc_id + '\', \'' + charaset + '\', \'' + prefix + '\')', 1000);
-		}
-		else
-		{*/
+
 			if ( prefix == 'p' )
 			{
 				
 				if ( user_id == my_user_id && events_placement[next_top_pos][next_left_pos][0].length > 0 )
 				{
-					/*if ( event_data[next_event_bloc].changedir )
-					{
-						setTimeout('document.getElementById(\'charaset_' + next_event_bloc + '\').style.top = document.getElementById(\'' + next_event_bloc + '\').style.top;', 1000);
-					}*/
+
 					if ( path_finished )
 					{
 						setTimeout('exec_event(' + user_id + ', ' + next_left_pos + ', ' + next_top_pos + ', 0);', 1000 / speed);
@@ -991,7 +983,7 @@ function player_move_right(user_id, bloc_id, charaset, prefix)
 					setTimeout('player[' + user_id + '].moving = false;', 1000 / speed);
 				}
 			}
-		/*}*/
+
 	}
 	else
 	{

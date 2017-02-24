@@ -108,11 +108,9 @@
             "z-index": 1
         });
 
-
         terrainPattern  = ctx.createPattern(img[urlArr[0]],'no-repeat');
         terrainPattern1  = ctx.createPattern(img[urlArr[1]],'no-repeat');
         terrainPattern2  = ctx.createPattern(img[urlArr[2]],'no-repeat');
-
 
         ctx2.fillStyle = terrainPattern1;
         ctx2.fillRect(0, 0, mapWidth, mapHeight);
@@ -146,9 +144,7 @@
         gameTime += dt;
         handleInput(dt);
         player.sprite.update(dt);
-
     }
-
 
     function handleInput(dt) {
         if (input.isDown('DOWN') || input.isDown('s')) {
@@ -163,8 +159,6 @@
                     "animation-play-state": "running"
                 });
             }
-
-
         }
 
         if (input.isDown('UP') || input.isDown('w')) {
