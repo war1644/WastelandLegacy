@@ -587,24 +587,17 @@ div#event_bloc div
 div#action_bloc div
 {
 	position: absolute;
-	/*width: 32px;
-	height: 32px;*/
-}
 
-/*div.playerdiv
-{
-	display: inline;
-}*/
+}
 
 div.playername
 {
 	color: white;
-	font-weight: bold;
 	font-size: 10px;
 	padding: 0;
 	margin: 0;
 	position: absolute;
-	left: -2px;
+	left: -12px;
 	top: -14px;
 }
 
@@ -626,7 +619,7 @@ div.playerspacer
 div.playersprite, div.eventsprite
 {
 	position: relative;
-	left: 0px;
+	left: 5px;
 	top: 0px;
 	overflow: hidden;
 	padding: 0;
@@ -1196,5 +1189,18 @@ textarea#text_script
 }
 /*去管理面板 end*/
 
+/*聊天框*/
+.title_header{
+	color: #fff;
+	text-align: center;
+	padding: 10px;
+	font-size: 14px;
+}
+/*聊天框 end*/
 
+/*人物行走图*/
+@keyframes aniMove{
+	100%{background-position-x:72px;}
+}
+/*人物行走图 end*/
 
