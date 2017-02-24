@@ -1,32 +1,24 @@
-
+<style id="map_css"></style>
 <div id="cache_images" class="hidden_layer"></div>
-
 <div id="drag_layer2" onmouseover="actual_layer=this.id" style="position:absolute;left:0;top:0;z-index:9999">
-
-
- <table cellspacing="1" cellpadding="2" class="portaline">
-  <tr>
-   <th id="chat_title"></th>
-  </tr>
-  <tr>
-   <td class="row1">
-    <div id="chat_hidden" class="hidden_layer"><div id="chatbox"></div><br /><div style="padding-left:15px"><i>{L_POST_MESSAGE}</i><br />
-    <form action="" onsubmit="submit_chat();return false;"><input type="text" id="message_chat" maxlength="128" value="" onkeypress="if(event.keyCode==13)submit_chat();" />&nbsp; <input type="submit" value="{L_VALIDATE}" class="button" /></form><br /><br /></div>
-    </div></div>
+ <div class="portaline" style="background:#000020;border: 10px solid #384048;border-radius: 10px;box-shadow: 0 0 5px #fff">
+   <div id="chat_title" class="title_header"></div>
+    <div id="chat_hidden" class="hidden_layer"><div id="chatbox"></div><br />
+     <div style="padding-left:15px"><br />
+      <form action="" onsubmit="submit_chat();return false;">\
+       <input type="text" id="message_chat" maxlength="128" value="" onkeypress="if(event.keyCode==13)submit_chat();" />&nbsp;
+       <input type="submit" value="{L_VALIDATE}" class="button" />
+      </form><br /><br />
+     </div>
+    </div>
     <div id="chat_show" style="display:inline"></div>
-   </td>
-  </tr>
- </table>
+ </div>
 </div>
 
-<table width="100%" cellpadding="2" cellspacing="1" border="0" class="portaline">
 
- <tr>
-  <th>{MAP_NAME}</th>
- </tr>
-
- <tr>
-  <td class="row1" align="center" valign="middle" style="padding:10px;">
+<div width="100%" class="portaline">
+ <div class="title_header"><b>{MAP_NAME}</b><div/>
+  <div align="center" valign="middle" style="padding:10px;">
    <div id="global_map">
     <div style="position:relative;left:0px;top:0px;{MAP_BACKGROUND}width:{MAP_WIDTH}px;height:{MAP_HEIGHT}px">
      <div id="message"></div>
@@ -44,9 +36,8 @@
      <div id="action_bloc_cursor"></div>
     </div>
    </div>
-  </td>
- </tr>
-</table>
+  </div>
+<div/>
 <script type="text/javascript">
 
 var my_user_id = {USER_ID};
@@ -78,10 +69,9 @@ var chatbox_header = new Object();
 chatbox_header.reduce = '<div align="left"><div style="position:absolute"><form action="" onsubmit="return false"><input type="button" class="button" id="chat_state" value="[L_CHATBOX_REDUCE]" onclick="change_chat_state()" /></form></div></div>[L_CHATBOX]';
 chatbox_header.increase = '<form action="" onsubmit="return false"><input type="button" class="button" id="chat_state" value="[L_CHATBOX_INCREASE]" onclick="change_chat_state()" /></form> &nbsp; [L_CHATBOX]';
 
+
+
 var message_box = new Object();
-
-
-
 message_box.begin = '<div style="border: 2px solid #fff;" class="m_middle_center">';
 message_box.end = '</div>';
 
