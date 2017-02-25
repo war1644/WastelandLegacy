@@ -1,19 +1,4 @@
 <?php
-
-/*
-
-Program: phpore
-Author: Jeremy Faivre
-Contact: http://www.jeremyfaivre.com/about
-Year: 2005
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-*/
-
 MFLog(json_encode($_POST));
 
 if ( !$user->logged_in || !$user->admin )
@@ -125,7 +110,7 @@ elseif ( $mode == 'POST.save_tileset' ) // sauver tileset
 	$lang->load_keys('tileset_editor');
 	js_eval('alert(\'' . $lang->tileset_saved . '\');saved=true;', $refresh_id, 1);
 }
-elseif ( $mode == 'POST.save_event' ) // sauver �v�nement
+elseif ( $mode == 'POST.save_event' ) // 保存事件
 {
 	$refresh_id = 1;
 
@@ -258,7 +243,7 @@ elseif ( $mode == 'POST.players_position' ) // 设置已注册玩家的位置
 		exit;
 	}
 }
-elseif ( $mode == 'POST.preset_event' ) // �v�nement pr�d�fini
+elseif ( $mode == 'POST.preset_event' )
 {
 	$refresh_id = 1;
 	$lang->load_keys('map_editor');
@@ -1004,12 +989,12 @@ elseif ( $mode == 'GET.create_map' )
 		$map_tileset = intval($_POST['map_tileset']);
 		$map_width = ( intval($_POST['map_width']) < 1 ) ? 1 : intval($_POST['map_width']);
 		$map_height = ( intval($_POST['map_height']) < 1 ) ? 1 : intval($_POST['map_height']);
-		$map_blocs = array(array(), array(), array());
+		$map_blocs = [[],[],[]];
 
 		$i = 0;
 		while ( $i < $map_height )
 		{
-			$v = $value = array();
+			$v = $value = [];
 			$j = 0;
 			while ( $j < $map_width )
 			{
@@ -1027,7 +1012,7 @@ elseif ( $mode == 'GET.create_map' )
 
         $map_blocs = base64_encode(serialize($map_blocs));
 
-		$db->sql_query('INSERT INTO ' . MAPS_TABLE . "(`name`, blocs, tileset) VALUES('$map_name', '$map_blocs', '$map_tileset')");
+		$db->execSql('INSERT INTO ' . MAPS_TABLE . "(`name`, blocs, tileset) VALUES('$map_name', '$map_blocs', '$map_tileset')",1);
 		$id = $db->lastId();
 
 		header('Location:' . BASE_URL .'index.php?mod=admin.map&mode=map_editor&map_id=' . $id);
@@ -1288,12 +1273,6 @@ elseif ( $mode == 'POST.save_map' ) // 保存地图
                 {
                     imagecopy($picture, imagecreatefrompng(MFPATH . 'images/tiles/' . $map_tiles[0][0][$map_blocs[0][$y][$x]]), $x * $config->tile_size, $y * $config->tile_size, 0, 0, $config->tile_size, $config->tile_size);
                 }
-                // upper layer 1
-//                if ( $map_blocs[1][$y][$x] != 0 && strtolower(substr($map_tiles[1][0][$map_blocs[1][$y][$x]], -4)) == '.png' && $map_tiles[1][1][$map_blocs[1][$y][$x]] != 2 )//
-//                {
-//                    $png = imagecreatefrompng(MFPATH . 'images/tiles/' . $map_tiles[1][0][$map_blocs[1][$y][$x]]);
-//                    imagecopy($picture, $png, $x * $config->tile_size, $y * $config->tile_size, 0, 0, $config->tile_size, $config->tile_size);
-//                }
 
                 $x++;
             }
