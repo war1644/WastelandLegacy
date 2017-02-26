@@ -263,31 +263,39 @@ function animation(attacker,defender) {
     //攻击者开炮动作
     img.css({
         'position': 'relative',
-        "animation": "burstPlayer 0.1s"
+        'animation': 'burstPlayer 0.1s',
+        'animation-play-state':'running'
 	})
-
 
     $("#sfx")[0].play();
 
     $("#css").append("@keyframes ppp {0%{left:"+(attackerP.left+50)+"px;top:"+(attackerP.top-45)+"px;} 100%{top: "+(defenderP.top-10)+"px;left:"+(defenderP.left+50)+"px;}}");
-    $(".sprite_dad").css("animation", "ppp 1s linear infinite");
 
+    $(".sprite_dad").css("animation", "ppp 1.1s linear infinite forwards");
+    $(".sprite_dad").css('animation-play-state','running');
     $("#sprite").css('animation-play-state','running');
     var forTime = [];
+
     forTime[0] = setTimeout(function () {
         img2.css({
             'position': 'relative',
-            "animation": "burstEnemy 0.1s"
+            'animation': 'burstEnemy 0.1s',
+            'animation-play-state':'running'
         })
         $("#sfx").attr({'src':sfx+'CannonEnd.wav','autoplay':'true'});
         img.css({
             "animation": "none"
         })
-    },1300);
-    forTime[1] = setTimeout(function () {
-        $("#sprite").css('animation-play-state','paused');
         $("#sprite").hide();
-    },2000)
+    },1030);
+    forTime[1] = setTimeout(function () {
+        $(".sprite_dad").css('animation-play-state','paused');
+        $("#sprite").css('animation-play-state','paused');
+
+        img2.css({
+            "animation": "none"
+        })
+    },1100)
 
 }
 
