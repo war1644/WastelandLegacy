@@ -1,6 +1,8 @@
 <style id="map_css"></style>
 <div id="cache_images" class="hidden_layer"></div>
 <div id="drag_layer2" onmouseover="actual_layer=this.id" style="position:absolute;left:0;top:0;z-index:9999">
+
+
  <div class="portaline" style="background:#000020;border: 10px solid #384048;border-radius: 10px;box-shadow: 0 0 5px #fff">
    <div id="chat_title" class="title_header"></div>
     <div id="chat_hidden" class="hidden_layer"><div id="chatbox"></div><br />

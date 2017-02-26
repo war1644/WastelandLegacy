@@ -2,6 +2,7 @@
  @keyframes aniFrame{
   100%{background-position-x:100%;}
  }
+
  @keyframes burstPlayer{
  0%{left:0;}
  100%{left:25px;}
@@ -13,17 +14,18 @@
  }
 
  .sprite_dad{
-  width: 192px;
-  height: 192px;
+
   position: relative;
  }
 
 
  #sprite {
-  width: 100%;
-  height: 100%;
+  display: none;
+  width: 192px;
+  height: 192px;
   background-image: url("images/sprites/mAttack.png");
-  animation: aniFrame steps(14,end) 2s infinite;
+  animation: aniFrame steps(14,end) 1.7s infinite;
+  animation-fill-mode: forwards;
   animation-play-state:paused;
   position: absolute;
  }
@@ -32,21 +34,30 @@
 </style>
 
 <audio id="sfx" src="music/sfx/Cannon.wav"></audio>
+
 <div id="drag_layer2" onmouseover="actual_layer=this.id" style="position:absolute;left:0;top:0;z-index:9999">
- <table cellspacing="1" cellpadding="2" class="portaline">
-  <tr>
-   <th id="chat_title"></th>
-  </tr>
-  <tr>
-   <td class="row1">
-    <div id="chat_hidden" class="hidden_layer"><div id="chatbox"></div><br /><div style="padding-left:15px"><i>{L_POST_MESSAGE}</i><br />
-    <form action="" onsubmit="submit_chat();return false;"><input type="text" id="message_chat" maxlength="128" value="" onkeypress="if(event.keyCode==13)submit_chat();" />&nbsp; <input type="submit" value="{L_VALIDATE}" class="button" /></form><br /><br /></div>
-    </div></div>
-    <div id="chat_show" style="display:inline"></div>
-   </td>
-  </tr>
- </table>
+
+
+
+
+ <div class="portaline" style="background:#000020;border: 10px solid #384048;border-radius: 10px;box-shadow: 0 0 5px #fff">
+  <div id="chat_title" class="title_header"></div>
+  <div id="chat_hidden" class="hidden_layer"><div id="chatbox"></div><br />
+   <div style="padding-left:15px"><br />
+    <form action="" onsubmit="submit_chat();return false;">\
+     <input type="text" id="message_chat" maxlength="128" value="" onkeypress="if(event.keyCode==13)submit_chat();" />&nbsp;
+     <input type="submit" value="{L_VALIDATE}" class="button" />
+    </form><br /><br />
+   </div>
+  </div>
+  <div id="chat_show" style="display:inline"></div>
+ </div>
 </div>
+
+</div>
+
+
+
 
 <table width="100%" cellpadding="2" cellspacing="1" border="0" class="portaline">
 
@@ -63,19 +74,19 @@
   <td style="background-color:black" align="center" valign="middle" colspan="2">
   <div style="width:640px;height:320px;background-image:url('images/backgrounds/{BATTLE_BACKGROUND}');background-size:contain;padding:0px">
 
+
   <table cellpadding="0" cellspacing="0" border="0" bordercolor="black">
-  <tr><td align="center">
-    <div id="opponents" style="width:318px;height:318px;overflow:auto">
-    </div>
-
-
-  </td><td align="center">
-
-    <div id="allies" style="width:318px;height:318px;overflow:auto">
-    </div>
-
-  </td></tr>
+   <tr>
+    <td align="center">
+     <div id="opponents" style="width:318px;height:318px;overflow:auto"></div>
+    </td>
+    <td align="center">
+      <div id="allies" style="width:318px;height:318px;overflow:auto"></div>
+    </td>
+   </tr>
   </table>
+
+
 
   </div>
   </td>
