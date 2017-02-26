@@ -317,18 +317,20 @@ function battle_timeout(time)
 	}
 }
 
-function basic_action()
-{
+function basic_action() {
 	var id = parseInt(document.getElementById('basic_action_select').value);
 	switch (id){
+		//攻击
         case 1:
             document.getElementById('battle_tools').innerHTML = l_click_to_attack;
             actual_mode = 1;
             break;
+		//逃跑
 		case 3:
             //刷新
             refresh_action(2, u_index + '?mod=battle&mode=action&type=flee&allies=' + allies_in_battle.join(',') + '&opponents=' + opponents_in_battle.join(','));
             break;
+		//防御
 		case 2:
             // document.getElementById('battle_tools').innerHTML = my_user_name + ' 进行防御';
             message_action(my_user_name + ' 进行防御',message_id++);

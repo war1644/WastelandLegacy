@@ -6,10 +6,10 @@
        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
  <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta http-equiv="Content-Style-Type" content="text/css" />
-<meta http-equiv="Content-Type" content="text/html; charset={ENCODING}" />
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <title>{SITE_NAME} - {PAGE_NAME}</title>
 <link rel="stylesheet" href="{TEMPLATE_PATH}style.css" type="text/css" />
+ <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="javascript/common.js"></script>
 <!-- BEGIN redirect -->
 <meta http-equiv="refresh" content="{redirect.TIMEOUT};{redirect.HTML_LOCATION}" />

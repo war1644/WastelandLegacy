@@ -9,10 +9,6 @@
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <style>
-    @keyframes aniMove{
-        100%{background-position-x:72px;}
-    }
-
     @keyframes aniFrame{
         100%{background-position-x:72px;}
     }
@@ -71,9 +67,10 @@
         foreach ( $data['eventData'] as $v){
             echo "addEvent($v[id], $v[x], $v[y], $v[layer], $v[width], $v[height], '$v[picUrl]', $v[dir]);";
         }
-
-        foreach ( $data['players'] as $v){
-            echo "addPlayer($v[id],'$v[name]', '$v[charaset]', $v[y], $v[x], $v[y], $v[layer], '$v[charaset]', $v[dir]);";
+        if (isset($data['players'])) {
+            foreach ( $data['players'] as $v ) {
+                echo "addPlayer($v[id],'$v[name]', '$v[charaset]', $v[y], $v[x], $v[y], $v[layer], '$v[charaset]', $v[dir]);";
+            }
         }
     ?>
 

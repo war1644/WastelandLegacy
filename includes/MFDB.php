@@ -212,8 +212,8 @@ class MFDB {
      */
     private function debug($debuginfo)
     {
-        var_dump($debuginfo);
-        exit();
+        MFLog($debuginfo);
+//        exit();
     }
 
     /**

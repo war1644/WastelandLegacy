@@ -9,6 +9,7 @@
  */
 
 ini_set("display_errors", "On");
+ini_set('memory_limit', '256M');
 error_reporting(-1);
 //设置全局常量
 define('MFPATH' , str_replace('\\', '/', __DIR__).'/');
@@ -23,8 +24,8 @@ settype($config, 'object');
 $config->phpex = 'php';
 $config->path = './';
 //引入全局方法
-require_once INC.'common.php';
-require_once INC.'MFDB.php';
+include INC.'common.php';
+include INC.'MFDB.php';
 
 $config->table_prefix = 'phpore_';
 
@@ -46,15 +47,14 @@ define('VARS_TABLE', $config->table_prefix . 'vars');
 // 连接数据库
 $db = MFDB::Ins();
 $config->load_db();
-
 //缓存清理
 $actual_day_number = floor(time() / 86400);
 if ( $config->day_number < $actual_day_number ){
-    require_once INC . 'cron_day.php';
+    include INC . 'cron_day.php';
 }
 
 //载入语言
-require_once MFPATH . 'language/'. $config->language.'.php';
+include MFPATH . 'language/'. $config->language.'.php';
 $lang->load_keys('common');
 
 //模版实例化
@@ -68,7 +68,7 @@ if ( $user->logged_in ) {
 	$template->assign_block_vars('not_logged_in', array());
 }
 
-$template->assign_vars(array(
+$template->assign_vars([
 	'SITE_NAME' => $config->site_name,
 	'SITE_DESC' => $config->site_desc,
 	'TEMPLATE_PATH' => 'templates/' . $config->template . '/',
@@ -77,10 +77,10 @@ $template->assign_vars(array(
 	'PATH' => MFPATH,
 	'USER_ID' => $user->id,
 	'USER_NAME' => $user->name,
-	'COPYRIGHT' => '<h3 style="margin:0"><a href="http://duanxq.cn"><strong>路漫漫</strong>版权所有 @2016-2099 </a></h3>',
+	'COPYRIGHT' => '<h3 style="margin:0"><a href="'.BASE_URL.'"><strong>废土战记Team </strong> @2016-2099 </a></h3>',
 	'DIRECTION' => $lang->screenDirection,
-	'ENCODING' => $lang->encoding,
-));
+	'ENCODING' => $lang->encoding
+]);
 
 if ( $user->admin ) {
 	$template->assign_block_vars('admin_panel', array());

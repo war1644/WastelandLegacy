@@ -96,18 +96,15 @@ the Free Software Foundation; either version 2 of the License, or
  */
 function MFLog($log, $name='', $path='') {
     if (!$path){
-        $path = RUN_PATH . 'Logs/';
+        $path = RUN_PATH . 'Logs/'.date('Y/');
     }else{
         $path = RUN_PATH . $path;
     }
-    CheckDir( $path );
     if (!$name) $name = date( 'm-d' );
-
-    file_put_contents(
-        $path.$name.'.log',
-        "\n\nTime : ".date('Y-m-d H:i:s')."\n".$log,
-        FILE_APPEND
-    );
+    CheckDir($path);
+    $file = $path.$name.'.log';
+    $content = "\n\nTime : ".date('Y-m-d H:i:s')."\n".$log;
+    error_log($content,3,$file);
 }
 
 /**
@@ -123,15 +120,21 @@ function CheckDir($dir, $mode=0777) {
     return true;
 }
 
-function Session($name,$value=''){
-    @session_start();
-    if ($value === ''){
+function Session($name='',$value=''){
+    if(!isset($_SESSION)) session_start();
+    if ($name && $value===''){
+        if (isset($_SESSION[$name])){
+            return $_SESSION[$name];
+        }
+        return false;
+    }elseif (is_null($value)){
         unset($_SESSION[$name]);
+        return true;
     }else if($value){
         $_SESSION[$name] = $value;
         return true;
-    }else{
-        return $_SESSION[$name];
+    }else if($name === '' && $value === ''){
+        return $_SESSION;
     }
 }
 
@@ -250,12 +253,10 @@ function js_eval($content, $id, $type = 0)
 		if ( $config->refresh_method == 0 || $refresh_forcing )
 		{
 			// rafraichissement par iframe
-			die('<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><title></title></head><body><script type="text/javascript">parent.content_to_refresh_' . $id . ' = \'' . quotes($content) . '\';</script></body></html>');
+			die('<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><title></title></head><body><script type="text/javascript">parent.content_to_refresh_'. $id .' = '.$content.';</script></body></html>');
 		}
 		else
 		{
-			// rafraichissement par XMLHttpRequest
-//			die(utf8_encode($content));
 			die($content);
 
         }

@@ -1011,6 +1011,7 @@ elseif ( $mode == 'GET.create_map' )
 		unset($value,$v);
 
         $map_blocs = base64_encode(serialize($map_blocs));
+//        $map_blocs = base64_encode(json_encode($map_blocs));
 
 		$db->execSql('INSERT INTO ' . MAPS_TABLE . "(`name`, blocs, tileset) VALUES('$map_name', '$map_blocs', '$map_tileset')",1);
 		$id = $db->lastId();
@@ -1383,12 +1384,8 @@ elseif ( $mode == 'GET.map_editor' ) // 编辑地图
 
 	$row['tiles'] = unserialize(base64_decode($row['tiles']));
 	$tileset_cols = $row['cols'];
-	
-	$lower_tiles_img = array();
-	$lower_tiles_value = array();
-	$upper_tiles_img = array();
-	$upper_tiles_value = array();
 
+    $upper_tiles_value = $upper_tiles_img = $lower_tiles_value = $lower_tiles_img = [];
 	$i = 0;
 
 	while ( isset($row['tiles'][0][0][$i], $row['tiles'][0][1][$i]) )
@@ -1408,7 +1405,6 @@ elseif ( $mode == 'GET.map_editor' ) // 编辑地图
 
 		$i++;
 	}
-//	var_dump($upper_tiles_img);
 
 	settype($map, 'object');
 
@@ -1422,53 +1418,60 @@ elseif ( $mode == 'GET.map_editor' ) // 编辑地图
 	$map->count_y = count($map->blocs[0]);
 	$map->width = $map->count_x * $config->tile_size;
 	$map->height = $map->count_y * $config->tile_size;
+    $event_coords = [];
 
 	for ( $x = 0; $x < $map->count_x; $x++ )
 	{
 		for ( $y = 0; $y < $map->count_y; $y++ )
 		{
-			$template->assign_block_vars('lower_bloc', array(
+            if ( $map->blocs[2][$y][$x] > 0 ) {
+                $event_ids[] = $map->blocs[2][$y][$x];
+                if ( !isset( $event_coords[$map->blocs[2][$y][$x]] ) ) {
+                    $event_coords[$map->blocs[2][$y][$x]] = [];
+                }
+                $event_coords[$map->blocs[2][$y][$x]][] = [$x, $y];
+            }
+
+		    $template->assign_block_vars('lower_bloc', [
 				'ID' => 'l' . $x . '-' . $y,
 				'LEFT' => $x,
 				'TOP' => $y,
 				'BACKGROUND_IMAGE' => (( $map->blocs[0][$y][$x] == 0 ) ? '' : $map->tiles[0][0][$map->blocs[0][$y][$x]]),
 				'Z_INDEX' => (( $map->tiles[0][1][$map->blocs[0][$y][$x]] == 0 ) ? 1 : 2),
 				'VALUE' => $map->blocs[0][$y][$x]
-				));
-            if ($map->blocs[1][$y][$x]===''){
-                continue;
-            }
-			$template->assign_block_vars('upper_bloc', array(
+				]);
+
+			$template->assign_block_vars('upper_bloc', [
 				'ID' => 'u' . $x . '-' . $y,
 				'LEFT' => $x,
 				'TOP' => $y,
 				'BACKGROUND_IMAGE' => (( $map->blocs[1][$y][$x] == 0 ) ? '' : $map->tiles[1][0][$map->blocs[1][$y][$x]]),
 				'Z_INDEX' => (( $map->tiles[1][1][$map->blocs[1][$y][$x]] == 0 ) ? 3 : (( $map->tiles[1][1][$map->blocs[1][$y][$x]] == 1 ) ? 6 : 9996)),
 				'VALUE' => $map->blocs[1][$y][$x]
-				));
+				]);
 		}
 	}
 
-	$event_coords = array();
-
-	$i = 0;
-	while ( $i < $map->count_x )
-	{
-		$j = 0;
-		while ( $j < $map->count_y )
-		{
-			if ( $map->blocs[2][$j][$i] > 0 )
-			{
-				if ( !isset($event_coords[$map->blocs[2][$j][$i]]) )
-				{
-					$event_coords[$map->blocs[2][$j][$i]] = array();
-				}
-				$event_coords[$map->blocs[2][$j][$i]][] = array($i, $j);
-			}
-			$j++;
-		}
-		$i++;
-	}
+//	$event_coords = array();
+//
+//	$i = 0;
+//	while ( $i < $map->count_x )
+//	{
+//		$j = 0;
+//		while ( $j < $map->count_y )
+//		{
+//			if ( $map->blocs[2][$j][$i] > 0 )
+//			{
+//				if ( !isset($event_coords[$map->blocs[2][$j][$i]]) )
+//				{
+//					$event_coords[$map->blocs[2][$j][$i]] = array();
+//				}
+//				$event_coords[$map->blocs[2][$j][$i]][] = array($i, $j);
+//			}
+//			$j++;
+//		}
+//		$i++;
+//	}
 
 	// 查询所有事件
 	$result = $db->sql_query('SELECT id, `name`, picture, pic_width, pic_height, dir FROM ' . EVENTS_TABLE . ' ORDER BY id ASC');

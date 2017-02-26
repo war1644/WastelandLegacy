@@ -72,7 +72,6 @@ function select_event(id)
 		var dir_left = - dir[0] * width;
 		var dir_top = - dir[1] * height;
 
-		//alert('<div class="playermain" id="' + id + '" style="left:' + left + 'px;top:' + top + 'px;z-index:' + z_index + '"><div class="eventsprite" style="width:' + width + 'px;height:' + height + 'px"><div class="eventcharaset" id="charaset_' + id + '" style="left:' + dir_left + 'px;top:' + dir_top + 'px;background-image:url(images/charasets/' + picture + '.png);width:' + (width * 4) + 'px;height:' + (height * 4) + 'px"></div></div></div>');
 
 		document.getElementById('actual_event').innerHTML = '<div class="eventsprite" style="width:' + width + 'px;height:' + height + 'px"><div class="eventcharaset" style="left:' + dir_left + 'px;top:' + dir_top + 'px;background-image:url(images/charasets/' + picture + ');width:' + (width * 4) + 'px;height:' + (height * 4) + 'px"></div></div>';
 	}

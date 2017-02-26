@@ -104,21 +104,6 @@ $user = new User();
             }
         }
 
-
-//        $data['players'][] = [
-//            'ID' => $user->id,
-//            'BATTLE_ID' => $user->battle_id,
-//            'BATTLE_STATE' => $user->battle_state,
-//            'NAME' => $user->name,
-//            'CHARASET' => $user->charaset,
-//            'x' => $user->map_left,
-//            'y' => $user->map_top,
-//            'DIR' => $user->map_dir,
-//            'MOVES' => $user->map_moves,
-//            'WIDTH' => ceil( $user->pic_width / 4 ),
-//            'HEIGHT' => ceil( $user->pic_height / 4 )
-//        ];
-
         $time = time();
         $sql = 'SELECT `name`, id, map_left, map_top, map_dir, map_moves, charaset, pic_width, pic_height, battle_id, battle_state FROM ' . USERS_TABLE . " WHERE id != $user->id and map_id = $user->map_id and battle_id>0 and map_last_visit > ($config->server_time - 30)";
         $rs = $db->sql_query( $sql, 1 );
