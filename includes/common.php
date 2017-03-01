@@ -96,15 +96,18 @@ the Free Software Foundation; either version 2 of the License, or
  */
 function MFLog($log, $name='', $path='') {
     if (!$path){
-        $path = RUN_PATH . 'Logs/'.date('Y/');
+        $path = RUN_PATH . 'Logs/';
     }else{
         $path = RUN_PATH . $path;
     }
+    CheckDir( $path );
     if (!$name) $name = date( 'm-d' );
-    CheckDir($path);
-    $file = $path.$name.'.log';
-    $content = "\n\nTime : ".date('Y-m-d H:i:s')."\n".$log;
-    error_log($content,3,$file);
+
+    file_put_contents(
+        $path.$name.'.log',
+        "\n\nTime : ".date('Y-m-d H:i:s')."\n".$log,
+        FILE_APPEND
+    );
 }
 
 /**
@@ -120,21 +123,15 @@ function CheckDir($dir, $mode=0777) {
     return true;
 }
 
-function Session($name='',$value=''){
-    if(!isset($_SESSION)) session_start();
-    if ($name && $value===''){
-        if (isset($_SESSION[$name])){
-            return $_SESSION[$name];
-        }
-        return false;
-    }elseif (is_null($value)){
+function Session($name,$value=''){
+    @session_start();
+    if ($value === null){
         unset($_SESSION[$name]);
-        return true;
     }else if($value){
         $_SESSION[$name] = $value;
         return true;
-    }else if($name === '' && $value === ''){
-        return $_SESSION;
+    }else{
+        return $_SESSION[$name];
     }
 }
 
@@ -253,10 +250,12 @@ function js_eval($content, $id, $type = 0)
 		if ( $config->refresh_method == 0 || $refresh_forcing )
 		{
 			// rafraichissement par iframe
-			die('<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><title></title></head><body><script type="text/javascript">parent.content_to_refresh_'. $id .' = '.$content.';</script></body></html>');
+			die('<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><title></title></head><body><script type="text/javascript">parent.content_to_refresh_' . $id . ' = \'' . quotes($content) . '\';</script></body></html>');
 		}
 		else
 		{
+			// rafraichissement par XMLHttpRequest
+//			die(utf8_encode($content));
 			die($content);
 
         }
@@ -335,11 +334,8 @@ function create_battle($monsters, $users, $background = '', $music = '')
 
 	if ( !is_array($users) )
 	{
-        $u = $users;
-	    $users = array($users);
-	}else{
-        $u = join(',',$users);
-    }
+		$users = array($users);
+	}
 
 	foreach ( $users as $key => $id )
 	{
@@ -354,7 +350,7 @@ function create_battle($monsters, $users, $background = '', $music = '')
 		die('warning : 创建战斗所需的一个有效的用户 id');
 	}
 
-
+    $u = join(',',$users);
 	$db->sql_query("INSERT INTO ".BATTLES_TABLE." (users,music,background) VALUES ('$u','$music','$background')");
 
 	$battle_id = $db->lastId();
@@ -395,8 +391,8 @@ function equipment_query($type='')
 {
 	global $user, $db;
 	$map_id = $user->map_id;
-	$result = $db->getAll("SELECT * FROM phpore_equipment WHERE type =  $type and  place =  2 ");//测试
-	// $result = $db->getAll("SELECT * FROM phpore_equipment WHERE type =  $type and  place =  $map_id ");
+	// $result = $db->getAll("SELECT * FROM phpore_equipment WHERE type =  $type and  place =  2 ");//测试
+	$result = $db->getAll("SELECT * FROM phpore_equipment WHERE type =  $type and  place =  $map_id ");
 	return $result;
 }
 
@@ -437,6 +433,34 @@ function user_equipment_add($equipment_id,$num)
 
 }
 
+
+
+
+//获取用户物品  '物品名'=> 数量
+function user_equipment_list()
+{
+	global $user, $db;
+	$id = $user->id;
+
+	$result = $db->getRow("SELECT equipment FROM phpore_users WHERE id =  $id ");
+
+	if (!$result) {
+		return false ;
+	}
+	$equipment = json_decode($result['equipment'], true);
+
+
+	$result = $db -> getall('SELECT * FROM phpore_equipment');
+
+	foreach ($equipment as $key => $value) {
+		$key = $result[$key]['name'];
+		$array[$key] =  $value; 
+	}
+	return $array ;
+
+
+	
+}
 
 
 
@@ -1029,7 +1053,7 @@ class Template {
 		return true;
 	}
 
-	// 输出数组变量到模版
+	// 输出变量到模版
 	function assign_block_vars($blockname, $vararray)
 	{
 		if ( strstr($blockname, '.') )

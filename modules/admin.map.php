@@ -1,4 +1,19 @@
 <?php
+
+/*
+
+Program: phpore
+Author: Jeremy Faivre
+Contact: http://www.jeremyfaivre.com/about
+Year: 2005
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+*/
+
 MFLog(json_encode($_POST));
 
 if ( !$user->logged_in || !$user->admin )
@@ -110,7 +125,7 @@ elseif ( $mode == 'POST.save_tileset' ) // sauver tileset
 	$lang->load_keys('tileset_editor');
 	js_eval('alert(\'' . $lang->tileset_saved . '\');saved=true;', $refresh_id, 1);
 }
-elseif ( $mode == 'POST.save_event' ) // 保存事件
+elseif ( $mode == 'POST.save_event' ) // sauver �v�nement
 {
 	$refresh_id = 1;
 
@@ -243,7 +258,7 @@ elseif ( $mode == 'POST.players_position' ) // 设置已注册玩家的位置
 		exit;
 	}
 }
-elseif ( $mode == 'POST.preset_event' )
+elseif ( $mode == 'POST.preset_event' ) // �v�nement pr�d�fini
 {
 	$refresh_id = 1;
 	$lang->load_keys('map_editor');
@@ -989,12 +1004,12 @@ elseif ( $mode == 'GET.create_map' )
 		$map_tileset = intval($_POST['map_tileset']);
 		$map_width = ( intval($_POST['map_width']) < 1 ) ? 1 : intval($_POST['map_width']);
 		$map_height = ( intval($_POST['map_height']) < 1 ) ? 1 : intval($_POST['map_height']);
-		$map_blocs = [[],[],[]];
+		$map_blocs = array(array(), array(), array());
 
 		$i = 0;
 		while ( $i < $map_height )
 		{
-			$v = $value = [];
+			$v = $value = array();
 			$j = 0;
 			while ( $j < $map_width )
 			{
@@ -1011,9 +1026,8 @@ elseif ( $mode == 'GET.create_map' )
 		unset($value,$v);
 
         $map_blocs = base64_encode(serialize($map_blocs));
-//        $map_blocs = base64_encode(json_encode($map_blocs));
 
-		$db->execSql('INSERT INTO ' . MAPS_TABLE . "(`name`, blocs, tileset) VALUES('$map_name', '$map_blocs', '$map_tileset')",1);
+		$db->sql_query('INSERT INTO ' . MAPS_TABLE . "(`name`, blocs, tileset) VALUES('$map_name', '$map_blocs', '$map_tileset')");
 		$id = $db->lastId();
 
 		header('Location:' . BASE_URL .'index.php?mod=admin.map&mode=map_editor&map_id=' . $id);
@@ -1274,6 +1288,12 @@ elseif ( $mode == 'POST.save_map' ) // 保存地图
                 {
                     imagecopy($picture, imagecreatefrompng(MFPATH . 'images/tiles/' . $map_tiles[0][0][$map_blocs[0][$y][$x]]), $x * $config->tile_size, $y * $config->tile_size, 0, 0, $config->tile_size, $config->tile_size);
                 }
+                // upper layer 1
+//                if ( $map_blocs[1][$y][$x] != 0 && strtolower(substr($map_tiles[1][0][$map_blocs[1][$y][$x]], -4)) == '.png' && $map_tiles[1][1][$map_blocs[1][$y][$x]] != 2 )//
+//                {
+//                    $png = imagecreatefrompng(MFPATH . 'images/tiles/' . $map_tiles[1][0][$map_blocs[1][$y][$x]]);
+//                    imagecopy($picture, $png, $x * $config->tile_size, $y * $config->tile_size, 0, 0, $config->tile_size, $config->tile_size);
+//                }
 
                 $x++;
             }
@@ -1384,8 +1404,12 @@ elseif ( $mode == 'GET.map_editor' ) // 编辑地图
 
 	$row['tiles'] = unserialize(base64_decode($row['tiles']));
 	$tileset_cols = $row['cols'];
+	
+	$lower_tiles_img = array();
+	$lower_tiles_value = array();
+	$upper_tiles_img = array();
+	$upper_tiles_value = array();
 
-    $upper_tiles_value = $upper_tiles_img = $lower_tiles_value = $lower_tiles_img = [];
 	$i = 0;
 
 	while ( isset($row['tiles'][0][0][$i], $row['tiles'][0][1][$i]) )
@@ -1405,6 +1429,7 @@ elseif ( $mode == 'GET.map_editor' ) // 编辑地图
 
 		$i++;
 	}
+//	var_dump($upper_tiles_img);
 
 	settype($map, 'object');
 
@@ -1418,60 +1443,53 @@ elseif ( $mode == 'GET.map_editor' ) // 编辑地图
 	$map->count_y = count($map->blocs[0]);
 	$map->width = $map->count_x * $config->tile_size;
 	$map->height = $map->count_y * $config->tile_size;
-    $event_coords = [];
 
 	for ( $x = 0; $x < $map->count_x; $x++ )
 	{
 		for ( $y = 0; $y < $map->count_y; $y++ )
 		{
-            if ( $map->blocs[2][$y][$x] > 0 ) {
-                $event_ids[] = $map->blocs[2][$y][$x];
-                if ( !isset( $event_coords[$map->blocs[2][$y][$x]] ) ) {
-                    $event_coords[$map->blocs[2][$y][$x]] = [];
-                }
-                $event_coords[$map->blocs[2][$y][$x]][] = [$x, $y];
-            }
-
-		    $template->assign_block_vars('lower_bloc', [
+			$template->assign_block_vars('lower_bloc', array(
 				'ID' => 'l' . $x . '-' . $y,
 				'LEFT' => $x,
 				'TOP' => $y,
 				'BACKGROUND_IMAGE' => (( $map->blocs[0][$y][$x] == 0 ) ? '' : $map->tiles[0][0][$map->blocs[0][$y][$x]]),
 				'Z_INDEX' => (( $map->tiles[0][1][$map->blocs[0][$y][$x]] == 0 ) ? 1 : 2),
 				'VALUE' => $map->blocs[0][$y][$x]
-				]);
-
-			$template->assign_block_vars('upper_bloc', [
+				));
+            if ($map->blocs[1][$y][$x]===''){
+                continue;
+            }
+			$template->assign_block_vars('upper_bloc', array(
 				'ID' => 'u' . $x . '-' . $y,
 				'LEFT' => $x,
 				'TOP' => $y,
 				'BACKGROUND_IMAGE' => (( $map->blocs[1][$y][$x] == 0 ) ? '' : $map->tiles[1][0][$map->blocs[1][$y][$x]]),
 				'Z_INDEX' => (( $map->tiles[1][1][$map->blocs[1][$y][$x]] == 0 ) ? 3 : (( $map->tiles[1][1][$map->blocs[1][$y][$x]] == 1 ) ? 6 : 9996)),
 				'VALUE' => $map->blocs[1][$y][$x]
-				]);
+				));
 		}
 	}
 
-//	$event_coords = array();
-//
-//	$i = 0;
-//	while ( $i < $map->count_x )
-//	{
-//		$j = 0;
-//		while ( $j < $map->count_y )
-//		{
-//			if ( $map->blocs[2][$j][$i] > 0 )
-//			{
-//				if ( !isset($event_coords[$map->blocs[2][$j][$i]]) )
-//				{
-//					$event_coords[$map->blocs[2][$j][$i]] = array();
-//				}
-//				$event_coords[$map->blocs[2][$j][$i]][] = array($i, $j);
-//			}
-//			$j++;
-//		}
-//		$i++;
-//	}
+	$event_coords = array();
+
+	$i = 0;
+	while ( $i < $map->count_x )
+	{
+		$j = 0;
+		while ( $j < $map->count_y )
+		{
+			if ( $map->blocs[2][$j][$i] > 0 )
+			{
+				if ( !isset($event_coords[$map->blocs[2][$j][$i]]) )
+				{
+					$event_coords[$map->blocs[2][$j][$i]] = array();
+				}
+				$event_coords[$map->blocs[2][$j][$i]][] = array($i, $j);
+			}
+			$j++;
+		}
+		$i++;
+	}
 
 	// 查询所有事件
 	$result = $db->sql_query('SELECT id, `name`, picture, pic_width, pic_height, dir FROM ' . EVENTS_TABLE . ' ORDER BY id ASC');
@@ -1546,4 +1564,211 @@ elseif ( $mode == 'GET.map_editor' ) // 编辑地图
 	$template->pparse('header');
 	$template->pparse('body');
 	$template->pparse('footer');
+}
+elseif ( $mode == 'GET.create_equipment' ) 
+{
+
+
+
+	if ( !empty($_POST['create_equipment']) && isset($_POST['name']) )
+	{
+
+
+
+		$result = $db->sql_query('SELECT MAX(id) AS max FROM phpore_equipment');
+		$id = $db->sql_fetchrow($result);
+		$id = $id['max'] + 1;
+		$place = $_POST['map_id'];
+		$type = $_POST['type'];
+		$position = $_POST['position'];
+		$name = $_POST['name'];
+		$price = $_POST['price'];
+		$attack = $_POST['attack'];
+		$range = $_POST['range'];
+		$defence = $_POST['defence'];
+		$usable = $_POST['usable'];
+		$effects = $_POST['effects'];
+		// $sql = 'INSERT INTO phpore_equipment (id, place, type, position, name, price, attack, range, defence,usable,effects) VALUES('."$id,$place,$type,$position,$name,$price,$attack,$range,$defence,$usable,$effects ".')' ;
+		$sql = 'INSERT INTO phpore_equipment VALUES('.$id.','.$place.','.$type.', \''.$position.' \',\''.$name.'\','.$price.',\''.$attack.'\',\''.$range.'\',\''.$defence.'\',\''.$usable.'\',\''.$effects.'\')';
+		$a = $db->execSql($sql);
+
+		// var_dump($a);
+		if ($a) {
+			echo "好了";
+		}else{
+			echo "哪里填错了";
+		}
+		exit;
+	}
+
+
+
+	$lang->load_keys('select_map_to_edit');
+
+	$result = $db->sql_query('SELECT id, name FROM ' . MAPS_TABLE . ' ORDER BY id ASC');
+
+	while ( $row = $db->sql_fetchrow($result) )
+	{
+		$template->assign_block_vars('map_list', array(
+			'NAME' => $row['name'],
+			'ID' => $row['id']
+			));
+	}
+
+	$template->assign_vars(array(
+		'PAGE_NAME' => $lang->edit_map
+		));
+
+
+
+
+
+
+
+	$template->set_filenames(array(
+		'header' => 'admin_header.tpl',
+		'footer' => 'admin_footer.tpl',
+		'body' => 'admin.create_equipment.tpl'
+		));
+
+	$template->pparse('header');
+	$template->pparse('body');
+	$template->pparse('footer');
+}elseif ( $mode == 'GET.editor_equipment' ) 
+{
+
+	$result = $db->sql_query('SELECT * FROM phpore_equipment');
+
+	while ( $row = $db->sql_fetchrow($result) )
+	{
+		// var_dump($row);
+		$template->assign_block_vars('equipment_list', array(
+			'PLACE' => $row['place'],
+			'TYPE' => $row['type'],
+			'POSITION' => $row['position'],
+			'PRICE' => $row['price'],
+			'NAME' => $row['name'],
+			'ATTACK' => $row['attack'],
+			'RANGE' => $row['range'],
+			'DEFENCE' => $row['defence'],
+			'USABLE' => $row['usable'],
+			'EFFECTS' => $row['effects'],
+			'ID' => $row['id']
+			));
+	}
+
+	$template->set_filenames(array(
+		'header' => 'admin_header.tpl',
+		'footer' => 'admin_footer.tpl',
+		'body' => 'admin.editor_equipment.tpl'
+		));
+
+	$template->pparse('header');
+	$template->pparse('body');
+	$template->pparse('footer');
+
+
+}elseif ( $mode == 'GET.editors_equipment' ) 
+{
+
+
+
+
+
+
+
+
+	if ( !empty($_POST['editors_equipment']) && isset($_POST['id']) )
+	{
+
+
+
+
+		$id = $_POST['id'];
+		$place = $_POST['map_id'];
+		$type = $_POST['type'];
+		$position = $_POST['position'];
+		$name = $_POST['name'];
+		$price = $_POST['price'];
+		$attack = $_POST['attack'];
+		$range = $_POST['range'];
+		$defence = $_POST['defence'];
+		$usable = $_POST['usable'];
+		$effects = $_POST['effects'];
+
+		//$sql = 'UPDATE phpore_equipment' . " SET place = '$place', type = '$type', position = '$position', name = '$name', price = '$price', attack ='$attack', range = '$range', defence = '$defence', usable = '$usable', effects = '$effects' WHERE id = $id";
+
+		$sql = 'UPDATE phpore_equipment' . " SET place = '$place', type = '$type', position = '$position', name = '$name', price = '$price', attack ='$attack' ,defence = '$defence' , usable = '$usable', effects = '$effects' , `range` =  '$range'  WHERE id = $id";
+
+
+		// echo $sql;
+		$a = $db->execSql($sql);
+
+		// var_dump($a);
+		if ($a) {
+			echo "<script>alert('好了!');location.href='/index.php?mod=admin.map&mode=editor_equipment';</script>"; 
+			// sleep(2);
+			// header('Location: ' . MFPATH . $config->index . '?mod=admin.map&mode=editor_equipment');
+
+		}else{
+			echo "哪里填错了";
+		}
+		exit;
+	}
+
+
+
+
+
+
+
+	$id = $_GET['id'];
+	$row = $db->getRow('SELECT * FROM phpore_equipment WHERE id = ' . $id);
+
+	$template->assign_vars(array(
+			'PLACE' => $row['place'],
+			'TYPE' => $row['type'],
+			'POSITION' => $row['position'],
+			'PRICE' => $row['price'],
+			'ATTACK' => $row['attack'],
+			'RANGE' => $row['range'],
+			'DEFENCE' => $row['defence'],
+			'USABLE' => $row['usable'],
+			'EFFECTS' => $row['effects'],
+			'NAME' => $row['name'],
+			'ID' => $row['id']
+		));
+
+	$lang->load_keys('select_map_to_edit');
+
+	$result = $db->sql_query('SELECT id, name FROM ' . MAPS_TABLE . ' ORDER BY id ASC');
+
+	while ( $row = $db->sql_fetchrow($result) )
+	{
+		$template->assign_block_vars('map_list', array(
+			'NAME' => $row['name'],
+			'ID' => $row['id']
+			));
+	}
+
+	$template->assign_vars(array(
+		'PAGE_NAME' => $lang->edit_map
+		));
+
+
+
+
+
+	// var_dump($result);
+	$template->set_filenames(array(
+		'header' => 'admin_header.tpl',
+		'footer' => 'admin_footer.tpl',
+		'body' => 'admin.editors_equipment.tpl'
+		));
+
+	$template->pparse('header');
+	$template->pparse('body');
+	$template->pparse('footer');
+
+
 }

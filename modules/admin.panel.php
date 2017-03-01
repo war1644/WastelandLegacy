@@ -47,6 +47,10 @@ if ( $mode == 'GET.nav' )
 		'delete_event' => $lang->delete_event,
 		'synchro_pic' => $lang->synchro_pic
 		));
+	$nav_menu[] = array('admin.map', $lang->equipmentr_editor, array(
+		'create_equipment' => $lang->create_equipment,
+		'editor_equipment' => $lang->editor_equipment,
+		));
 
 	$i = 0;
 	while ( isset($nav_menu[$i]) )
