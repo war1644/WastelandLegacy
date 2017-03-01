@@ -199,6 +199,9 @@ class CN
             $this->class_editor = '职业编辑器';
             $this->delete_class = '删除职业';
             $this->create_class = '创建职业';
+            $this->equipmentr_editor = '物品编辑器';
+            $this->create_equipment = '创建物品';
+            $this->editor_equipment = '物品编辑';
         } elseif ( $cat == 'user_editor' )
         {
             $this->user_editor = '角色编辑器';
