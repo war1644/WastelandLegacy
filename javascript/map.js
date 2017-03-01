@@ -154,6 +154,29 @@ function refresh_action(refresh_id, file_name, refresh_time) {
 }
 
 
+//请求物品详情
+function equipment_list() {
+
+    var str = ''
+  $.get("/index.php?mod=api&m=equipment_list", function(result){
+    // $("div").html(result);
+
+        var result =  JSON.parse(result);
+        // alert(result);
+        $.each(result, function(name, value) {
+
+            str += name+'有'+value+'个';
+
+       //this指向当前属性的值
+         //name表示Object当前属性的名称
+         //value表示Object当前属性的值
+        });
+
+        alert(str);
+  });
+   
+};
+
 
 function show_message(message, key, script, align, time, face)
 {

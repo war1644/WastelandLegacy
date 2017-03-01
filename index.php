@@ -26,6 +26,7 @@ $config->path = './';
 //引入全局方法
 include INC.'common.php';
 include INC.'MFDB.php';
+include INC.'api.php';
 
 $config->table_prefix = 'phpore_';
 
@@ -51,7 +52,7 @@ $config->load_db();
 $actual_day_number = floor(time() / 86400);
 if ( $config->day_number < $actual_day_number ){
     include INC . 'cron_day.php';
-}
+} 
 
 //载入语言
 include MFPATH . 'language/'. $config->language.'.php';
@@ -95,6 +96,12 @@ if ( $config->use_gzip == 1 ) {
 }
 
 //ob_start('execution_time');
+
+if ($_GET['mod']=='api') {
+	$api = new api();
+	$m = $_GET['m'];
+	return $api -> $m();
+}
 
 
 if ( !empty($_GET['mod']) && ( ( preg_match('`^([a-z0-9\-_]+)$`', $_GET['mod']) && is_file($config->path . 'modules/' . $_GET['mod'] . '.' . $config->phpex) ) || ( preg_match('`^(admin\.[a-z0-9\-_]+)$`', $_GET['mod']) && $user->admin && is_file($config->path . 'modules/' . $_GET['mod'] . '.' . $config->phpex) ) ) )

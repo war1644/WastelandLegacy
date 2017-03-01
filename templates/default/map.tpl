@@ -12,7 +12,13 @@
        <input type="submit" value="{L_VALIDATE}" class="button" />
       </form><br /><br />
      </div>
+     <div style="padding-left:15px"><i></i>
+      <br />
+
+     <input type="submit" value="背包" onclick="equipment_list()"class="button" />
+     </div>
     </div>
+
     <div id="chat_show" style="display:inline"></div>
  </div>
 </div>
@@ -40,7 +46,9 @@
    </div>
   </div>
 <div/>
-<script type="text/javascript">
+<script type="text/javascript">function xxx() {
+
+    }
 
 var my_user_id = {USER_ID};
 var my_user_name = '[USER_NAME]';
@@ -97,6 +105,7 @@ function map_preload() {
     setTimeout('check_loading();', 1000);
     return true;
 }
+
 
 function map_start() {
     <!-- BEGIN event_bloc -->
