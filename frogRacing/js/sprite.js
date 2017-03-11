@@ -83,12 +83,13 @@ jumpBehavior.prototype = {
 				if (sprite.sheet.index === 0) {
 					sprite.status = 2;
 					for (var i = 0, len = game.sprites.length; i < len; i++) {
-						game.sprites[i].status === 2 && (sprite.rank++);
-					}
+                        game.sprites[i].status === 2 && (sprite.rank++);
+                    }
+                    // sprite.rank++;
 					$('#info').find('li').eq(sprite.num - 1).append('<span class="rank">' + sprite.rank + '</span>');
-					if (sprite.rank === game.TRACK.count) {
+					// if (sprite.rank === game.TRACK.count) {
 						game.over();
-					}
+					// }
 				}
 			}
 		}
@@ -127,9 +128,9 @@ walkBehavior.prototype = {
 						game.sprites[i].status === 2 && (sprite.rank++);
 					}
 					$('#info').find('li').eq(sprite.num - 1).append('<span class="rank">' + sprite.rank + '</span>');
-					if (sprite.rank === game.TRACK.count) {
+					// if (sprite.rank === game.TRACK.count) {
 						game.over();
-					}
+					// }
 				}
 			} else {
 				sprite.sheet.index = 0;
