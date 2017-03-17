@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    var timestamp = Date.parse(new Date()) - 4200*1000;
+
+    function formatDate(now) {
+
+        if(typeof now == 'undefined'){
+            now = new Date();
+        } else {
+            now = new Date(now);
+        }
+        console.log(now);
+        var year=now.getFullYear();
+        var month= addZero(now.getMonth()+1);
+        var date= addZero(now.getDate());
+        var hour=addZero(now.getHours());
+        var minute=addZero(now.getMinutes());
+        var second=addZero(now.getSeconds());
+        return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+    }
+    function addZero(num) {
+        if (num<10) {
+            num = '0' + num;
+        }
+        return num;
+    }
+    console.log(formatDate(timestamp));
+
+</script>
+</html>

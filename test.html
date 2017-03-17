@@ -24,8 +24,27 @@
         animation: aniMove steps(3,end) 0.3s infinite;
         animation-play-state:paused;
     }
+    .loading {
+        display: table;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #fff;
+        z-index: 5;
+    }
+
+    .loading .progress {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+    }
 </style>
 <body>
+<div class="loading" id="loading">
+    <div class="progress" id="progress">0%</div>
+</div>
 <div id="sprite"></div>
 <!--<button id="restart" onclick="reset();">重新开始</button>-->
 </body>
@@ -35,6 +54,8 @@
 <script src="javascript/collision.js"></script>
 
 <script>
+
+
     var urlArr = ["cache/map_3_0.png","cache/map_3_1.png","cache/map_3_2.png","images/charasets/NPC (6).png"];
     var mapWidth,mapHeight,tileSize=24,img,mapSize = {x:0,y:0};
 
