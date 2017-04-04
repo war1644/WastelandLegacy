@@ -301,9 +301,10 @@ if ( $mode == 'GET.action' ) {
     $rows = $db->sql_fetchrows($rs);
     foreach ($rows as $row){
         $template->assign_block_vars('ally', array(
-            'ID' => $row['id'],
-            'NAME' => $row['name'],
-            'PICTURE' => $row['battler']
+            'id' => $row['id'],
+            'name' => $row['name'],
+            'pic' => $row['battler'],
+            'hp' => $row['hp']
         ));
     }
 
@@ -314,9 +315,10 @@ if ( $mode == 'GET.action' ) {
     foreach ($rows as $row){
         $enemy[$row['id']] = $row;
         $template->assign_block_vars('opponent', array(
-            'ID' => $row['id'],
-            'NAME' => $row['name'],
-            'PICTURE' => $row['picture']
+            'id' => $row['id'],
+            'name' => $row['name'],
+            'pic' => $row['picture'],
+            'hp' => $row['hp']
         ));
     }
     unset($rows);
@@ -324,11 +326,11 @@ if ( $mode == 'GET.action' ) {
         Session('enemy',json_encode($enemy));
     }
 
-    $template->set_filenames(array(
+    $template->set_filenames([
         'header' => 'page_header.tpl',
         'footer' => 'page_footer.tpl',
         'body' => 'battle.tpl'
-    ));
+    ]);
 
     $template->pparse('header');
     $template->pparse('body');

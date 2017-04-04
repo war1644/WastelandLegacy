@@ -156,10 +156,10 @@ var user_speed = {USER_SPEED};
 function battle_preload()
 {
 <!-- BEGIN ally -->
-	add_ally({ally.ID}, '[ally.NAME]', '[ally.PICTURE]');
+	add_ally({ally.id}, '[ally.name]', '[ally.pic]',{ally.hp});
 <!-- END ally -->
 <!-- BEGIN opponent -->
-	add_opponent({opponent.ID}, '[opponent.NAME]', '[opponent.PICTURE]');
+	add_opponent({opponent.id}, '[opponent.name]', '[opponent.pic]',{opponent.hp});
 <!-- END opponent -->
 <!-- BEGIN add_chat -->
 	chat_add('[add_chat.NAME]', '[add_chat.MESSAGE]');

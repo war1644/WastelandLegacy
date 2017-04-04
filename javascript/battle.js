@@ -374,3 +374,23 @@ window.onload = function()
 	start_drag('drag_layer2');
 	setTimeout('refresh_process();', 5100);
 };
+
+var Enemy = function () {
+    this.enemys = [
+    	{
+            name: '哈姆雷特', // 名称
+            hp: 3, // 赔率
+            gold: 100, // 最小赌注
+            prob: 0.25, // 跑动概率
+            freq: 250, // 跑动&检测频率
+            speed: 600, // 跑动速度
+            cell: {
+                x: 0,
+                y: 0,
+                width: 24,
+                height: 24,
+                count: 3
+            }
+		}
+    ];
+}
