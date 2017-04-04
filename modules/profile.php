@@ -1,7 +1,6 @@
 <?php
 
 $lang->load_keys('profile');
-MFlog(json_encode($_POST));
 
 $mode = ( isset($_POST['mode']) ) ? 'POST.' . trim($_POST['mode']) : (( isset($_GET['mode']) ) ? 'GET.' . trim($_GET['mode']) : '' );
 
@@ -116,13 +115,6 @@ elseif ( !$user->logged_in && ( $mode == 'GET.register' || $mode == 'POST.regist
 
 	while ( $row = $db->sql_fetchrow($result) )
 	{
-//		$template->assign_block_vars('class_list', array(
-//			'CLASSNAME' => $row['classname'],
-//			'CLASS_TITLE' => $row['class_title'],
-//			'BATTLER' => $row['battler'],
-//			'DESCRIPTION' => nl2br($row['description']),
-//			'CHECKED' => (( $first ) ? 'checked="checked" ' : '')
-//			));
 		$data[] = [
             'CLASSNAME' => $row['classname'],
             'CLASS_TITLE' => $row['class_title'],
@@ -133,22 +125,7 @@ elseif ( !$user->logged_in && ( $mode == 'GET.register' || $mode == 'POST.regist
 
 		$first = false;
 	}
-	echo json_encode($data);
-/*
-	$template->assign_vars(array(
-		'PAGE_NAME' => $lang->registering
-		));
 
-	$template->set_filenames(array(
-		'header' => 'page_header.tpl',
-		'footer' => 'page_footer.tpl',
-		'body' => 'default.tpl'
-		));
-
-	$template->pparse('header');
-	$template->pparse('body');
-	$template->pparse('footer');
-	*/
 }
 elseif ( $user->logged_in && ( $mode == 'GET.logout' || $mode == 'POST.logout' ) )
 {

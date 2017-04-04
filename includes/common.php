@@ -1,146 +1,6 @@
 <?php
-
-/*
-
-Program: phpore
-Author: Jeremy Faivre
-Contact: http://www.jeremyfaivre.com/about
-Year: 2005
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-*/
-
-
-//if( get_magic_quotes_gpc() )
-//{
-//	if( is_array($_GET) )
-//	{
-//		foreach( $_GET as $k => $v )
-//		{
-//			if( is_array($_GET[$k]) )
-//			{
-//				foreach( $_GET[$k] as $k2 => $v2 )
-//				{
-//					$_GET[$k][$k2] = stripslashes($v2);
-//				}
-//			}
-//			else
-//			{
-//				$_GET[$k] = stripslashes($v);
-//			}
-//		}
-//	}
-//
-//	if( is_array($_POST) )
-//	{
-//		foreach( $_POST as $k => $v )
-//		{
-//			if( is_array($_POST[$k]) )
-//			{
-//				foreach( $_POST[$k] as $k2 => $v2 )
-//				{
-//					$_POST[$k][$k2] = stripslashes($v2);
-//				}
-//			}
-//			else
-//			{
-//				$_POST[$k] = stripslashes($v);
-//			}
-//		}
-//	}
-//
-//	if( is_array($_COOKIE) )
-//	{
-//		foreach( $_COOKIE as $k => $v )
-//		{
-//			if( is_array($_COOKIE[$k]) )
-//			{
-//				foreach( $_COOKIE[$k] as $k2 => $v2 )
-//				{
-//					$_COOKIE[$k][$k2] = stripslashes($v2);
-//				}
-//			}
-//			else
-//			{
-//				$_COOKIE[$k] = stripslashes($v);
-//			}
-//		}
-//	}
-//}
-
-//
-// constantes
-//
-
-
-//
-// fonctions
-//
-
-/**
- * Created by 路漫漫.
- * Link: ahmerry@qq.com
- * Date: 2016/12/12 17:27
- * 一些方法
- */
-
-/**
- * 写入日志到文件
- * @param $log 日志内容
- * @param $name 日志文件名
- * @param $path 日志路径
- */
-function MFLog($log, $name='', $path='') {
-    if (!$path){
-        $path = RUN_PATH . 'Logs/';
-    }else{
-        $path = RUN_PATH . $path;
-    }
-    CheckDir( $path );
-    if (!$name) $name = date( 'm-d' );
-
-    file_put_contents(
-        $path.$name.'.log',
-        "\n\nTime : ".date('Y-m-d H:i:s')."\n".$log,
-        FILE_APPEND
-    );
-}
-
-/**
- * 检测是否是有该文件夹，没有则生成
- */
-function CheckDir($dir, $mode=0777) {
-    if (!$dir)  return false;
-    if(!is_dir($dir)) {
-        if (!file_exists($dir) && @mkdir($dir, $mode, true))
-            return true;
-        return false;
-    }
-    return true;
-}
-
-function Session($name,$value=''){
-    @session_start();
-    if ($value === null){
-        unset($_SESSION[$name]);
-    }else if($value){
-        $_SESSION[$name] = $value;
-        return true;
-    }else{
-        return $_SESSION[$name];
-    }
-}
-
-// met en cache une variable
-function create_cache($var_name)
-{
+function create_cache($var_name) {
 	global $$var_name, $config;
-
-    /*$file = '<?php' . "\n\n" . 'if ( !defined(\'IN_PHPORE\') )' . "\n" . '{' . "\n\t" . 'exit;' . "\n" . '}' . "\n\n" . '$' . $var_name . ' = unserialize(\'' . quotes(serialize($$var_name)) . '\');' . "\n\n" . '?>';*/
     $file = "<?php\n\nif ( !defined('IN_PHPORE') ){exit;}\n\n '$'$var_name = unserialize('".serialize($$var_name). "');\n\n?>";
 	
 	$handle = fopen($config->path . $config->cache_dir . 'data_' . md5($var_name) . '.' . $config->phpex, 'w');
@@ -150,9 +10,7 @@ function create_cache($var_name)
 	return $result;
 }
 
-// r�cup�re une variable mise en cache
-function get_cache($var_name)
-{
+function get_cache($var_name) {
 	global $$var_name, $config;
 	
 	if ( is_file($config->path . $config->cache_dir . 'data_' . $var_name . '.' . $config->phpex) )
@@ -215,15 +73,8 @@ function smileys($text) {
     return strtr( $text, $smileys_replacement );
 }
 
-// 替换 " ' " , " \' ", " \ " , " \\ " 比如: 'ma chaine : \'ma chaine\''
-function quotes($text)
-{
-	return str_replace(array('\\', '\'', "\0"), array('\\\\', '\\\'', '\\0'), $text);
-}
-
 // 在刷新过程中返回的 javascript 代码
-function js_eval($content, $id, $type = 0)
-{
+function js_eval($content, $id, $type = 0) {
 	global $config, $user;
 
 	$user->update_db();
@@ -236,35 +87,24 @@ function js_eval($content, $id, $type = 0)
 
 	$refresh_forcing = ( !empty($_GET['method_forcing']) ) ? true : false;
 
-	if ( $type == 1 )
-	{
-		// rafraichissement par fen�tre dans panneau d'admin
+	if ( $type == 1 ) {
+		// admin refresh
 		die('<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><title></title></head><body><script type="text/javascript">window.opener.parent.main.content_to_re1fresh_' . $id . ' = \'' . quotes($content) . '\';window.close();</script></body></html>');
-	}
-	elseif ( $type == 2 )
-	{
+	} elseif ( $type == 2 ) {
+        // client refresh
 		die('<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><title></title></head><body><script type="text/javascript">' . $content . '</script></body></html>');
-	}
-	else
-	{
-		if ( $config->refresh_method == 0 || $refresh_forcing )
-		{
+	} else {
+		if ( $config->refresh_method == 0 || $refresh_forcing ) {
 			// rafraichissement par iframe
 			die('<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><title></title></head><body><script type="text/javascript">parent.content_to_refresh_' . $id . ' = \'' . quotes($content) . '\';</script></body></html>');
-		}
-		else
-		{
-			// rafraichissement par XMLHttpRequest
-//			die(utf8_encode($content));
+		} else {
 			die($content);
-
         }
 	}
 }
 
-//可以快速创建一个通知或错误消息显示在页面
-function message_die($title, $content)
-{
+//创建一个通知或错误消息在页面
+function message_die($title, $content) {
 	global $template, $user, $config;
 
 	if ( isset($_GET['mod']) && substr($_GET['mod'], 0, 6) == 'admin.' )
@@ -299,6 +139,7 @@ function message_die($title, $content)
 
 	exit;
 }
+
 
 function redirect($title, $content, $location, $time = 5)
 {
@@ -1519,5 +1360,3 @@ class DB {
         }
     }
 }
-
-?>
