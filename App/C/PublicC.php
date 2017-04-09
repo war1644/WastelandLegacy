@@ -14,28 +14,18 @@ namespace App\C;
  * v2016/12/9 初版
  */
 use App\M\UsersM;
-use Base\C;
 use Base\Tool\Vcode;
 use Base\Tool\Page;
 
-class PublicC extends C {
+class PublicC extends AppC {
 
-    protected $WX;
-
-    public function index(){
-
+    public function index($param){
+        return ResultFormat($param);
     }
 
     public function test(){
-        echo implode(',',  array_keys(['key'=>1]) );
-        $this->view();
+        $this->view('Base/chat.html');
     }
-
-    public function run(){
-        define('IS_LOGIN',true);
-        $this->view('KSWechat/running');
-    }
-
 
     /**
      * 登录
@@ -66,21 +56,6 @@ class PublicC extends C {
      */
     public function logout(){
 
-    }
-
-
-
-    /**
-     * 微信debug调试回调方法
-     * 方法名在config定义
-     */
-    public static function wxDebug($text){
-        MFLog($text,'WxDebug','Wechat/');
-    }
-
-    //接收微信
-    public function wechat(){
-        new WechatC();
     }
 
     /**

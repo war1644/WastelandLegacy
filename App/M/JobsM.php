@@ -6,18 +6,16 @@
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * demo 示例
+ * 游戏人物职业模型
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
- * v2017/3/22 初版
+ * v2017/03/22 初版
  */
 
 namespace App\M;
 
 
-use Base\M;
-
-class JobsM extends M {
+class JobsM extends AppModel {
 
 }

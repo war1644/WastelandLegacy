@@ -1,5 +1,5 @@
 <?php
-namespace App\C\Home;
+namespace App\C;
 /**
  *         ▂▃╬▄▄▃▂▁▁
  *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
@@ -7,20 +7,16 @@ namespace App\C\Home;
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * demo 示例
+ * 客户端访客类
  * @author 路漫漫
  * @link ahmerry@qq.com
- * @version
- * v1.0 2017/02/26 邮件SMTP及表格导出测试
- * v0.9 2016/12/8 初版
+ * @since
+ * v2017/04/08 初版
  */
+
+namespace App\C;
 use Base\Lib\C;
 
-class HomeC extends C{
-    public function __construct() {
-        parent::__construct();
-        if (!Session('uid')) die();
-    }
-
+class AppC extends C{
 
 }

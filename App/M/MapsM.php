@@ -10,14 +10,23 @@
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
- * v2017/3/22 初版
+ * v2017/04/09 初版
  */
 
 namespace App\M;
 
-
-use Base\M;
-
-class MapsM extends M {
+class MapsM extends AppModel {
+    /**
+     * 获取地图数据
+     */
+    public function getMap($id) {
+        $sql = "SELECT * FROM $this->table WHERE id=?";
+        $result = $this->executeSql($sql,[$id]);
+        if ($result) {
+            return ['code' => 1, 'msg' => '', 'data' => $result];
+        } else {
+            return ['code' => -1, 'msg' => 'data empty'];
+        }
+    }
 
 }

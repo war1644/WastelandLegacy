@@ -1,5 +1,4 @@
 <?php
-namespace App\C\Admin;
 /**
  *         ▂▃╬▄▄▃▂▁▁
  *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
@@ -7,17 +6,26 @@ namespace App\C\Admin;
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * demo 示例
+ * 游戏地图模型
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
- * v2016/12/09 初版
+ * v2017/04/09 初版
  */
-use Base\Lib\C;
-class AdminC extends C {
-    function __construct() {
-        if (!defined('IS_ADMIN') || !IS_ADMIN){
-            die();
+
+namespace App\M;
+
+class TilesM extends AppModel {
+    /**
+     * 获取地图数据
+     */
+    public function getTile($id) {
+        $sql = "SELECT * FROM $this->table WHERE id=?";
+        $result = $this->executeSql($sql,[$id]);
+        if ($result) {
+            return ['code' => 1, 'msg' => '', 'data' => $result];
+        } else {
+            return ['code' => -1, 'msg' => 'data empty'];
         }
     }
 

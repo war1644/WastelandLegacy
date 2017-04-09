@@ -11,10 +11,9 @@ namespace App\M;
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
- * v2017/12/18 初版
+ * v2017/03/18 初版
  */
-use Base\M;
-class UsersM extends M {
+class UsersM extends AppModel {
     protected $tables = null;
     protected $uid = null;
 
@@ -49,6 +48,7 @@ class UsersM extends M {
                     $result = $this->find($result['id']);
                     if ($result) {
                         Session('uid', $result['id']);
+                        Session('mapId', $result['map_id']);
                         return ['code' => 1, 'msg' => '', 'data' => $result];
                     } else {
                         return ['code' => -1, 'msg' => 'mysql error'];
