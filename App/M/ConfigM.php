@@ -6,21 +6,22 @@
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * 游戏地图模型
+ * 游戏网站配置模型
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
- * v2017/04/09 初版
+ * v2017/04/11 初版
  */
 
 namespace App\M;
 
-class TilesM extends AppModel {
+
+class ConfigM extends AppModel {
     /**
      * 获取地图数据
      */
-    public function getTile($id) {
-        $sql = "SELECT * FROM $this->table WHERE id=?";
+    public function getConfig($id,$field='*') {
+        $sql = "SELECT $field FROM $this->table WHERE id=?";
         $result = $this->executeSql($sql,[$id]);
         if ($result) {
             return ['code' => 1, 'msg' => '', 'data' => $result];
@@ -28,5 +29,4 @@ class TilesM extends AppModel {
             return ['code' => -1, 'msg' => 'data empty'];
         }
     }
-
 }

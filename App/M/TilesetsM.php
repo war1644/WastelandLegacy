@@ -6,7 +6,7 @@
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * 游戏地图模型
+ * 游戏瓦片集模型
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
@@ -15,11 +15,11 @@
 
 namespace App\M;
 
-class MapsM extends AppModel {
+class TilesetsM extends AppModel {
     /**
-     * 获取地图数据
+     * 获取瓦片集数据
      */
-    public function getMap($id,$field='*') {
+    public function getTileSet($id,$field='*') {
         $sql = "SELECT $field FROM $this->table WHERE id=?";
         $result = $this->executeSql($sql,[$id]);
         if ($result) {

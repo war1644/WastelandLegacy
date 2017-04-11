@@ -33,7 +33,6 @@ class PublicC extends AppC {
     public function jobs(){
         $job = new JobsM();
         echo ResultFormat($job->getCurr());
-
     }
 
     /**
@@ -42,9 +41,9 @@ class PublicC extends AppC {
     public function login(){
         if (Vcode::check($_POST['vcode'])){
             $u = new UsersM();
-            return ResultFormat($u->login());
+            echo ResultFormat($u->login());
         }else{
-            return ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
+            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
         }
     }
 
@@ -54,9 +53,9 @@ class PublicC extends AppC {
     public function register(){
         if (Vcode::check($_POST['vcode'])){
             $u = new UsersM();
-            return ResultFormat($u->register());
+            echo ResultFormat($u->register());
         }else{
-            return ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
+            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
         }
     }
 
@@ -64,7 +63,8 @@ class PublicC extends AppC {
      * 退出登录 ,清除 session
      */
     public function logout(){
-
+        unset($_SESSION);
+        unset($_COOKIE);
     }
 
     /**

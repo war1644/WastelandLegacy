@@ -17,9 +17,23 @@ namespace App\M;
 
 
 class JobsM extends AppModel {
+    private  $hostNpc = 'http://game.duanxq.cn/images/charasets/';
+    private  $hostBattle = 'http://game.duanxq.cn/images/battler/';
+
     public function getCurr() {
-        $sql = "SELECT `name`,movePic,battlePic,description FROM $this->table WHERE id>? limit 10";
-        $result = $this->executeSql($sql,[1],'all');
+//        $sql = "SELECT `name`,CONCAT('$this->hostNpc',movePic) as movePic,CONCAT('$this->hostBattle',battlePic) as battlePic,description FROM $this->table WHERE id>? limit 10";
+        $sql = "SELECT id,`name`,movePic,battlePic,description FROM $this->table limit 6";
+        $result = $this->executeSql($sql,[],'all');
+        if ($result) {
+            return ['code' => 1, 'msg' => '', 'data' => $result];
+        } else {
+            return ['code' => -1, 'msg' => 'data empty'];
+        }
+    }
+
+    public function getJob($id,$field='*') {
+        $sql = "SELECT $field FROM $this->table WHERE id = ?";
+        $result = $this->executeSql($sql,[$id]);
         if ($result) {
             return ['code' => 1, 'msg' => '', 'data' => $result];
         } else {

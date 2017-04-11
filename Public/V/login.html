@@ -1,22 +1,32 @@
+<!--
+/**
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆███▄▄▃▂
+ *  █████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * 客户端登录页
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @since
+ * v2017/04/09 初版
+ */
+-->
 <!doctype html>
 <html lang="zh-CN" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="./../favicon.ico" type="image/x-icon" />
-    <title></title>
+    <title>废土战记</title>
     <link rel="stylesheet" href="./Static/css/style.css" type="text/css" />
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
-<style>
-    html,body{
-        font-size: 2rem;
-    }
-</style>
 <body id="bacBody" style="width: 100vw;height: 100vh;">
 
-<audio id="backMp3" src="./Static/music/Startup.mp3" autoplay loop></audio>
+<audio id="backMp3" src="http://game.duanxq.cn/music/Startup.mp3" autoplay loop></audio>
 
 
 
@@ -24,10 +34,10 @@
 <div id="display_body">
 <!--动态背景图-->
 <div class="slideshow">
-    <div class="slideshow-image" style="background-image: url('./Static/img/bgimg/01.jpg')"></div>
-    <div class="slideshow-image" style="background-image: url('./Static/img/bgimg/02.jpg')"></div>
-    <div class="slideshow-image" style="background-image: url('./Static/img/bgimg/03.jpg')"></div>
-    <div class="slideshow-image" style="background-image: url('./Static/img/bgimg/04.jpg')"></div>
+    <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/01.jpg')"></div>
+    <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/02.jpg')"></div>
+    <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/03.jpg')"></div>
+    <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/04.jpg')"></div>
 </div>
 <script>
     $("#bacBody").css("background-image","''");
@@ -51,55 +61,55 @@
             </div>
         </div>
         <div class="cont_back_info">
-            <div class="cont_img_back_grey"> <img src="./Static/img/bgimg/伦敦.png" alt=""> </div>
+            <div class="cont_img_back_grey"> <img src="http://game.duanxq.cn/images/bgimg/伦敦.png" alt=""> </div>
         </div>
 
         <div class="cont_forms">
-            <form action="" method="post">
-                <div class="cont_img_back_"> <img src="./Static/img/bgimg/伦敦.png" alt=""></div>
+            <!--登陆-->
+            <form action="" method="post" id="login">
+                <div class="cont_img_back_"> <img src="http://game.duanxq.cn/images/bgimg/伦敦.png" alt=""></div>
                 <div class="cont_form_login" style="opacity: 0; display: none;">
                     <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b class="close">x</b></a>
                     <h2>登录</h2>
-
                     <input type="text" name="name" placeholder="用户名">
-                    <input type="hidden" name="mode" value="login" placeholder="用户名">
                     <input type="password" name="password" placeholder="密码">
-                    <button type="submit" class="btn_login">登录</button>
+                    <input type="text" name="vcode" class="vcode" placeholder="验证码">
+                    <img class="refreshVcode" src="http://e.cn/Public/vcode" alt="" style="margin-top: 1rem">
+                    <button class="btn_login" id="loginAction">登录</button>
                 </div>
             </form>
-
-            <form action="" method="post">
-                <input type="hidden" name="mode" value="register" />
+            <!--注册-->
+            <form action="http://e.cn/Public/register" method="post" id="register">
                 <div class="cont_form_sign_up" style="display: none; opacity: 0;">
                     <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b class="close">x</b></a>
                     <h2>注册</h2>
-                    <input type="text" name="email" placeholder="邮箱">
+                    <input type="text" name="email" placeholder="邮箱或手机">
                     <input type="text" name="name" placeholder="用户名">
                     <input type="password" name="password" placeholder="密码">
                     <input type="password" name="password_confirm" placeholder="确认密码">
-                    <br id="cpass"/>
-
-                    <button class="btn_sign_up">注册</button>
+                    <input type="text" name="vcode" class="vcode" placeholder="验证码" style="margin-bottom: 0;">
+                    <img src="http://e.cn/Public/vcode" alt="" style="margin-top: -0.2rem">
+                    <br/>
+                    <span id="cpass" style="display: inline-flex;"></span>
+                    <button class="btn_sign_up" >注册</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <div class="come_map" style="display: none">
-    <h3>{L_CHARACTER_STATS}</h3>
-
+    <h3>角色状态</h3>
     <div class="row1" align="center">
-
-        {L_CHARACTER_NAME} : <b>{USER_NAME}</b><br /><br />
-        <div style="width:{CHAR_WIDTH}px;height:{CHAR_HEIGHT}px;background-image:url('images/charasets/{CHARASET}')"></div><br />
-        <a href="">{L_GO_TO_MAP}</a><br /><br />
-        <span class="gensmall"><a href="/Public/logout">{L_LOGOUT}</a></span><br /><br />
+        昵称 : <b>xxxxx</b><br /><br />
+        <div style="width:0px;height:0px;background-image:url('')"></div><br />
+        <a href="">进入地图</a><br /><br />
+        <span class="gensmall"><a href="http://e.cn/Public/logout">退出游戏</a></span><br /><br />
     </div>
 </div>
-
-<script>
+    <script src="./Static/js/gameLib.js"></script>
+    <script>
     function cambiar_login() {
-        document.querySelector("#backMp3").src = "./Static/music/Startup.mp3";
+        document.querySelector("#backMp3").src = "http://game.duanxq.cn/music/Startup.mp3";
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login cont_forms_ch";
         document.querySelector('.cont_form_login').style.display = "block";
         document.querySelector('.cont_form_sign_up').style.opacity = "0";
@@ -112,17 +122,18 @@
     }
 
     function cambiar_sign_up(at) {
-        $.getJSON('http://e.cn/Public/jobs?callback=?',function (res) {
+        $.getJSON('http://game.duanxq.cn/Public/index.php/Public/jobs?callback=?',function (res) {
             if (res.code) {
                 var list = res.data;
+                var classnode = '';
                 for (var i in list) {
-                    var obj = list[i];
-                    var classnode = '<input class="typeradio" type="radio" name="classname" value="'+obj.name+'"/><img src="./Static/img/battle/'+obj.battlePic+'" alt=""><b>'+obj.title+'</b><i>'+obj.description+'</i>';
-                    $("#cpass").after(classnode);
+                    var images = "'http://game.duanxq.cn/images/charasets/"+list[i].movePic+"'";
+                    classnode += '<input class="typeradio" type="radio" name="jobId" value="'+list[i].id+'"/><span class="Career" style="background-image:url('+images+')"></span><i>'+list[i].name+'</i>';
                 }
+                $("#cpass").html(classnode);
             }
         });
-        document.querySelector("#backMp3").src = "./Static/music/NameSetting.mp3";
+        document.querySelector("#backMp3").src = "http://game.duanxq.cn/music/NameSetting.mp3";
 
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_sign_up cont_forms_change";
         document.querySelector('.cont_form_sign_up').style.display = "block";
@@ -145,6 +156,28 @@
             document.querySelector('.cont_form_login').style.display = "none";
         },500);
 
+    }
+
+    $("#loginAction").click(function () {
+        var data = Lib.prototype.getFormJson('#login');
+        $.post('http://e.cn/Public/login',data,function (result) {
+            console.log(result);
+            if (result.code) {
+                console.log(result.data);
+            } else {
+                alert(result.msg);
+                refreshVcode();
+            }
+        });
+        return false;
+    });
+
+    $('.refreshVcode').click(function () {
+        refreshVcode();
+    })
+
+    function refreshVcode () {
+        $('.refreshVcode').attr('src',"http://e.cn/Public/vcode");
     }
 
 </script>
