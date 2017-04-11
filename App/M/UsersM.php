@@ -41,7 +41,9 @@ class UsersM extends AppModel {
             $result = $this->executeSql($sql, [$_POST['name']]);
             if ($result) {
                 if ($this->checkPwd()) {
-                    $this->loginFollow($result['id']);
+                    return $this->loginFollow($result['id']);
+                }else{
+                    return ['code' => -1, 'msg' => '密码错误'];
                 }
             } else {
                 return ['code' => -1, 'msg' => '无效数据'];
@@ -83,9 +85,10 @@ class UsersM extends AppModel {
     private function loginFollow($id){
         $result = $this->find($id);
         if ($result) {
-            unset($result['id'],$result['mapId'],$result['password'],$result['salt'],$result['battleId']);
             Session('uid', $result['id']);
             Session('mapId', $result['mapId']);
+            unset($result['id'],$result['mapId'],$result['password'],$result['salt'],$result['battleId']);
+
             return ['code' => 1, 'msg' => '', 'data' => $result];
         } else {
             return ['code' => -1, 'msg' => 'mysql error'];

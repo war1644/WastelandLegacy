@@ -100,8 +100,8 @@
 <div class="come_map" style="display: none">
     <h3>角色状态</h3>
     <div class="row1" align="center">
-        昵称 : <b>xxxxx</b><br /><br />
-        <div style="width:0px;height:0px;background-image:url('')"></div><br />
+        昵称 : <b class="userName">xxxxx</b><br /><br />
+        <div class="avatar" style="width:24px;height:24px;"></div><br />
         <a href="">进入地图</a><br /><br />
         <span class="gensmall"><a href="http://e.cn/Public/logout">退出游戏</a></span><br /><br />
     </div>
@@ -162,10 +162,17 @@
         var data = Lib.prototype.getFormJson('#login');
         $.post('http://e.cn/Public/login',data,function (result) {
             console.log(result);
-            if (result.code) {
-                console.log(result.data);
+            if (result.code == 1) {
+                console.log(result.data.movePic);
+                localStorage.setItem("userInfo" , result.data);
+                $(".userName").text(result.data.name);
+                console.log("http://game.duanxq.cn/images/charasets/"+result.data.movePic);
+                $(".avatar").css('backgroundImage','url("http://game.duanxq.cn/images/charasets/'+result.data.movePic+'")');
+                $(".cont_centrar").hide();
+                $(".come_map").show();
+
             } else {
-                alert(result.msg);
+                alert(1);
                 refreshVcode();
             }
         });
@@ -179,6 +186,7 @@
     function refreshVcode () {
         $('.refreshVcode').attr('src',"http://e.cn/Public/vcode");
     }
+
 
 </script>
 
