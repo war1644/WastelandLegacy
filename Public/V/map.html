@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=0.5, maximum-scale=0.5, minimum-scale=1.0">
     <meta name="description" content="废土战记">
     <meta name="author" content="路漫漫">
     <title>Title</title>
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
+<scrtipt>
+
+</scrtipt>
 <style>
     @keyframes aniMove{
         100%{background-position-x:72px;}
@@ -30,21 +33,23 @@
 <!--<div id="sprite"></div>-->
 <!--<button id="restart" onclick="reset();">重新开始</button>-->
 </body>
-<script src="http://game.duanxq.cn/javascript/resources.js"></script>
-<script src="http://game.duanxq.cn/javascript/sprite.js"></script>
-<script src="http://game.duanxq.cn/javascript/input.js"></script>
-<script src="http://game.duanxq.cn/javascript/collision.js"></script>
+<script src="./Static/js/resources.js"></script>
+<script src="./Static/js/sprite.js"></script>
+<script src="./Static/js/input.js"></script>
+<script src="./Static/js/collision.js"></script>
 <script src="./Static/js/gameLib.js"></script>
-<script src="http://game.duanxq.cn/javascript/mapTest.js"></script>
+<script src="./Static/js//mapTest.js"></script>
 <script>
+
+    var id = userInfo.id;
+
     //请求服务器握手
     var ws = new WebSocket("ws://127.0.0.1:2416");
-    var name = '路漫漫';
     //握手成功触发
     ws.onopen = function(){
         console.log("握手成功");
         if(ws.readyState==1){
-            ws.send(name+"加入房间");
+            ws.send(JSON.stringify({id:id,wl:userInfo.wl}));
         }
     };
     //服务器发送消息，触发
@@ -62,17 +67,17 @@
     //地图
     var urlArr = ["http://game.duanxq.cn/cache/map_3_0.png","http://game.duanxq.cn/cache/map_3_1.png","http://game.duanxq.cn/cache/map_3_2.png","http://game.duanxq.cn/images/charasets/NPC (6).png"];
 
-//    foreach ( data['mapImg'] as v){
-//        urlArr.push(v);
-//    }
-//
-//    //地图碰撞标识
-//    var downPass = data.downMapPass;
-//    for(){
-//        mapPass[v.x][v.y] =  v.pass;
-//    }
-//
-//    foreach ( data['upMapPass'] as v){ if(!v['pass']) mapPass[v['x']][v['y']] = v['pass'];}
+    //    foreach ( data['mapImg'] as v){
+    //        urlArr.push(v);
+    //    }
+    //
+    //    //地图碰撞标识
+    //    var downPass = data.downMapPass;
+    //    for(){
+    //        mapPass[v.x][v.y] =  v.pass;
+    //    }
+    //
+    //    foreach ( data['upMapPass'] as v){ if(!v['pass']) mapPass[v['x']][v['y']] = v['pass'];}
 
     var mapWidth,mapHeight,tileSize=24,img,mapSize = {x:0,y:0};
 

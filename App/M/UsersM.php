@@ -18,11 +18,6 @@ class UsersM extends AppModel {
     protected $tables = null;
     protected $uid = null;
 
-    public function __construct() {
-        parent::__construct();
-        $this->uid = Session('uid') ?: 0;
-    }
-
     public function userInfo() {
         if ($this->uid) return parent::find($this->uid);
 
@@ -85,10 +80,9 @@ class UsersM extends AppModel {
     private function loginFollow($id){
         $result = $this->find($id);
         if ($result) {
-            Session('uid', $result['id']);
-            Session('mapId', $result['mapId']);
-            unset($result['id'],$result['mapId'],$result['password'],$result['salt'],$result['battleId']);
-
+            $result['wl'] = $result['password'];
+            SetCache($result,$result['wl']);
+            unset($result['mapId'],$result['password'],$result['salt'],$result['battleId']);
             return ['code' => 1, 'msg' => '', 'data' => $result];
         } else {
             return ['code' => -1, 'msg' => 'mysql error'];

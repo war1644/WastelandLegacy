@@ -29,4 +29,24 @@ class TilesetsM extends AppModel {
         }
     }
 
+    /**
+     * 获取地图数据
+     */
+    private function convertTileSet() {
+        $sql = "SELECT id,tileSet FROM $this->table";
+        $result = $this->executeSql($sql,[],'all');
+        if ($result) {
+            foreach ($result as $v){
+                $data = [];
+                $data[] = json_encode(unserialize(base64_decode($v['tileSet'])),JSON_UNESCAPED_UNICODE);
+                $data[] = intval($v['id']);
+                $sql = "update $this->table set tileSet= ? WHERE id = ?";
+                $this->executeSql($sql,$data);
+            }
+
+        } else {
+            return ['code' => -1, 'msg' => 'data empty'];
+        }
+    }
+
 }

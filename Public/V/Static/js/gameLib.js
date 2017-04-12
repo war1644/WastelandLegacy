@@ -21,11 +21,6 @@
     },false)
 })(window,document);
 
-var Lib = function () {
-    this.warning = '封装搞事情啦'
-};
-
-
 if (!window.localStorage) {
     window.localStorage = {
         getItem: function (sKey) {
@@ -52,7 +47,9 @@ if (!window.localStorage) {
     };
     window.localStorage.length = (document.cookie.match(/\=/g) || window.localStorage).length;
 }
-
+var Lib = function () {
+    this.warning = '封装搞事情啦'
+};
 /**
  * 原型链继承扩展
  */
@@ -76,3 +73,4 @@ Lib.prototype = {
         return obj;
     }
 };
+

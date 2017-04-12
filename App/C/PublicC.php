@@ -13,7 +13,10 @@ namespace App\C;
  * @since
  * v2016/12/9 初版
  */
+use App\M\EventsM;
 use App\M\JobsM;
+use App\M\MapsM;
+use App\M\TilesetsM;
 use App\M\UsersM;
 use Base\Tool\Vcode;
 use Base\Tool\Page;
@@ -25,7 +28,8 @@ class PublicC extends AppC {
     }
 
     public function test(){
-        $this->view('Base/chat.html');
+
+        $map = new EventsM();
     }
     /**
      * 游戏职业获取
@@ -39,24 +43,24 @@ class PublicC extends AppC {
      * 登录
      */
     public function login(){
-        if (Vcode::check($_POST['vcode'])){
+//        if (Vcode::check($_POST['vcode'])){
             $u = new UsersM();
             echo ResultFormat($u->login());
-        }else{
-            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
-        }
+//        }else{
+//            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
+//        }
     }
 
     /**
      * 注册
      */
     public function register(){
-        if (Vcode::check($_POST['vcode'])){
+//        if (Vcode::check($_POST['vcode'])){
             $u = new UsersM();
             echo ResultFormat($u->register());
-        }else{
-            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
-        }
+//        }else{
+//            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
+//        }
     }
 
     /**

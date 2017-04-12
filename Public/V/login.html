@@ -13,101 +13,103 @@
  * v2017/04/09 初版
  */
 -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="shortcut icon" href="./../favicon.ico" type="image/x-icon" />
+    <meta name="description" content="废土战记">
+    <meta name="author" content="路漫漫">
     <title>废土战记</title>
+    <link rel="shortcut icon" href="./../favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="./Static/css/style.css" type="text/css" />
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body id="bacBody" style="width: 100vw;height: 100vh;">
-
 <audio id="backMp3" src="http://game.duanxq.cn/music/Startup.mp3" autoplay loop></audio>
-
-
-
-
 <div id="display_body">
-<!--动态背景图-->
-<div class="slideshow">
-    <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/01.jpg')"></div>
-    <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/02.jpg')"></div>
-    <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/03.jpg')"></div>
-    <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/04.jpg')"></div>
-</div>
-<script>
-    $("#bacBody").css("background-image","''");
-</script>
-<div class="cont_centrar">
-    <div class="cont_login">
-        <div class="cont_info_log_sign_up">
-            <div class="col_md_login">
-                <div class="cont_ba_opcitiy">
-                    <h2>登录</h2>
-                    <p>已有账号，请登录</p>
-                    <button class="btn_login" onclick="cambiar_login()">登录</button>
-                </div>
-            </div>
-            <div class="col_md_sign_up">
-                <div class="cont_ba_opcitiy">
-                    <h2>注册</h2>
-                    <p>没有账号，请注册</p>
-                    <button class="btn_sign_up" onclick="cambiar_sign_up()">注册</button>
-                </div>
-            </div>
-        </div>
-        <div class="cont_back_info">
-            <div class="cont_img_back_grey"> <img src="http://game.duanxq.cn/images/bgimg/伦敦.png" alt=""> </div>
-        </div>
-
-        <div class="cont_forms">
-            <!--登陆-->
-            <form action="" method="post" id="login">
-                <div class="cont_img_back_"> <img src="http://game.duanxq.cn/images/bgimg/伦敦.png" alt=""></div>
-                <div class="cont_form_login" style="opacity: 0; display: none;">
-                    <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b class="close">x</b></a>
-                    <h2>登录</h2>
-                    <input type="text" name="name" placeholder="用户名">
-                    <input type="password" name="password" placeholder="密码">
-                    <input type="text" name="vcode" class="vcode" placeholder="验证码">
-                    <img class="refreshVcode" src="http://e.cn/Public/vcode" alt="" style="margin-top: 1rem">
-                    <button class="btn_login" id="loginAction">登录</button>
-                </div>
-            </form>
-            <!--注册-->
-            <form action="http://e.cn/Public/register" method="post" id="register">
-                <div class="cont_form_sign_up" style="display: none; opacity: 0;">
-                    <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b class="close">x</b></a>
-                    <h2>注册</h2>
-                    <input type="text" name="email" placeholder="邮箱或手机">
-                    <input type="text" name="name" placeholder="用户名">
-                    <input type="password" name="password" placeholder="密码">
-                    <input type="password" name="password_confirm" placeholder="确认密码">
-                    <input type="text" name="vcode" class="vcode" placeholder="验证码" style="margin-bottom: 0;">
-                    <img src="http://e.cn/Public/vcode" alt="" style="margin-top: -0.2rem">
-                    <br/>
-                    <span id="cpass" style="display: inline-flex;"></span>
-                    <button class="btn_sign_up" >注册</button>
-                </div>
-            </form>
-        </div>
+    <!--动态背景图-->
+    <div class="slideshow">
+        <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/01.jpg')"></div>
+        <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/02.jpg')"></div>
+        <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/03.jpg')"></div>
+        <div class="slideshow-image" style="background-image: url('http://game.duanxq.cn/images/bgimg/04.jpg')"></div>
     </div>
-</div>
-<div class="come_map" style="display: none">
-    <h3>角色状态</h3>
-    <div class="row1" align="center">
-        昵称 : <b class="userName">xxxxx</b><br /><br />
-        <div class="avatar" style="width:24px;height:24px;"></div><br />
-        <a href="">进入地图</a><br /><br />
-        <span class="gensmall"><a href="http://e.cn/Public/logout">退出游戏</a></span><br /><br />
-    </div>
-</div>
-    <script src="./Static/js/gameLib.js"></script>
     <script>
+        $("#bacBody").css("background-image", "''");
+    </script>
+    <div class="cont_centrar">
+        <div class="cont_login">
+            <div class="cont_info_log_sign_up">
+                <div class="col_md_login">
+                    <div class="cont_ba_opcitiy">
+                        <h2>登录</h2>
+                        <p>已有账号，请登录</p>
+                        <button class="btn_login" onclick="cambiar_login()">登录</button>
+                    </div>
+                </div>
+                <div class="col_md_sign_up">
+                    <div class="cont_ba_opcitiy">
+                        <h2>注册</h2>
+                        <p>没有账号，请注册</p>
+                        <button class="btn_sign_up" onclick="cambiar_sign_up()">注册</button>
+                    </div>
+                </div>
+            </div>
+            <div class="cont_back_info">
+                <div class="cont_img_back_grey"><img src="http://game.duanxq.cn/images/bgimg/伦敦.png" alt=""></div>
+            </div>
+
+            <div class="cont_forms">
+                <!--登陆-->
+                <form action="" method="post" id="login">
+                    <div class="cont_img_back_"><img src="http://game.duanxq.cn/images/bgimg/伦敦.png" alt=""></div>
+                    <div class="cont_form_login" style="opacity: 0; display: none;">
+                        <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b
+                                class="close">x</b></a>
+                        <h2>登录</h2>
+                        <input type="text" name="name" placeholder="用户名">
+                        <input type="password" name="password" placeholder="密码">
+                        <input type="text" name="vcode" class="vcode" placeholder="验证码">
+                        <img class="refreshVcode" src="http://e.cn/Public/vcode" alt="" style="margin-top: 1rem">
+                        <button class="btn_login" id="loginAction">登录</button>
+                    </div>
+                </form>
+                <!--注册-->
+                <form action="http://e.cn/Public/register" method="post" id="register">
+                    <div class="cont_form_sign_up" style="display: none; opacity: 0;">
+                        <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b
+                                class="close">x</b></a>
+                        <h2>注册</h2>
+                        <input type="text" name="email" placeholder="邮箱或手机">
+                        <input type="text" name="name" placeholder="用户名">
+                        <input type="password" name="password" placeholder="密码">
+                        <input type="password" name="password_confirm" placeholder="确认密码">
+                        <input type="text" name="vcode" class="vcode" placeholder="验证码" style="margin-bottom: 0;">
+                        <img src="http://e.cn/Public/vcode" alt="" style="margin-top: -0.2rem">
+                        <br/>
+                        <span id="cpass" style="display: inline-flex;"></span>
+                        <button class="btn_sign_up">注册</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="come_map" style="display: none">
+        <h3>角色状态</h3>
+        <div class="row1" align="center">
+            昵称 : <b class="userName">xxxxx</b><br/><br/>
+            <div class="avatar" style="width:24px;height:24px;"></div>
+            <br/>
+            <a href="./test.html">进入地图</a><br/><br/>
+            <span class="gensmall"><a href="http://e.cn/Public/logout">退出游戏</a></span><br/><br/>
+        </div>
+    </div>
+</div>
+</body>
+<script src="./Static/js/gameLib.js"></script>
+<script>
     function cambiar_login() {
         document.querySelector("#backMp3").src = "http://game.duanxq.cn/music/Startup.mp3";
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login cont_forms_ch";
@@ -161,18 +163,14 @@
     $("#loginAction").click(function () {
         var data = Lib.prototype.getFormJson('#login');
         $.post('http://e.cn/Public/login',data,function (result) {
-            console.log(result);
             if (result.code == 1) {
-                console.log(result.data.movePic);
-                localStorage.setItem("userInfo" , result.data);
+                localStorage.setItem("userInfo" , JSON.stringify(result.data));
                 $(".userName").text(result.data.name);
-                console.log("http://game.duanxq.cn/images/charasets/"+result.data.movePic);
                 $(".avatar").css('backgroundImage','url("http://game.duanxq.cn/images/charasets/'+result.data.movePic+'")');
                 $(".cont_centrar").hide();
                 $(".come_map").show();
 
             } else {
-                alert(1);
                 refreshVcode();
             }
         });
@@ -188,13 +186,7 @@
     }
 
 
+
+
 </script>
-
-
-
-
-
-
-
-</body>
 </html>
