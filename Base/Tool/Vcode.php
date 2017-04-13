@@ -11,7 +11,8 @@ namespace Base\Tool;
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
- * v0.9 2016/12/19   初版
+ * v2014/04/09   普通验证码大小和存储方式调整
+ * v2016/12/19   初版
  */
 
 class Vcode {

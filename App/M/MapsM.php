@@ -62,16 +62,15 @@ class MapsM extends AppModel {
 
         $tileSetData = json_decode($this->tileSet,true );
 
-        $map->count_x = count( $mapData[0][0] );
-        $map->count_y = count( $mapData[0] );
-        $map->width = $map->count_x * $config->tile_size;
-        $map->height = $map->count_y * $config->tile_size;
-        $map->optimized = ($config->optimize_maps == 1 && $map->optimized == 1 && is_file( $config->path . $config->cache_dir . 'map_' . $map->id . '_0.png' ) && is_file( $config->path . $config->cache_dir . 'map_' . $map->id . '_1.png' )) ? true : false;
+        $this->countX = count( $mapData[0][0] );
+        $this->countY = count( $mapData[0] );
+        $this->width = $this->countX * $tileSet->tileSize;
+        $this->height = $this->countY * $tileSet->tileSize;
 
-        if ( $map->optimized ) {
-            $data['mapImg'][] = $config->cache_dir . 'map_' . $this->id . '_0.png';
-            $data['mapImg'][] = $config->cache_dir . 'map_' . $this->id . '_1.png';
-            $data['mapImg'][] = $config->cache_dir . 'map_' . $this->id . '_2.png';
+        if ( $this->optimized ) {
+            $data['mapImg'][] = CACHE_PATH . 'Maps' . 'map_' . $this->id . '_0.png';
+            $data['mapImg'][] = CACHE_PATH . 'Maps' . 'map_' . $this->id . '_1.png';
+            $data['mapImg'][] = CACHE_PATH . 'Maps' . 'map_' . $this->id . '_2.png';
         }
         $event_ids = [];
         $event_coords = [];
@@ -91,6 +90,23 @@ class MapsM extends AppModel {
                 $data['upMapPass'][] = ['x' => $x, 'y' => $y, 'pass' => (($map->tiles[1][1][$map->blocs[1][$y][$x]] == 0) ? 3 : (($map->tiles[1][1][$map->blocs[1][$y][$x]] == 1) ? 0 : 1))];
             }
         }
+    }
+
+    /**
+     * 检查地图缓存
+     */
+    public function checkMapCahe($mapData=[]) {
+        if (!$mapData || !$this->optimized) return false;
+
+        is_file( CACHE_PATH.'map/'.'map_' . $this->id . '_0.png' );
+    }
+
+    /**
+     * 创建地图缓存
+     */
+    public function CreateMapCahe($mapData=[]) {
+        if (!$mapData || !$this->mapData) return false;
+
     }
 
 }

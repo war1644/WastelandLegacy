@@ -1,0 +1,54 @@
+<!--
+/**
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆███▄▄▃▂
+ *  █████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * 后台地图编辑
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2017/04/13 初版
+ */
+-->
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="废土战记">
+    <meta name="author" content="路漫漫">
+    <title>废土战记</title>
+    <link rel="shortcut icon" href="./../favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./Static/css/style.css" type="text/css" />
+    <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+    
+</body>
+<script>
+    $.post('http://e.cn/Public/test', {}, function (result) {
+        console.log(result);
+
+    });
+    
+    function mapDataProcess(map) {
+        //down map layer
+        for ( var y = 0; y < map.countX; y++ ) {
+            for ( var x = 0; x < map.countY; x++ ) {
+                var arr =[
+//                        'ID' => 'd_' . x . '_' . y,
+//                    'LEFT' => $x,
+//                    'TOP' => $y,
+//                    'BACKGROUND_IMAGE' => (( $map->blocs[0][$y][$x] == 0 ) ? '' : $map->tiles[0][0][$map->blocs[0][$y][$x]]),
+//                    'Z_INDEX' => (( $map->tiles[0][1][$map->blocs[0][$y][$x]] == 0 ) ? 1 : 2),
+//                    'VALUE' => $map->blocs[0][$y][$x]
+            ]
+            }
+        }
+    }
+</script>
+</html>

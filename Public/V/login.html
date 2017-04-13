@@ -102,7 +102,7 @@
             昵称 : <b class="userName">xxxxx</b><br/><br/>
             <div class="avatar" style="width:24px;height:24px;"></div>
             <br/>
-            <a href="./test.html">进入地图</a><br/><br/>
+            <a href="./map.html">进入地图</a><br/><br/>
             <span class="gensmall"><a href="http://e.cn/Public/logout">退出游戏</a></span><br/><br/>
         </div>
     </div>
@@ -185,6 +185,25 @@
         $('.refreshVcode').attr('src',"http://e.cn/Public/vcode");
     }
 
+    //ajax交互备用方法
+    //    $("form").submit(function() {
+    //        $(".submit_btn").val('登陆中...');
+    //        // $(".submit_btn").attr('登陆中...');
+    //        var self = $(this);
+    //        $.post(self.attr("action"), self.serialize(), success, "json");
+    //        return false;
+    //
+    //        function success(data) {
+    //            if (data.status) {
+    //                window.location.href = data.url;
+    //            } else {
+    //                // self.find(".check-tips").text(data.info);
+    //                alert(data.info);
+    //                //刷新验证码
+    //                $(".ver_btn").click();
+    //            }
+    //        }
+    //    });
 
 
 

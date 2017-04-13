@@ -43,24 +43,34 @@
 
     var id = userInfo.id;
 
-    //请求服务器握手
-    var ws = new WebSocket("ws://127.0.0.1:2416");
+    //扩展send方法
+    WebSocket.prototype.wlSend = function (params) {
+        var data = {
+            id:this.name,
+            service:this.service,
+            data:params
+        };
+        data = JSON.stringify(data);
+        this.send(data);
+    };
+
+    var WS = new WebSocket("ws://127.0.0.1:2416");
     //握手成功触发
-    ws.onopen = function(){
+    WS.onopen = function(){
         console.log("握手成功");
         if(ws.readyState==1){
             ws.send(JSON.stringify({id:id,wl:userInfo.wl}));
         }
     };
     //服务器发送消息，触发
-    ws.onmessage = function(e){
+    WS.onmessage = function(e){
         //e.data就是服务器发送的信息
         console.log( JSON.parse(e.data) );
         //接下来爱干嘛干嘛去、
         //...code...
     };
     //出错时触发方法
-    ws.onerror = function(e){
+    WS.onerror = function(e){
         console.log( e );
     };
 

@@ -22,10 +22,10 @@
  * @param $path 日志路径
  */
 function SetCache($content, $name, $path='') {
-    $path = RUN_PATH . 'Cache/'. $path;
+    $path = CACHE_PATH. $path;
     if (!$name) return false;
     CheckDir($path);
-    $file = $path.$name.'.cache';
+    $file = $path.$name;
     if (is_array($content) || is_object($content)) $content = json_encode($content,JSON_UNESCAPED_UNICODE);
     return file_put_contents($file,$content);
 }
@@ -37,8 +37,8 @@ function SetCache($content, $name, $path='') {
  * @param $path 日志路径
  */
 function GetCache( $name, $path='') {
-    $path = RUN_PATH . 'Cache/'. $path;
-    $file = $path.$name.'.cache';
+    $path = CACHE_PATH. $path;
+    $file = $path.$name;
     $cache = json_decode(@file_get_contents($file),true);
     return $cache;
 }
