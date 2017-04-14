@@ -29,24 +29,68 @@
 <body>
     
 </body>
+<script src="./Static/js/resources.js"></script>
+<script src="./Static/js/sprite.js"></script>
 <script>
-    $.post('http://e.cn/Public/test', {}, function (result) {
-        console.log(result);
+    var tileSet,imgObj;
+//    $.post('http://e.cn/Public/test', {}, function (result) {
+//        console.log(result);
+//        result.tileSet[]
+//    });
 
-    });
+    //加载资源
+    var urlArr = ["./Static/img/户外.png"];
+    resources.load(urlArr[0]);
+    resources.onReady(init);
+
+    function init() {
+        imgObj = resources.get(urlArr[0]);
+    }
+
+    function createCanavs() {
+        // Create the canvas
+        canvas = document.createElement("canvas");
+        canvas2 = document.createElement("canvas");
+        ctx = canvas.getContext("2d");
+        ctx2 = canvas2.getContext("2d");
+        canvas2.width = canvas.width = mapWidth;
+        canvas2.height = canvas.height = mapHeight;
+        document.body.appendChild(canvas);
+        document.body.appendChild(canvas2);
+        $(canvas).css({
+            "position": "absolute",
+            "z-index": 1
+        });
+        $(canvas2).css({
+            "position": "absolute",
+            "z-index": 1
+        });
+
+
+        terrainPattern  = ctx.createPattern(img[urlArr[0]],'no-repeat');
+        terrainPattern1  = ctx.createPattern(img[urlArr[1]],'no-repeat');
+        terrainPattern2  = ctx.createPattern(img[urlArr[2]],'no-repeat');
+
+
+        ctx2.fillStyle = terrainPattern1;
+        ctx2.fillRect(0, 0, mapWidth, mapHeight);
+
+
+
+    }
     
     function mapDataProcess(map) {
+        var data = map.data;
         //down map layer
-        for ( var y = 0; y < map.countX; y++ ) {
-            for ( var x = 0; x < map.countY; x++ ) {
-                var arr =[
-//                        'ID' => 'd_' . x . '_' . y,
-//                    'LEFT' => $x,
-//                    'TOP' => $y,
-//                    'BACKGROUND_IMAGE' => (( $map->blocs[0][$y][$x] == 0 ) ? '' : $map->tiles[0][0][$map->blocs[0][$y][$x]]),
-//                    'Z_INDEX' => (( $map->tiles[0][1][$map->blocs[0][$y][$x]] == 0 ) ? 1 : 2),
-//                    'VALUE' => $map->blocs[0][$y][$x]
-            ]
+        for ( var y = 0; y < map.countY; y++ ) {
+            for ( var x = 0; x < map.countX; x++ ) {
+                var arr[] = {
+                    'id' : 'd_' + x + '_' + y,
+                    'x' : x,
+                    'y' : y,
+                    'img' : data[0][y][x],
+                    'pass' : tileSet[0][1][$map->blocs[1][$y][$x]
+                }
             }
         }
     }
