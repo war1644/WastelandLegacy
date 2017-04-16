@@ -32,12 +32,10 @@ function checkCollisions(x,y,dir) {
     if (!checkPlayerBounds(x,y)){
         return false;
     }
-    var tmpX = x/tileSize;
-    var tmpY = y/tileSize;
-    var x1 = Math.round(tmpX);
-    var y1 = Math.floor(tmpY);
+    var x1 = Math.ceil(x/tileSize)-1;
+    var y1 = Math.ceil(y/tileSize)-1;
 
-
+    console.log(x1,y1);
     if(!mapPass[y1][x1]) {
         console.log('x:'+x1+'y:'+y1+' 不能通过');
         switch (dir){

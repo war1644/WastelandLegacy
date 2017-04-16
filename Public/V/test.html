@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!--<link rel="stylesheet" href="http://libs.baidu.com/jquerymobile/1.3.2/jquery.mobile-1.3.2.min.css" />-->
+    <link rel="stylesheet" href="./Static/css/jquery.mobile-1.3.2.min.css">
+    <script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <!--<script src="http://libs.baidu.com/jquerymobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>-->
+    <script src="./Static/js/jquery.mobile-1.3.2.min.js"></script>
+</head>
+<body>
+    <div data-role="page" id="pageone">
+        <div data-role="content">
+            <h2>我的通讯录</h2>
+            <!--
+            为列表添加圆角和外边距，同时列表项会自动转换为按钮， data-inset="true"；
+            指定列表分隔符（List Dividers），data-role="list-divider"；
+            自动添加恰当的分隔符 data-autodividers="true"；
+            添加搜索框， data-filter="true" ，修改默认文本，用 data-filter-placeholder
+            -->
+            <ul data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="搜索 ..." >
+                <li data-role="list-divider">A部门</li>
+                <li><a href="#">是肯德基</a></li>
+                <li><a href="#">撒旦</a></li>
+                <li><a href="#">大神的</a></li>
+                <li><a href="#">官方</a></li>
+                <li data-role="list-divider">B部门</li>
+                <li><a href="#">贵妇狗</a></li>
+                <li><a href="#">豆腐干地方</a></li>
+                <li><a href="#">发给对方</a></li>
+                <li data-role="list-divider">C部门</li>
+                <li><a href="#">公司分管</a></li>
+                <li><a href="#">大法师</a></li>
+                <li><a href="#">防守对方</a></li>
+            </ul>
+
+            <div data-role="collapsible" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
+                <h4>A部门 <span class="ui-li-count">25</span></h4>
+                <!--人员信息-->
+                <div data-role="collapsible" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
+                    <h4>是肯德基</h4>
+                    <ul data-role="listview">
+                    <li><a href="tel:0755-33311111">0755-33311111</a></li>
+                    <li><a href="weixin://addfriend/beancube">微信号：beancube</a></li>
+                    <li><a href="mailto:studio@doucube.com">电子邮箱：studio@doucube.com</a></li>
+                    </ul>
+                </div>
+                <!--人员信息-->
+                <div data-role="collapsible" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
+                    <h4>撒旦</h4>
+                    <ul data-role="listview">
+                        <li><a href="tel:0755-33311111">0755-33311111</a></li>
+                        <li><a href="weixin://addfriend/beancube">微信号：beancube</a></li>
+                        <li><a href="mailto:studio@doucube.com">电子邮箱：studio@doucube.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!--</div>-->
+            <p>搜索框中的文本是 "搜索姓名 ..."。</p>
+        </div>
+    </div>
+</body>
+</html>

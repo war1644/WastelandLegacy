@@ -36,10 +36,10 @@
 <script src="./Static/js/resources.js"></script>
 <script src="./Static/js/sprite.js"></script>
 <script src="./Static/js/input.js"></script>
-<script src="./Static/js/collision.js"></script>
 <script src="./Static/js/gameLib.js"></script>
 <script src="./Static/js//mapTest.js"></script>
 <script>
+    var mapWidth,mapHeight,tileSize=24,img,mapSize = {x:0,y:0};
 
     var id = userInfo.id;
 
@@ -54,25 +54,25 @@
         this.send(data);
     };
 
-    var WS = new WebSocket("ws://127.0.0.1:2416");
+//    var WS = new WebSocket("ws://127.0.0.1:2416");
     //握手成功触发
-    WS.onopen = function(){
-        console.log("握手成功");
-        if(ws.readyState==1){
-            ws.send(JSON.stringify({id:id,wl:userInfo.wl}));
-        }
-    };
-    //服务器发送消息，触发
-    WS.onmessage = function(e){
-        //e.data就是服务器发送的信息
-        console.log( JSON.parse(e.data) );
-        //接下来爱干嘛干嘛去、
-        //...code...
-    };
-    //出错时触发方法
-    WS.onerror = function(e){
-        console.log( e );
-    };
+//    WS.onopen = function(){
+//        console.log("握手成功");
+//        if(ws.readyState==1){
+//            ws.send(JSON.stringify({id:id,wl:userInfo.wl}));
+//        }
+//    };
+//    //服务器发送消息，触发
+//    WS.onmessage = function(e){
+//        //e.data就是服务器发送的信息
+//        console.log( JSON.parse(e.data) );
+//        //接下来爱干嘛干嘛去、
+//        //...code...
+//    };
+//    //出错时触发方法
+//    WS.onerror = function(e){
+//        console.log( e );
+//    };
 
     //地图
     var urlArr = ["http://game.duanxq.cn/cache/map_3_0.png","http://game.duanxq.cn/cache/map_3_1.png","http://game.duanxq.cn/cache/map_3_2.png","http://game.duanxq.cn/images/charasets/NPC (6).png"];
@@ -89,7 +89,6 @@
     //
     //    foreach ( data['upMapPass'] as v){ if(!v['pass']) mapPass[v['x']][v['y']] = v['pass'];}
 
-    var mapWidth,mapHeight,tileSize=24,img,mapSize = {x:0,y:0};
 
     var mapPass = [
         [true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true],
@@ -169,7 +168,7 @@
 
         ctx2.fillStyle = terrainPattern1;
         ctx2.fillRect(0, 0, mapWidth, mapHeight);
-
+        getMousePos(canvas2,getCanavsClickPoint);
 
 
     }
@@ -190,7 +189,7 @@
     // Game state
     var player = {
         pos: [0, 0],
-        p: {x:0,y:0},
+        p: {x:12,y:12},
         sprite: new Sprite(urlArr[3], [0, 0], [tileSize,tileSize], 10, [0, 1, 2, 3])
     };
 
@@ -208,8 +207,7 @@
         if (input.isDown('DOWN') || input.isDown('s')) {
 //                    if (moveState=true) return;
             player.sprite.running = true;
-            player.sprite.pos = [0, 0 * tileSize];
-            var isMove = checkCollisions(player.p.x, player.p.y + playerSpeed * dt);
+            var isMove = checkCollisions(player.pos[0]*tileSize, player.pos[1]*tileSize + playerSpeed * dt);
             if (isMove) {
                 player.p.y += playerSpeed * dt;
                 $("#sprite").css({
@@ -226,7 +224,7 @@
 
             player.sprite.running = true;
             player.sprite.pos = [0, 3 * tileSize];
-            var isMove = checkCollisions(player.p.x, player.p.y - playerSpeed * dt);
+            var isMove = checkCollisions(player.pos[0]*tileSize, player.pos[1]*tileSize - playerSpeed * dt);
             if (isMove) {
                 player.p.y -= playerSpeed * dt;
                 $("#sprite").css({
@@ -241,7 +239,7 @@
 
             player.sprite.running = true;
             player.sprite.pos = [0, 1 * tileSize];
-            var isMove = checkCollisions(player.p.x - playerSpeed * dt, player.p.y);
+            var isMove = checkCollisions(player.pos[0]*tileSize - playerSpeed * dt, player.pos[1]*tileSize);
             if (isMove) {
                 player.p.x -= playerSpeed * dt;
                 $("#sprite").css({
@@ -255,8 +253,7 @@
 //                    if (moveState=true) return;
 
             player.sprite.running = true;
-            player.sprite.pos = [0, 2 * tileSize];
-            var isMove = checkCollisions(player.p.x + playerSpeed * dt, player.p.y);
+            var isMove = checkCollisions(player.pos[0]*tileSize + playerSpeed * dt, player.pos[0]*tileSize);
             if (isMove) {
                 player.p.x += playerSpeed * dt;
                 $("#sprite").css({
@@ -298,4 +295,5 @@
     }
 
 </script>
+<script src="./Static/js/collision.js"></script>
 </html>

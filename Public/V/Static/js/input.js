@@ -64,9 +64,14 @@
 })();
 
 //监听鼠标点击的canvas的坐标
-function getMousePos(canvas) {
+function getMousePos(canvas,func) {
     canvas.addEventListener('click', function(e) {
         var rect = canvas.getBoundingClientRect();
-        return {x: e.clientX - rect.left,y:e.clientY - rect.top}
-    }, false);
+        var clickPoint = {x: Math.ceil((e.clientX - rect.left)/tileSize)-1,y:Math.ceil((e.clientY - rect.top)/tileSize)-1};
+        func(clickPoint);
+        // return clickPoint;
+    });
+}
+function getCanavsClickPoint(point) {
+    console.log(point);
 }
