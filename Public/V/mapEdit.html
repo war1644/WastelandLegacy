@@ -34,16 +34,16 @@
 <script src="./Static/js/input.js"></script>
 
 <script>
-    var tileSet,imgObj,mapHeight,mapWidth,mapSize={x:0,y:0},tileSize=24;
-//    $.post('http://e.cn/Public/test', {}, function (result) {
+    var tileSet={},imgObj,mapHeight,mapWidth,mapSize={x:0,y:0},tileSize=0,map=[],tileCanvas;
+    $.post('http://e.cn/Public/index', {}, function (result) {
 //        console.log(result);
-//        result.tileSet[]
-//    });
+        mapDataProcess(result);
+    });
 
-    //加载资源
-    var urlArr = ["./Static/img/瓦片.png"];
-    resources.load(urlArr[0]);
-    resources.onReady(init);
+    //load resources
+//    var urlArr = ["./Static/img/瓦片.png"];
+//    resources.load(urlArr[0]);
+//    resources.onReady(init);
 
     function init() {
         imgObj = resources.get(urlArr[0]);
@@ -72,21 +72,63 @@
     function getCanavsClickPoint(point) {
         console.log(point);
     }
-    
-    function mapDataProcess(map) {
-        var data = map.data,arr = [];
-        //down map layer
-        for ( var y = 0; y < map.countY; y++ ) {
-            for ( var x = 0; x < map.countX; x++ ) {
-                arr.push({
-                    'id' : 'd_' + x + '_' + y,
-                    'x' : x,
-                    'y' : y,
-                    'img' : data[0][y][x],
-                    'pass' : tileSet[0][1][data[1][y][x]]
-                })
-            }
+    /**
+     * Tile map data process
+     */
+    function mapDataProcess(data) {
+        //get tile set data ```source: "map.png", width: "256", height: "877"```
+        var tmp = data['tileset']['@attributes'];
+        tileSet = data['tileset']['image']['@attributes'];
+        tileSet.columns = tmp['columns'];
+        tileSet.tileHeight = tmp['height'];
+        tileSet.tileWidth = tmp['width'];
+
+        //get tile map data ```name: "meta", width: "255", height: "255", opacity: "0.49",data:"1,1,1,1,1,1..."```
+        for (var i = 0; i < data['layer'].length; i++) {
+            map.push(data['layer'][i]['@attributes']);
+            map[i].data = data['layer'][i]['data']
         }
+
+        //data process,start render
+
+
+
+        console.log();
+//        var data = map.data,arr = [];
+//        //down map layer
+//        for ( var y = 0; y < map.countY; y++ ) {
+//            for ( var x = 0; x < map.countX; x++ ) {
+//                arr.push({
+//                    'id' : 'd_' + x + '_' + y,
+//                    'x' : x,
+//                    'y' : y,
+//                    'img' : data[0][y][x],
+//                    'pass' : tileSet[0][1][data[1][y][x]]
+//                })
+//            }
+//        }
+    }
+
+    /**
+     * Render tile map
+     */
+    function drawMap() {
+
+    }
+    /**
+     * Create a canvas to ram
+     */
+    function createCanavsRam(imgObj,tileSet) {
+        var tileCanvas = document.createElement("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width = tileSet.width;
+        canvas.height = tileSet.height;
+
+        terrainPattern  = ctx.createPattern(imgObj,'no-repeat');
+        ctx.fillStyle = terrainPattern;
+        ctx.fillRect(0, 0, tileSet.width, tileSet.height);
+
+        //ctx.drawImage(imgObj,x,y,w,h,ix,iy,iw,ih)
     }
 </script>
 </html>

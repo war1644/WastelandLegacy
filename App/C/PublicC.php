@@ -18,13 +18,14 @@ use App\M\JobsM;
 use App\M\MapsM;
 use App\M\TilesetsM;
 use App\M\UsersM;
+use Base\Tool\TileMapProcess;
 use Base\Tool\Vcode;
 use Base\Tool\Page;
 
 class PublicC extends AppC {
 
-    public function index($param){
-        return ResultFormat($param);
+    public function index(){
+        echo TileMapProcess::loadTmx('MainMap.tmx');
     }
 
     public function test(){
