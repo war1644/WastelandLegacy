@@ -27,108 +27,150 @@
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-    
+    <button type="submit" class="btn btn-default" onclick="saveImageToLocal();">保存到本地</button>
+
 </body>
 <script src="./Static/js/resources.js"></script>
 <script src="./Static/js/sprite.js"></script>
 <script src="./Static/js/input.js"></script>
 
 <script>
-    var tileSet={},imgObj,mapHeight,mapWidth,mapSize={x:0,y:0},tileSize=0,map=[],tileCanvas;
+    var tileSet={},imgObj,mapHeight,mapWidth,mapSize,tileSize=0,map=[],canvas,mapCanvas,urlArr=[];
     $.post('http://e.cn/Public/index', {}, function (result) {
-//        console.log(result);
         mapDataProcess(result);
+        delete result;
     });
-
-    //load resources
-//    var urlArr = ["./Static/img/瓦片.png"];
-//    resources.load(urlArr[0]);
-//    resources.onReady(init);
 
     function init() {
         imgObj = resources.get(urlArr[0]);
-        mapHeight = imgObj.height;
-        mapWidth = imgObj.width;
-        mapSize.x = mapWidth/tileSize;
-        mapSize.y = mapHeight/tileSize;
         createCanavs();
     }
-
+    /**
+     * Create a canvas
+     */
     function createCanavs() {
-        // Create the canvas
         canvas = document.createElement("canvas");
-        canvas2 = document.createElement("canvas");
-        ctx = canvas.getContext("2d");
-        ctx2 = canvas2.getContext("2d");
-        canvas.width = mapWidth;
-        canvas.height = mapHeight;
+        mapCanvas = canvas.getContext("2d");
+        canvas.height = map.tileheight*map.height;
+        canvas.width = map.tilewidth*map.width;
         document.body.appendChild(canvas);
-
-        terrainPattern  = ctx.createPattern(imgObj,'no-repeat');
-        ctx.fillStyle = terrainPattern;
-        ctx.fillRect(0, 0, mapWidth, mapHeight);
         getMousePos(canvas,getCanavsClickPoint);
+        drawMaps();
     }
     function getCanavsClickPoint(point) {
         console.log(point);
     }
+
     /**
      * Tile map data process
      */
     function mapDataProcess(data) {
-        //get tile set data ```source: "map.png", width: "256", height: "877"```
-        var tmp = data['tileset']['@attributes'];
-        tileSet = data['tileset']['image']['@attributes'];
-        tileSet.columns = tmp['columns'];
-        tileSet.tileHeight = tmp['height'];
-        tileSet.tileWidth = tmp['width'];
-
-        //get tile map data ```name: "meta", width: "255", height: "255", opacity: "0.49",data:"1,1,1,1,1,1..."```
-        for (var i = 0; i < data['layer'].length; i++) {
-            map.push(data['layer'][i]['@attributes']);
-            map[i].data = data['layer'][i]['data']
-        }
-
-        //data process,start render
-
-
-
-        console.log();
-//        var data = map.data,arr = [];
-//        //down map layer
-//        for ( var y = 0; y < map.countY; y++ ) {
-//            for ( var x = 0; x < map.countX; x++ ) {
-//                arr.push({
-//                    'id' : 'd_' + x + '_' + y,
-//                    'x' : x,
-//                    'y' : y,
-//                    'img' : data[0][y][x],
-//                    'pass' : tileSet[0][1][data[1][y][x]]
-//                })
-//            }
-//        }
+        //get tile set data
+        tileSet = data.tilesets[0];
+        delete data.tilesets;
+        //get tile map data
+        map = data;
+        delete data;
+        //load resources
+        urlArr.push('\\V\\Static\\assets\\'+tileSet.image);
+        resources.load(urlArr[0]);
+        resources.onReady(init);
     }
 
     /**
      * Render tile map
      */
-    function drawMap() {
+    function drawMaps() {
+        var len = map.layers.length;
+//        for(var c=0;c<len;c++) {
+            var layer = map.layers[0].data,layerLen;
+            layerLen = layer.length;
+            var j=0,x=0,width=map.width;
+            for (var i = 0; i < layerLen; i++,x++) {
+                var y = Math.floor(i/width);
+                if (j !== y){x=0;j=y;}
+                var tileSetY = Math.floor(layer[i] / tileSet.columns), tileSetX = layer[i] % tileSet.columns - 1;
+                //tileSetX减1，从当前位置就已经开始渲染
+                mapCanvas.drawImage(imgObj, tileSetX * 32, tileSetY * 32, 32, 32, x * 32, y * 32, 32, 32);
 
+            }
+//        }
     }
     /**
      * Create a canvas to ram
      */
     function createCanavsRam(imgObj,tileSet) {
-        var tileCanvas = document.createElement("canvas");
-        var ctx = canvas.getContext("2d");
+        var ctx = document.createElement("canvas").getContext("2d");
         canvas.width = tileSet.width;
         canvas.height = tileSet.height;
 
         terrainPattern  = ctx.createPattern(imgObj,'no-repeat');
         ctx.fillStyle = terrainPattern;
         ctx.fillRect(0, 0, tileSet.width, tileSet.height);
+    }
 
-        //ctx.drawImage(imgObj,x,y,w,h,ix,iy,iw,ih)
+    function saveImageToServer () {
+        var image    = canvas.toDataURL("image/png");
+        var w=window.open('about:blank','image from canvas');
+        w.document.write("<img src='"+image+"' alt='from canvas'/>");
+    }
+
+    function saveImageToLocal () {
+        var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        window.location.href=image;
+    }
+
+
+    /**
+     * Tile map data process
+     */
+    function mapDataProcess2(data) {
+        //get tile set data ```source: "map.png", width: "256", height: "877"```
+        var tmp = data['tileset']['@attributes'];
+        tileSet = data['tileset']['image']['@attributes'];
+        tileSet.columns = parseInt(tmp['columns']);
+        tileSet.tileHeight = parseInt(tmp['tileheight']);
+        tileSet.tileWidth = parseInt(tmp['tilewidth']);
+
+        //get tile map data ```name: "meta", width: "255", height: "255", opacity: "0.49",data:"1,1,1,1,1,1..."```
+        for (var i = 0; i < data['layer'].length; i++) {
+            map.push(data['layer'][i]['@attributes']);
+            map[i].data = data['layer'][i]['data'];
+        }
+        delete data;
+        map[0].width = parseInt(map[0].width);
+        map[0].height = parseInt(map[0].height);
+        mapHeight = tileSet.tileHeight*map[0].height;
+        mapWidth = tileSet.tileWidth*map[0].width;
+        mapSize = {x:map[0].width, y:map[0].height};
+        //data process,start render
+        urlArr.push('\\V\\Static\\assets\\'+tileSet.source);
+        //load resources
+        resources.load(urlArr[0]);
+        resources.onReady(init);
+    }
+    /**
+     * Render tile map
+     */
+    function drawMap2() {
+        var len = map.layers.length;
+        for(var c=0;c<len;c++) {
+
+            var YLayer = map.layers[c].data.split('\n'), YLength;
+            YLayer.pop();
+            YLayer.shift();
+            YLength = YLayer.length;
+            for (var y = 0; y < YLength; y++) {
+                var XLayer = YLayer[y].split(','), XLength;
+                XLayer.pop();
+                XLength = XLayer.length;
+                for (var x = 0; x < XLength; x++) {
+                    var tileSetY = Math.floor(XLayer[x] / tileSet.columns), tileSetX = XLayer[x] % tileSet.columns - 1;
+                    //tileSetX减1，从当前位置就已经开始渲染
+                    mapCanvas.drawImage(imgObj, tileSetX * 32, tileSetY * 32, 32, 32, x * 32, y * 32, 32, 32);
+                }
+            }
+        }
     }
 </script>
 </html>

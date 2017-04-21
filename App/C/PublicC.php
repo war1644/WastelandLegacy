@@ -25,7 +25,7 @@ use Base\Tool\Page;
 class PublicC extends AppC {
 
     public function index(){
-        echo TileMapProcess::loadTmx('MainMap.tmx');
+        echo ResultFormat(file_get_contents(RUN_PATH.'Assets/MainMap.json'));
     }
 
     public function test(){

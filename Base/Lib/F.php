@@ -61,9 +61,17 @@ function RandStr($length=6) {
  */
 function ResultFormat($params = []){
     header('Content-Type:application/json; charset=utf-8');
-    if (!isset($_GET['callback'])) return json_encode($params,JSON_UNESCAPED_UNICODE);
+
+    if (!isset($_GET['callback'])){
+        if (is_string($params)) return $params;
+        return json_encode($params,JSON_UNESCAPED_UNICODE);
+    }
     $callback = $_GET['callback'];
-    $res = json_encode($params,JSON_UNESCAPED_UNICODE);
+    if (is_string($params)){
+        $res = $params;
+    }else{
+        $res = json_encode($params,JSON_UNESCAPED_UNICODE);
+    }
     return sprintf("%s(%s)", $callback, $res);
 }
 
