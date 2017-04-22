@@ -8,9 +8,6 @@
     <title>Title</title>
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
-<scrtipt>
-
-</scrtipt>
 <style>
     @keyframes aniMove{
         100%{background-position-x:72px;}
@@ -39,91 +36,29 @@
 <script src="./Static/js/gameLib.js"></script>
 <script src="./Static/js//mapTest.js"></script>
 <script>
-    var mapWidth,mapHeight,tileSize=24,img,mapSize = {x:0,y:0};
+    var mapWidth,mapHeight,tileSet,imgObj,map,player,mapPass=[[]],canvas,canvas2,ctx,ctx2,terrainPattern,terrainPattern1,tileSize=24,eventObj,eventArr={},moving = false;
+//    var id = userInfo.id;
 
-    var id = userInfo.id;
-
-    //扩展send方法
-    WebSocket.prototype.wlSend = function (params) {
-        var data = {
-            id:this.name,
-            service:this.service,
-            data:params
-        };
-        data = JSON.stringify(data);
-        this.send(data);
-    };
-
-//    var WS = new WebSocket("ws://127.0.0.1:2416");
-    //握手成功触发
-//    WS.onopen = function(){
-//        console.log("握手成功");
-//        if(ws.readyState==1){
-//            ws.send(JSON.stringify({id:id,wl:userInfo.wl}));
-//        }
-//    };
-//    //服务器发送消息，触发
-//    WS.onmessage = function(e){
-//        //e.data就是服务器发送的信息
-//        console.log( JSON.parse(e.data) );
-//        //接下来爱干嘛干嘛去、
-//        //...code...
-//    };
-//    //出错时触发方法
-//    WS.onerror = function(e){
-//        console.log( e );
-//    };
+    $.post('http://e.cn/Public/index', {}, function (result) {
+        mapDataProcess(result);
+        delete result;
+    });
 
     //地图
-    var urlArr = ["http://game.duanxq.cn/cache/map_3_0.png","http://game.duanxq.cn/cache/map_3_1.png","http://game.duanxq.cn/cache/map_3_2.png","http://game.duanxq.cn/images/charasets/NPC (6).png"];
-
-    //    foreach ( data['mapImg'] as v){
-    //        urlArr.push(v);
-    //    }
-    //
-    //    //地图碰撞标识
-    //    var downPass = data.downMapPass;
-    //    for(){
-    //        mapPass[v.x][v.y] =  v.pass;
-    //    }
-    //
-    //    foreach ( data['upMapPass'] as v){ if(!v['pass']) mapPass[v['x']][v['y']] = v['pass'];}
-
-
-    var mapPass = [
-        [true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,true,true,true,true,false,false,false,true,true],
-        [true,true,true,false,true,true,true,true,true,false,false,false,false,true,true,true,true,true,false,true,false,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,false,false,false,false,true,false,false,true,true,true,true,true,true,true,true,false,false,false,false,true,true],
-        [true,true,true,false,true,true,true,true,false,false,true,false,false,false,true,true,true,true,true,true,true,true,true,true,false,true,false,false,true,true],
-        [true,true,true,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,false,true,false,true,true,true,true,true,true,false,false,false,false,true,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,false,false,true,true,true,false,false,false,false,true,true,true,false,false,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,false,true,true,true,false,false,false,false,false,true,true,true,true,false,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,false,false,false,false,false,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,false,false,true,true,true,true,true,true,false,false,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,false,false,true,true,true,true,true,false,false,true,false,false,true,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,false,true,true,true,true,true,true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,true,false,true,true],
-        [true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,true,true,false,false,true,true],
-        [true,true,true,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false],
-        [true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],
-        [true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]
-    ];
-
-    //加载资源
-    resources.load(urlArr);
-    resources.onReady(init);
+    var urlArr = ['/V/Static/assets/home_0.png','/V/Static/assets/home_1.png',"/V/Static/img/movePic/NPC_1.png"];
 
     function init() {
-        img = resources.get();
-        mapHeight = img[urlArr[0]].height;
-        mapWidth = img[urlArr[0]].width;
-        mapSize.x = mapWidth/tileSize;
-        mapSize.y = mapHeight/tileSize;
+        imgObj = resources.get();
+        mapHeight = imgObj[urlArr[0]].height;
+        mapWidth = imgObj[urlArr[0]].width;
         lastTime = Date.now();
+        player = {
+            pos: [4, 8],
+            p: {x:4*tileSize,y:8*tileSize},
+            sprite: new Sprite(urlArr[2], [0, 0], [tileSet.tilewidth,tileSet.tileheight], 10, [0, 1, 2, 3])
+        };
+//        mapEventProcess();
+
         createCanavs();
         main();
     }
@@ -140,9 +75,7 @@
                 window.setTimeout(callback, 1000 / 60);//一秒60帧
             };
     })();
-    var canvas,canvas2,ctx,ctx2,terrainPattern,terrainPattern1,terrainPattern2;
     function createCanavs() {
-        // Create the canvas
         canvas = document.createElement("canvas");
         canvas2 = document.createElement("canvas");
         ctx = canvas.getContext("2d");
@@ -160,11 +93,8 @@
             "z-index": 1
         });
 
-
-        terrainPattern  = ctx.createPattern(img[urlArr[0]],'no-repeat');
-        terrainPattern1  = ctx.createPattern(img[urlArr[1]],'no-repeat');
-        terrainPattern2  = ctx.createPattern(img[urlArr[2]],'no-repeat');
-
+        terrainPattern  = ctx.createPattern(imgObj[urlArr[0]],'no-repeat');
+        terrainPattern1  = ctx.createPattern(imgObj[urlArr[1]],'no-repeat');
 
         ctx2.fillStyle = terrainPattern1;
         ctx2.fillRect(0, 0, mapWidth, mapHeight);
@@ -174,7 +104,7 @@
     }
 
     // The main game loop
-    var lastTime,moveState;
+    var lastTime;
     function main() {
         var now = Date.now();
         var dt = (now - lastTime) / 1000.0;
@@ -187,104 +117,101 @@
     }
 
     // Game state
-    var player = {
-        pos: [0, 0],
-        p: {x:12,y:12},
-        sprite: new Sprite(urlArr[3], [0, 0], [tileSize,tileSize], 10, [0, 1, 2, 3])
-    };
-
     var gameTime = 0;
-    var playerSpeed = 100;
+    var playerSpeed = 2,dir=-1;
 
     function update(dt) {
         gameTime += dt;
         handleInput(dt);
+        movingAnim();
         player.sprite.update(dt);
     }
 
+    //0:down 1:left 2:right 3:up
+    function movingAnim() {
+        if (dir===-1) return;
+        player.sprite.running = moving = true;
+        switch (dir){
+            case 0:
+                player.sprite.pos = [0, dir * tileSize];
+                var p = (player.pos[1]+1)*tileSize;
+                player.p.y += playerSpeed;
+                if(player.p.y >= p){
+                    player.sprite.running = moving = false;
+                    dir=-1;
+                    player.pos[1] += 1;
+                }
+                break;
+            case 1:
+                player.sprite.pos = [0, dir * tileSize];
+                var p = (player.pos[0]-1)*tileSize;
+                player.p.x -= playerSpeed;
+                if(player.p.x <= p){
+                    dir=-1;
+                    player.sprite.running = moving = false;
+                    player.pos[0] -= 1;
+                }
+                break;
+            case 2:
+                player.sprite.pos = [0, dir * tileSize];
+                var p = (player.pos[0]+1)*tileSize;
+                player.p.x += playerSpeed;
+                if(player.p.x >= p){
+                    dir=-1;
+                    player.sprite.running = moving = false;
+                    player.pos[0] += 1;
+                }
+                break;
+            case 3:
+                player.sprite.pos = [0, dir * tileSize];
+                var p = (player.pos[1]-1)*tileSize;
+                player.p.y -= playerSpeed;
+                if(player.p.y <= p){
+                    dir=-1;
+                    player.sprite.running = moving = false;
+                    player.pos[1] -= 1;
+                }
+                break;
+        }
 
-    function handleInput(dt) {
+    }
+
+    function handleInput() {
+        if(moving) return;
         if (input.isDown('DOWN') || input.isDown('s')) {
-//                    if (moveState=true) return;
-            player.sprite.running = true;
-            var isMove = checkCollisions(player.pos[0]*tileSize, player.pos[1]*tileSize + playerSpeed * dt);
-            if (isMove) {
-                player.p.y += playerSpeed * dt;
-                $("#sprite").css({
-                    "background-position-y": "0px",
-                    "animation-play-state": "running"
-                });
-            }
-
-
+            console.log('s');
+            if (checkCollisions(player.pos[0], player.pos[1]+1)) dir = 0;
         }
 
         if (input.isDown('UP') || input.isDown('w')) {
-//                    if (moveState=true) return;
-
-            player.sprite.running = true;
-            player.sprite.pos = [0, 3 * tileSize];
-            var isMove = checkCollisions(player.pos[0]*tileSize, player.pos[1]*tileSize - playerSpeed * dt);
-            if (isMove) {
-                player.p.y -= playerSpeed * dt;
-                $("#sprite").css({
-                    "background-position-y": "24px",
-                    "animation-play-state": "running"
-                });
-            }
+            console.log('w');
+            if (checkCollisions(player.pos[0], player.pos[1]-1)) dir = 3;
         }
 
         if (input.isDown('LEFT') || input.isDown('a')) {
-//                    if (moveState=true) return;
-
-            player.sprite.running = true;
-            player.sprite.pos = [0, 1 * tileSize];
-            var isMove = checkCollisions(player.pos[0]*tileSize - playerSpeed * dt, player.pos[1]*tileSize);
-            if (isMove) {
-                player.p.x -= playerSpeed * dt;
-                $("#sprite").css({
-                    "background-position-y": "72px",
-                    "animation-play-state": "running"
-                });
-            }
+            console.log('a');
+            if (checkCollisions(player.pos[0]-1, player.pos[1])) dir = 1;
         }
 
         if (input.isDown('RIGHT') || input.isDown('d')) {
-//                    if (moveState=true) return;
-
-            player.sprite.running = true;
-            var isMove = checkCollisions(player.pos[0]*tileSize + playerSpeed * dt, player.pos[0]*tileSize);
-            if (isMove) {
-                player.p.x += playerSpeed * dt;
-                $("#sprite").css({
-                    "background-position-y": "48px",
-                    "animation-play-state": "running"
-                });
-            }
+            console.log('d');
+            if (checkCollisions(player.pos[0] + 1, player.pos[1])) dir = 2;
         }
-
     }
 
     // Draw everything
     function render() {
         ctx.fillStyle = terrainPattern;
         ctx.fillRect(0, 0, mapWidth, mapHeight);
-        ctx.fillStyle = terrainPattern2;
-        ctx.fillRect(0, 0, mapWidth, mapHeight);
         renderEntity(player);
-//        renderEntities(eventData);
+        renderEntities(eventArr);
 
     }
 
     function renderEntities(list) {
-//        var len = list.length;
-//        for(var i=0; i<len; i++) {
-//            renderEntity(list[i]);
-//        }
         for (var k in list) {
             renderEntity(list[k]);
         }
-
     }
 
     function renderEntity(entity) {
@@ -292,6 +219,55 @@
         ctx.translate(entity.p.x, entity.p.y);
         entity.sprite.render(ctx);
         ctx.restore();
+    }
+
+    /**
+     * Tile map data process
+     */
+    function mapDataProcess(data) {
+
+        //get tile set data
+        tileSet = data.tilesets[0];
+        delete data.tilesets;
+
+        //get tile map data
+        map = data;
+        delete data;
+
+        //get tile map pass array
+        mapPassProcess();
+        mapEventProcess();
+
+        //load resources
+        urlArr.push('/V/Static/assets/'+tileSet.image);
+        resources.load(urlArr);
+        resources.onReady(init);
+    }
+
+    /**
+     * Render tile map
+     */
+    function mapPassProcess() {
+        eventObj = map.layers.pop().objects;
+        var layer = map.layers.pop().data,layerLen;
+        layerLen = layer.length;
+        var j=0,x=0,width=map.width;
+        for (var i = 0; i < layerLen; i++,x++) {
+            var y = Math.floor(i/width);
+            if (j !== y){x=0;j=y;mapPass.push([]);}
+            mapPass[j].push(layer[i]);
+        }
+    }
+
+    /**
+     * Render tile map
+     */
+    function mapEventProcess() {
+        var len = eventObj.length;
+        for (var i = 0; i < len; i++) {
+            addEvent(eventObj[i]);
+        }
+        delete eventObj;
     }
 
 </script>

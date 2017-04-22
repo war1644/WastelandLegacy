@@ -34,7 +34,6 @@
             default:
                 // Convert ASCII codes to letters
                 key = String.fromCharCode(code);
-                console.log(key);
         }
 
         pressedKeys[key] = status;
@@ -46,9 +45,6 @@
 
     document.addEventListener('keyup', function(e) {
         setKey(e, false);
-        // $("#sprite").css({
-        //     "animation-play-state" : "paused"
-        // });
         player.sprite.running=false;
     });
 
@@ -69,7 +65,6 @@ function getMousePos(canvas,func) {
         var rect = canvas.getBoundingClientRect();
         var clickPoint = {x: Math.ceil((e.clientX - rect.left)/tileSize)-1,y:Math.ceil((e.clientY - rect.top)/tileSize)-1};
         func(clickPoint);
-        // return clickPoint;
     });
 }
 function getCanavsClickPoint(point) {

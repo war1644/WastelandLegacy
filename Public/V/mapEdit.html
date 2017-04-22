@@ -27,7 +27,7 @@
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
-    <button type="submit" class="btn btn-default" onclick="saveImageToLocal();">保存到本地</button>
+    <button type="submit" class="btn btn-default" onclick="saveImageToServer();">保存到服务器</button>
 
 </body>
 <script src="./Static/js/resources.js"></script>
@@ -35,7 +35,7 @@
 <script src="./Static/js/input.js"></script>
 
 <script>
-    var tileSet={},imgObj,mapHeight,mapWidth,mapSize,tileSize=0,map=[],canvas,mapCanvas,urlArr=[];
+    var tileSet={},imgObj,mapHeight,mapWidth,mapSize,tileSize=0,map=[],canvas,mapCanvas,urlArr=['./Static/assets/home_0.png','./Static/assets/home_0.png'],mapPass=[[]];
     $.post('http://e.cn/Public/index', {}, function (result) {
         mapDataProcess(result);
         delete result;
@@ -61,6 +61,17 @@
         console.log(point);
     }
 
+    function mapPassProcess() {
+        var layer = map.layers.pop().data,layerLen;
+        layerLen = layer.length;
+        var j=0,x=0,width=map.width;
+        for (var i = 0; i < layerLen; i++,x++) {
+            var y = Math.floor(i/width);
+            if (j !== y){x=0;j=y;mapPass.push([]);}
+            mapPass[j].push(layer[i]);
+        }
+    }
+
     /**
      * Tile map data process
      */
@@ -72,9 +83,10 @@
         map = data;
         delete data;
         //load resources
-        urlArr.push('\\V\\Static\\assets\\'+tileSet.image);
-        resources.load(urlArr[0]);
-        resources.onReady(init);
+        mapPassProcess();
+//        urlArr.push('\\V\\Static\\assets\\'+tileSet.image);
+//        resources.load(urlArr[0]);
+//        resources.onReady(init);
     }
 
     /**
@@ -110,14 +122,14 @@
     }
 
     function saveImageToServer () {
-        var image    = canvas.toDataURL("image/png");
-        var w=window.open('about:blank','image from canvas');
-        w.document.write("<img src='"+image+"' alt='from canvas'/>");
+        var image = canvas.toDataURL("image/png");
+        $.post('/Public/upload', {imgs:[image],names:['map_1_0']}, function (result) {
+            console.log(result);
+        });
     }
 
     function saveImageToLocal () {
-        var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        window.location.href=image;
+        location = canvas.toDataURL("image/png");
     }
 
 

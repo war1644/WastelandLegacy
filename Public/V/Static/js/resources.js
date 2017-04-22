@@ -11,11 +11,11 @@
  * @version
  * v2017/02/10 初版
  */
-var userInfo = localStorage.getItem('userInfo');
-if(userInfo===null){
-    location.href = '/';
-}
-userInfo = JSON.parse(userInfo);
+// var userInfo = localStorage.getItem('userInfo');
+// if(userInfo===null){
+//     location.href = '/';
+// }
+// userInfo = JSON.parse(userInfo);
 
 (function() {
 
@@ -44,6 +44,7 @@ userInfo = JSON.parse(userInfo);
                 resourceCache[url] = img;
                 if(isReady()) {
                     readyCallbacks.forEach(function(func) { func(); });
+                    // readyCallbacks[readyCallbacks.length-1]();
                 }
             };
             resourceCache[url] = false;

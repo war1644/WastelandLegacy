@@ -15,48 +15,26 @@ function checkPlayerBounds(x,y) {
     // Check bounds
     if(x < 0) {
         return false;
-    } else if(x > mapWidth ) {
+    } else if(x > map.width ) {
         return false;
     }
 
     if(y < 0) {
         return false;
-    } else if(y > mapHeight) {
+    } else if(y > map.height) {
         return false;
-
     }
     return true;
 }
 //碰撞检测
-function checkCollisions(x,y,dir) {
+function checkCollisions(x,y) {
     if (!checkPlayerBounds(x,y)){
         return false;
     }
-    var x1 = Math.ceil(x/tileSize)-1;
-    var y1 = Math.ceil(y/tileSize)-1;
-
-    console.log(x1,y1);
-    if(!mapPass[y1][x1]) {
-        console.log('x:'+x1+'y:'+y1+' 不能通过');
-        switch (dir){
-            case 1:
-                y1+=1;
-                break;
-            case 2:
-                x1+=1;
-                break;
-            case 3:
-                x1-=1;
-                break;
-            case 4:
-                y1-=1;
-                break;
-        }
-        player.pos = [x1,y1];
+    if(mapPass[y][x] !== 0) {
+        console.log('x:'+x+'y:'+y+' 不能通过');
         return false;
-    } else {
-        player.pos = [x1,y1];
-        return true;
     }
+    return true;
 
 }
