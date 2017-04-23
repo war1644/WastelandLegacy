@@ -63,6 +63,7 @@
             } else {
                 x += frame * this.size[0];
             }
+            // console.log(x,y);
             ctx.drawImage(
                 resources.get(this.url),
                 x, y,

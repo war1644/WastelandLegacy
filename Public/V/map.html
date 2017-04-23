@@ -36,7 +36,7 @@
 <script src="./Static/js/gameLib.js"></script>
 <script src="./Static/js//mapTest.js"></script>
 <script>
-    var mapWidth,mapHeight,tileSet,imgObj,map,player,mapPass=[[]],canvas,canvas2,ctx,ctx2,terrainPattern,terrainPattern1,tileSize=24,eventObj,eventArr={},moving = false;
+    var mapWidth,mapHeight,tileSet,imgObj,map,player,mapPass=[[]],canvas,canvas2,ctx,ctx2,terrainPattern,terrainPattern1,tileSize=24,eventObj,eventArr={},moving = false,btnState = false;
 //    var id = userInfo.id;
 
     $.post('http://e.cn/Public/index', {}, function (result) {
@@ -57,8 +57,6 @@
             p: {x:4*tileSize,y:8*tileSize},
             sprite: new Sprite(urlArr[2], [0, 0], [tileSet.tilewidth,tileSet.tileheight], 10, [0, 1, 2, 3])
         };
-//        mapEventProcess();
-
         createCanavs();
         main();
     }
@@ -129,45 +127,41 @@
 
     //0:down 1:left 2:right 3:up
     function movingAnim() {
-        if (dir===-1) return;
-        player.sprite.running = moving = true;
+        if (!moving || btnState) return;
+        player.sprite.running = true;
         switch (dir){
             case 0:
-                player.sprite.pos = [0, dir * tileSize];
                 var p = (player.pos[1]+1)*tileSize;
                 player.p.y += playerSpeed;
                 if(player.p.y >= p){
                     player.sprite.running = moving = false;
-                    dir=-1;
+//                    dir=-1;
                     player.pos[1] += 1;
                 }
                 break;
             case 1:
-                player.sprite.pos = [0, dir * tileSize];
                 var p = (player.pos[0]-1)*tileSize;
                 player.p.x -= playerSpeed;
                 if(player.p.x <= p){
-                    dir=-1;
+//                    dir=-1;
                     player.sprite.running = moving = false;
                     player.pos[0] -= 1;
                 }
                 break;
             case 2:
-                player.sprite.pos = [0, dir * tileSize];
                 var p = (player.pos[0]+1)*tileSize;
                 player.p.x += playerSpeed;
                 if(player.p.x >= p){
-                    dir=-1;
+//                    dir=-1;
                     player.sprite.running = moving = false;
                     player.pos[0] += 1;
                 }
                 break;
             case 3:
-                player.sprite.pos = [0, dir * tileSize];
                 var p = (player.pos[1]-1)*tileSize;
                 player.p.y -= playerSpeed;
                 if(player.p.y <= p){
-                    dir=-1;
+//                    dir=-1;
                     player.sprite.running = moving = false;
                     player.pos[1] -= 1;
                 }
@@ -180,23 +174,50 @@
         if(moving) return;
         if (input.isDown('DOWN') || input.isDown('s')) {
             console.log('s');
-            if (checkCollisions(player.pos[0], player.pos[1]+1)) dir = 0;
+            player.sprite.pos = [0, 0 * tileSize];
+            dir = 0;
+            if (checkCollisions(player.pos[0], player.pos[1]+1)){
+                moving = true;
+            }
         }
 
         if (input.isDown('UP') || input.isDown('w')) {
             console.log('w');
-            if (checkCollisions(player.pos[0], player.pos[1]-1)) dir = 3;
+            player.sprite.pos = [0, 3 * tileSize];
+            dir = 3;
+
+            if (checkCollisions(player.pos[0], player.pos[1]-1)){
+                moving = true;
+            }
+
         }
 
         if (input.isDown('LEFT') || input.isDown('a')) {
             console.log('a');
-            if (checkCollisions(player.pos[0]-1, player.pos[1])) dir = 1;
+            player.sprite.pos = [0, 1 * tileSize];
+            dir = 1;
+
+            if (checkCollisions(player.pos[0]-1, player.pos[1])){
+                moving = true;
+            }
         }
 
         if (input.isDown('RIGHT') || input.isDown('d')) {
             console.log('d');
-            if (checkCollisions(player.pos[0] + 1, player.pos[1])) dir = 2;
+            player.sprite.pos = [0, 2 * tileSize];
+            dir = 2;
+
+            if (checkCollisions(player.pos[0] + 1, player.pos[1])){
+                moving = true;
+            }
         }
+        if (input.isDown('space') || input.isDown('enter')) {
+            btnState = true;
+            mapEventTirgger();
+//            console.log();
+
+        }
+
     }
 
     // Draw everything
@@ -245,7 +266,7 @@
     }
 
     /**
-     * Render tile map
+     * tile map pass array
      */
     function mapPassProcess() {
         eventObj = map.layers.pop().objects;
@@ -260,7 +281,7 @@
     }
 
     /**
-     * Render tile map
+     * tile map event data process
      */
     function mapEventProcess() {
         var len = eventObj.length;
@@ -269,6 +290,31 @@
         }
         delete eventObj;
     }
+
+    /**
+     * map event tirgger
+     */
+    function mapEventTirgger() {
+        var eventData={},name;
+        switch (dir){
+            case 0:
+                name = player.pos[0]+'_'+(player.pos[1]+1);
+                break;
+            case 1:
+                name = (player.pos[0]-1)+'_'+player.pos[1];
+                break;
+            case 2:
+                name = (player.pos[0]+1)+'_'+player.pos[1];
+                break;
+            case 3:
+                name = player.pos[0]+'_'+(player.pos[1]-1);
+                break;
+        }
+        console.log(eventArr[name].log);
+//        return ;
+    }
+
+
 
 </script>
 <script src="./Static/js/collision.js"></script>
