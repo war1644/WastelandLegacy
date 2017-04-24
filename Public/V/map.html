@@ -34,7 +34,7 @@
 <script src="./Static/js/sprite.js"></script>
 <script src="./Static/js/input.js"></script>
 <script src="./Static/js/gameLib.js"></script>
-<script src="./Static/js//mapTest.js"></script>
+<script src="./Static/js//map.js"></script>
 <script>
     var mapWidth,mapHeight,tileSet,imgObj,map,player,mapPass=[[]],canvas,canvas2,ctx,ctx2,terrainPattern,terrainPattern1,tileSize=24,eventObj,eventArr={},moving = false,btnState = false;
 //    var id = userInfo.id;
@@ -97,8 +97,6 @@
         ctx2.fillStyle = terrainPattern1;
         ctx2.fillRect(0, 0, mapWidth, mapHeight);
         getMousePos(canvas2,getCanavsClickPoint);
-
-
     }
 
     // The main game loop
@@ -311,6 +309,7 @@
                 break;
         }
         console.log(eventArr[name].log);
+        btnState = false;
 //        return ;
     }
 

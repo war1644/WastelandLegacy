@@ -32,7 +32,6 @@ function checkCollisions(x,y) {
         return false;
     }
     if(mapPass[y][x] !== 0) {
-        console.log('x:'+x+'y:'+y+' 不能通过');
         return false;
     }
     return true;

@@ -29,7 +29,7 @@ class PublicC extends AppC {
     }
 
     public function index(){
-        echo ResultFormat(file_get_contents(RUN_PATH.'Assets/home.json'));
+        echo ResultFormat(file_get_contents(V_PATH.'Static/assets/home.json'));
     }
 
     public function test(){
