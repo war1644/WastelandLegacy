@@ -28,21 +28,40 @@
 </style>
 <body>
 <!--<div id="sprite"></div>-->
-<!--<button id="restart" onclick="reset();">重新开始</button>-->
+<!--<button id="restart" onclick="reset();">退出游戏</button>-->
 </body>
 <script src="./Static/js/resources.js"></script>
 <script src="./Static/js/sprite.js"></script>
 <script src="./Static/js/input.js"></script>
 <script src="./Static/js/gameLib.js"></script>
-<script src="./Static/js//mapTest.js"></script>
+<script src="./Static/js/mapTest.js"></script>
 <script>
-    var mapWidth,mapHeight,tileSet,imgObj,map,player,mapPass=[[]],canvas,canvas2,ctx,ctx2,terrainPattern,terrainPattern1,tileSize=24,eventObj,eventArr={},moving = false,btnState = false;
-//    var id = userInfo.id;
+    var mapWidth,
+        mapHeight,
+        tileSet,
+        imgObj,
+        map,
+        player,
+        mapPass=[[]],
+        canvas,
+        canvas2,
+        ctx,
+        ctx2,
+        terrainPattern,
+        terrainPattern1,
+        tileSize=24,
+        eventObj,
+        eventArr={},
+        moving = false,
+        btnState = false;
 
-    $.post('http://e.cn/Public/index', {}, function (result) {
-        mapDataProcess(result);
-        delete result;
-    });
+    function getMapData () {
+        $.post('http://e.cn/Public/getMap', {uid:userInfo.id}, function (result) {
+            mapDataProcess(result);
+            delete result;
+        });
+    }
+
 
     //地图
     var urlArr = ['/V/Static/assets/home_0.png','/V/Static/assets/home_1.png',"/V/Static/img/movePic/NPC_1.png"];

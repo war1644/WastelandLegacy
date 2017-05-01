@@ -18,10 +18,8 @@ class UsersM extends AppModel {
     protected $tables = null;
     protected $uid = null;
 
-    public function userInfo() {
-        if ($this->uid) return parent::find($this->uid);
-
-        //初始用户数据
+    public function userInfo($id,$field='*') {
+        return $this->find($id,$field);
 
     }
 
@@ -82,7 +80,7 @@ class UsersM extends AppModel {
         if ($result) {
             $result['wl'] = $result['password'];
             SetCache($result,$result['wl']);
-            unset($result['mapId'],$result['password'],$result['salt'],$result['battleId']);
+            unset($result['password'],$result['salt']);
             return ['code' => 1, 'msg' => '', 'data' => $result];
         } else {
             return ['code' => -1, 'msg' => 'mysql error'];

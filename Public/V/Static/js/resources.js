@@ -11,11 +11,11 @@
  * @version
  * v2017/02/10 初版
  */
-// var userInfo = localStorage.getItem('userInfo');
-// if(userInfo===null){
-//     location.href = '/';
-// }
-// userInfo = JSON.parse(userInfo);
+window.userInfo = localStorage.getItem('userInfo');
+if(userInfo===null){
+    location.href = '/';
+}
+userInfo = JSON.parse(userInfo);
 
 (function() {
 

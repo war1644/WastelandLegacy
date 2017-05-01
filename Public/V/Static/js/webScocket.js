@@ -5,7 +5,7 @@
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * 游戏客户端动画库
+ * 游戏客户端webscoket扩展
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
@@ -15,7 +15,7 @@
 //扩展send方法
 WebSocket.prototype.wlSend = function (params) {
     var data = {
-        id:this.name,
+        id:userInfo.id,
         service:this.service,
         data:params
     };
