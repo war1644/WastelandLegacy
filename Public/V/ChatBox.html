@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>chatBox</title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background: #000;
+        }
+        #box{
+            width: 267px;
+            height: 434px;
+            position: absolute;
+            background: #000020;
+            border: 10px solid #384048;
+            border-radius: 10px;
+            box-shadow: 0 0 5px #fff;
+            text-align: center;
+            overflow: hidden;
+        }
+        .news{
+            color: #fff;
+            text-align: center;
+            padding: 10px 20px;
+            font-size: 14px;
+            position: relative;
+        }
+        .show{
+            position: absolute;
+            left: 20px;
+            padding:1px 5px;
+            border: 1px solid #1b345f;
+            background-color: #fafafa;
+            font-size: 11px;
+            color: #1b345f;
+        }
+        .information{
+            overflow: auto;
+            /*width: 235px;*/
+            height: 300px;
+            background-color: white;
+            border: 1px solid #CCCCEE;
+            text-align: left;
+            padding: 5px;
+        }
+        .footBtn{
+            padding-top: 30px;
+        }
+        .footBtn .submit{
+            border: 1px solid #1b345f;
+            background-color: #fafafa;
+            font-size: 11px;
+            color: #1b345f;
+            padding:1px 5px;
+        }
+        #chat{
+            position: absolute;
+            left: 400px;
+            width: 274px;
+            min-height: 55px;
+            color: #fff;
+            background: #424477;
+            padding: 5px 10px ;
+            font-size: 12px;
+            border: 2px solid #fff;
+        }
+        .massage{
+            margin-bottom: 20px;
+        }
+        .sure{
+            text-align: center;
+            font-size: 13px;
+        }
+        .sure span{
+            position: absolute;
+            padding:0px 4px;
+            border: 1px solid #fff;
+            bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <div class="news"><span class="show" data-num="1">隐藏</span><span class="xiaoxi">消息</span></div>
+    <div class="information"></div>
+    <div class="footBtn">
+        <input class="text" type="text">
+        <span class="submit">确定</span>
+    </div>
+</div>
+
+<div id="chat">
+    <div class="massage">路漫漫是猪么，天天就知道睡觉，我也是服了。。</div>
+    <div class="sure"><span>OK</span></div>
+</div>
+<script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(".show").click(function () {
+        if($(this).data("num")){
+            $(this).text("显示");
+            $(this).data("num" , 0);
+            $("#box").css({"width":"118px","height":"50px"});
+            $(".information").hide();
+            $(".footBtn").hide();
+            $(".news").css("text-align" , "right");
+        }else {
+            $(this).text("隐藏");
+            $(this).data("num" , 1);
+            $("#box").css({"width":"267px","height":"434px"});
+            $(".information").show();
+            $(".footBtn").show();
+            $(".news").css("text-align" , "center");
+        }
+    })
+
+
+    var box,leftMouse,topMouse;
+    $("#box").on("mousedown touchstart" , function (ev) {
+        ev = ev || event;
+        box = ev.currentTarget;
+        if(ev.clientX == undefined || ev.clientY == undefined ){
+            leftMouse= parseInt(ev.changedTouches[0].clientX) - box.offsetLeft;
+            topMouse = parseInt(ev.changedTouches[0].clientY) - box.offsetTop;
+        }else {
+            leftMouse= ev.clientX - box.offsetLeft;
+            topMouse = ev.clientY - box.offsetTop;
+        }
+        $(document).on("mousemove touchmove" , function (ev){
+            ev = ev || event ;
+            var boxLeft, boxTop;
+            if(ev.clientX == undefined || ev.clientY == undefined ){
+                boxLeft= parseInt(ev.changedTouches[0].clientX) - leftMouse;
+                boxTop = parseInt(ev.changedTouches[0].clientY) - topMouse;
+            }else {
+                 boxLeft = ev.clientX - leftMouse;
+                 boxTop = ev.clientY - topMouse;
+            }
+
+            box.style.left = boxLeft  + 'px';
+            box.style.top = boxTop  + 'px';
+        })
+    })
+
+    $("#box").on("mouseup touchend" , function(){
+        $(document).off("mousemove touchmove" , null);
+    })
+//    console.log('网页可见区域宽(body)'+document.body.clientWidth);
+//
+//    console.log('网页可见区域高(body)'+document.body.clientHeight);
+//
+//    console.log('网页可见区域宽(body)，包括border、margin等'+document.body.offsetWidth);
+//
+//     console.log('网页可见区域宽(body)，包括border、margin等'+document.body.offsetHeight);
+//
+//     console.log('包括有滚动条时的未见区域'+document.body.scrollWidth);
+//
+//     console.log("包括有滚动条时的未见区域"+document.body.scrollHeight);
+//
+//     console.log('网页被卷去的Top(滚动条)'+document.body.scrollTop);
+//
+//     console.log('网页被卷去的Left(滚动条)'+document.body.scrollLeft);
+//
+//     console.log('浏览器距离Top'+window.screenTop);
+//
+//     console.log('浏览器距离Left'+window.screenLeft);
+//
+//     console.log('屏幕分辨率的高'+window.screen.height);
+//
+//     console.log('屏幕分辨率的宽'+window.screen.width);
+//
+//    console.log('屏幕可用工作区的高'+window.screen.availHeight);
+//
+//    console.log('屏幕可用工作区的宽'+window.screen.availWidth);
+</script>
+</body>
+</html>
