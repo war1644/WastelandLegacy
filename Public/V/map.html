@@ -116,8 +116,6 @@
         ctx2.fillStyle = terrainPattern1;
         ctx2.fillRect(0, 0, mapWidth, mapHeight);
         getMousePos(canvas2,getCanavsClickPoint);
-
-
     }
 
     // The main game loop
@@ -330,6 +328,7 @@
                 break;
         }
         console.log(eventArr[name].log);
+        btnState = false;
 //        return ;
     }
 
