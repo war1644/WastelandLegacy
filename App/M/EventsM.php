@@ -175,12 +175,7 @@ class EventsM extends AppModel {
 
         if ( !isset($this->script[$this->event_key]) ) return false;
 
-        if ( $id == -1 ) // stop
-        {
-            $this->stop = true;
-            return 1;
-        }
-        elseif ( $id == 1 ) // show message
+        if ( $id == 1 ) // show message
         {
             // $args[0] => (string) message
             $res = "show_message ('$args[0]'));";
@@ -213,15 +208,8 @@ class EventsM extends AppModel {
             $jsArrValue = implode(',', $texts);
             return "select_choice([$jsArrValue]));";
         }
-        elseif ( $id == 7 ) // wait a moment
-        {
-            // $args[0] => (integer) time * 10^-3 seconds
 
-            return "wait('$args[0])', key, script);";
-        }
-
-
-        elseif ( $id == 9 ) // teleport
+        elseif ( $id == 2 ) // teleport
         {
             // $args[0] => (integer) map id
             // $args[1] => (integer) map X
