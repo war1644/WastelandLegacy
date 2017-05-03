@@ -25,7 +25,7 @@ function addEvent(obj) {
             eventArr[name].sprite = new Sprite(picUrl,[0,obj.properties.dir*24],[24,24]);
         })
     } else {
-        picUrl = '/V/Static/img/'+obj.name+'.png';
+        picUrl = '/V/Static/img/event/'+obj.name+'.png';
         resources.load(picUrl);
         resources.onReady(function () {
             eventArr[name].sprite = new Sprite(picUrl,[0,0],[24,24]);
@@ -87,62 +87,61 @@ function refreshLoop(refreshId) {
 
 }
 
-function showMessage(message, key, script) {
-
-    var count = 1;
-    var tab = 'Array(\'' + script[0] + '\'';
-    while ( count < key )
-    {
-        tab += ', \'\'';
-        count++;
-    }
-    while ( script[count] )
-    {
-        tab += ', \'' + script[count] + '\'';
-        count++;
-    }
-    tab += ')';
-
-    var showFace = '<img src="images/faces/' + face[0] + '" alt="" style="float:left" />';
-
-    var left = parseInt(document.getElementById('p' + my_user_id).style.left) - 16 + window_x;
-    var top = parseInt(document.getElementById('p' + my_user_id).style.top) - 128 + window_y;
-    key++;
-
-    close_message_func = 'document.getElementById(\'message\').innerHTML=\'\';script_eval(' + key + ', ' + tab + ');';
-    var close_message = '<br /><div align="center"><form action="" onsubmit="' + close_message_func + 'return false;"><input type="submit" value="' +  l_close_message + '" /></form></div>';
-
-
-    document.getElementById('message').innerHTML = '<div id="message_layer" onmouseover="actual_layer=this.id" style="position:absolute;left:' + left + 'px;top:' + top + 'px;z-index:9999">' + message_box.begin + '<div class="message" align="' + align + '" style="text-align:' + align + '">' + showFace + '' + message + '' + close_message + '</div>' + message_box.end + '</div>';
-
-    start_drag('message_layer');
-
-}
-
-function selectChoice(choices)
-{
-
-    var left = parseInt(document.getElementById('p' + my_user_id).style.left) - 16 + window_x;
-    var top = parseInt(document.getElementById('p' + my_user_id).style.top) - 64 + window_y;
-
-    close_message_func = 'setTimeout(\'submit_choice(\\\'' + event_status + '\\\', document.getElementById(\\\'input_choice\\\').value);document.getElementById(\\\'message\\\').innerHTML=\\\'\\\';\', 200);';
-
-    var choice_fork = '<select name="choices" id="input_choice">';
-
-    var i = 0;
-    while ( i < choices.length )
-    {
-        choice_fork += '<option value="' + i + '">' + choices[i] + '</option>';
-        i++;
-    }
-
-    choice_fork += '</select>';
-
-    var showFace = '';
-
-
-    var area_value = '<form action="" onsubmit="' + close_message_func + 'return false;">' + choice_fork;
-    var close_message = '<br /><div align="center"><input type="submit" value="' +  l_close_message + '" /></div></form>';
-
-    document.getElementById('message').innerHTML = '<div id="message_layer" onmouseover="actual_layer=this.id" style="position:absolute;left:' + left + 'px;top:' + top + 'px;z-index:9999">' + message_box.begin + '<div class="message" align="' + align + '" style="text-align:' + align + '">' + showFace + '' + area_value + '' + close_message + '</div>' + message_box.end + '</div>';
-}
+// function showMessage(message, key, script) {
+//
+//     var count = 1;
+//     var tab = 'Array(\'' + script[0] + '\'';
+//     while ( count < key )
+//     {
+//         tab += ', \'\'';
+//         count++;
+//     }
+//     while ( script[count] )
+//     {
+//         tab += ', \'' + script[count] + '\'';
+//         count++;
+//     }
+//     tab += ')';
+//
+//     var showFace = '<img src="images/faces/' + face[0] + '" alt="" style="float:left" />';
+//
+//     var left = parseInt(document.getElementById('p' + my_user_id).style.left) - 16 + window_x;
+//     var top = parseInt(document.getElementById('p' + my_user_id).style.top) - 128 + window_y;
+//     key++;
+//
+//     close_message_func = 'document.getElementById(\'message\').innerHTML=\'\';script_eval(' + key + ', ' + tab + ');';
+//     var close_message = '<br /><div align="center"><form action="" onsubmit="' + close_message_func + 'return false;"><input type="submit" value="' +  l_close_message + '" /></form></div>';
+//
+//
+//     document.getElementById('message').innerHTML = '<div id="message_layer" onmouseover="actual_layer=this.id" style="position:absolute;left:' + left + 'px;top:' + top + 'px;z-index:9999">' + message_box.begin + '<div class="message" align="' + align + '" style="text-align:' + align + '">' + showFace + '' + message + '' + close_message + '</div>' + message_box.end + '</div>';
+//
+//     start_drag('message_layer');
+//
+// }
+//
+// function selectChoice(choices) {
+//
+//     var left = parseInt(document.getElementById('p' + my_user_id).style.left) - 16 + window_x;
+//     var top = parseInt(document.getElementById('p' + my_user_id).style.top) - 64 + window_y;
+//
+//     close_message_func = 'setTimeout(\'submit_choice(\\\'' + event_status + '\\\', document.getElementById(\\\'input_choice\\\').value);document.getElementById(\\\'message\\\').innerHTML=\\\'\\\';\', 200);';
+//
+//     var choice_fork = '<select name="choices" id="input_choice">';
+//
+//     var i = 0;
+//     while ( i < choices.length )
+//     {
+//         choice_fork += '<option value="' + i + '">' + choices[i] + '</option>';
+//         i++;
+//     }
+//
+//     choice_fork += '</select>';
+//
+//     var showFace = '';
+//
+//
+//     var area_value = '<form action="" onsubmit="' + close_message_func + 'return false;">' + choice_fork;
+//     var close_message = '<br /><div align="center"><input type="submit" value="' +  l_close_message + '" /></div></form>';
+//
+//     document.getElementById('message').innerHTML = '<div id="message_layer" onmouseover="actual_layer=this.id" style="position:absolute;left:' + left + 'px;top:' + top + 'px;z-index:9999">' + message_box.begin + '<div class="message" align="' + align + '" style="text-align:' + align + '">' + showFace + '' + area_value + '' + close_message + '</div>' + message_box.end + '</div>';
+// }

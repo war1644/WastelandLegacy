@@ -44,7 +44,9 @@ class DB {
 
     public static function Ins(){
         if (self::$obj===null){
-            self::$obj = new self();
+            self::$obj = new static();
+
+            //            self::$obj = new self();
         }
         return self::$obj;
     }

@@ -45,7 +45,6 @@
 
     document.addEventListener('keyup', function(e) {
         setKey(e, false);
-        player.sprite.running=false;
     });
 
     window.addEventListener('blur', function() {

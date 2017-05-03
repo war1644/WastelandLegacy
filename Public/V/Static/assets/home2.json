@@ -67,6 +67,7 @@
                  "properties":
                     {
                      "dir":2,
+                     "gid":72,
                      "log":"\u4ec0\u4e48\u4f60\u8bf4\u4f60\u8981\u5f53\u8d4f\u91d1\u730e\u4eba\uff1f",
                      "posX":6,
                      "posY":8
@@ -74,6 +75,7 @@
                  "propertytypes":
                     {
                      "dir":"int",
+                     "gid":"int",
                      "log":"string",
                      "posX":"int",
                      "posY":"int"
@@ -168,12 +170,12 @@
          "columns":10,
          "firstgid":1,
          "image":"\u5ba4\u5185.png",
-         "imageheight":528,
+         "imageheight":1200,
          "imagewidth":240,
          "margin":0,
          "name":"\u5ba4\u5185",
          "spacing":0,
-         "tilecount":220,
+         "tilecount":500,
          "tileheight":24,
          "tileproperties":
             {

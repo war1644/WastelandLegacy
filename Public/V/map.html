@@ -56,15 +56,16 @@
         btnState = false;
 
     function getMapData () {
-        $.post('http://e.cn/Public/getMap', {uid:userInfo.id}, function (result) {
+        $.post('http://e.cn/Public/getMapTest', {uid:userInfo.id}, function (result) {
             mapDataProcess(result);
             delete result;
         });
     }
+    getMapData();
 
 
     //地图
-    var urlArr = ['/V/Static/assets/home_0.png','/V/Static/assets/home_1.png',"/V/Static/img/movePic/NPC_1.png"];
+    var urlArr = ['/V/Static/assets/home2_0.png','/V/Static/assets/home2_1.png',"/V/Static/img/movePic/NPC_1.png"];
 
     function init() {
         imgObj = resources.get();
@@ -144,7 +145,7 @@
 
     //0:down 1:left 2:right 3:up
     function movingAnim() {
-        if (!moving || btnState) return;
+        if (!moving) return;
         player.sprite.running = true;
         switch (dir){
             case 0:
@@ -152,7 +153,6 @@
                 player.p.y += playerSpeed;
                 if(player.p.y >= p){
                     player.sprite.running = moving = false;
-//                    dir=-1;
                     player.pos[1] += 1;
                 }
                 break;
@@ -160,7 +160,6 @@
                 var p = (player.pos[0]-1)*tileSize;
                 player.p.x -= playerSpeed;
                 if(player.p.x <= p){
-//                    dir=-1;
                     player.sprite.running = moving = false;
                     player.pos[0] -= 1;
                 }
@@ -169,7 +168,6 @@
                 var p = (player.pos[0]+1)*tileSize;
                 player.p.x += playerSpeed;
                 if(player.p.x >= p){
-//                    dir=-1;
                     player.sprite.running = moving = false;
                     player.pos[0] += 1;
                 }
@@ -178,7 +176,6 @@
                 var p = (player.pos[1]-1)*tileSize;
                 player.p.y -= playerSpeed;
                 if(player.p.y <= p){
-//                    dir=-1;
                     player.sprite.running = moving = false;
                     player.pos[1] -= 1;
                 }
@@ -229,6 +226,7 @@
             }
         }
         if (input.isDown('space') || input.isDown('enter')) {
+            if(btnState) return;
             btnState = true;
             mapEventTirgger();
 //            console.log();
@@ -327,8 +325,11 @@
                 name = player.pos[0]+'_'+(player.pos[1]-1);
                 break;
         }
-        console.log(eventArr[name].log);
-        btnState = false;
+
+        $.post('http://e.cn/Public/getEventTest', {uid:userInfo.id}, function (result) {
+
+        });
+        console.log(eventArr[name]);
 //        return ;
     }
 

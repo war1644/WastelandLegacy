@@ -29,24 +29,28 @@ class PublicC extends AppC {
     }
 
     public function getMap(){
-        if (!isset($_POST['uid'])) return ['code' => -1, 'msg' => '无效数据'];
+        $respond = ['code' => -1, 'msg' => '无效数据'];
+        if (!isset($_POST['uid'])) return $respond;
         $u = new UsersM();
         $mapId = $u->userInfo($_POST['uid'],'mapId')['mapId'];
         if ($mapId) {
             $map = new MapsM();
-            $map->getMap($mapId);
-            echo ResultFormat(file_get_contents(RUN_PATH.'Assets/home.json'));
+            $result = $map->getMap($mapId);
+            if (!$result['code']) return $respond;
+            echo ResultFormat(file_get_contents(RUN_PATH."Assets/$result[data][name].json"));
         } else {
-            return ['code' => -1, 'msg' => '无效数据'];
+            return $respond;
         }
+    }
+    public function getMapTest() {
+        echo ResultFormat( file_get_contents(V_PATH . 'Static/assets/home2.json'));
     }
 
     public function test(){
         if ($_POST['textScript']){
             $event = new EventsM();
-            list($compiled, $result) = $event->compile($_POST['textScript']);
+            list($compiled, $result) = $event->enScript($_POST['textScript']);
             MFLog($result);
-//            var_dump($result);
         }
 
     }
