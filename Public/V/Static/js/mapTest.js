@@ -17,6 +17,7 @@ function addEvent(obj) {
     eventArr[name] = {p:{x:obj.x-12,y:obj.y-12}};
     eventArr[name].pos = [obj.properties.posX,obj.properties.posY];
     eventArr[name].log = obj.properties.log;
+    eventArr[name].gid = obj.properties.gid;
     mapPass[obj.properties.posY][obj.properties.posX]=1;
 
     if (obj.type === '0') {
@@ -81,6 +82,7 @@ function addNetPlayers(id, name, charaset, left, top, dir, moves, width, height)
     var playerImg = "'images/charasets/" + charaset + "'";
 
 }
+
 
 //刷新时执行后台返回code
 function refreshLoop(refreshId) {

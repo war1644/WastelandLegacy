@@ -135,8 +135,9 @@ class UsersM extends AppModel {
         $this->vars[$key] = $val;
     }
 
-    public function update() {
-        $this->save();
+    public function update($sql,$data) {
+        $sql = "UPDATE $this->table SET ".$sql;
+        return $this->executeSql($sql,$data);
     }
 
     public function checkExp($gain_exp) {

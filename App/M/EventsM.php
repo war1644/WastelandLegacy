@@ -11,6 +11,12 @@
 namespace App\M;
 
 class EventsM extends AppModel {
+    static $eventKey=0;
+    public $uid;
+    public function __construct($id){
+        $this->uid = $id;
+    }
+
     /**
      * 转换数据，减小字节占用
      */
@@ -60,7 +66,8 @@ class EventsM extends AppModel {
                 $msg = trim($text_script[++$i]);
                 $script[] = [1, [$msg]];
             } elseif ($command == 'TELEPORT') {
-                $script[] = [2, trim($text_script[++$i])];
+                $args = explode(',',trim($text_script[++$i]));
+                $script[] = [2,$args];
             } elseif ($command == 'SELECT') {
 
             } elseif ($command == 'JS') {
@@ -81,84 +88,54 @@ class EventsM extends AppModel {
     /**
      * 执行脚本
      */
-    function execScript($content) {
+    function execScript($script) {
 
-        if ( $this->stop ) return false;
+        $id = $script[self::$eventKey][0];
+        $args = $script[self::$eventKey][1];
+        self::$eventKey++;
 
-        $id = $this->script[$this->event_key][0];
-        $args = $this->script[$this->event_key][1];
-        $this->event_key++;
-
-        if ( !isset($this->script[$this->event_key]) ) return false;
-
-        if ( $id == -1 ) // stop
-        {
-            $this->stop = true;
-            return 1;
-        }
-        elseif ( $id == 1 ) // show message
-        {
-            // $args[0] => (string) message
-            $res = "showMessage ('$args[0]');";
-            return $res;
-        }
-        elseif ( $id == 5 ) // switch choice
-        {
-            // $args[0] => (string) var to store result
-            // $args[1] => (array) choices
-                $choiceValue = intval($_GET['input_choice']);
-                // 停止脚本接收选择
-                $this->stop = true;
-                $texts = array();
-
+        switch ($id){
+            case -1:
+                self::$eventKey=0;
+                return;
+            case 1:
+                //消息显示
+                return "showMessage('$args[0]');";
+                break;
+            case 2:
+                //场景切换
+                $user = new UsersM();
+                $sql = "mapId=?, mapX=?, mapY=?, mapDir=? WHERE id=?";
+                $args[] = $this->uid;
+                $user->update($sql,$args);
+                return "teleport(true);";
+                break;
+            case 3:
+                //玩家选择
+                $selectValue = intval($_GET['select']);
+                $texts = [];
                 foreach ($args[1] as $key => $value) {
                     $a = substr(trim($args[1][$key]),1);
                     $args[1][$key] = $this->vars[$a];
                 }
 
                 foreach ( $args[1] as $text ) {
-                    $texts[] = '\''.$text.'\'';
+                    $texts[] = "'$text'";
                 }
                 $jsArrValue = implode(',', $texts);
-                return "selectChoice([$jsArrValue]));";
-        }
-        elseif ( $id == 7 ) // wait a moment
-        {
-            // $args[0] => (integer) time * 10^-3 seconds
-            return "wait('$args[0]);";
-        }
-        elseif ( $id == 9 ) // teleport
-        {
-            // $args[0] => (integer) map id
-            // $args[1] => (integer) map X
-            // $args[2] => (integer) map Y
-            // $args[3] => (integer) map dir
-            // update user map info
-            $user = new UsersM();
-            $user->mapId = $args[0];
-            $user->mapX = $args[1];
-            $user->mapY = $args[2];
-            $user->mapDir = $args[3];
-            $user->update();
-
-            // refresh map
-            return 1;
-        }
-        elseif ( $id == 10 ) // exec javascript
-        {
-            // $args[0] => (string) script
-            return $args[0] . 'scriptEval((key + 1), script);';
-        }
-        elseif ( $id == 11 ) // exec php
-        {
-            // $args[0] => (string) script
-            eval($args[0]);
-
-            return 1;
-        }
-        else
-        {
-            return false;
+                return "selectChoice([$jsArrValue]);";
+                break;
+            case 4:
+                // 执行js
+                return "scriptEval($args[0]);";
+                break;
+            case 5:
+                // 执行php
+                eval($args[0]);
+                break;
+            default:
+                return false;
+                break;
         }
     }
 
