@@ -28,6 +28,10 @@ class PublicC extends AppC {
 
     }
 
+    public function getEventTest(){
+        echo ResultFormat('[[1,["呜呜...儿子啊，为什么你要一个人去讨伐山贼们呢"]],[1,["这位勇士，求求你，救救我的儿子吧"]],[-1,[]]]');
+    }
+
     public function getMap(){
         $respond = ['code' => -1, 'msg' => '无效数据'];
         if (!isset($_POST['uid'])) return $respond;
