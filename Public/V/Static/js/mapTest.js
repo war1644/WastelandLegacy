@@ -87,10 +87,14 @@ function refreshLoop(refreshId) {
 
 }
 
-function showMessage(message, key, script) {
+function showMessage(message,script) {
     var tmp = confirm(message);
     if (tmp) {
+        eventShow(script);
+    } else {
+        eventKey=0;
         btnState = false;
+        return;
     }
     /*
     var count = 1;

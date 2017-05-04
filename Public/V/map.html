@@ -337,15 +337,17 @@
         var id,content;
         id = result[eventKey][0];
         content = result[eventKey][1];
+        eventKey++;
         switch (id){
             case -1:
+                eventKey=0;
+                btnState = false;
                 return;
                 break;
             case 1:
-                showMessage(content[0]);
+                showMessage(content[0],result);
                 break;
         }
-        eventKey++;
     }
 
 
