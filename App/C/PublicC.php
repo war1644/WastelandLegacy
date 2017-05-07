@@ -28,6 +28,28 @@ class PublicC extends AppC {
 
     }
 
+    public function getEventTest(){
+        $id = intval($_GET['testEventId']);
+        $event = new EventsM(2);
+        $eventTestData = [
+            //对话事件测试
+            '[[1,["呜呜...儿子啊，为什么你要一个人去讨伐山贼们呢"]],[1,["这位勇士，求求你，救救我的儿子吧"]],[-1,[]]]',
+            //传送事件测试
+            '[[2,[41,6,14,0]],[-1,[]]]',
+            //玩家选择事件测试
+            '[[1,["喝水吗？"]],[3,["choix",["是","否"]]],[0,["choix",1,false,0]],[1,["你喝了一口水，清凉的水里微微带着一丝甜意"]],[1,["你的口不渴了"]],[0,[false]],[0,[false,false]],[-1,[]]]'
+        ];
+
+        //传送事件测试
+        $script = json_decode($eventTestData[$id],true);
+        $result = $event->execScript($script);
+        if ($result){
+            echo $result;
+        }else{
+            echo ResultFormat(['code'=>-1]);
+        }
+    }
+
     public function getMap(){
         $respond = ['code' => -1, 'msg' => '无效数据'];
         if (!isset($_POST['uid'])) return $respond;
@@ -43,7 +65,9 @@ class PublicC extends AppC {
         }
     }
     public function getMapTest() {
-        echo ResultFormat( file_get_contents(V_PATH . 'Static/assets/home2.json'));
+        $mapId = intval($_GET['mapId']);
+        echo ResultFormat( file_get_contents(V_PATH . "Static/assets/home$mapId.json"));
+
     }
 
     public function test(){

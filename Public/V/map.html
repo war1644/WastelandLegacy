@@ -53,10 +53,13 @@
         eventObj,
         eventArr={},
         moving = false,
-        btnState = false;
+        btnState = false,
+        eventKey=0,
+        eventState = false;
 
-    function getMapData () {
-        $.post('http://e.cn/Public/getMapTest', {uid:userInfo.id}, function (result) {
+    function getMapData (id) {
+        id = id || 2;
+        $.post('http://e.cn/Public/getMapTest?mapId='+id, {uid:userInfo.id}, function (result) {
             mapDataProcess(result);
             delete result;
         });
@@ -326,11 +329,38 @@
                 break;
         }
 
-        $.post('http://e.cn/Public/getEventTest', {uid:userInfo.id}, function (result) {
-
+        $.post('http://e.cn/Public/getEventTest?testEventId=1', {uid:userInfo.id}, function (result) {
+            console.log(typeof result);
+            eval(result);
+            test=result;
         });
-        console.log(eventArr[name]);
+
 //        return ;
+    }
+var test;
+    function teleport(param){
+        console.log('teleport');
+//        if (param) {
+//            getMapData(1);
+//        }
+    }
+
+
+    function eventShow(result){
+        var id,content;
+        id = result[eventKey][0];
+        content = result[eventKey][1];
+        eventKey++;
+        switch (id){
+            case -1:
+                eventKey=0;
+                btnState = false;
+                return;
+                break;
+            case 1:
+                showMessage(content[0],result);
+                break;
+        }
     }
 
 

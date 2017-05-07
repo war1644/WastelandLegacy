@@ -94,12 +94,14 @@
                  "properties":
                     {
                      "dir":1,
+                     "gid":3,
                      "posX":8,
                      "posY":8
                     },
                  "propertytypes":
                     {
                      "dir":"int",
+                     "gid":"int",
                      "posX":"int",
                      "posY":"int"
                     },
@@ -117,12 +119,14 @@
                  "properties":
                     {
                      "dir":1,
+                     "gid":4,
                      "posX":8,
                      "posY":3
                     },
                  "propertytypes":
                     {
                      "dir":"int",
+                     "gid":"int",
                      "posX":"int",
                      "posY":"int"
                     },
@@ -139,11 +143,13 @@
                  "name":"out",
                  "properties":
                     {
+                     "gid":2,
                      "posX":1,
                      "posY":7
                     },
                  "propertytypes":
                     {
+                     "gid":"int",
                      "posX":"int",
                      "posY":"int"
                     },
