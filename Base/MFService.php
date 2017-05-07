@@ -32,4 +32,6 @@ include MFPATH."Base/Lib/F.php";
 include MFPATH."Base/Lib/Base.php";
 
 //启动服务
-\Base\Tool\WebSocket::ins('127.0.0.1',2416);
+//\Base\Tool\WebSocket::ins('127.0.0.1',2416);
+//坦克大战服务
+\Base\Tool\TankWebSocket::ins('127.0.0.1',2416);
