@@ -12,8 +12,18 @@
  * v2017/04/11 初版
  */
 
-init(1000/30,"game",480,288,main);
+window._requestAF = (function() {
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function( callback,element) {
+            window.setTimeout(callback, 1000/60);
+        };
+})();
 
+LInit(window._requestAF, "game", 480, 288, main);
 var
 	loadingLayer,//显示进度条所用层
 	backLayer,//游戏底层
