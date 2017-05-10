@@ -13,8 +13,9 @@ var map,
 
 
 function getMapData () {
-    LAjax.get('http://e.cn/Public/getMapTest', {}, function (result) {
-        mapDataProcess(result);
+    LAjax.get('http://e.cn/Public/getMapTest', {mapId:2}, function (result) {
+        console.log(typeof result);
+        mapDataProcess(JSON.parse(result));
         delete result;
     });
 }
@@ -23,7 +24,7 @@ function getMapData () {
  * Tile map data process
  */
 function mapDataProcess(data) {
-
+    console.log(data);
     //get tile set data
     tileSet = data.tilesets[0];
     delete data.tilesets;
@@ -65,7 +66,7 @@ function mapPassProcess() {
 function mapEventProcess() {
     var len = eventObj.length;
     for (var i = 0; i < len; i++) {
-        addEvent(eventObj[i]);
+        // addEvent(eventObj[i]);
     }
     delete eventObj;
 }

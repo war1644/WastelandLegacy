@@ -1,7 +1,7 @@
 var script = {
 	home2:{
 		add:[
-		     {chara:"player",img:"player",x:5,y:6},
+		     {chara:"player",img:"player",x:4,y:8},
 		     {chara:"npc",img:"npc2",x:7,y:6},
 		     {chara:"npc",img:"npc3",x:3,y:3}],
 		talk:{
@@ -34,7 +34,7 @@ var script = {
 		    	  ]
 		},
 		jump:[
-		      {x:7,y:8,to:"home2"}
+		      {x:4,y:8,to:"home2"}
 		]
 	}
 
@@ -63,7 +63,7 @@ function initScript(){
 	//地图数据获取
 	// map = stage.map;
 	// mapdata = stage.mapdata;
-    getMapData();
+    // getMapData();
 	//对话数据获取
 	talkScriptList = scriptData.talk;
 	
