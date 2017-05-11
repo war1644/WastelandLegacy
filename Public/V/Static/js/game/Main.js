@@ -49,20 +49,20 @@ var
         {name:"npc3",path:'/V/Static/img/movePic/NPC_3.png'},
         {name:"npc5",path:'/V/Static/img/movePic/NPC_5.png'},
     	{name:"logoBack",path:'/V/Static/img/bgimg/logoBac.bmp'},
-    	{name:"startSound",path:'/V/Static/music/Start.mp3'},
-    	{name:"setNameSound",path:'/V/Static/music/NameSetting.mp3'},
+    	{name:"startSound",path:'/V/Static/music/WorldTheme.mp3'},
+    	// {name:"setNameSound",path:'/V/Static/music/WorldTheme.mp3'},
         {path:"/V/Static/js/game/Map.js"},
         {path:"/V/Static/js/game/Talk.js"},
         {path:"/V/Static/js/game/Character.js"},
         {path:"/V/Static/js/game/Script.js"},
-        {name:"map",path:"/V/Static/image/map.jpg"},
-        {name:"mingren",path:"/V/Static/image/p0.png"},
-        {name:"npc1",path:"/V/Static/image/p1.png"},
-        {name:"e1",path:"/V/Static/image/e1.png"},
-        {name:"e2",path:"/V/Static/image/e2.png"},
-        {name:"m",path:"/V/Static/image/m.jpg"},
-        {name:"n",path:"/V/Static/image/n.jpg"},
-        {name:"talk",path:"/V/Static/image/back.png"}
+        // {name:"map",path:"/V/Static/image/map.jpg"},
+        // {name:"mingren",path:"/V/Static/image/p0.png"},
+        // {name:"npc1",path:"/V/Static/image/p1.png"},
+        // {name:"e1",path:"/V/Static/image/e1.png"},
+        // {name:"e2",path:"/V/Static/image/e2.png"},
+        // {name:"m",path:"/V/Static/image/m.jpg"},
+        // {name:"n",path:"/V/Static/image/n.jpg"},
+        {name:"talk",path:"/V/Static/img/back.png"}
 	],
 	imageArray,
 	stage,resList,center,backSound,scriptData;
@@ -121,6 +121,21 @@ function loadStartLayer(result) {
     startButton.y = 200;
     backLayer.addChild(startButton);
     startButton.addEventListener(LMouseEvent.MOUSE_UP,gameInit);
+
+    //加个标题
+    var titleText = new LTextField();
+    titleText.setType(LTextFieldType.INPUT);
+    titleText.x = 0;
+    titleText.y = 150;
+    titleText.color = '#fff';
+    backLayer.addChild(titleText);
+    // for (let i = 0; i < 5; i++) {
+    // 	let text = titleText.clone();
+    // 	text.x+= i*50;
+    //     backLayer.addChild(text);
+    // }
+
+    // LTweenLiteTimeline.to(titleText,5,{alpha:0,loop:true}).to(titleText,5,{alpha:1});
 }
 
 function gameInit(){
