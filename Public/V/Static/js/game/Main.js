@@ -102,7 +102,7 @@ function loadStartLayer(result) {
     loadingLayer = null;
 
     //载入logo背景
-    backLayer.addChild(new LBitmap(new LBitmapData(resList['logoBack'])));
+    backLayer.addChild(new LBitmap(new LBitmapData(resList['logoBack'],0,0,LGlobal.width,LGlobal.height)));
     //new个fps
     var fps = new FPS();
     //让FPS信息间隔10帧循环显隐
@@ -121,21 +121,6 @@ function loadStartLayer(result) {
     startButton.y = 200;
     backLayer.addChild(startButton);
     startButton.addEventListener(LMouseEvent.MOUSE_UP,gameInit);
-
-    //加个标题
-    var titleText = new LTextField();
-    titleText.setType(LTextFieldType.INPUT);
-    titleText.x = 0;
-    titleText.y = 150;
-    titleText.color = '#fff';
-    backLayer.addChild(titleText);
-    // for (let i = 0; i < 5; i++) {
-    // 	let text = titleText.clone();
-    // 	text.x+= i*50;
-    //     backLayer.addChild(text);
-    // }
-
-    // LTweenLiteTimeline.to(titleText,5,{alpha:0,loop:true}).to(titleText,5,{alpha:1});
 }
 
 function gameInit(){
