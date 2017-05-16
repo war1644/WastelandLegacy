@@ -51,7 +51,7 @@ Character.prototype.onmove = function (){
 	//设定一个移动步长中的移动次数
 	var ml_cnt = 4;
 	//计算一次移动的长度
-	var ml = STEP/ml_cnt;
+    var ml = STEP/ml_cnt;
 	//根据移动方向，开始移动
 	switch (self.direction){
 		case UP:

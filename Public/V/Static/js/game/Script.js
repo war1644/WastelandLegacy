@@ -2,8 +2,8 @@ var script = {
 	home2:{
 		add:[
 		     {chara:"player",img:"player",x:4,y:8},
-		     {chara:"npc",img:"npc2",x:7,y:6},
-		     {chara:"npc",img:"npc3",x:3,y:3}],
+		     {chara:"npc",img:"npc2",x:6,y:8},
+		     {chara:"npc",img:"npc3",x:8,y:8}],
 		talk:{
 			talk1:[
 		    		  {img:"m",name:"鸣人",msg:"我是木叶村的鸣人，你是谁？"},
@@ -15,7 +15,7 @@ var script = {
 		    	  ]
 		},
 		jump:[
-		      {x:6,y:5,to:"home1"}
+		      {x:1,y:7,to:"home1"}
 		]
 	},
 	home1:{
@@ -70,21 +70,15 @@ function initScript(){
 	//添加地图
 	addMap(0,0);
 	delMap();
-	//添加人物
-	addChara();
 }
 //游戏场景跳转测试
 function checkJump(){
 	var jump = scriptData.jump;
-	// var jumpstage;
-	// for(var i=0;i<jump.length;i++){
-	// 	jumpstage = jump[0];
-		if(player.x == jump.x * 32 && player.y == jump.y * 32){
-			//获取该场景脚本数据
-            scriptData = script[jump.to];
-			//开始跳转
-			initScript(scriptData);
-			return;
-		}
-	// }
+	if(player.x == jump.x * STEP && player.y == jump.y * STEP){
+		//获取该场景脚本数据
+		scriptData = script[jump.to];
+		//开始跳转
+		initScript(scriptData);
+		return;
+	}
 }

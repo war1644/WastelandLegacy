@@ -24,7 +24,6 @@ function getMapData () {
  * Tile map data process
  */
 function mapDataProcess(data) {
-    console.log(data);
     //get tile set data
     tileSet = data.tilesets[0];
     delete data.tilesets;

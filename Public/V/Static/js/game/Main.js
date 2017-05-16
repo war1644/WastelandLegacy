@@ -19,11 +19,11 @@ window._requestAF = (function() {
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
         function( callback,element) {
-            window.setTimeout(callback, 1000/60);
+            window.setTimeout(callback, 1000/30);
         };
 })();
 
-LInit(window._requestAF, "game", 480, 288, main);
+LInit(window._requestAF, "game", 640, 480, main);
 var
 	loadingLayer,//显示进度条所用层
 	backLayer,//游戏底层
@@ -58,14 +58,13 @@ var
         // {name:"map",path:"/V/Static/image/map.jpg"},
         // {name:"mingren",path:"/V/Static/image/p0.png"},
         // {name:"npc1",path:"/V/Static/image/p1.png"},
-        // {name:"e1",path:"/V/Static/image/e1.png"},
-        // {name:"e2",path:"/V/Static/image/e2.png"},
+        {name:"e1",path:"/V/Static/img/e1.png"},
+        {name:"e2",path:"/V/Static/img/e2.png"},
         // {name:"m",path:"/V/Static/image/m.jpg"},
         // {name:"n",path:"/V/Static/image/n.jpg"},
         {name:"talk",path:"/V/Static/img/back.png"}
 	],
-	imageArray,
-	stage,resList,center,backSound,scriptData;
+	imageArray,resList,center,backSound,scriptData;
 
 function main(){
 	if(LGlobal.canTouch){
@@ -129,9 +128,10 @@ function gameInit(){
 	//地图初始化
 	// initMap();
     getMapData();
-	scriptData = script.home1;
+	scriptData = script.home2;
 	initScript(scriptData);
-
+	//添加人物
+    addChara();
 	//添加贞事件，开始游戏循环
 	backLayer.addEventListener(LEvent.ENTER_FRAME,onframe);
 	//添加控制按钮
@@ -197,11 +197,10 @@ function initMap(){
 //添加地图
 function addMap(cx,cy){
 	var mx = cx < 0 ? -1 : 0, my = cy < 0 ? -1 : 0;
-
     mapDownLayer.removeAllChild();
     mapUpLayer.removeAllChild();
-    mapDownLayer.addChild(new LBitmap(new LBitmapData(resList['home2_0'],mx,my,LGlobal.width,LGlobal.height)));
-    mapUpLayer.addChild(new LBitmap(new LBitmapData(resList['home2_1'],mx,my,LGlobal.width,LGlobal.height)));
+    mapDownLayer.addChild(new LBitmap(new LBitmapData(resList['home2_0'],mx*STEP,my*STEP,LGlobal.width,LGlobal.height)));
+    mapUpLayer.addChild(new LBitmap(new LBitmapData(resList['home2_1'],mx*STEP,my*STEP,LGlobal.width,LGlobal.height)));
 }
 
 //移除多余地图块
@@ -234,8 +233,8 @@ function addChara(){
             var bitmapdata = new LBitmapData(resList[charaObj.img]);
 			chara = new Character(false,i,bitmapdata,4,4);
 		}
-		chara.x = charaObj.x * 32;
-		chara.y = charaObj.y * 32;
+		chara.x = charaObj.x * STEP;
+		chara.y = charaObj.y * STEP;
 		charaLayer.addChild(chara);
 	}
 }
@@ -268,32 +267,52 @@ function onup(event){
 	}
 }
 function onkeydown(event){
-	if(event.keyCode == 37){//left
-		player.changeDir(LEFT);
-	}else if(event.keyCode == 38){//up
-		player.changeDir(UP);
-	}else if(event.keyCode == 39){//right
-		player.changeDir(RIGHT);
-	}else if(event.keyCode == 40){//down
-		player.changeDir(DOWN);
-	}
+    //37 = 'LEFT',65 = 'a',38 = 'UP',87 = 'w',39 = 'RIGHT',68 = 'd',40 = 'DOWN',83 = 's'
+    switch(event.keyCode) {
+        case 13:
+
+            break;
+        case 32:
+
+            break;
+        case 37:
+        case 65:
+            player.changeDir(LEFT);
+            break;
+        case 38:
+        case 87:
+            player.changeDir(UP);
+            break;
+        case 39:
+        case 68:
+            player.changeDir(RIGHT);
+            break;
+        case 40:
+        case 83:
+            player.changeDir(DOWN);
+            break;
+        default:
+            return;
+            break;
+    }
+
 	isKeyDown = true;
 }
-function onkeyup(event){
+function onkeyup(){
 	isKeyDown = false;
 	return;
-	if(event.keyCode == 37 && player.move[0] < 0){//left
-		player.move[0] = 0;
-	}else if(event.keyCode == 38 && player.move[1] < 0){//up
-		player.move[1] = 0;
-	}else if(event.keyCode == 39 && player.move[0] > 0){//right
-		player.move[0] = 0;
-	}else if(event.keyCode == 40 && player.move[1] > 0){//down
-		player.move[1] = 0;
-	}else{//shoot
-		player.canshoot = false;
-		player.shootctrl = player.shootspeed;
-	}
+	// if(event.keyCode == 37 && player.move[0] < 0){//left
+	// 	player.move[0] = 0;
+	// }else if(event.keyCode == 38 && player.move[1] < 0){//up
+	// 	player.move[1] = 0;
+	// }else if(event.keyCode == 39 && player.move[0] > 0){//right
+	// 	player.move[0] = 0;
+	// }else if(event.keyCode == 40 && player.move[1] > 0){//down
+	// 	player.move[1] = 0;
+	// }else{//shoot
+	// 	player.canshoot = false;
+	// 	player.shootctrl = player.shootspeed;
+	// }
 }
 /**
  * 循环
