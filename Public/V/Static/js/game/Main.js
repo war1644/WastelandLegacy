@@ -100,8 +100,11 @@ function loadStartLayer(result) {
     backLayer.removeChild(loadingLayer);
     loadingLayer = null;
 
+    let bitmap = new LBitmap(new LBitmapData(resList['logoBack']));
+    bitmap.scaleX = LGlobal.width/bitmap.getWidth();
+    bitmap.scaleY = LGlobal.height/bitmap.getHeight();
     //载入logo背景
-    backLayer.addChild(new LBitmap(new LBitmapData(resList['logoBack'],0,0,LGlobal.width,LGlobal.height)));
+    backLayer.addChild(bitmap);
     //new个fps
     var fps = new FPS();
     //让FPS信息间隔10帧循环显隐
@@ -267,13 +270,12 @@ function onup(event){
 	}
 }
 function onkeydown(event){
+    console.log(event.keyCode);
     //37 = 'LEFT',65 = 'a',38 = 'UP',87 = 'w',39 = 'RIGHT',68 = 'd',40 = 'DOWN',83 = 's'
     switch(event.keyCode) {
         case 13:
-
             break;
         case 32:
-
             break;
         case 37:
         case 65:
@@ -295,24 +297,12 @@ function onkeydown(event){
             return;
             break;
     }
-
 	isKeyDown = true;
 }
+
 function onkeyup(){
 	isKeyDown = false;
 	return;
-	// if(event.keyCode == 37 && player.move[0] < 0){//left
-	// 	player.move[0] = 0;
-	// }else if(event.keyCode == 38 && player.move[1] < 0){//up
-	// 	player.move[1] = 0;
-	// }else if(event.keyCode == 39 && player.move[0] > 0){//right
-	// 	player.move[0] = 0;
-	// }else if(event.keyCode == 40 && player.move[1] > 0){//down
-	// 	player.move[1] = 0;
-	// }else{//shoot
-	// 	player.canshoot = false;
-	// 	player.shootctrl = player.shootspeed;
-	// }
 }
 /**
  * 循环

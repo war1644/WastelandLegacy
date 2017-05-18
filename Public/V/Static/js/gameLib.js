@@ -21,34 +21,22 @@
     },false)
 })(window,document);
 
-if (!window.localStorage) {
-    window.localStorage = {
-        getItem: function (sKey) {
-            if (!sKey || !this.hasOwnProperty(sKey)) { return null; }
-            return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
-        },
-        key: function (nKeyId) {
-            return unescape(document.cookie.replace(/\s*\=(?:.(?!;))*$/, "").split(/\s*\=(?:[^;](?!;))*[^;]?;\s*/)[nKeyId]);
-        },
-        setItem: function (sKey, sValue) {
-            if(!sKey) { return; }
-            document.cookie = escape(sKey) + "=" + escape(sValue) + "; expires=Tue, 19 Jan 2038 03:14:07 GMT; path=/";
-            this.length = document.cookie.match(/\=/g).length;
-        },
-        length: 0,
-        removeItem: function (sKey) {
-            if (!sKey || !this.hasOwnProperty(sKey)) { return; }
-            document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-            this.length--;
-        },
-        hasOwnProperty: function (sKey) {
-            return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
-        }
-    };
-    window.localStorage.length = (document.cookie.match(/\=/g) || window.localStorage).length;
-}
+var OS_PC = "pc",
+    OS_IPHONE = "iPhone",
+    OS_IPAD = "iPad",
+    OS_ANDROID = "Android",
+    OS_WINDOWS_PHONE = "Windows Phone",
+    OS_BLACK_BERRY = "BlackBerry",
+    NONE = "none",
+    UNDEFINED = "undefined",
+    LANDSCAPE = "landscape",
+    PORTRAIT = "portrait",
+    mouseX,
+    mouseY;
+
+
 var Lib = function () {
-    this.warning = '封装搞事情啦'
+
 };
 /**
  * 原型链继承扩展
@@ -72,5 +60,48 @@ Lib.prototype = {
         });
         return obj;
     }
+};
+var DGlobal = (
+    //
+    ()=>{
+        DGlobal.width = screen.width;
+        DGlobal.height = screen.height;
+        //
+        ((userAgent)=>{
+            if (userAgent.indexOf(OS_IPHONE) > 0) {
+                DGlobal.os = OS_IPHONE;
+                DGlobal.canTouch = true;
+                DGlobal.ios = true;
+            } else if (userAgent.indexOf(OS_IPOD) > 0) {
+                DGlobal.os = OS_IPOD;
+                DGlobal.canTouch = true;
+                DGlobal.ios = true;
+            } else if (userAgent.indexOf(OS_IPAD) > 0) {
+                DGlobal.os = OS_IPAD;
+                DGlobal.ios = true;
+                DGlobal.canTouch = true;
+            } else if (userAgent.indexOf(OS_ANDROID) > 0) {
+                DGlobal.os = OS_ANDROID;
+                DGlobal.canTouch = true;
+                DGlobal.android = true;
+                let i = userAgent.indexOf(OS_ANDROID);
+                if(parseInt(userAgent.substr(i + 8, 1)) > 3){
+                    DGlobal.android_new = true;
+                }
+            } else if (userAgent.indexOf(OS_WINDOWS_PHONE) > 0) {
+                DGlobal.os = OS_WINDOWS_PHONE;
+                DGlobal.canTouch = true;
+            }
+            DGlobal.mobile = DGlobal.canTouch;
+        })(navigator.userAgent);
+    }
+)();
+
+//扩展send方法
+WebSocket.prototype.wlSend = (type,params)=>{
+    params = params || {};
+    params.type = type;
+    params.name = selfName;
+    this.send(JSON.stringify(params));
 };
 
