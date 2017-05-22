@@ -35,11 +35,66 @@
 <script src="./Static/js/input.js"></script>
 
 <script>
-    var tileSet={},imgObj,mapHeight,mapWidth,mapSize,tileSize=0,map=[],canvas,mapCanvas,urlArr=['./Static/assets/home_0.png','./Static/assets/home_0.png'],mapPass=[[]];
-    $.post('http://e.cn/Public/index', {}, function (result) {
+    var tileSet={},imgObj,mapHeight,mapWidth,mapSize,tileSize=0,map=[],canvas,mapCanvas,urlArr=['./Static/assets/home_0.png','./Static/assets/home_0.png'],mapPass=[[]],mapLayer=[],eventArr=[];
+    $.get('http://e.cn/Public/getMapTest', {mapId:1}, function (result) {
         mapDataProcess(result);
         delete result;
     });
+
+    function mapArrProcess() {
+        let len = map.layers.length;
+        for(let c=0;c<len;c++) {
+            let layer = map.layers[c].data, layerLen;
+            layerLen = layer.length;
+            let j = 0, x = 0, width = map.width;
+            let mapArr = [[]];
+            for (let i = 0; i < layerLen; i++, x++) {
+                let y = Math.floor(i / width);
+                if (j !== y) {
+                    x = 0;
+                    j = y;
+                    mapArr.push([]);
+                }
+                mapArr[j].push(layer[i]-1);
+            }
+            mapLayer.push(mapArr);
+        }
+        let str = JSON.stringify(mapLayer);
+        $('body').append('mapData='+str);
+    }
+
+    function mapPassProcess(parmas) {
+        let layer = parmas.data,layerLen;
+        layerLen = layer.length;
+        let j=0,x=0,width=parmas.width;
+        for (let i = 0; i < layerLen; i++,x++) {
+            let y = Math.floor(i/width);
+            if (j !== y){x=0;j=y;mapPass.push([]);}
+            mapPass[j].push(layer[i] ? 1 : 0);
+        }
+        let str = JSON.stringify(mapPass);
+        $('body').append('passMap='+str+'<br/>');
+    }
+
+    /**
+     * Tile map data process
+     */
+    function mapDataProcess(data) {
+        //get tile set data
+        tileSet = data.tilesets[0];
+        delete data.tilesets;
+        //get tile map data
+        eventArr = data.layers.pop().objects;
+        let tmp = data.layers.pop();
+        mapPassProcess(tmp);
+        map = data;
+        delete data;
+        //load resources
+        mapArrProcess();
+//        urlArr.push('\\V\\Static\\assets\\'+tileSet.image);
+//        resources.load(urlArr[0]);
+//        resources.onReady(init);
+    }
 
     function init() {
         imgObj = resources.get(urlArr[0]);
@@ -59,34 +114,6 @@
     }
     function getCanavsClickPoint(point) {
         console.log(point);
-    }
-
-    function mapPassProcess() {
-        var layer = map.layers.pop().data,layerLen;
-        layerLen = layer.length;
-        var j=0,x=0,width=map.width;
-        for (var i = 0; i < layerLen; i++,x++) {
-            var y = Math.floor(i/width);
-            if (j !== y){x=0;j=y;mapPass.push([]);}
-            mapPass[j].push(layer[i]);
-        }
-    }
-
-    /**
-     * Tile map data process
-     */
-    function mapDataProcess(data) {
-        //get tile set data
-        tileSet = data.tilesets[0];
-        delete data.tilesets;
-        //get tile map data
-        map = data;
-        delete data;
-        //load resources
-        mapPassProcess();
-//        urlArr.push('\\V\\Static\\assets\\'+tileSet.image);
-//        resources.load(urlArr[0]);
-//        resources.onReady(init);
     }
 
     /**
