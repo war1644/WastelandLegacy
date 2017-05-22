@@ -27,6 +27,7 @@
 
 </style>
 <body>
+<div id="game"></div>
 </body>
 <script src="./Static/js/resources.js"></script>
 <script src="./Static/js/sprite.js"></script>
@@ -57,14 +58,13 @@
         eventState = false,
         canvas3;
 
-    function getMapData (id) {
+    ((id)=>{
         id = id || 2;
         $.post('http://e.cn/Public/getMapTest?mapId='+id, {uid:userInfo.id}, function (result) {
             mapDataProcess(result);
             delete result;
         });
-    }
-    getMapData();
+    })();
 
 
     //地图
@@ -83,13 +83,13 @@
 
     function init() {
         imgObj = resources.get();
-        mapHeight = imgObj[urlArr[0]].height;
-        mapWidth = imgObj[urlArr[0]].width;
-        lastTime = Date.now();
+        mapHeight = imgObj['home2_0'].height;
+        mapWidth = imgObj['home2_0'].width;
+        then = Date.now();
         player = {
             pos: [4, 8],
             p: {x:4*tileSize,y:8*tileSize},
-            sprite: new Sprite(urlArr[2], [0, 0], [tileSet.tilewidth,tileSet.tileheight], 10, [0, 1, 2, 3])
+            sprite: new Sprite(imgObj['player'], [0, 0], [tileSet.tilewidth,tileSet.tileheight], 10, [0, 1, 2, 3])
         };
         createCanavs();
         main();
@@ -108,7 +108,9 @@
             };
     })();
     function createCanavs() {
-        canvas3 = canvas2 = canvas = document.createElement("canvas");
+        canvas3 = document.createElement("canvas");
+        canvas2 = document.createElement("canvas");
+        canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
         ctx2 = canvas2.getContext("2d");
         ctx3 = canvas3.getContext("2d");
@@ -118,17 +120,13 @@
         canvas3.height = screen.height;
         document.body.appendChild(canvas);
         document.body.appendChild(canvas2);
-        $(canvas).css({
-            "position": "absolute",
-            "z-index": 1
-        });
-        $(canvas2).css({
-            "position": "absolute",
-            "z-index": 1
-        });
+        canvas.style.position = "absolute";
+        canvas.style.zIndex=1;
+        canvas2.style.position = "absolute";
+        canvas2.style.zIndex =1;
 
-        terrainPattern  = ctx.createPattern(imgObj[urlArr[0]],'no-repeat');
-        terrainPattern1  = ctx.createPattern(imgObj[urlArr[1]],'no-repeat');
+        terrainPattern  = ctx.createPattern(imgObj['home2_0'],'no-repeat');
+        terrainPattern1  = ctx.createPattern(imgObj['home2_1'],'no-repeat');
 
         ctx2.fillStyle = terrainPattern1;
         ctx2.fillRect(0, 0, mapWidth, mapHeight);
@@ -136,27 +134,27 @@
     }
 
     // The main game loop
-    var lastTime;
+    var lastTime,fps = 1000/30,then;
     function main() {
-        var now = Date.now();
-        var dt = (now - lastTime) / 1000.0;
-
-        update(dt);
-        render();
-
-        lastTime = now;
+        let now = Date.now();
+        lastTime = now - then;
+        if (lastTime>fps){
+            update(lastTime);
+            render();
+            then = now - (lastTime%fps);
+        }
         window._requestAnimFrame(main);
+
     }
 
     // Game state
     var gameTime = 0;
-    var playerSpeed = 2,dir=-1;
+    var playerSpeed = 4,dir=-1;
 
-    function update(dt) {
-        gameTime += dt;
-        handleInput(dt);
+    function update(lastTime) {
+        handleInput(lastTime);
         movingAnim();
-        player.sprite.update(dt);
+        player.sprite.update();
     }
 
     //0:down 1:left 2:right 3:up
@@ -245,8 +243,6 @@
             if(btnState) return;
             btnState = true;
             mapEventTirgger();
-//            console.log();
-
         }
 
     }
@@ -291,7 +287,7 @@
         mapEventProcess();
 
         //load resources
-        urlArr.push('/V/Static/assets/'+tileSet.image);
+        urlArr.push({name:'tileSet',path:'/V/Static/assets/'+tileSet.image});
         resources.load(urlArr);
         resources.onReady(init);
     }
@@ -301,11 +297,11 @@
      */
     function mapPassProcess() {
         eventObj = map.layers.pop().objects;
-        var layer = map.layers.pop().data,layerLen;
+        let layer = map.layers.pop().data,layerLen;
         layerLen = layer.length;
-        var j=0,x=0,width=map.width;
-        for (var i = 0; i < layerLen; i++,x++) {
-            var y = Math.floor(i/width);
+        let j=0,x=0,width=map.width;
+        for (let i = 0; i < layerLen; i++,x++) {
+            let y = Math.floor(i/width);
             if (j !== y){x=0;j=y;mapPass.push([]);}
             mapPass[j].push(layer[i]);
         }
@@ -315,8 +311,8 @@
      * tile map event data process
      */
     function mapEventProcess() {
-        var len = eventObj.length;
-        for (var i = 0; i < len; i++) {
+        let len = eventObj.length;
+        for (let i = 0; i < len; i++) {
             addEvent(eventObj[i]);
         }
         delete eventObj;
@@ -326,7 +322,7 @@
      * map event tirgger
      */
     function mapEventTirgger() {
-        var eventData={},name;
+        let eventData={},name;
         switch (dir){
             case 0:
                 name = player.pos[0]+'_'+(player.pos[1]+1);
@@ -345,12 +341,10 @@
         $.post('http://e.cn/Public/getEventTest?testEventId=1', {uid:userInfo.id}, function (result) {
             console.log(typeof result);
             eval(result);
-            test=result;
         });
 
 //        return ;
     }
-var test;
     function teleport(param){
         console.log('teleport');
 //        if (param) {

@@ -71,11 +71,13 @@ class PublicC extends AppC {
     }
 
     public function test(){
-        if ($_POST['textScript']){
-            $event = new EventsM();
-            list($compiled, $result) = $event->enScript($_POST['textScript']);
-            MFLog($result);
-        }
+//        Session('test','无诶娘');
+        var_dump(Session('test'));
+//        if ($_POST['textScript']){
+//            $event = new EventsM();
+//            list($compiled, $result) = $event->enScript($_POST['textScript']);
+//            MFLog($result);
+//        }
 
     }
     /**

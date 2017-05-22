@@ -21,21 +21,21 @@
      *  dir：当动画为“水平”（默认）或“垂直”时，在子画面地图中移动的方向：
      *  once：true只运行一次动画，默认为false
      */
-    function Sprite(url, pos, size, speed, frames, dir, once) {
+    function Sprite(imgObj, pos, size, speed, frames, dir, once) {
         this.pos = pos;
         this.size = size;
         this.speed = typeof speed === 'number' ? speed : 0;
         this.frames = frames;
         this._index = 0;
-        this.url = url;
+        this.imgObj = imgObj;
         this.dir = dir || 'horizontal';
         this.once = once;
         this.running = false;
     }
 
     Sprite.prototype = {
-        update: function(dt) {
-            this._index += this.speed*dt;
+        update: function() {
+            this._index += this.speed;
         },
         //渲染
         render: function(ctx) {
@@ -65,7 +65,7 @@
             }
             // console.log(x,y);
             ctx.drawImage(
-                resources.get(this.url),
+                this.imgObj,
                 x, y,
                 this.size[0], this.size[1],
                 0, 0,

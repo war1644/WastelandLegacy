@@ -13,23 +13,22 @@
  */
 //添加事件到地图
 function addEvent(obj) {
-    var picUrl = '/V/Static/img/movePic/'+obj.name+'.png',name = obj.properties.posX+'_'+obj.properties.posY;
+    let picUrl = '/V/Static/img/movePic/'+obj.name+'.png',name = obj.properties.posX+'_'+obj.properties.posY;
     eventArr[name] = {p:{x:obj.x-12,y:obj.y-12}};
     eventArr[name].pos = [obj.properties.posX,obj.properties.posY];
-    eventArr[name].log = obj.properties.log;
     eventArr[name].gid = obj.properties.gid;
     mapPass[obj.properties.posY][obj.properties.posX]=1;
 
     if (obj.type === '0') {
-        resources.load(picUrl);
+        resources.load({name:name,path:picUrl});
         resources.onReady(function () {
-            eventArr[name].sprite = new Sprite(picUrl,[0,obj.properties.dir*24],[24,24]);
+            eventArr[name].sprite = new Sprite(resources.get(name),[0,obj.properties.dir*24],[24,24]);
         })
     } else {
         picUrl = '/V/Static/img/event/'+obj.name+'.png';
-        resources.load(picUrl);
+        resources.load({name:name,path:picUrl});
         resources.onReady(function () {
-            eventArr[name].sprite = new Sprite(picUrl,[0,0],[24,24]);
+            eventArr[name].sprite = new Sprite(resources.get(name),[0,0],[24,24]);
         })
     }
 }

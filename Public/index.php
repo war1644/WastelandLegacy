@@ -21,7 +21,6 @@ error_reporting(-1);
 define('MFPATH' , str_replace('\\', '/', __DIR__).'/../');
 define('BASE_URL' , 'http://e.cn/');
 define('API_URL' , '');
-
 include MFPATH.'Base/MF.php';
 
 
