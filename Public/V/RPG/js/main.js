@@ -75,12 +75,18 @@ var resList = {
     tileSize = 24;
 
 function wl() {
-    window.game = new Game(320, 240);
+    console.log(Global.mobile,Global.os,Global.width,Global.height);
+    if (Global.mobile) {
+        window.game = new Game(Global.width,Global.height);
+    } else {
+        window.game = new Game(480, 320);
+    }
     //初始设定
     gameInit();
     //预加载资源
     game.preload(resList);
     game.onload = () => {
+        game.scale = config.scale;
         let map = setHome2Map();
         game.playerList.push(new Player({
             startingX:4,
@@ -100,7 +106,9 @@ function wl() {
         let scene = new enchant.Scene();
         let stage = addToStage(map);
         scene.addChild(stage);
+        game.popScene();
         game.pushScene(scene);
+        console.log(game.width, game.height);
         p1.player.on('enterframe',function() {
             if(this.stop) return;
             p1.move();
@@ -172,7 +180,8 @@ function wl() {
                 }
             }
             //镜头跟随角色
-            setCamera(map[0].width,map[0].height,game.playerList,scene);
+            // console.log('setCamera :',map[0].width, map[0].height);
+            setCamera(map[0].width,map[0].height,game.playerList,stage);
         });
     };
     game.start();
@@ -183,8 +192,7 @@ function gameInit() {
     game.mapCode = 'home2';
     game.spriteWidth = config.spriteWidth;
     game.spriteHeight = config.spriteHeight;
-    game.scale = config.scale;
-    game.fps = config.fps;
+    // game.fps = config.fps;
     game.curBGM = 'NameSetting_mp3';
     game.playerList = [];
     //npc清单
@@ -203,16 +211,16 @@ function gameInit() {
                 {name:'传真',cost:'2000G',description:'传送到各地方的装置'}
             ],
             "commodity2":[
-                {name:'55炮',cost:'10000G',attack:50,description:'55mm口径主炮，一炮把你秒成渣'},
-                {name:'85炮',cost:'15000G',attack:70,description:'85mm口径主炮，一炮把你秒成渣'},
-                {name:'105炮',cost:'20000G',attack:100,description:'105mm口径主炮，一炮把你秒成渣'},
-                {name:'125炮',cost:'25000G',attack:120,description:'125mm口径主炮，一炮把你秒成渣'},
-                {name:'155炮',cost:'50000G',attack:150,description:'155mm口径主炮，一炮把你秒成渣'},
-                {name:'165炮',cost:'70000G',attack:160,description:'165mm口径主炮，一炮把你秒成渣'},
-                {name:'185炮',cost:'100000G',attack:200,description:'185mm口径主炮，一炮把你秒成渣'},
-                {name:'205炮',cost:'120000G',attack:250,description:'205mm口径主炮，一炮把你秒成渣'},
-                {name:'220炮',cost:'150000G',attack:300,description:'220mm口径主炮，一炮把你秒成渣'},
-                {name:'225炮',cost:'20000000G',attack:500,description:'225mm口径主炮，一炮把你秒成渣'}
+                {name:'55炮',cost:'1000G',attack:50,description:'55mm口径主炮，一炮把你秒成渣'},
+                {name:'85炮',cost:'1500G',attack:70,description:'85mm口径主炮，一炮把你秒成渣'},
+                {name:'105加农炮',cost:'2000G',attack:100,description:'105mm口径主炮，一炮把你秒成渣'},
+                {name:'125加农炮',cost:'2500G',attack:120,description:'125mm口径主炮，一炮把你秒成渣'},
+                {name:'155加农炮',cost:'5000G',attack:150,description:'155mm口径主炮，一炮把你秒成渣'},
+                {name:'165滑膛炮',cost:'7000G',attack:160,description:'165mm口径主炮，一炮把你秒成渣'},
+                {name:'185滑膛炮',cost:'10000G',attack:200,description:'185mm口径主炮，一炮把你秒成渣'},
+                {name:'205加农炮',cost:'12000G',attack:250,description:'205mm口径主炮，一炮把你秒成渣'},
+                {name:'220炮',cost:'15000G',attack:300,description:'220mm口径主炮，一炮把你秒成渣'},
+                {name:'225炮',cost:'2000000G',attack:500,description:'225mm口径主炮，一炮把你秒成渣'}
             ]
         }
     };
@@ -370,7 +378,7 @@ function createDialogScene(scene,npc) {
     //对话文字背景
     let msgBg = new enchant.Sprite(game.width,70);
     msgBg.x = 0;
-    msgBg.y = game.height-70;
+    msgBg.y = game.height>>1;
     msgBg.backgroundColor = 'black';
     msgBg.opacity = 1;
 
@@ -384,7 +392,7 @@ function createDialogScene(scene,npc) {
     label.font = '12px Microsoft YaHei';
     label.color = '#fff';
     label.x = 10;
-    label.y = game.height-60;
+    label.y = game.height>>1;
 
     scene.addChild(msgBg);
     scene.addChild(aBtn);

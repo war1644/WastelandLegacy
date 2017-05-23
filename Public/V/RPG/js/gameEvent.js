@@ -140,12 +140,12 @@ var gameEv = [
                         if (p1.isOut(that.leaveCoordinate)) {
                             new TransitionScene(game.width, game.height, function () {
                                 game.popScene();
-                                new SoundManage('music06',true,'music02');
+                                new SoundManage('music06',true);
                                 game.mapCode = mapCode['home2'];
                                 p1.map = game.mapList.home2[0];
                                 p1.updatePlace(1, 8);
                                 game.playerList[0] = p1;
-                                game.currentScene.addChild(p1.player);
+                                // game.currentScene.addChild(p1.player);
                             });
                         }
                     });

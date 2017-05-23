@@ -972,7 +972,7 @@ enchant.EventTarget = enchant.Class.create({
             width = width || 320;
             height = height || 320;
 
-            var stage = document.getElementById('enchant-stage');
+            var stage = document.getElementById('game');
             var scale, sWidth, sHeight;
             if (!stage) {
                 stage = document.createElement('div');
@@ -1047,7 +1047,7 @@ enchant.EventTarget = enchant.Class.create({
              * @type Object
              */
             this.assets = {};
-            var assets = this._assets = [];
+            this._assets = [];
             (function detectAssets(module) {
                 if (module.assets) {
                     enchant.Core.instance.preload(module.assets);
@@ -1294,13 +1294,12 @@ enchant.EventTarget = enchant.Class.create({
             e.width = this._width;
             e.height = this._height;
             e.scale = this._scale;
-            this.dispatchEvent(e);
         },
         _oncoreresize: function(e) {
             this._element.style.width = Math.floor(this._width * this._scale) + 'px';
             this._element.style.height = Math.floor(this._height * this._scale) + 'px';
-            var scene;
-            for (var i = 0, l = this._scenes.length; i < l; i++) {
+            let scene;
+            for (let i = 0, l = this._scenes.length; i < l; i++) {
                 scene = this._scenes[i];
                 scene.dispatchEvent(e);
             }
@@ -1508,10 +1507,10 @@ enchant.EventTarget = enchant.Class.create({
             return enchant.Deferred.parallel(o);
         },
         _createTouchToStartScene: function() {
-            var label = new enchant.Label('Touch to Start'),
-                size = Math.round(core.width / 10),
+            let label = new enchant.Label('废土战记'),
+                size = Math.round(core.width / 20),
                 scene = new enchant.Scene();
-
+            console.log('start: ',core.width,core.height,);
             label.color = '#fff';
             label.font = (size - 1) + 'px bold Helvetica,Arial,sans-serif';
             label.textAlign = 'center';
@@ -4945,8 +4944,7 @@ enchant.Scene = enchant.Class.create(enchant.Group, {
         this._element.style.height = e.height + 'px';
         this.height = e.height;
         this._element.style[enchant.ENV.VENDOR_PREFIX + 'Transform'] = 'scale(' + e.scale + ')';
-
-        for (var type in this._layers) {
+        for (let type in this._layers) {
             this._layers[type].dispatchEvent(e);
         }
     },

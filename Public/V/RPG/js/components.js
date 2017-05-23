@@ -1,7 +1,50 @@
 /**
- * Created by Troy on 2016/9/5.
+ * 游戏基础库
  */
-'use strict';
+//全局变量
+var OS_PC = "pc",
+    OS_IPHONE = "iPhone",
+    OS_IPAD = "iPad",
+    OS_ANDROID = "Android",
+    OS_WINDOWS_PHONE = "Windows Phone",
+    OS_BLACK_BERRY = "BlackBerry",
+    NONE = "none",
+    UNDEFINED = "undefined",
+    LANDSCAPE = "landscape",
+    PORTRAIT = "portrait",
+    mouseX,
+    mouseY;
+var Global = (()=>{
+    function Global () {
+        throw "Global cannot be instantiated";
+    }
+    Global.width = window.screen.availWidth;
+    Global.height = window.screen.availHeight;
+    Global.mobile = Global.canTouch = false;
+    Global.os = OS_PC;
+
+    ((userAgent)=>{
+        if (userAgent.indexOf(OS_IPHONE) > 0) {
+            Global.os = OS_IPHONE;
+            Global.canTouch = true;
+            Global.ios = true;
+        }else if (userAgent.indexOf(OS_IPAD) > 0) {
+            Global.os = OS_IPAD;
+            Global.ios = true;
+            Global.canTouch = true;
+        } else if (userAgent.indexOf(OS_ANDROID) > 0) {
+            Global.os = OS_ANDROID;
+            Global.canTouch = true;
+            Global.android = true;
+        } else if (userAgent.indexOf(OS_WINDOWS_PHONE) > 0) {
+            Global.os = OS_WINDOWS_PHONE;
+            Global.canTouch = true;
+        }
+        Global.mobile = Global.canTouch;
+    })(navigator.userAgent);
+    return Global;
+})();
+
 //A button
 var confirmBtn = enchant.Class.create(enchant.Sprite,{
     initialize:function() {
@@ -613,18 +656,19 @@ function sellItem(itemList,scene,dialog) {
 //展示商品
 function showItemList(itemList,scene,dialog) {
     let group = new enchant.Group();
-    let labelGroup = new enchant.Group();
+    // let labelGroup = new enchant.Group();
     let itemGroup = new enchant.Group();
     //背景
+    //width,height,x,y,bgColor,opacity
     let sprite = new backSprite(game.width-60,game.height>>1,60,0);
-    let descSprite = new backSprite(90,100,game.width-90,0);
+    let descSprite = new backSprite(90,game.height>>1,game.width-90,0);
 
     //表示处在可见区域内的item索引
-    let inView = [0,1,2,3];
+    let inView = [0,1,2,3,4];
     //x,y,isVertical,number,step
-    let c = new cursor(65,8,'vertical',4,25);
+    let c = new cursor(65,8,'vertical',5,20);
 
-    //上下箭头
+    //上下箭头 x,y,img
     let triangle_up = new triangle(game.width>>1,3,'triangle_up');
     let triangle_down = new triangle(game.width>>1,(game.height>>1)-5,'triangle_down');
 
@@ -638,28 +682,18 @@ function showItemList(itemList,scene,dialog) {
     group.addChild(triangle_down);
     group.addChild(c);
 
+    //显示
     itemList.forEach(function(o,i) {
         //渲染物品名字
-        let label_1 = new itemLabel(o.name,85,5 + i * 25,'white','10px Microsoft YaHei',
-            'left',inView.indexOf(i) !== -1);
+        // let label_1 = new itemLabel(o.name,85,5 + i * 25,'white','10px Microsoft YaHei','left',inView.indexOf(i) !== -1);
         //渲染价格
-        let label_2 = new itemLabel(o.cost,110,6 + i * 25,'white','10px Arial',
-            'right',inView.indexOf(i) !== -1,100);
-        //渲染物品说明
-        //将过长的说明分段显示
-        let tempString = [];
-        // Array.prototype.forEach.call(o.description,function(o,i) {
-        //     tempString.push(o);
-        //     if(i !== 0 && i % 7 === 0) {
-        //         tempString.push('<br/>');
-        //     }
-        // });
-        //首次加载所有说明，并显示对应说明，其余隐藏
-        descText[i] = new itemLabel(o.description,game.width-85,5,'white',
-            '10px Microsoft YaHei','left',i === inView[c.selected],75);
+        // let label_2 = new itemLabel(o.cost,110,6 + i * 25,'white','10px Arial','right',inView.indexOf(i) !== -1,100);
 
-        labelGroup.addChild(label_1);
-        labelGroup.addChild(label_2);
+        //显示选中商品对应说明
+        descText[i] = new itemLabel(o.description,game.width-85,5,'white','10px Microsoft YaHei','left',i === inView[c.selected],game.height>>1);
+
+        // labelGroup.addChild(label_1);
+        // labelGroup.addChild(label_2);
         group.addChild(descText[i]);
     });
 
@@ -667,35 +701,35 @@ function showItemList(itemList,scene,dialog) {
     newScene.addChild(sprite);
     newScene.addChild(descSprite);
     newScene.addChild(group);
-    newScene.addChild(labelGroup);
-
+    // newScene.addChild(labelGroup);
+    //清除上一个场景
+    game.popScene();
+    //载入新场景
     game.pushScene(newScene);
 
-
-    //商品选单
+    //商品选单，翻页
     let selectItem = function() {
         itemGroup && game.currentScene.removeChild(itemGroup);
         itemGroup = new enchant.Group();
-        labelGroup && game.currentScene.removeChild(labelGroup);
+        // labelGroup && game.currentScene.removeChild(labelGroup);
 
         inView.forEach(function(o,i) {
             let itemName = itemList[o].name,
                 itemCost = itemList[o].cost;
-
-            let label_1 = new itemLabel(itemName,85,5 + i * 25,'white','12px Microsoft YaHei',
+            let label_1 = new itemLabel(itemName,85,5+i*20,'white','12px Microsoft YaHei',
                 'left',true);
-            let label_2 = new itemLabel(itemCost,110,6 + i * 25,'white','12px Arial',
-                'right',true,100);
-
+            let label_2 = new itemLabel(itemCost,game.width>>1,6+i*20,'white','12px Arial',
+                'letf',true,80);
             itemGroup.addChild(label_1);
             itemGroup.addChild(label_2);
-
             newScene.addChild(itemGroup);
         });
-
     };
-
+    selectItem();
+    //物品显示的区间长度
+    let viewLen = inView.length-1;
     newScene.on('enterframe',function() {
+        //上下箭头显示与否
         triangle_up.visible = inView[0] !== 0;
         triangle_down.visible = inView[inView.length - 1] !== (len - 1);
 
@@ -703,7 +737,7 @@ function showItemList(itemList,scene,dialog) {
             if(keyCount++ === 1) {
                 index++;
                 index = Math.min(index,len - 1);
-                if(index > inView[3]) {
+                if(index > inView[viewLen]) {
                     inView.shift();
                     inView.push(index);
                     selectItem();
@@ -724,13 +758,16 @@ function showItemList(itemList,scene,dialog) {
         } else if(game.input.a) {
             if(keyCount++ === 1) {
                 new SoundManage('select');
-                let currentItem = itemList[inView[c.selected]]; //当前选中的商品
+                //当前选中的商品
+                let currentItem = itemList[inView[c.selected]];
                 //创建新背景
-                let newBg = new backSprite(game.width,70,0,game.height-70,'black',1);
-                let confirmText = dialog['dialog_5'].text.replace('{itemName}',currentItem.name)
-                    .replace('{itemCost}',currentItem.cost);    //将对话中的占位符替换成真实数据
-                let confirmTxtLabel = new itemLabel(confirmText,10,game.height-60,'white','12px Microsoft YaHei','left',true,game.width-20,50);   //创建文字Label
-                let choice = new choiceText(dialog['dialog_5'].options, 35, 150);   //创建选项
+                let newBg = new backSprite(game.width,70,0,game.height-70,'black',0.5);
+                //将对话中的占位符替换成真实数据
+                let confirmText = dialog['dialog_5'].text.replace('{itemName}',currentItem.name).replace('{itemCost}',currentItem.cost);
+                //创建文字Label
+                let confirmTxtLabel = new itemLabel(confirmText,10,game.height-60,'white','12px Microsoft YaHei','left',true,game.width-20,50);
+                //创建选项
+                let choice = new choiceText(dialog['dialog_5'].options, 35, 150);
 
                 let confirmGroup = new enchant.Group(); //新组
                 confirmGroup.addChild(newBg);
@@ -739,13 +776,13 @@ function showItemList(itemList,scene,dialog) {
 
                 let confirmScene = new enchant.Scene(); //新场景
                 confirmScene.addChild(confirmGroup);
-
                 game.pushScene(confirmScene);  //添加新场景
 
 
                 //为新场景监听事件
                 confirmScene.on('enterframe',function() {
                     if(game.input.a) {
+                        game.currentScene.removeChild(choice);
                         if(keyCount++ === 1) {
                             new SoundManage('select');
                             let c_select = choice.cursor.selected;
@@ -754,21 +791,22 @@ function showItemList(itemList,scene,dialog) {
                                 let buyScene = new enchant.Scene();
                                 let buyText = '';
                                 let buyResult;
-                                let buyBg = new backSprite(game.width,150,0,300,'black',1);
+                                // let buyBg = new backSprite(game.width,150,0,100,'black',0.5);
                                 let buyGroup = new enchant.Group();
                                 if(game.gp >= parseInt(currentItem.cost)) {
                                     buyText = '钱正好,装在谁的包里呢?';
-                                    buyResult = new itemLabel(buyText,10,310,'white','12px Microsoft YaHei',
-                                        'left',true,600,150);
+                                    confirmTxtLabel.text = buyText;
+
+                                    // buyResult = new itemLabel(buyText,10,310,'white','12px Microsoft YaHei','left',true,600,150);
 
                                     let playerNames = [];
                                     game.playerList.forEach(function(o) {
                                         playerNames.push(o.player.name);
                                     });
-                                    let selectName = new choiceText3(playerNames,35,138,playerNames.length);
+                                    let selectName = new choiceText3(playerNames,game.width>>1,game.height>>1,playerNames.length);
 
-                                    buyGroup.addChild(buyBg);
-                                    buyGroup.addChild(buyResult);
+                                    // buyGroup.addChild(buyBg);
+                                    // buyGroup.addChild(buyResult);
                                     buyGroup.addChild(selectName);
                                     buyScene.addChild(buyGroup);
                                     game.pushScene(buyScene);
@@ -780,7 +818,6 @@ function showItemList(itemList,scene,dialog) {
                                                 if(curPlayer.items.length < curPlayer.maxItemsCount) {
                                                     game.gp -= parseInt(currentItem.cost);
                                                     curPlayer.items.push(currentItem);
-
 
                                                     new SoundManage('buy');
                                                     let buySuccess = new itemLabel('请拿好~',10,310,

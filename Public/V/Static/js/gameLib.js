@@ -21,19 +21,6 @@
     },false)
 })(window,document);
 
-var OS_PC = "pc",
-    OS_IPHONE = "iPhone",
-    OS_IPAD = "iPad",
-    OS_ANDROID = "Android",
-    OS_WINDOWS_PHONE = "Windows Phone",
-    OS_BLACK_BERRY = "BlackBerry",
-    NONE = "none",
-    UNDEFINED = "undefined",
-    LANDSCAPE = "landscape",
-    PORTRAIT = "portrait",
-    mouseX,
-    mouseY;
-
 
 var Lib = function () {
 
@@ -61,12 +48,24 @@ Lib.prototype = {
         return obj;
     }
 };
+var OS_PC = "pc",
+    OS_IPHONE = "iPhone",
+    OS_IPAD = "iPad",
+    OS_ANDROID = "Android",
+    OS_WINDOWS_PHONE = "Windows Phone",
+    OS_BLACK_BERRY = "BlackBerry",
+    NONE = "none",
+    UNDEFINED = "undefined",
+    LANDSCAPE = "landscape",
+    PORTRAIT = "portrait",
+    mouseX,
+    mouseY;
 var Global = (()=>{
     function Global () {
         throw "Global cannot be instantiated";
     }
-    Global.width = screen.width;
-    Global.height = screen.height;
+    Global.width = window.innerWidth;
+    Global.height = window.innerHeight;
     //
     ((userAgent)=>{
         if (userAgent.indexOf(OS_IPHONE) > 0) {

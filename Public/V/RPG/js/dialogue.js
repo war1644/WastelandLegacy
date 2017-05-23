@@ -57,7 +57,7 @@ var dialogue = [
             options:[]
         },
         dialog_5:{
-            text:'是{itemName}啊,真有眼光!打折卖您{itemCost},可以吗?',
+            text:'嗯，{itemName}，真有眼光！打折卖您{itemCost}，如何？',
             options:[
                 {
                     text:'是'
