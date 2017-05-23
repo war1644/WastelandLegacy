@@ -225,7 +225,7 @@ var NPC = enchant.Class.create(enchant.Sprite,{
     pushMove:function() {
         if(this.stop) {
             if(this.canPush) {
-                let player = g.playerList[0].player;
+                let player = game.playerList[0].player;
 
                 switch (player.aspect) {
                     case 'right':

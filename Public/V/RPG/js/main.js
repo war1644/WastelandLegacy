@@ -72,21 +72,28 @@ var resList = {
         'b':75,
         'i':73
     },
+    keyD = {
+        'up':3,
+        'down':0,
+        'left':1,
+        'right':2
+    },
     tileSize = 24;
 
 function wl() {
-    console.log(Global.mobile,Global.os,Global.width,Global.height);
-    if (Global.mobile) {
-        window.game = new Game(Global.width,Global.height);
-    } else {
-        window.game = new Game(480, 320);
-    }
+    // console.log(Global.mobile,Global.os,Global.width,Global.height);
+    // if (Global.mobile) {
+    //     window.game = new Game(Global.width,Global.height);
+    // } else {
+        window.game = new Game(400, 240);
+    // }
     //初始设定
     gameInit();
     //预加载资源
     game.preload(resList);
     game.onload = () => {
         game.scale = config.scale;
+
         let map = setHome2Map();
         game.playerList.push(new Player({
             startingX:4,
@@ -101,14 +108,61 @@ function wl() {
         game.hp = p1.maxHp = p1.getHp();
         game.item_p1 = p1.player.items;    //角色一物品
         game.encounter = false; //不可以遇敌
+
+        //dade
+        let npc01 = createNPC({
+            tileX: 6,
+            tileY: 8,
+            imageName: 'dade',
+            direction: 2,
+            standing : true,   //是否站立
+            face: 0,
+            sells:'item',
+            action: function () {
+                //创建对话场景
+                let msgScene = createDialogScene(this.tempScene, this);
+                game.pushScene(msgScene[0]);
+
+                //处理对话逻辑
+                if (this.dialogID !== null) {
+                    displayDialog(this.dialogID, 'dialogID', this, msgScene);
+                } else {
+                    Deal('dade', 'npcID', this, msgScene,game.npcList.home1.commodity2);
+                }
+            }
+        });
+
+        //sister
+        let npc02 = createNPC({
+            tileX: 8,
+            tileY: 8,
+            imageName: 'sister',
+            canPush: true,
+            direction: 1,
+            face: 0,
+            action: function () {
+                //创建对话场景
+                let msgScene = createDialogScene(this.tempScene, this);
+                game.pushScene(msgScene[0]);
+
+                //处理对话逻辑
+                if (this.dialogID !== null) {
+                    displayDialog(this.dialogID, 'dialogID', this, msgScene);
+                } else {
+                    displayDialog('sister', 'npcID', this, msgScene);
+                }
+            }
+        });
+        game.npcList[game.mapCode].npc.push(npc01);
+        game.npcList[game.mapCode].npc.push(npc02);
         //播放音乐
         // new SoundManage(game.curBGM,true);
         let scene = new enchant.Scene();
         let stage = addToStage(map);
+        stage.addChild(npc01);
+        stage.addChild(npc02);
         scene.addChild(stage);
-        game.popScene();
-        game.pushScene(scene);
-        console.log(game.width, game.height);
+        game.replaceScene(scene);
         p1.player.on('enterframe',function() {
             if(this.stop) return;
             p1.move();
@@ -180,7 +234,6 @@ function wl() {
                 }
             }
             //镜头跟随角色
-            // console.log('setCamera :',map[0].width, map[0].height);
             setCamera(map[0].width,map[0].height,game.playerList,stage);
         });
     };
@@ -192,6 +245,7 @@ function gameInit() {
     game.mapCode = 'home2';
     game.spriteWidth = config.spriteWidth;
     game.spriteHeight = config.spriteHeight;
+
     // game.fps = config.fps;
     game.curBGM = 'NameSetting_mp3';
     game.playerList = [];
@@ -378,9 +432,7 @@ function createDialogScene(scene,npc) {
     //对话文字背景
     let msgBg = new enchant.Sprite(game.width,70);
     msgBg.x = 0;
-    msgBg.y = game.height>>1;
-    msgBg.backgroundColor = 'black';
-    msgBg.opacity = 1;
+    msgBg.y = game.height-70;
 
     //按键闪烁
     let aBtn = new confirmBtn();
@@ -392,7 +444,7 @@ function createDialogScene(scene,npc) {
     label.font = '12px Microsoft YaHei';
     label.color = '#fff';
     label.x = 10;
-    label.y = game.height>>1;
+    label.y = game.height-70;
 
     scene.addChild(msgBg);
     scene.addChild(aBtn);

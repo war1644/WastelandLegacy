@@ -69,8 +69,8 @@ var backSprite = enchant.Class.create(enchant.Sprite,{
         enchant.Sprite.call(this,width,height);
         this.x = x;
         this.y = y;
-        this.backgroundColor = bgColor || 'black';
-        this.opacity = opacity || 0.8;
+        this.backgroundColor = bgColor || '#fff';
+        this.opacity = opacity || 0.5;
         return this;
     }
 });
@@ -89,7 +89,7 @@ var triangle = enchant.Class.create(enchant.Sprite,{
 
 //创建对话选项
 var choiceText = enchant.Class.create(enchant.Group,{
-    initialize:function(choice,x,y) {
+    initialize:function(choice,x,y,color='#fff') {
         enchant.Group.call(this);
 
         let that = this;
@@ -98,7 +98,7 @@ var choiceText = enchant.Class.create(enchant.Group,{
             let label = new enchant.Label(o.text);
             label.x = x;
             label.y = y;
-            label.color = '#fff';
+            label.color = color;
             label.font = '12px Microsoft YaHei';
             x += 50;
 
@@ -146,7 +146,7 @@ var choiceText3 = enchant.Class.create(enchant.Group,{
         let sprite = new backSprite(130,110,0,130);
         this.addChild(sprite);
         choice.forEach(function(o) {
-            let label = new Label(o);
+            let label = new enchant.Label(o);
             label.x = x;
             label.y = y;
             label.color = '#fff';
@@ -658,10 +658,13 @@ function showItemList(itemList,scene,dialog) {
     let group = new enchant.Group();
     // let labelGroup = new enchant.Group();
     let itemGroup = new enchant.Group();
+    let Hcenter = game.height>>1;
+    let Wcenter = game.width>>1;
+
     //背景
     //width,height,x,y,bgColor,opacity
-    let sprite = new backSprite(game.width-60,game.height>>1,60,0);
-    let descSprite = new backSprite(90,game.height>>1,game.width-90,0);
+    let sprite = new backSprite(game.width-60,Hcenter,60,0);
+    let descSprite = new backSprite(100,Hcenter,game.width-100);
 
     //表示处在可见区域内的item索引
     let inView = [0,1,2,3,4];
@@ -689,8 +692,9 @@ function showItemList(itemList,scene,dialog) {
         //渲染价格
         // let label_2 = new itemLabel(o.cost,110,6 + i * 25,'white','10px Arial','right',inView.indexOf(i) !== -1,100);
 
-        //显示选中商品对应说明
-        descText[i] = new itemLabel(o.description,game.width-85,5,'white','10px Microsoft YaHei','left',i === inView[c.selected],game.height>>1);
+        //显示选中商品对应说明text,x,y,color,font,textAlign,visible,width,height
+
+        descText[i] = new itemLabel(o.description,game.width-95,5,'white','10px Microsoft YaHei','left',i === inView[c.selected],90,(game.height>>1)-5);
 
         // labelGroup.addChild(label_1);
         // labelGroup.addChild(label_2);
@@ -703,9 +707,9 @@ function showItemList(itemList,scene,dialog) {
     newScene.addChild(group);
     // newScene.addChild(labelGroup);
     //清除上一个场景
-    game.popScene();
+    // game.popScene();
     //载入新场景
-    game.pushScene(newScene);
+    game.replaceScene(newScene);
 
     //商品选单，翻页
     let selectItem = function() {
@@ -757,11 +761,14 @@ function showItemList(itemList,scene,dialog) {
             }
         } else if(game.input.a) {
             if(keyCount++ === 1) {
+
                 new SoundManage('select');
                 //当前选中的商品
                 let currentItem = itemList[inView[c.selected]];
+                //隐藏手
+                c.visible = false;
                 //创建新背景
-                let newBg = new backSprite(game.width,70,0,game.height-70,'black',0.5);
+                let newBg = new backSprite(game.width,70,0,game.height-70,'black');
                 //将对话中的占位符替换成真实数据
                 let confirmText = dialog['dialog_5'].text.replace('{itemName}',currentItem.name).replace('{itemCost}',currentItem.cost);
                 //创建文字Label
@@ -782,20 +789,21 @@ function showItemList(itemList,scene,dialog) {
                 //为新场景监听事件
                 confirmScene.on('enterframe',function() {
                     if(game.input.a) {
-                        game.currentScene.removeChild(choice);
                         if(keyCount++ === 1) {
+
                             new SoundManage('select');
                             let c_select = choice.cursor.selected;
-
+                            //手
+                            game.currentScene.removeChild(choice);
                             if(c_select === 0) {
                                 let buyScene = new enchant.Scene();
-                                let buyText = '';
+                                // let buyText = '';
                                 let buyResult;
                                 // let buyBg = new backSprite(game.width,150,0,100,'black',0.5);
-                                let buyGroup = new enchant.Group();
+                                // let buyGroup = new enchant.Group();
                                 if(game.gp >= parseInt(currentItem.cost)) {
-                                    buyText = '钱正好,装在谁的包里呢?';
-                                    confirmTxtLabel.text = buyText;
+                                    // buyText = '钱正好,装在谁的包里呢?';
+                                    confirmTxtLabel.text = '钱正好,装在谁的包里呢?';
 
                                     // buyResult = new itemLabel(buyText,10,310,'white','12px Microsoft YaHei','left',true,600,150);
 
@@ -803,12 +811,13 @@ function showItemList(itemList,scene,dialog) {
                                     game.playerList.forEach(function(o) {
                                         playerNames.push(o.player.name);
                                     });
-                                    let selectName = new choiceText3(playerNames,game.width>>1,game.height>>1,playerNames.length);
+                                    // let selectName = new choiceText3(playerNames,game.width>>1,game.height>>1,playerNames.length);
+                                    let selectName = new  choiceText2(playerNames,25, 5);
 
                                     // buyGroup.addChild(buyBg);
                                     // buyGroup.addChild(buyResult);
-                                    buyGroup.addChild(selectName);
-                                    buyScene.addChild(buyGroup);
+                                    // buyGroup.addChild(selectName);
+                                    buyScene.addChild(selectName);
                                     game.pushScene(buyScene);
 
                                     buyScene.on('enterframe',function() {
@@ -857,17 +866,18 @@ function showItemList(itemList,scene,dialog) {
                                         } else keyCount = 0;
                                     });
                                 } else {
-                                    buyText = '钱不够啊,挑一个买得起的吧!';
-                                    buyResult = new itemLabel(buyText,10,310,'white','12px Microsoft YaHei',
-                                        'left',true,600,150);
-                                    buyGroup.addChild(buyBg);
-                                    buyGroup.addChild(buyResult);
-                                    buyScene.addChild(buyGroup);
-                                    game.pushScene(buyScene);
+                                    // buyText = '钱不够啊,挑一个买得起的吧!';
+                                    confirmTxtLabel.text ='钱不够啊,挑一个买得起的吧!';
+                                    // buyResult = new itemLabel(buyText,10,310,'white','12px Microsoft YaHei',
+                                    //     'left',true,600,150);
+                                    // buyGroup.addChild(buyBg);
+                                    // buyGroup.addChild(buyResult);
+                                    // buyScene.addChild(buyGroup);
+                                    // game.pushScene(buyScene);
 
                                     setTimeout(function() {
                                         game.popScene();
-                                        game.popScene();
+                                        c.visible = true;
                                     },1500);
                                 }
                             }

@@ -4,7 +4,7 @@
 
 var dialogue = [
     {
-        npcID:'dade1',
+        npcID:'dade',
         name:'你老爹',
         dialogID:4,
         startIndex:0,
@@ -157,8 +157,8 @@ var dialogue = [
         }
     },
     {
-        npcID:'npc01',
-        name:'',
+        npcID:'sister',
+        name:'姐姐',
         dialogID:2,
         startIndex:0,
         dialog_0:{
