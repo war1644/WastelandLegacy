@@ -233,6 +233,7 @@ Player.prototype = {
     checkHitTest:function(direction,mapCode,npc) {
         if(!npc) return false;
         let player = this.player;
+        console.log(npc);
         switch (direction) {
             case 'right':
                 //与地图障碍碰撞时停止移动

@@ -171,7 +171,7 @@ var NPC = enchant.Class.create(enchant.Sprite,{
                     (x !== p1.player.x || y !== p1.player.y) &&
                     !this.intersect(p1.player)) {
 
-                    if(this.checkNpcObstacle(mapCode['home1'])) return;
+                    if(this.checkNpcObstacle(game.mapCode)) return;
                     this.isMoving = true;
                     this.move();
                 } else {

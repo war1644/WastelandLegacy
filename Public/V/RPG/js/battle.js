@@ -81,9 +81,9 @@ function addBattleScene(enemyGroupID) {
                     case 0://攻击
                         if(battle.damageInfo) game.currentScene.removeChild(battle.damageInfo);
 
-                        var enemyNameGroup = displayGroupEnemy(battle.enemies);
-                        var selectEnemyScene = new enchant.Scene();
-                        var selectEnemy = new cursor(210,308,'vertical',enemyNameGroup[1],20);
+                        let enemyNameGroup = displayGroupEnemy(battle.enemies);
+                        let selectEnemyScene = new enchant.Scene();
+                        let selectEnemy = new cursor(210,308,'vertical',enemyNameGroup[1],20);
                         choice.visible = false;
 
                         selectEnemyScene.addChild(enemyNameGroup[0]);
@@ -158,7 +158,7 @@ function addBattleScene(enemyGroupID) {
 
 
 function addComponentsToArray(array) {
-    for(var i = 1; i < arguments.length; i++) {
+    for(let i = 1; i < arguments.length; i++) {
         if(arguments[i] instanceof Array) {
             arguments[i].forEach(function(o) {
                 array.push(o);
@@ -188,17 +188,17 @@ function showComponents(array) {
 
 //选择随机敌人
 function selectEnemy(groupNumber) {
-    var enemies = enemyGroup[groupNumber];
-    var enemyNumber = rangeRand(enemies.min,enemies.max);   //出现敌人的数量
-    var candidate = []; //候选敌人列表
-    var enemyList = []; //敌人列表
+    let enemies = enemyGroup[groupNumber];
+    let enemyNumber = rangeRand(enemies.min,enemies.max);   //出现敌人的数量
+    let candidate = []; //候选敌人列表
+    let enemyList = []; //敌人列表
 
     //若候选敌人列表中为空，则表示候选敌人为全体类型的敌人
     if(enemies.enemies.length === 0) {
         candidate = enemyConfig.candidate;
         if(enemies.exclude.length !== 0) {  //需要排除的敌人
             enemies.exclude.forEach(function(o) {
-                var index = candidate.indexOf(o);
+                let index = candidate.indexOf(o);
                 if(index > -1) {
                     candidate.splice(index,1);
                 }
@@ -209,20 +209,20 @@ function selectEnemy(groupNumber) {
     }
 
     //在候选列表中提选出相应数量的敌人
-    for(var i = 0; i < enemyNumber; i++) {
+    for(let i = 0; i < enemyNumber; i++) {
         enemyList.push(candidate[rand(candidate.length)]);
     }
 
-    var groupEnemy = generateEnemy(enemyList);
-    var enemyNames = [];
+    let groupEnemy = generateEnemy(enemyList);
+    let enemyNames = [];
 
     groupEnemy.forEach(function(o) {
         enemyNames.push(o[0].name);
     });
 
     //建立一个保存敌人位置的数组的副本
-    var location = battle.enemyLocation.slice(0);
-    var groupCount = 0; //敌人分组编号
+    let location = battle.enemyLocation.slice(0);
+    let groupCount = 0; //敌人分组编号
 
     setTimeout(function() {
         (function displayEmy() {
@@ -390,7 +390,7 @@ function fight(emyList,ability) {
     //console.log('行动列表:',battle.actionQueue);
     (function actionByQueue() {
         if(battle.actionQueue.length && battle.roundEnd) {
-            var el = battle.actionQueue.shift();
+            let el = battle.actionQueue.shift();
 
             if(el.constructor === Player) {//如果等于玩家则表示轮到玩家行动
                 fightAnimation(target,function() {
@@ -413,26 +413,26 @@ function fightAnimation(target,callback) {
     battle.roundEnd = false;
     addBattleScene.group_2[1].visible =  true;  //显示武器
 
-    var centerArray = [];   //用于保存该组敌人的中心位置
+    let centerArray = [];   //用于保存该组敌人的中心位置
 
     target.forEach(function(o){
         centerArray.push(o.getCenterPoint());
     });
 
 
-    var info = new itemLabel(p1.player.name +'攻击!',
+    let info = new itemLabel(p1.player.name +'攻击!',
         220,308,'white','14px Microsoft YaHei','left',true,180,30);
-    var p1WeaponAmmo = new triangle(518,162,'ammo',21,7,1,1);   //弹药
+    let p1WeaponAmmo = new triangle(518,162,'ammo',21,7,1,1);   //弹药
     p1WeaponAmmo.visible = false;
-    var animationScene = new Scene();
+    let animationScene = new Scene();
 
     animationScene.addChild(info);
     animationScene.addChild(p1WeaponAmmo);
 
-    var waitFor = animationScene.age + 20;
-    var finish = false;
-    var explosionRunning = false;
-    var idx_target = 0;
+    let waitFor = animationScene.age + 20;
+    let finish = false;
+    let explosionRunning = false;
+    let idx_target = 0;
 
     game.pushScene(animationScene);
 
@@ -457,15 +457,15 @@ function fightAnimation(target,callback) {
                 if(target.length && !explosionRunning) {
                     new SoundManage('music13',false,null,1);
                     explosionRunning = true;
-                    var t = target.shift();
+                    let t = target.shift();
 
                     //爆炸效果
-                    var explosion = new triangle(centerArray[idx_target][0] - 30,centerArray[idx_target][1] - 30,
+                    let explosion = new triangle(centerArray[idx_target][0] - 30,centerArray[idx_target][1] - 30,
                         'explosion',64,64,1,1);
                     explosion.frame = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,null];
                     animationScene.addChild(explosion);
 
-                    var damage = hitStrength(p1.getAttack());
+                    let damage = hitStrength(p1.getAttack());
                     t.hp -= damage;
 
                     battle.damageInfo = new itemLabel((t.aliasName || t.name) +'损伤了'+damage+'!<br/>',
@@ -483,7 +483,7 @@ function fightAnimation(target,callback) {
                         }
                     });
 
-                    var targetLife = t.age + 20;
+                    let targetLife = t.age + 20;
                     //监测敌方hp，判断敌方是否已死亡
                     function checkEnemyDead() {
                         this.bindEvent = true;
@@ -507,8 +507,8 @@ function fightAnimation(target,callback) {
                                 battle.exp += this.exp;
 
                                 //从列表中移除已消灭的敌人
-                                for(var i = 0; i < battle.enemies.length; i++) {
-                                    var o = battle.enemies[i];
+                                for(let i = 0; i < battle.enemies.length; i++) {
+                                    let o = battle.enemies[i];
                                     if(o.aliasName !== '' && o.aliasName === t.aliasName) {
                                         battle.enemies.splice(i,1);
                                         break;
@@ -517,7 +517,7 @@ function fightAnimation(target,callback) {
 
                                 //从行动队列中移除已经死亡的敌人
                                 for(i = 0; i < battle.actionQueue.length; i++) {
-                                    var item = battle.actionQueue[i];
+                                    let item = battle.actionQueue[i];
                                     if(item.hp <= 0) {
                                         battle.actionQueue.splice(i,1);
                                     }
@@ -527,11 +527,11 @@ function fightAnimation(target,callback) {
                                     g.gp += battle.gp;
                                     game.exp += battle.exp;
 
-                                    var info = new itemLabel('消灭了怪物!<br/>Adol获得了'+battle.exp+
+                                    let info = new itemLabel('消灭了怪物!<br/>Adol获得了'+battle.exp+
                                         '点经验和<br/>' + battle.gp + 'G!<br/>',
                                         220,308,'white','14px Microsoft YaHei','left',true,180,30);
 
-                                    var currentLevel = p1.player.level;
+                                    let currentLevel = p1.player.level;
 
                                     for(i = currentLevel; i < p1.player.levelStats.length; i++) {
                                         if(currentLevel === (p1.player.levelStats.length - 1)) break;
@@ -549,7 +549,7 @@ function fightAnimation(target,callback) {
                                     battle.gp = 0;
                                     battle.exp = 0;
 
-                                    var battleResultScene = new enchant.Scene();
+                                    let battleResultScene = new enchant.Scene();
 
                                     setTimeout(function() {
                                         new SoundManage('music17',false,
@@ -558,8 +558,8 @@ function fightAnimation(target,callback) {
                                         battleResultScene.addChild(info);
                                         game.pushScene(battleResultScene);
 
-                                        var keyCount = 0;
-                                        var waitFor = battleResultScene.age + 30;
+                                        let keyCount = 0;
+                                        let waitFor = battleResultScene.age + 30;
                                         battleResultScene.on('enterframe',function() {
                                             if(this.age >= waitFor) {
                                                 if(game.input.a) {
@@ -607,8 +607,8 @@ function hitStrength(hit) {
 
 //计算敌人的平均速度
 function getEmyAverageSpeed() {
-    var sumSpeed = 0;
-    var len = battle.enemies.length;
+    let sumSpeed = 0;
+    let len = battle.enemies.length;
     battle.enemies.forEach(function(o) {
         sumSpeed += o.speed;
     });
@@ -618,8 +618,8 @@ function getEmyAverageSpeed() {
 
 //是否先制攻击
 function isForestall() {
-    var emyAvgSpeed = getEmyAverageSpeed(battle.enemies);
-    var playerSpeed = p1.getSpeed();
+    let emyAvgSpeed = getEmyAverageSpeed(battle.enemies);
+    let playerSpeed = p1.getSpeed();
 
     if(playerSpeed >= emyAvgSpeed) {
         if(Math.random() >= 0.8) return true;
@@ -631,8 +631,8 @@ function isForestall() {
 
 //是否被偷袭
 function isSneak() {
-    var emyAvgSpeed = getEmyAverageSpeed(battle.enemies);
-    var playerSpeed = p1.getSpeed();
+    let emyAvgSpeed = getEmyAverageSpeed(battle.enemies);
+    let playerSpeed = p1.getSpeed();
 
     if(emyAvgSpeed >= playerSpeed) {
         if(Math.random() >= 0.5) return true;

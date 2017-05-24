@@ -95,14 +95,10 @@ function wl() {
     //预加载资源
     game.preload(resList);
     game.onload = () => {
-        game.scale = config.scale;
-
-        let map = setHome2Map();
         game.playerList.push(new Player({
             startingX:4,
             startingY:8,
             playerImage:'tank',
-            map:map[0],
             defaultAttributes:Player.p1Attributes
         }));
         window.p1 = game.playerList[0];
@@ -110,8 +106,10 @@ function wl() {
         game.exp = p1.player.exp;  //经验值
         game.hp = p1.maxHp = p1.getHp();
         game.item_p1 = p1.player.items;    //角色一物品
-        game.encounter = false; //不可以遇敌
-
+        game.encounter = true; //不可以遇敌
+        //实例化地图
+        let map = setHome2Map();
+        p1.map = map[0];
         //dade
         let npc01 = createNPC({
             tileX: 6,
@@ -134,7 +132,6 @@ function wl() {
                 }
             }
         });
-
         //sister
         let npc02 = createNPC({
             tileX: 8,
@@ -158,13 +155,13 @@ function wl() {
         });
         game.npcList[game.mapCode].npc.push(npc01);
         game.npcList[game.mapCode].npc.push(npc02);
+        console.log(game.npcList[game.mapCode].npc);
         //播放音乐
-        // new SoundManage(game.curBGM,true);
+        new SoundManage(game.curBGM,true);
         let scene = new enchant.Scene();
-        let stage = addToStage(map);
-        stage.addChild(npc01);
-        stage.addChild(npc02);
+        let stage = addToStage([map[0],map[1],map[2],p1.player,npc01,npc02,map[3]]);
         scene.addChild(stage);
+
         game.replaceScene(scene);
 
         p1.player.on('enterframe',function() {
@@ -179,6 +176,8 @@ function wl() {
             };
             //场景切换检测
             if(game.mapCode === mapCode['home2']) {
+                //TODO ： 后期需要优化，现在是很野蛮的每帧都检测
+                //不断检测脚下是否有事件
                 //进出场景
                 let enterEvent = gameEv.findTile(playerPos.tileX,playerPos.tileY,game.mapCode);
                 if(enterEvent && !enterEvent.hasOwnProperty("lock") && p1.player.x % tileSize === 0 && p1.player.y % tileSize === 0) {
@@ -239,7 +238,7 @@ function wl() {
                 }
             }
 
-            //处理按下I键的情况
+            //处理按下e键的情况
             if(game.input.e){
                 config.keyE++;
             } else {
@@ -359,15 +358,15 @@ function addToStage(obj) {
     if(!obj.length) {
         stage.addChild(obj);
     } else {
-        for(let i = 0; i < obj.length; i++) {
-            stage.addChild(obj[i]);
-            if (i==2){
-                stage.addChild(p1.player);
-            }
-        }
         // for(let i = 0; i < obj.length; i++) {
         //     stage.addChild(obj[i]);
+        //     if (i==2){
+        //         stage.addChild(p1.player);
+        //     }
         // }
+        for(let i = 0; i < obj.length; i++) {
+            stage.addChild(obj[i]);
+        }
     }
     return stage;
 }
@@ -498,7 +497,7 @@ function displayDialog(id,type,npc,scene) {
         //若文本未显示完
         if(tmpText.length < text.length) {
             //如果按下了A键并且文本长度大于1
-            if(game.input.a && tmpText.length > 1) {
+            if((game.input.a || game.input.b) && tmpText.length > 1) {
                 if(keyCount++ === 1) {
                     //瞬间显示文本
                     tmpText = text;
@@ -508,7 +507,7 @@ function displayDialog(id,type,npc,scene) {
                 keyCount = 0;
             }
             //若没有按下A键，则逐帧显示文本(打字机效果)
-            if(this.age % 2 === 0 && !game.input.a && tmpText.length < text.length) {
+            if(this.age % 2 === 0 && !(game.input.a || game.input.b) && tmpText.length < text.length) {
                 tmpText = text.substr(0, tmpText.length + 1);
                 scene[1].text = (dialog.name.length ? (dialog.name + '：<br/>') : '') + tmpText;
                 //文本显示时播放声音
@@ -526,13 +525,13 @@ function displayDialog(id,type,npc,scene) {
                         keyCount = 0;
                     }
                 } else {//若没有下一段对话了
-                    if (game.input.a) {
+                    if (game.input.a || game.input.b) {
                         if (keyCount++ === 1) {
                             game.popScene();   //退出场景
                             //根据设置随机选取对话
                             if(dialog[message].random) {
-                                dialog.startIndex =
-                                    dialog[message].random[Math.random()*dialog[message].random.length>>0];
+                                dialog.startIndex = dialog[message].random[Math.random()*dialog[message].random.length>>0];
+                                console.log(dialog.startIndex,dialog[message]);
                             } else {
                                 i = start;  //重置段落计数器
                             }

@@ -38,7 +38,7 @@ var Enemy = enchant.Class.create(enchant.Sprite,{
         return this;
     },
     draw:function(x,y) {
-        this.image = g.assets[g.resource[this.image]];    //怪物图片
+        this.image = game.assets[this.image];    //怪物图片
         this.x = x;
         this.y = y;
         return this;
@@ -50,7 +50,7 @@ var Enemy = enchant.Class.create(enchant.Sprite,{
         return this.speed;
     },
     destroy:function() {
-        var drop = Math.random() <= this.dropRate;
+        let drop = Math.random() <= this.dropRate;
         return drop ? [this.exp,this.gp,this.drop[rand(this.drop.length)]] : [this.exp,this.gp];
     }
 
@@ -58,23 +58,23 @@ var Enemy = enchant.Class.create(enchant.Sprite,{
 
 function enemyAction(player,callback) {
     battle.roundEnd = false;
-    g.currentScene.removeChild(battle.damageInfo);
+    game.currentScene.removeChild(battle.damageInfo);
 
-    new SoundManage(g.resource['music15'],false,null,1);
+    new SoundManage(music15,false,null,1);
 
-    var skill = this.skills[rand(this.skills.length)];
-    var damage = hitStrength(skill.attack);
+    let skill = this.skills[rand(this.skills.length)];
+    let damage = hitStrength(skill.attack);
 
-    var info = new itemLabel((this.aliasName || this.name) + skill.name +'!',
+    let info = new itemLabel((this.aliasName || this.name) + skill.name +'!',
         220,308,'white','14px Microsoft YaHei','left',true,180,30);
-    g.currentScene.addChild(info);
+    game.currentScene.addChild(info);
 
     battle.damageInfo = new itemLabel(player.player.name +'损伤了'+damage+'!<br/>',
         220,308,'white','14px Microsoft YaHei','left',true,180,30);
     player.hp -= damage;
 
 
-    var oldX = this.x,
+    let oldX = this.x,
         oldY = this.y,
         p_oldX = battle.p1Battle.x,
         that = this;
@@ -86,20 +86,19 @@ function enemyAction(player,callback) {
             if(waitFor - that.age < 20) {
                 battle.p1Battle.x = p_oldX + 10;
             }
-            if(that.age === waitFor) new SoundManage(g.resource['music16'],false,null,1);
+            if(that.age === waitFor) new SoundManage('music16',false,null,1);
         } else {
             this.moveTo(oldX,oldY);
             battle.p1Battle.x = p_oldX;
-            g.currentScene.removeChild(info);
-            g.currentScene.addChild(battle.damageInfo);
+            game.currentScene.removeChild(info);
+            game.currentScene.addChild(battle.damageInfo);
 
             battle.p1Hp.text = 'HP'+player.hp;
 
             if(player.hp <= 0) {
                 battle.p1Hp.text = 'HP0';
                 gameOver();
-                new SoundManage(g.resource['lose'],true,
-                   battle.isBoss ? g.resource['music04'] : g.resource['music09']);
+                new SoundManage('lose',true,battle.isBoss ? 'music04' : 'music09');
                 return;
             }
 

@@ -1020,7 +1020,9 @@ enchant.EventTarget = enchant.Class.create({
 
             this._width = width;
             this._height = height;
-            this.scale = scale;
+            // this.scale = scale;
+            this.scale = 1.5;
+
 
             /**
              * The frame rate of the core.

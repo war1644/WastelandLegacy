@@ -47,9 +47,7 @@ var gameEv = [
 
                 });
                 p1 = game.playerList[0];
-                //按层绘制，很重要
-                stage = addToStage(map);
-
+                stage = addToStage([map[0],map[1],map[2],p1.player]);
                 if(!game.npcList[game.mapCode].npc.length) {
                     //保管员
                     let npc01 = createNPC({
@@ -127,8 +125,10 @@ var gameEv = [
                         resetNpcLocation(o);
                         stage.addChild(o);
                     });
-                }
 
+                }
+                //按层绘制，很重要
+                stage.addChild(map[3]);
                 scene.addChild(stage);
                 game.pushScene(scene);
 
