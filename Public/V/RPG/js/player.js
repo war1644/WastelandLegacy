@@ -12,8 +12,8 @@ function Player() {
 
 Player.p1Attributes = {
     name:'路漫漫',
-    hp: 10,
-    mp: 20,
+    hp: 100,
+    sp: 20,
     exp: 0,
     level: 1,
     gp:1000,
@@ -26,9 +26,8 @@ Player.p1Attributes = {
         {name:'拳套',cost:'25G',attack:12,description:'能打出爆发性的一击'},
         {name:'手枪',cost:'50G',attack:15,description:'一把普通的枪'},
         {name:'短枪',cost:'70G',attack:16,description:'射速极快的机关枪',special:'all'},
-        {name:'迫击炮',cost:'100G',attack:20,description:'军用武器'}
     ],
-    maxItemsCount:5,
+    maxItemsCount:12,
     equip:[
         {name:'迫击炮',cost:'100G',attack:5,description:'军用武器',special:'group'},
         {name:'技师手套',cost:'10G',defence:3,description:'操作机械的专用手套'},
@@ -37,10 +36,10 @@ Player.p1Attributes = {
     maxEquipCount:5,
     levelStats:[
         {},
-        { attack: 8, maxHp: 80, maxMp: 20, expMax: 0, speed:5, power:5 },
-        { attack: 10, maxHp: 100, maxMp: 22, expMax: 10, speed:7, power:6 },
-        { attack: 12, maxHp: 120, maxMp: 26, expMax: 20, speed:8, power:7 },
-        { attack: 15, maxHp: 150, maxMp: 30, expMax: 40, speed:10, power:9 }
+        { attack: 8, maxHp: 80, maxSp: 20, expMax: 0, speed:5, power:5 },
+        { attack: 10, maxHp: 100, maxSp: 22, expMax: 10, speed:7, power:6 },
+        { attack: 12, maxHp: 120, maxSp: 26, expMax: 20, speed:8, power:7 },
+        { attack: 15, maxHp: 150, maxSp: 30, expMax: 40, speed:10, power:9 }
     ]
 };
 
@@ -119,8 +118,8 @@ Player.prototype = {
     getHp:function() {
         return this.player.levelStats[this.player.level].maxHp;
     },
-    getMp:function() {
-        return this.player.levelStats[this.player.level].maxMp;
+    getSp:function() {
+        return this.player.levelStats[this.player.level].maxSp;
     },
     getSpeed:function() {
         return this.player.levelStats[this.player.level].speed;

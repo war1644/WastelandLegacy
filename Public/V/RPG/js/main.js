@@ -61,6 +61,8 @@ var resList = {
         mapHeight:16*24,
         keyA:0, //用于防止按键连续触发
         keyB:0, //防止连发
+        keyI:0, //防止连发
+        keyE:0, //防止连发
         inTank:false
     },
     key = {
@@ -68,9 +70,10 @@ var resList = {
         'down':83,
         'left':65,
         'right':68,
-        'a':74,
-        'b':75,
-        'i':73
+        'a':70,
+        'b':67,
+        'i':73,
+        'e':69
     },
     keyD = {
         'up':3,
@@ -163,6 +166,7 @@ function wl() {
         stage.addChild(npc02);
         scene.addChild(stage);
         game.replaceScene(scene);
+
         p1.player.on('enterframe',function() {
             if(this.stop) return;
             p1.move();
@@ -204,6 +208,7 @@ function wl() {
             } else {
                 config.keyA = 0;
             }
+
             if(config.keyA === 1) {//仅当值为1时触发
                 new SoundManage('select');
                 let facingSquare = p1.facingSquare();
@@ -233,6 +238,21 @@ function wl() {
                     });
                 }
             }
+
+            //处理按下I键的情况
+            if(game.input.e){
+                config.keyE++;
+            } else {
+                config.keyE = 0;
+            }
+
+            if(config.keyE === 1) {//仅当值为1时触发
+                new SoundManage('select');
+                console.log(p1.player);
+
+            }
+
+
             //镜头跟随角色
             setCamera(map[0].width,map[0].height,game.playerList,stage);
         });
@@ -295,6 +315,7 @@ function gameInit() {
     game.keybind(key['a'],'a');
     game.keybind(key['b'],'b');
     game.keybind(key['i'],'i');
+    game.keybind(key['e'],'e');
     game.keybind(key['up'],'up');
     game.keybind(key['down'],'down');
     game.keybind(key['left'],'left');
@@ -427,30 +448,32 @@ function createDialogScene(scene,npc) {
     //如果场景存在，则退出场景
     if(scene) game.popScene();
     //新建场景
-    scene = new enchant.Scene();
-
+    let dialogScene = new enchant.Scene();
     //对话文字背景
-    let msgBg = new enchant.Sprite(game.width,70);
-    msgBg.x = 0;
-    msgBg.y = game.height-70;
-
+    let msgBg = new backSprite(game.width,70,0,game.height-70);
+    //文本容器
+    let label = new textLabel('',10,game.height-60,game.width-50,50);
     //按键闪烁
     let aBtn = new confirmBtn();
 
+    dialogScene.addChild(msgBg);
+    dialogScene.addChild(aBtn);
+    dialogScene.addChild(label);
+    return [dialogScene,label,aBtn];
+}
+function showDialog(text,scene) {
+    if (scene) game.popScene(scene);
+    //新建场景
+    let dialogScene = new enchant.Scene();
+    //对话文字背景
+    let msgBg = new backSprite(game.width,70,0,game.height-70);
     //文本容器
-    let label = new enchant.Label();
-    label.width = game.width-50;
-    label.height = 60;
-    label.font = '12px Microsoft YaHei';
-    label.color = '#fff';
-    label.x = 10;
-    label.y = game.height-70;
+    let label = new textLabel(text,10,game.height-60,game.width-50,50);
 
-    scene.addChild(msgBg);
-    scene.addChild(aBtn);
-    scene.addChild(label);
-
-    return [scene,label,aBtn];
+    dialogScene.addChild(msgBg);
+    dialogScene.addChild(label);
+    game.pushScene(dialogScene);
+    return [dialogScene,label];
 }
 
 /**
@@ -594,18 +617,19 @@ function Deal(npcID,type,npc,scene,itemList) {
                 new SoundManage('message');
             }
         } else {//文本已完全显示
-            if(!dialog[message].options) {//无对话选项
-                if(scene.callback) {//买
-                    dialog["dialog_"+i].callback(itemList,scene,dialog);
+
+            if (!dialog[message].options) {//无对话选项
+                if (scene.callback) {//买
+                    dialog["dialog_" + i].callback(itemList, scene, dialog);
                     scene.callback = false;
                     tmpText = '';
-                    i = dialog["dialog_"+i].failDialog;
+                    i = dialog["dialog_" + i].failDialog;
                 }
-                if(scene.callback2) {//卖
-                    dialog["dialog_"+i].callback(itemList,scene,dialog);
+                if (scene.callback2) {//卖
+                    dialog["dialog_" + i].callback(itemList, scene, dialog);
                     scene.callback2 = false;
                     tmpText = '';
-                    i = dialog["dialog_"+i].failDialog;
+                    i = dialog["dialog_" + i].failDialog;
                 }
                 if (dialog[message].nextDialog === -1) {
                     scene[2].visible = true;    //恢复显示闪烁的A按键
@@ -620,7 +644,7 @@ function Deal(npcID,type,npc,scene,itemList) {
                     } else keyCount = 0;
                 }
             } else {
-                if(!scene.choice) {//首次创建选项
+                if (!scene.choice) {//首次创建选项
                     op = dialog[message].options;
                     //创建选项 内容，内容坐标
                     scene.choice = new choiceText2(op, 25, 5);
@@ -628,24 +652,28 @@ function Deal(npcID,type,npc,scene,itemList) {
                     game.currentScene.addChild(scene.choice);
                 } else {//再次进入则监听按键
                     let select; //玩家选择
-                    if(game.input.b) {//按B键退出
-                        if(keyCount++ === 1) {
+                    if (game.input.b) {//按B键退出
+                        if (keyCount++ === 1) {
+
                             select = op.length - 1;
                             tmpText = '';
                             i = op[select].failDialog;
                             game.currentScene.removeChild(scene.choice);
                             scene.choice = null;
+                            setTimeout(() => {
+                                game.popScene();
+                            }, 1000)
                         }
-                    } else if(game.input.a) {
-                        if(keyCount++ === 1) {
+                    } else if (game.input.a) {
+                        if (keyCount++ === 1) {
                             select = scene.choice.cursor.selected;
-                            if(op[select].nextDialog !== -1) {
+                            if (op[select].nextDialog !== -1) {
                                 tmpText = '';
                                 i = op[select].nextDialog;
                                 scene.choice.cursor.visible = false;
 
-                                if(select === 0) scene.callback = true;
-                                if(select === 1) scene.callback2 = true;
+                                if (select === 0) scene.callback = true;
+                                if (select === 1) scene.callback2 = true;
 
                             }
                         }

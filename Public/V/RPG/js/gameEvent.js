@@ -104,7 +104,6 @@ var gameEv = [
                         tileY: 17,
                         imageName: 'tankNpc01',
                         direction: 0,
-                        standing:true,
                         face: 0,
                         action: function () {
                             //创建对话场景
