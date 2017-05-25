@@ -5882,7 +5882,11 @@ enchant.WebAudioSound = enchant.Class.create(enchant.EventTarget, {
             return this._volume;
         },
         set: function(volume) {
-            volume = Math.max(0, Math.min(1, volume));
+            if (volume>1) {
+                volume=1
+            }else if(volume<0) {
+                volume=0;
+            }
             this._volume = volume;
             if (this.src) {
                 this._gain.gain.value = volume;

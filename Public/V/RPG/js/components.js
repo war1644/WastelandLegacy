@@ -84,10 +84,31 @@ var backSprite = enchant.Class.create(enchant.Sprite,{
         return this;
     }
 });
+var backSprite2 = enchant.Class.create(enchant.Sprite,{
+    initialize:function(x,y,width,height,bgColor,opacity) {
+        enchant.Sprite.call(this,width,height);
+        this.x = x||0;
+        this.y = y||0;
+        this.backgroundColor = bgColor || '#000';
+        this.opacity = opacity || 0.5;
+        return this;
+    }
+});
+//白色背景
+var whiteSprite = enchant.Class.create(enchant.Sprite,{
+    initialize:function(x,y,width,height,bgColor,opacity) {
+        enchant.Sprite.call(this,width,height);
+        this.x = x||0;
+        this.y = y||0;
+        this.backgroundColor = bgColor || '#fff';
+        this.opacity = opacity || 1.0;
+        return this;
+    }
+});
 
 //展示商品时的上下箭头
 var triangle = enchant.Class.create(enchant.Sprite,{
-    initialize:function(x,y,image,width,height,scaleX,scaleY) {
+    initialize:function(image,x,y,width,height,scaleX,scaleY) {
         enchant.Sprite.call(this,width || 8,height || 4);
         this.x = x;
         this.y = y;
@@ -261,7 +282,7 @@ var cursor = enchant.Class.create(enchant.Sprite,{
 //混合选择菜单(可竖向、横向选择)
 var cursor2 = enchant.Class.create(enchant.Sprite,{
     initialize:function(x,y,number,verticalStep,horizonalStep) {
-        enchant.Sprite.call(this,20,20);
+        enchant.Sprite.call(this,16,16);
         this.old_x = x;
         this.old_y = y;
         this.x = x;
@@ -272,7 +293,6 @@ var cursor2 = enchant.Class.create(enchant.Sprite,{
         this.keyCount = 0;
         this.selected = 0;
         this.image = game.assets['cursor'];
-
         return this;
     },
     onenterframe:function() {
@@ -354,8 +374,8 @@ var TransitionScene = enchant.Class.create(enchant.Scene,{
         }
     }
 });
-
-var TransitionScene2 = enchant.Class.create(enchant.Scene,{
+//遇敌过渡场景
+var BattleTransitionScene = enchant.Class.create(enchant.Scene,{
     initialize:function(width,height,callback,leaveCoordinate) {
         enchant.Scene.call(this);
 
@@ -364,7 +384,7 @@ var TransitionScene2 = enchant.Class.create(enchant.Scene,{
         this.sprite.opacity = 0;
         this.leaveCoordinate = leaveCoordinate;
         this.waitFor = this.sprite.age + 55;
-        new SoundManage('music07',false);
+        new SoundManage('music07');
 
         this.callback = callback;
         this.addChild(this.sprite);
@@ -372,6 +392,7 @@ var TransitionScene2 = enchant.Class.create(enchant.Scene,{
         game.pushScene(this);
     },
     onenterframe:function() {
+        //让屏幕闪烁
         if(this.sprite.age % 2 === 0) {
             this.sprite.opacity = 0;
         } else {
@@ -941,36 +962,66 @@ function gameOver() {
 /**
  * 扩展
  */
-//游戏音效管理类
+/**
+ * 游戏音乐管理类
+ * @param sound {string} 音乐名
+ * @param loop  {boolean} 是否循环播放
+ * @param volume  {number} 音量0~1
+ * @returns {Object} 返回对当前播放音乐的引用
+ */
+class SoundManage{
+    constructor(sound=false,loop=false,volume=0.6){
+        this.soundName = sound;
+        if (sound) {
+            this.bgm = game.assets[sound];
+        } else {
+            this.bgm = game.assets[game.curBGM];
+        }
+        this.play(loop,volume);
+    }
+
+    play(loop,volume) {
+        this.bgm.play();
+        this.bgm.volume = volume;
+        if (loop) {
+            this.bgm.src.loop = true;
+            if (this.soundName != game.curBGM) {
+                this.stop(game.curBGM);
+                game.curBGM = this.soundName;
+            }
+        }
+    }
+
+    stop(sound=false) {
+        sound ? game.assets[sound].stop() : this.bgm.stop();
+    }
+}
+/*
 function SoundManage() {
     return this.init.apply(this,arguments);
 }
 SoundManage.prototype = {
     constructor:SoundManage,
-    /**
-     * 播放音乐
-     * @param sound {string} 音乐路径
-     * @param loop  {boolean} 是否循环播放
-     * @param closeSound  {string} 需要关闭的音乐
-     * @param volume  {number} 音量0~1
-     * @returns {Object} 返回对当前播放音乐的引用
-     */
-    init:function(sound,loop,closeSound,volume) {
-        this.bgm = game.assets[sound];
-        this.play(this.bgm,loop,closeSound,volume);
 
+    init:function(sound,loop,volume) {
+        this.bgm = game.assets[sound];
+        this.play(this.bgm,loop,volume);
         return this.bgm;
     },
-    play:function(sound,loop,closeSound,volume) {
+    play:function(sound,loop,volume) {
         sound.play();
         sound.volume = volume || 0.6;
-        if(loop) sound.src.loop = true;
-        if(closeSound) this.stop(closeSound);
+        if(loop){
+            sound.src.loop = true;
+            this.stop(closeSound);
+
+        }
     },
     stop:function(sound) {
         sound ? game.assets[sound].stop() : this.bgm.stop();
     }
 };
+*/
 
 //游戏文字管理类
 function CreateLabel() {

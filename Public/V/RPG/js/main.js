@@ -81,7 +81,17 @@ var resList = {
         'left':1,
         'right':2
     },
-    tileSize = 24;
+    tileSize = 24,
+    enemySign = {
+        0:'A',
+        1:'B',
+        2:'C',
+        3:'D',
+        4:'E',
+        5:'F',
+        6:'G',
+        7:'H'
+    };
 
 function wl() {
     // console.log(Global.mobile,Global.os,Global.width,Global.height);
@@ -156,8 +166,9 @@ function wl() {
         game.npcList[game.mapCode].npc.push(npc01);
         game.npcList[game.mapCode].npc.push(npc02);
         console.log(game.npcList[game.mapCode].npc);
-        //播放音乐
-        new SoundManage(game.curBGM,true);
+        //播放背景音乐
+        game.curBGM = 'NameSetting_mp3';
+        new SoundManage('',true);
         let scene = new enchant.Scene();
         let stage = addToStage([map[0],map[1],map[2],p1.player,npc01,npc02,map[3]]);
         scene.addChild(stage);
@@ -176,7 +187,7 @@ function wl() {
             };
             //场景切换检测
             if(game.mapCode === mapCode['home2']) {
-                //TODO ： 后期需要优化，现在是很野蛮的每帧都检测
+                //TODO： 后期需要优化，现在是很野蛮的每帧都检测
                 //不断检测脚下是否有事件
                 //进出场景
                 let enterEvent = gameEv.findTile(playerPos.tileX,playerPos.tileY,game.mapCode);
@@ -266,7 +277,6 @@ function gameInit() {
     game.spriteHeight = config.spriteHeight;
 
     // game.fps = config.fps;
-    game.curBGM = 'NameSetting_mp3';
     game.playerList = [];
     //npc清单
     game.npcList = {

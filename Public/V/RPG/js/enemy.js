@@ -60,24 +60,22 @@ function enemyAction(player,callback) {
     battle.roundEnd = false;
     game.currentScene.removeChild(battle.damageInfo);
 
-    new SoundManage(music15,false,null,1);
+    new SoundManage('music15');
 
     let skill = this.skills[rand(this.skills.length)];
     let damage = hitStrength(skill.attack);
-
-    let info = new itemLabel((this.aliasName || this.name) + skill.name +'!',
-        220,308,'white','14px Microsoft YaHei','left',true,180,30);
+    let battleInfo = (this.aliasName || this.name) + skill.name +'!<br/>';
+    let info = new textLabel(battleInfo,140,game.height-70+5,150,50);
     game.currentScene.addChild(info);
 
-    battle.damageInfo = new itemLabel(player.player.name +'损伤了'+damage+'!<br/>',
-        220,308,'white','14px Microsoft YaHei','left',true,180,30);
+    battle.damageInfo = new textLabel(player.player.name +'损伤了'+damage+'!<br/>',140,game.height-70+5,150,50);
     player.hp -= damage;
 
 
     let oldX = this.x,
         oldY = this.y,
         p_oldX = battle.p1Battle.x,
-        that = this;
+        that = this,
         waitFor = this.age + 40;
 
     function enemyAttack() {
@@ -86,19 +84,19 @@ function enemyAction(player,callback) {
             if(waitFor - that.age < 20) {
                 battle.p1Battle.x = p_oldX + 10;
             }
-            if(that.age === waitFor) new SoundManage('music16',false,null,1);
+            if(that.age === waitFor) new SoundManage('music16');
         } else {
             this.moveTo(oldX,oldY);
             battle.p1Battle.x = p_oldX;
             game.currentScene.removeChild(info);
             game.currentScene.addChild(battle.damageInfo);
 
-            battle.p1Hp.text = 'HP'+player.hp;
+            battle.p1Hp.text = 'HP '+player.hp;
 
             if(player.hp <= 0) {
                 battle.p1Hp.text = 'HP0';
                 gameOver();
-                new SoundManage('lose',true,battle.isBoss ? 'music04' : 'music09');
+                new SoundManage('lose',true);
                 return;
             }
 
@@ -121,8 +119,8 @@ var enemyConfig = {
         image:'enemy00',
         width:64,
         height:32,
-        scaleX:2,
-        scaleY:2,
+        // scaleX:1.5,
+        // scaleY:1.5,
         hp:11,
         attack:4,
         defence:5,
@@ -161,8 +159,8 @@ var enemyConfig = {
         image:'enemy01',
         width:64,
         height:32,
-        scaleX:2,
-        scaleY:2,
+        // scaleX:1.5,
+        // scaleY:1.5,
         hp:11,
         attack:4,
         defence:5,
@@ -201,8 +199,8 @@ var enemyConfig = {
         image:'enemy02',
         width:64,
         height:32,
-        scaleX:2,
-        scaleY:2,
+        // scaleX:1.5,
+        // scaleY:1.5,
         hp:11,
         attack:4,
         defence:5,
@@ -241,8 +239,8 @@ var enemyConfig = {
         image:'enemy03',
         width:64,
         height:32,
-        scaleX:2,
-        scaleY:2,
+        // scaleX:1.5,
+        // scaleY:1.5,
         hp:11,
         attack:4,
         defence:5,
@@ -281,8 +279,8 @@ var enemyConfig = {
         image:'enemy04',
         width:64,
         height:32,
-        scaleX:2,
-        scaleY:2,
+        // scaleX:1.5,
+        // scaleY:1.5,
         hp:11,
         attack:4,
         defence:5,
@@ -317,15 +315,15 @@ var enemyConfig = {
     },
     5:{
         id:4,
-        name:'铜管乌贼',
+        name:'巨炮',
         image:'enemy05',
         width:96,
         height:96,
-        scaleX:2,
-        scaleY:2,
-        hp:30,
-        attack:7,
-        defence:5,
+        // scaleX:1.5,
+        // scaleY:1.5,
+        hp:1000,
+        attack:700,
+        defence:500,
         hitRate:0.8,
         dodge:0.1,
         speed:15,

@@ -49,7 +49,7 @@ var gameEv = [
                 p1 = game.playerList[0];
                 stage = addToStage([map[0],map[1],map[2],p1.player]);
                 if(!game.npcList[game.mapCode].npc.length) {
-                    //保管员
+                    //dade
                     let npc01 = createNPC({
                         tileX: 13,
                         tileY: 15,
@@ -73,29 +73,6 @@ var gameEv = [
                     });
                     game.npcList[game.mapCode].npc.push(npc01);
                     stage.addChild(npc01);
-                    /*
-                    //战车补充店员
-                    let npc02 = createNPC({
-                        tileX: 12,
-                        tileY: 9,
-                        imageName: 'npc04',
-                        direction: 0,
-                        face: 0,
-                        sells:'item',
-                        action: function () {
-                            //创建对话场景
-                            let msgScene = createDialogScene(this.tempScene, this);
-                            game.pushScene(msgScene[0]);
-
-                            //处理对话逻辑
-                            if (this.dialogID !== null) displayDialog(this.dialogID, 'dialogID', this,
-                                msgScene,game.npcList[game.mapCode].commodity);
-                            else Deal('salesman2', 'npcID', this, msgScene,game.npcList[game.mapCode].commodity2);
-                        }
-                    });
-                    game.npcList[game.mapCode].npc.push(npc02);
-                    stage.addChild(npc02);
-                */
                     //添加npc
                     let tankNpc01 = createNPC({
                         tileX: 9,
@@ -110,7 +87,7 @@ var gameEv = [
 
                             //处理对话逻辑
                             if (this.dialogID !== null) {
-                                displayDialog(this.dialogID, 'dialogID', this, msgScene, game.npcList[game.mapCode].commodity);
+                                displayDialog(this.dialogID, 'dialogID', this, msgScene);
                             } else {
                                 displayDialog('tankNpc01', 'npcID', this, msgScene);
                             }
@@ -118,6 +95,45 @@ var gameEv = [
                     });
                     game.npcList[game.mapCode].npc.push(tankNpc01);
                     stage.addChild(tankNpc01);
+                    //剧情NPC
+                    let npc03 = createNPC({
+                        tileX: 10,
+                        tileY: 7,
+                        imageName: 'npc05',
+                        specialActionStart:false,
+                        specialAction: {
+                            0: {y: 13}
+                            /*1: {y: 11},
+                             2: {x: 10},
+                             3: {y : 7}*/
+                        },
+                        beforeSpecialAction:function() {
+                            this.specialActionStart = false;
+                            //当玩家到达指定位置时开始移动
+                            if(p1.square().x === 10 && p1.square().y === 14 &&
+                                p1.player.x % tileSize === 0 && p1.player.y % tileSize === 0) {
+                                this.specialActionStart = true;
+                                p1.player.stop = true;
+                            }
+                        },
+                        afterSpecialAction:function() {
+                            p1.player.stop = false;
+                        },
+                        direction: 0,
+                        face:0,
+                        action:function() {
+                            //创建对话场景
+                            let msgScene = createDialogScene(this.tempScene, this);
+                            game.pushScene(msgScene[0]);
+
+                            //处理对话逻辑
+                            if (this.dialogID !== null) {
+                                displayDialog(this.dialogID, 'dialogID', this, msgScene);
+                            } else {
+                                displayDialog('badguyleader', 'npcID', this, msgScene);
+                            }
+                        }
+                    });
 
                 } else {
                     //否则添加列表里的npc
@@ -144,7 +160,6 @@ var gameEv = [
                                 p1.map = game.mapList.home2[0];
                                 p1.updatePlace(1, 8);
                                 game.playerList[0] = p1;
-                                // game.currentScene.addChild(p1.player);
                             });
                         }
                     });
@@ -235,7 +250,7 @@ var gameEv = [
             game.mapCode = mapCode['desertTown_scene02'];
             var that = this;
             new TransitionScene(game.width,game.height,function() {
-                new SoundManage(g.resource['music08'],true,g.resource['music06'],0.6);
+                new SoundManage('music08',true);
                 var map = [],
                     stage,
                     scene = new Scene();
@@ -641,7 +656,7 @@ var gameEv = [
 
                 game.pushScene(scene);
 
-                new SoundManage(g.curBGM,true,g.prevBGM);
+                new SoundManage('',true);
 
                 if(game.mapCode === mapCode['desertTown']) {
 
@@ -654,19 +669,19 @@ var gameEv = [
                         //角色离开当前场景
                         if (p1.isOut(that.leaveCoordinate)) {
                             new TransitionScene(game.width, game.height, function () {
-                                var temp;
+                                let temp;
                                 temp = g.prevBGM;
                                 g.prevBGM = g.curBGM;
                                 g.curBGM = temp;
 
-                                new SoundManage(g.curBGM, true, g.prevBGM);
+                                new SoundManage('', true);
                                 g.popScene();
                                 game.mapCode = mapCode['bigMap'];
                                 p1.map = game.mapList.bigMap[0];
                                 g.currentScene.addChild(p1.player);
                                 p1.updatePlace(4, 4);
 
-                                g.encounter = true; //遇敌开启
+                                game.encounter = true; //遇敌开启
 
                             });
                         }

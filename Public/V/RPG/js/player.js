@@ -43,8 +43,8 @@ Player.p1Attributes = {
     ]
 };
 
-Player.minEnCounterStep = 64;
-Player.maxEnCounterStep = 255;
+Player.minEnCounterStep = 4;
+Player.maxEnCounterStep = 24;
 
 Player.prototype = {
     constructor:Player,
@@ -343,7 +343,8 @@ Player.prototype = {
                         }
                     })();
                     //enemyGroupID = 2;
-                    //console.log(enemyGroupID);
+                    console.log(enemyGroupID,firstEnemy);
+                    //开始战斗场景
                     battle(enemyGroupID,firstEnemy);
                     this.encounterStep = rangeRand(Player.minEnCounterStep,Player.maxEnCounterStep);
                 }
