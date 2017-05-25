@@ -42,7 +42,7 @@ Player.p1Attributes = {
         { attack: 15, maxHp: 150, maxSp: 30, expMax: 40, speed:10, power:9 }
     ]
 };
-
+//遇敌机率
 Player.minEnCounterStep = 4;
 Player.maxEnCounterStep = 24;
 
@@ -233,7 +233,6 @@ Player.prototype = {
     checkHitTest:function(direction,mapCode,npc) {
         if(!npc) return false;
         let player = this.player;
-        console.log(npc);
         switch (direction) {
             case 'right':
                 //与地图障碍碰撞时停止移动

@@ -165,7 +165,6 @@ function wl() {
         });
         game.npcList[game.mapCode].npc.push(npc01);
         game.npcList[game.mapCode].npc.push(npc02);
-        console.log(game.npcList[game.mapCode].npc);
         //播放背景音乐
         game.curBGM = 'NameSetting_mp3';
         new SoundManage('',true);
@@ -258,7 +257,6 @@ function wl() {
 
             if(config.keyE === 1) {//仅当值为1时触发
                 new SoundManage('select');
-                console.log(p1.player);
 
             }
 

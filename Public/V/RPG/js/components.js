@@ -109,11 +109,12 @@ var whiteSprite = enchant.Class.create(enchant.Sprite,{
 //展示商品时的上下箭头
 var triangle = enchant.Class.create(enchant.Sprite,{
     initialize:function(image,x,y,width,height,scaleX,scaleY) {
-        enchant.Sprite.call(this,width || 8,height || 4);
+        let imgObj = game.assets[image];
+        enchant.Sprite.call(this,width || imgObj.width,height || imgObj.height);
         this.x = x;
         this.y = y;
         this.scale(scaleX || 1,scaleY || 1);
-        this.image = game.assets[image];
+        this.image = imgObj;
         return this;
     }
 });
@@ -528,8 +529,8 @@ function sellItem(itemList,scene,dialog) {
                     let c = new cursor(130,8,'vertical',inView.length,26);
 
                     //上下箭头
-                    let triangle_up = new triangle(285,3,'triangle_up');
-                    let triangle_down = new triangle(285,102,'triangle_down');
+                    let triangle_up = new triangle('triangle_up',285,3);
+                    let triangle_down = new triangle('triangle_down',285,102);
 
                     let index = 0;  //选中物品的索引
                     //道具说明文字
@@ -985,7 +986,7 @@ class SoundManage{
         this.bgm.volume = volume;
         if (loop) {
             this.bgm.src.loop = true;
-            if (this.soundName != game.curBGM) {
+            if (this.soundName) {
                 this.stop(game.curBGM);
                 game.curBGM = this.soundName;
             }

@@ -3,6 +3,7 @@
  */
 function battle(enemyGroupID,firstEnemy) {
     new BattleTransitionScene(game.width,game.height,()=>{
+        battle.msgPoint = [game.height-70,140];
         addBattleScene(enemyGroupID);
         battle.firstEnemy = firstEnemy;
         battle.isBoss = firstEnemy.isBoss;
@@ -19,6 +20,7 @@ battle.battleStart = false;
 battle.roundEnd = true;
 battle.exp = 0; //战斗经验值
 battle.gp = 0;  //战斗得到的金钱
+
 
 //战斗场景
 function addBattleScene(enemyGroupID) {
@@ -63,8 +65,8 @@ function addBattleScene(enemyGroupID) {
     let p1Hp = new textLabel('HP '+p1.player.hp,game.width-70+1,game.height-65,68,30);
     battle.p1Hp = p1Hp;
 
-    let p1Battle = new triangle('player1_battle',game.width-50,(game.height>>3)+10,30,32);    //战斗姿势
-    let p1Weapon = new triangle('weapon01',game.width-50,(game.height>>3)+2,16,6,1.5,1.5);   //武器
+    let p1Battle = new triangle('player1_battle',game.width-50,(game.height>>3)+10);    //战斗姿势
+    let p1Weapon = new triangle('weapon01',game.width-50,(game.height>>3));   //武器
 
     battle.p1Battle = p1Battle;
 
@@ -326,8 +328,8 @@ function displayGroupEnemy(enemyList) {
     let index = 0;
     let group = new enchant.Group();
     for(let i in enemies) {
-        let enemyName = new textLabel(enemies[i].name,160,game.height-70 +5 + 10 * index,80,30);
-        let enemyNumber = new textLabel(enemies[i].count,150,game.height-70 +5 + 11 * index,15,28);
+        let enemyNumber = new textLabel(enemies[i].count,150,game.height-70 +5 + 11 * index);
+        let enemyName = new textLabel(enemies[i].name,160,game.height-70 +5 + 10 * index);
         index++;
 
         group.addChild(enemyName);
@@ -389,7 +391,6 @@ function fight(emyList,ability) {
         battle.battleStart = true;
     }*/
 
-    console.log('行动列表:',battle.actionQueue);
     (function actionByQueue() {
         if(battle.actionQueue.length && battle.roundEnd) {
             let el = battle.actionQueue.shift();
@@ -399,7 +400,7 @@ function fight(emyList,ability) {
                     actionByQueue();
                 });
             } else {//敌方行动
-                el.actions(p1,function() {
+                el.actions(p1.player,function() {
                     actionByQueue();
                 });
             }
@@ -423,7 +424,8 @@ function fightAnimation(target,callback) {
 
 
     let info = new textLabel(p1.player.name +'攻击!',140,game.height-70+5);
-    let p1WeaponAmmo = new triangle('ammo',game.width-50,(game.height>>3)+10,21,7,1,1);   //弹药
+    //炮弹
+    let p1WeaponAmmo = new triangle('ammo',game.width-50,(game.height>>3)+10,21,7,1,1);
     p1WeaponAmmo.visible = false;
     let animationScene = new enchant.Scene();
 
@@ -469,7 +471,7 @@ function fightAnimation(target,callback) {
                     console.log('explosion',t);
                     t.hp -= damage;
 
-                    battle.damageInfo = new textLabel((t.aliasName || t.name) +'损伤了'+damage+'!<br/>',140,game.height-70+10 + 20 * idx_target,150,50);
+                    battle.damageInfo = new textLabel((t.aliasName || t.name) +'损伤了'+damage+'!<br/>',140,game.height-70+5 + 20 * idx_target);
 
                     explosion.on('enterframe',function() {
                         if(this.frame === 24) {
@@ -524,10 +526,10 @@ function fightAnimation(target,callback) {
                                 }
 
                                 if(battle.enemies.length === 0) {
-                                    g.gp += battle.gp;
+                                    game.gp += battle.gp;
                                     game.exp += battle.exp;
 
-                                    let info = new textLabel('消灭了怪物!<br/>Adol获得了'+battle.exp+'点经验和<br/>' + battle.gp + 'G!<br/>',220,308,'white','14px Microsoft YaHei','left',true,180,30);
+                                    let info = new textLabel(`消灭了怪物!<br/>${p1.player.name}获得了${battle.exp}点经验和${battle.gp}G!<br/>`,140,game.height-70+5,140,50);
 
                                     let currentLevel = p1.player.level;
 

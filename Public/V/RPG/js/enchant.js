@@ -1512,7 +1512,6 @@ enchant.EventTarget = enchant.Class.create({
             let label = new enchant.Label('废土战记'),
                 size = Math.round(core.width / 20),
                 scene = new enchant.Scene();
-            console.log('start: ',core.width,core.height,);
             label.color = '#fff';
             label.font = (size - 1) + 'px bold Helvetica,Arial,sans-serif';
             label.textAlign = 'center';
@@ -3505,7 +3504,6 @@ enchant.Map = enchant.Class.create(enchant.Entity, {
         if (this._image == null) {
             return;
         }
-        console.log('redraw');
         var image, tileWidth, tileHeight, dx, dy;
         if (this._doubledImage) {
             image = this._doubledImage;

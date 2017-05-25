@@ -68,7 +68,7 @@ function enemyAction(player,callback) {
     let info = new textLabel(battleInfo,140,game.height-70+5,150,50);
     game.currentScene.addChild(info);
 
-    battle.damageInfo = new textLabel(player.player.name +'损伤了'+damage+'!<br/>',140,game.height-70+5,150,50);
+    battle.damageInfo = new textLabel(player.name +'损伤了'+damage+'!<br/>',140,game.height-70+5);
     player.hp -= damage;
 
 
@@ -94,7 +94,7 @@ function enemyAction(player,callback) {
             battle.p1Hp.text = 'HP '+player.hp;
 
             if(player.hp <= 0) {
-                battle.p1Hp.text = 'HP0';
+                battle.p1Hp.text = 'HP 0';
                 gameOver();
                 new SoundManage('lose',true);
                 return;
