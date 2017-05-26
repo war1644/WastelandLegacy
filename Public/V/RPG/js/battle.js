@@ -37,9 +37,9 @@ function addBattleScene(enemyGroupID) {
     //玩家战斗菜单
     /*
      -----------------------1--------------------------
-     |           |         ------------------------   |
-     |----3------|         ------------------------   |
-     |           |         ------------------------   |
+     |           | ------------------------ |         |
+     |----3------| ------------------------ |         |
+     |           | ------------------------ |         |
      -----------------6--------------------------------
      */
     let line1 = new whiteSprite(0,game.height-70,game.width,1);
@@ -65,8 +65,8 @@ function addBattleScene(enemyGroupID) {
     let p1Hp = new textLabel('HP '+p1.player.hp,game.width-70+1,game.height-65,68,30);
     battle.p1Hp = p1Hp;
 
-    let p1Battle = new triangle('player1_battle',game.width-50,(game.height>>3)+10);    //战斗姿势
-    let p1Weapon = new triangle('weapon01',game.width-50,(game.height>>3));   //武器
+    let p1Battle = new gameSprite('player1_battle',game.width-50,(game.height>>3)+10);    //战斗姿势
+    let p1Weapon = new gameSprite('weapon01',game.width-50,(game.height>>3)+20,1.5,1.5);   //武器
 
     battle.p1Battle = p1Battle;
 

@@ -118,6 +118,17 @@ var triangle = enchant.Class.create(enchant.Sprite,{
         return this;
     }
 });
+var gameSprite = enchant.Class.create(enchant.Sprite,{
+    initialize:function(image,x,y,scaleX,scaleY,width,height) {
+        let imgObj = game.assets[image];
+        enchant.Sprite.call(this,width || imgObj.width,height || imgObj.height);
+        this.x = x;
+        this.y = y;
+        this.scale(scaleX || 1,scaleY || 1);
+        this.image = imgObj;
+        return this;
+    }
+});
 
 //创建对话选项
 var choiceText = enchant.Class.create(enchant.Group,{
