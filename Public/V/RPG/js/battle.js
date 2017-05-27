@@ -1,18 +1,33 @@
 /**
- * Created by Troy on 2016/9/12.
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆███▄▄▃▂
+ *  █████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * 游戏客户端战斗类
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2017/05/27 初版
  */
 function battle(enemyGroupID,firstEnemy) {
     new BattleTransitionScene(game.width,game.height,()=>{
-        battle.msgPoint = [game.height-70,140];
+        battle.msgPoint = [140,game.height-70+5];
         addBattleScene(enemyGroupID);
-        battle.firstEnemy = firstEnemy;
-        battle.isBoss = firstEnemy.isBoss;
+        // battle.firstEnemy = firstEnemy;
+        battle.isBoss = enemyGroupID==2 ? true : false;
         new SoundManage(battle.isBoss ? 'music04' : 'music09',true);
     });
 }
 battle.enemyLoaded = false; //标识敌人是否加载完成
 //敌人出现的位置(固定)
-battle.enemyLocation = [[40,108],[168,108],[40,44],[168,44],[40,172],[168,172],[40,4],[168,4]];
+battle.enemyLocation = [
+    [0,85],[68,85],
+    [0,125],[68,125],
+    [0,45],[68,45],
+    [0,5],[68,5]
+];
 battle.battleInfo = []; //战斗信息
 battle.enemies = [];  //出现的敌人
 battle.actionQueue = [];    //行动列表
@@ -50,19 +65,19 @@ function addBattleScene(enemyGroupID) {
     let line6 = new whiteSprite(0,game.height-1,game.width,1);
     let line7 = new whiteSprite(game.width-71,game.height-70,1,100);
 
-    let opLabel = new textLabel('攻击',30,game.height-40,50,30);
-    let opLabel2 = new textLabel('道具',90,game.height-40,50,30);
-    let opLabel3 = new textLabel('防卫',30,game.height-20,50,30);
-    let opLabel4 = new textLabel('逃跑',90,game.height-20,50,30);
+    let opLabel = new textLabel('攻击',30,game.height-40);
+    let opLabel2 = new textLabel('道具',90,game.height-40);
+    let opLabel3 = new textLabel('防卫',30,game.height-20);
+    let opLabel4 = new textLabel('逃跑',90,game.height-20);
 
     //x,y,number,verticalStep,horizonalStep
     let choice = new cursor2(10,game.height-40,4,20,60);
     addBattleScene.group_2.push(choice);
 
     //玩家信息
-    let playerName = new textLabel(p1.player.name,20,game.height-64,80,30);
-    let playerWeapon = new textLabel(p1.player.equip[0].name,75,game.height-64,80,30);
-    let p1Hp = new textLabel('HP '+p1.player.hp,game.width-70+1,game.height-65,68,30);
+    let playerName = new textLabel(p1.player.name,20,game.height-64);
+    let playerWeapon = new textLabel(p1.player.equip[0].name,75,game.height-64);
+    let p1Hp = new textLabel('HP '+p1.player.hp,game.width-70+1,game.height-65);
     battle.p1Hp = p1Hp;
 
     let p1Battle = new gameSprite('player1_battle',game.width-50,(game.height>>3)+10);    //战斗姿势
@@ -92,7 +107,7 @@ function addBattleScene(enemyGroupID) {
                         if(battle.damageInfo) game.currentScene.removeChild(battle.damageInfo);
                         let enemyNameGroup = displayGroupEnemy(battle.enemies);
                         let selectEnemyScene = new enchant.Scene();
-                        let selectEnemy = new cursor(131,game.height-70+5,'vertical',enemyNameGroup[1],20);
+                        let selectEnemy = new cursor(battle.msgPoint[0]-9,battle.msgPoint[1],'vertical',enemyNameGroup[1],20);
                         choice.visible = false;
 
                         selectEnemyScene.addChild(enemyNameGroup[0]);
@@ -123,27 +138,27 @@ function addBattleScene(enemyGroupID) {
                                     } else {
                                         emyList[0].aliasName = emyList[0].name;
                                     }
-
                                     game.popScene();
                                     //战斗
                                     fight(emyList,p1.player.equip[0].special);
-
-
                                 }
                             } else keyCount = 0;
                         });
                         break;
+                    //道具
                     case 1:
                         break;
+                    //防御
                     case 2:
                         break;
-                    default://逃跑
+                    //逃跑
+                    case 3:
                         //逃跑成功率计算公式：F = (A * 32) / B + 30 * C
                         /*A为逃跑方的当前速度，包含加速buff。
-                          B为对方的当前速度(或取对方的速度平均值)除以4再对256取余。
-                            C为本次战斗中逃跑方已经尝试过的逃跑次数，包括正在进行的这一次逃跑。
-                        若F大于255，则逃跑成功。否则在0到255之间生成一個随机数D。若D小于F则逃跑成功，否则逃跑失败。
-                        若使用道具或某些特性逃跑必定成功*/
+                         B为对方的当前速度(或取对方的速度平均值)除以4再对256取余。
+                         C为本次战斗中逃跑方已经尝试过的逃跑次数，包括正在进行的这一次逃跑。
+                         若F大于255，则逃跑成功。否则在0到255之间生成一個随机数D。若D小于F则逃跑成功，否则逃跑失败。
+                         若使用道具或某些特性逃跑必定成功*/
                         new SoundManage('music14');
 
                         game.popScene();
@@ -156,7 +171,8 @@ function addBattleScene(enemyGroupID) {
                             battle.roundEnd = true;
                             battle.battleInfo = [];
                         });
-
+                        break;
+                    default:
                         break;
                 }
             }
@@ -197,29 +213,37 @@ function showComponents(array) {
 //选择随机敌人
 function selectEnemy(groupNumber) {
     let enemies = enemyGroup[groupNumber];
-    let enemyNumber = rangeRand(enemies.min,enemies.max);   //出现敌人的数量
-    let candidate = []; //候选敌人列表
     let enemyList = []; //敌人列表
 
-    //若候选敌人列表中为空，则表示候选敌人为全体类型的敌人
-    if(enemies.enemies.length === 0) {
-        candidate = enemyConfig.candidate;
-        if(enemies.exclude.length !== 0) {  //需要排除的敌人
-            enemies.exclude.forEach(function(o) {
-                let index = candidate.indexOf(o);
-                if(index > -1) {
-                    candidate.splice(index,1);
-                }
-            });
+    //不是boss
+    if (groupNumber != 2) {
+        let enemyNumber = rangeRand(enemies.min,enemies.max);   //出现敌人的数量
+        console.log(enemyNumber);
+        let candidate = []; //候选敌人列表
+
+        //若候选敌人列表中为空，则表示候选敌人为全体类型的敌人
+        if(enemies.enemies.length === 0) {
+            candidate = enemyConfig.candidate;
+            if(enemies.exclude.length !== 0) {  //需要排除的敌人
+                enemies.exclude.forEach(function(o) {
+                    let index = candidate.indexOf(o);
+                    if(index > -1) {
+                        candidate.splice(index,1);
+                    }
+                });
+            }
+        } else {
+            candidate = enemies.enemies;
         }
-    } else {
-        candidate = enemies.enemies;
+
+        //在候选列表中提选出相应数量的敌人
+        for(let i = 0; i < enemyNumber; i++) {
+            enemyList.push(candidate[rand(candidate.length)]);
+        }
+    }else {
+        enemyList = enemies.enemies;
     }
 
-    //在候选列表中提选出相应数量的敌人
-    for(let i = 0; i < enemyNumber; i++) {
-        enemyList.push(candidate[rand(candidate.length)]);
-    }
 
     let groupEnemy = generateEnemy(enemyList);
     let enemyNames = [];
@@ -246,7 +270,7 @@ function selectEnemy(groupNumber) {
                         setTimeout(arguments.callee,300);
                     } else {
                         //怪物出现时显示的文字信息
-                        let info = new textLabel(enemyNames[groupCount] + ' 出现了!<br/>',game.width-200,(game.height>>1) + 20 * groupCount,180,30);
+                        let info = new textLabel(enemyNames[groupCount] + ' 出现了!<br/>',battle.msgPoint[0],battle.msgPoint[1]+20 * groupCount);
                         battle.battleInfo.push(info);
                         addComponentsToArray(addBattleScene.group_1,battle.battleInfo);
                         game.currentScene.addChild(info);
@@ -254,15 +278,13 @@ function selectEnemy(groupNumber) {
                         setTimeout(displayEmy,500);
                     }
                 })();
-
             } else {
-                /*if(isForestall()) {
-                    var info = new itemLabel('但怪物还没有发现Adol!<br/>',
-                        220,308 + 20 * groupCount,'white','14px Microsoft YaHei','left',true,180,30);
+                if(isForestall()) {
+                    let info = new textLabel(`${enemyNames[groupCount]}出现了!<br/>但怪物还没有发现${p1.player.name}!<br/>`,battle.msgPoint[0],battle.msgPoint[1]+20 * groupCount);
                     battle.battleInfo.push(info);
                     addComponentsToArray(addBattleScene.group_1,battle.battleInfo);
                     game.currentScene.addChild(info);
-                }*/
+                }
                 battle.enemyLoaded = true;
             }
         })();
@@ -282,6 +304,7 @@ function generateEnemy(enemyList) {
         let enemy = new Enemy(enemyConfig[o]);
         list.push(enemy);
     });
+    console.log(list);
 
     //将敌人分组
     if(enemyNumber === 1) {//当敌人列表中只有一个敌人
@@ -328,8 +351,8 @@ function displayGroupEnemy(enemyList) {
     let index = 0;
     let group = new enchant.Group();
     for(let i in enemies) {
-        let enemyNumber = new textLabel(enemies[i].count,150,game.height-70 +5 + 11 * index);
-        let enemyName = new textLabel(enemies[i].name,160,game.height-70 +5 + 10 * index);
+        let enemyNumber = new textLabel(enemies[i].count,battle.msgPoint[0]+10,battle.msgPoint[1]+ 21 * index);
+        let enemyName = new textLabel(enemies[i].name,battle.msgPoint[0]+20,battle.msgPoint[1]+ 20 * index);
         index++;
 
         group.addChild(enemyName);
@@ -383,13 +406,13 @@ function fight(emyList,ability) {
         return a.getSpeed() < b.getSpeed();
     });
 
-    /*if(isForestall() && !battle.battleStart) {
+    if(isForestall() && !battle.battleStart) {
         battle.actionQueue = [p1];    //先制攻击
         battle.battleStart = true;
     } else if(isSneak() && !battle.battleStart) {
         battle.actionQueue = battle.enemies;  //被偷袭
         battle.battleStart = true;
-    }*/
+    }
 
     (function actionByQueue() {
         if(battle.actionQueue.length && battle.roundEnd) {
@@ -425,7 +448,7 @@ function fightAnimation(target,callback) {
 
     let info = new textLabel(p1.player.name +'攻击!',140,game.height-70+5);
     //炮弹
-    let p1WeaponAmmo = new triangle('ammo',game.width-50,(game.height>>3)+10,21,7,1,1);
+    let p1WeaponAmmo = new gameSprite('ammo',game.width-50,(game.height>>3)+10);
     p1WeaponAmmo.visible = false;
     let animationScene = new enchant.Scene();
 
@@ -528,16 +551,13 @@ function fightAnimation(target,callback) {
                                 if(battle.enemies.length === 0) {
                                     game.gp += battle.gp;
                                     game.exp += battle.exp;
-
-                                    let info = new textLabel(`消灭了怪物!<br/>${p1.player.name}获得了${battle.exp}点经验和${battle.gp}G!<br/>`,140,game.height-70+5,140,50);
-
+                                    let info = new textLabel(`消灭了怪物!<br/>${p1.player.name}获得了${battle.exp}点经验和${battle.gp}G!<br/>`,140,game.height-70+5);
                                     let currentLevel = p1.player.level;
-
                                     for(let i = currentLevel; i < p1.player.levelStats.length; i++) {
                                         if(currentLevel === (p1.player.levelStats.length - 1)) break;
                                         if(game.exp >= p1.player.levelStats[i].expMax) {
                                             p1.player.level = i;
-                                            if(p1.player.level > currentLevel ) {
+                                            if(p1.player.level > currentLevel) {
                                                 info.text += p1.player.name+'升级了!<br/>';
                                                 currentLevel = p1.player.level;
                                                 p1.player.hp = p1.getHp();
@@ -567,15 +587,14 @@ function fightAnimation(target,callback) {
                                                         game.popScene();
                                                         battle.enemyLoaded = false;
                                                         battle.roundEnd = true;
-                                                        if(battle.isBoss) battle.firstEnemy.dead = true;
+                                                        //标记boss为死亡状态 后端控制，不由前端控制
+                                                        // if(battle.isBoss) battle.firstEnemy.dead = true;
                                                         new SoundManage('music01',true);
                                                     }
                                                 } else keyCount = 0;
                                             }
                                         });
                                     },400);
-
-
                                 }
                             }
                         }

@@ -311,6 +311,7 @@ var cursor2 = enchant.Class.create(enchant.Sprite,{
         if(game.input.down) {
             if(this.keyCount++ === 1) {
                 this.selected += 2;
+                console.log('选择了：',this.selected);
                 this.selected = Math.min(this.selected, this.number);
                 if (this.selected <= this.number) {
                     this.y = this.old_y + Math.floor(this.selected / 2) * this.verticalStep;
@@ -320,6 +321,7 @@ var cursor2 = enchant.Class.create(enchant.Sprite,{
         } else if(game.input.up) {
             if(this.keyCount++ === 1) {
                 this.selected -= 2;
+                console.log('选择了：',this.selected);
                 this.selected = Math.max(this.selected, 0);
                 if (this.selected >= 0) {
                     this.y = this.old_y + Math.floor(this.selected / 2) * this.verticalStep;
@@ -329,19 +331,19 @@ var cursor2 = enchant.Class.create(enchant.Sprite,{
         } else if(game.input.left) {
             if(this.keyCount++ === 1) {
                 this.selected--;
+                console.log('选择了：',this.selected);
                 if(this.selected <= 0) {
                     this.selected = Math.max(this.selected, 0);
                 } else {
                     this.selected = Math.max(this.selected, 2);
                 }
-
                 this.x = this.old_x + this.selected % 2 * this.horizonalStep;
-
                 new SoundManage('select');
             }
         } else if(game.input.right) {
             if(this.keyCount++ === 1) {
                 this.selected++;
+                console.log('选择了：',this.selected);
                 if(this.y === this.old_y) {
                     this.selected = Math.min(this.selected, 1);
                     this.x = this.old_x + this.selected * this.horizonalStep;

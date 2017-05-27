@@ -1,5 +1,15 @@
 /**
- * Created by Troy on 2016/8/16.
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆███▄▄▃▂
+ *  █████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * 游戏客户端玩家类
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2017/05/20 初版
  */
 /**
  * 设置角色
@@ -12,11 +22,11 @@ function Player() {
 
 Player.p1Attributes = {
     name:'路漫漫',
-    hp: 100,
-    sp: 20,
+    hp: 65535,
+    sp: 65535,
     exp: 0,
     level: 1,
-    gp:1000,
+    gp:99999,
     characterClass:'猎人',
     items:[
         {name:'回复药',cost:'10G',description:'恢复少量生命值',special:'useinbattle'},
@@ -331,20 +341,22 @@ Player.prototype = {
                 }
                 //遇敌
                 if(this.encounterStep <= 0 && !gameEv.findTile(p1.square().x,p1.square().y,game.mapCode)) {
-                    let enemyGroupID = 0;
+                    let enemyGroupID = 0;//0普通怪 1不出某些怪 2boss
                     let firstEnemy;
-                    (function reSelect() {
+                    // (function reSelect() {
                         if(that.x <= 320 && that.y >= 800) {//进入boss遭遇范围
-                            enemyGroupID = [0,2][rand(2)];
+                            enemyGroupID = rand(enemyGroup.length);
                         }
-                        if((firstEnemy = enemyConfig[enemyGroup[enemyGroupID].enemies[0]]).dead) {
-                            reSelect();
-                        }
-                    })();
-                    //enemyGroupID = 2;
-                    console.log(enemyGroupID,firstEnemy);
+                    //
+                    //     if((firstEnemy = enemyConfig[enemyGroup[enemyGroupID].enemies[0]]).dead) {
+                    //         reSelect();
+                    //     }
+                    // })();
+                    enemyGroupID = 2;
+                    // console.log(enemyGroupID);
                     //开始战斗场景
-                    battle(enemyGroupID,firstEnemy);
+                    battle(enemyGroupID);
+                    //重新核算遇敌率
                     this.encounterStep = rangeRand(Player.minEnCounterStep,Player.maxEnCounterStep);
                 }
 

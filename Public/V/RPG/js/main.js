@@ -44,7 +44,7 @@ var resList = {
         'tankNpc01':'./images/movePic/NPC_1.png',
         'sister':'./images/movePic/NPC_2.png',
         'dade':'./images/movePic/NPC_3.png',
-        'npc08':'./images/movePic/NPC_5.png',
+        'npc05':'./images/movePic/NPC_5.png',
         'enemy00':'./images/m010.gif',
         'enemy01':'./images/m011.gif',
         'enemy02':'./images/m012.gif',
@@ -60,9 +60,9 @@ var resList = {
         mapWidth:14*24,
         mapHeight:16*24,
         keyA:0, //用于防止按键连续触发
-        keyB:0, //防止连发
-        keyI:0, //防止连发
-        keyE:0, //防止连发
+        keyB:0, //同上
+        keyI:0, //同上
+        keyE:0, //同上
         inTank:false
     },
     key = {
@@ -366,12 +366,6 @@ function addToStage(obj) {
     if(!obj.length) {
         stage.addChild(obj);
     } else {
-        // for(let i = 0; i < obj.length; i++) {
-        //     stage.addChild(obj[i]);
-        //     if (i==2){
-        //         stage.addChild(p1.player);
-        //     }
-        // }
         for(let i = 0; i < obj.length; i++) {
             stage.addChild(obj[i]);
         }
