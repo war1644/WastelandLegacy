@@ -134,6 +134,8 @@ var gameEv = [
                             }
                         }
                     });
+                    game.npcList[game.mapCode].npc.push(npc03);
+                    stage.addChild(npc03);
 
                 } else {
                     //否则添加列表里的npc

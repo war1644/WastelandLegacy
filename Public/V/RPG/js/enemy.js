@@ -323,7 +323,7 @@ var enemyConfig = {
     },
     5:{
         id:5,
-        name:'巨炮',
+        name:'沙漠之舟',
         image:'enemy05',
         // width:95,
         // height:47,

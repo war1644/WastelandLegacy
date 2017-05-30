@@ -261,14 +261,17 @@ function selectEnemy(groupNumber) {
             if(groupEnemy.length) {
                 let el = groupEnemy.shift();
                 (()=>{
+                    console.log('敌人：',el);
                     if(el.length) {
                         let child = el.shift();
+                        console.log('child ',child);
                         game.currentScene.addChild(child.draw(location[0][0],location[0][1]));
                         battle.enemies.push(child);
                         location.shift();
                         new SoundManage('music11');
                         setTimeout(arguments.callee,300);
                     } else {
+                        console.log(battle.enemies);
                         //怪物出现时显示的文字信息
                         let info = new textLabel(enemyNames[groupCount] + ' 出现了!<br/>',battle.msgPoint[0],battle.msgPoint[1]+20 * groupCount);
                         battle.battleInfo.push(info);
@@ -304,8 +307,6 @@ function generateEnemy(enemyList) {
         let enemy = new Enemy(enemyConfig[o]);
         list.push(enemy);
     });
-    console.log(list);
-
     //将敌人分组
     if(enemyNumber === 1) {//当敌人列表中只有一个敌人
         group_1.push(list[0]);
@@ -494,7 +495,7 @@ function fightAnimation(target,callback) {
                     console.log('explosion',t);
                     t.hp -= damage;
 
-                    battle.damageInfo = new textLabel((t.aliasName || t.name) +'损伤了'+damage+'!<br/>',140,game.height-70+5 + 20 * idx_target);
+                    battle.damageInfo = new textLabel((t.aliasName || t.name) +'损伤了'+damage+'!<br/>',battle.msgPoint[0],battle.msgPoint[1]+ 20 * idx_target);
 
                     explosion.on('enterframe',function() {
                         if(this.frame === 24) {
