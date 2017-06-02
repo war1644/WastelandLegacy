@@ -247,11 +247,9 @@ function selectEnemy(groupNumber) {
 
     let groupEnemy = generateEnemy(enemyList);
     let enemyNames = [];
-
-    groupEnemy.forEach(function(o) {
+    groupEnemy.forEach((o)=>{
         enemyNames.push(o[0].name);
     });
-
     //建立一个保存敌人位置的数组的副本
     let location = battle.enemyLocation.slice(0);
     let groupCount = 0; //敌人分组编号
@@ -259,19 +257,18 @@ function selectEnemy(groupNumber) {
     setTimeout(()=>{
         (function displayEmy() {
             if(groupEnemy.length) {
+                //获取组内敌人
                 let el = groupEnemy.shift();
-                (()=>{
-                    console.log('敌人：',el);
+                (function addEnemy(){
                     if(el.length) {
                         let child = el.shift();
-                        console.log('child ',child);
+                        //绘制到对应坐标，并加入到战斗场景
                         game.currentScene.addChild(child.draw(location[0][0],location[0][1]));
                         battle.enemies.push(child);
                         location.shift();
                         new SoundManage('music11');
-                        setTimeout(arguments.callee,300);
+                        setTimeout(addEnemy,300);
                     } else {
-                        console.log(battle.enemies);
                         //怪物出现时显示的文字信息
                         let info = new textLabel(enemyNames[groupCount] + ' 出现了!<br/>',battle.msgPoint[0],battle.msgPoint[1]+20 * groupCount);
                         battle.battleInfo.push(info);
@@ -307,10 +304,11 @@ function generateEnemy(enemyList) {
         let enemy = new Enemy(enemyConfig[o]);
         list.push(enemy);
     });
+
     //将敌人分组
     if(enemyNumber === 1) {//当敌人列表中只有一个敌人
-        group_1.push(list[0]);
-        return [group_1];
+        group_1.push(list);
+        return group_1;
     } else if(enemyNumber === 2) {//当敌人列表中有两个敌人
         groupNumber = rangeRand(1,2);   //随机分为一组或两组
         if(groupNumber === 2) {
@@ -318,9 +316,8 @@ function generateEnemy(enemyList) {
             group_2.push(list[1]);
             return [group_1,group_2];
         } else {
-            group_1.push(list[0]);
-            group_1.push(list[1]);
-            return [group_1];
+            group_1.push(list);
+            return group_1;
         }
     } else {//敌人列表中有三个或三个以上敌人
         groupNumber = rangeRand(1,3);   //随机分为一、二或三组
@@ -389,7 +386,7 @@ function unique(array,property,name) {
 }
 
 function fight(emyList,ability) {
-    //ability = 'one';
+    ability = 'one';
     let target;
 
     if(emyList.length === 1) {
@@ -540,7 +537,6 @@ function fightAnimation(target,callback) {
                                         break;
                                     }
                                 }
-
                                 //从行动队列中移除已经死亡的敌人
                                 for(let i = 0; i < battle.actionQueue.length; i++) {
                                     let item = battle.actionQueue[i];
@@ -549,6 +545,7 @@ function fightAnimation(target,callback) {
                                     }
                                 }
 
+                                //全都死了
                                 if(battle.enemies.length === 0) {
                                     game.gp += battle.gp;
                                     game.exp += battle.exp;

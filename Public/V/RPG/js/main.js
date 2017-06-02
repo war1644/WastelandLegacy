@@ -12,7 +12,7 @@ var resList = {
         'player1': './images/player.png',
         'tank': './images/blackTank.png',
         'select': './bgm/select.mp3',
-        'player1_battle':'./images/player_battle.png',
+        'player1_battle':'./images/battlePic/tank.png',
         'weapon01':'./images/weapon01.png',
         'ammo':'./images/ammo.png',
         'explosion':'./images/explosion.png',

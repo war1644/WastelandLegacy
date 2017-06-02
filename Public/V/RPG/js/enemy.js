@@ -369,19 +369,22 @@ var enemyConfig = {
 
 //敌群配置
 var enemyGroup = [
+    //A组
     {
         enemies:[0,1,2,3,4],    //可以出现的敌人编号
         exclude:[],             //这个数组里的敌人不出现
         min:1,                  //敌人最低出现的数量
         max:4                   //敌人最高出现的数量
     },
+    //B组
     {
         enemies:[],             //可以出现全部类型的敌人
         exclude:[0,1],          //除了0号和1号敌人
         min:2,
         max:5
     },
-    {//boss
+    //boss组
+    {
         enemies:[5],
         exclude:[],
         min:1,
