@@ -29,7 +29,7 @@ Player.p1Attributes = {
     gp:99999,
     characterClass:'猎人',
     items:[
-        {name:'回复药',cost:'10G',description:'恢复少量生命值',special:'useinbattle'},
+        {name:'回复药',cost:'10G',description:'恢复少量生命值'},
         {name:'小刀',cost:'10G',attack:5,description:'切水果用的刀'},
         {name:'匕首',cost:'15G',attack:7,description:'格斗用的锋利匕首'},
         {name:'大马士革刀',cost:'20G',attack:10,description:'弯刀'},
@@ -39,7 +39,7 @@ Player.p1Attributes = {
     ],
     maxItemsCount:12,
     equip:[
-        {name:'迫击炮',cost:'100G',attack:5,description:'军用武器',special:'group'},
+        {name:'220炮',cost:'100G',attack:1000,description:'军用武器',special:'group'},
         {name:'技师手套',cost:'10G',defence:3,description:'操作机械的专用手套'},
         {name:'防弹背心',cost:'20G',defence:10,description:'几乎所有商店都能买到的普通护甲'}
     ],
@@ -52,7 +52,7 @@ Player.p1Attributes = {
         { attack: 15, maxHp: 150, maxSp: 30, expMax: 40, speed:10, power:9 }
     ]
 };
-//遇敌机率
+//遇敌机率 按步数计算
 Player.minEnCounterStep = 4;
 Player.maxEnCounterStep = 24;
 
@@ -123,7 +123,8 @@ Player.prototype = {
             this.player[i] = options[i];
     },
     getAttack:function() {
-        return this.player.levelStats[this.player.level].attack;
+        let actValue = this.player.equip[0].attack + this.player.levelStats[this.player.level].attack;
+        return actValue;
     },
     getHp:function() {
         return this.player.levelStats[this.player.level].maxHp;

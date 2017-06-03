@@ -3270,7 +3270,8 @@ enchant.Label = enchant.Class.create(enchant.Entity, {
             text = text || this._text;
             div.innerHTML = text.replace(/ /g, '&nbsp;');
             div.style.whiteSpace = 'noWrap';
-            div.style.lineHeight = 1;
+
+            // div.style.lineHeight = 1; 行高默认就好，设置为1为导致文字重叠
             document.body.appendChild(div);
             var computedStyle = getComputedStyle(div);
             ret.height = parseInt(computedStyle.height, 10) + 1;

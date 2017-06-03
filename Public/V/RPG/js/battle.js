@@ -97,11 +97,10 @@ function addBattleScene(enemyGroupID) {
     selectEnemy(enemyGroupID);
 
     scene.on('enterframe',function() {
-        if(game.input.a && choice.visible) {
+        if(choice.visible && game.input.a) {
             if(keyCount++ === 1 && battle.enemyLoaded) {
                 new SoundManage('select');
                 removeComponents(addBattleScene.group_1);
-
                 switch (choice.selected) {
                     case 0://攻击
                         if(battle.damageInfo) game.currentScene.removeChild(battle.damageInfo);
@@ -129,6 +128,7 @@ function addBattleScene(enemyGroupID) {
                                     let emyList = battle.enemies.filter(function (o) {
                                         return o.id.toString() === emy_select;
                                     });
+
                                     if(emyList.length > 1) {
                                         //若该种类的敌人有多个，则赋予编号(敌人A、敌人B)
                                         emyList.forEach(function(o,i) {
@@ -218,7 +218,6 @@ function selectEnemy(groupNumber) {
     //不是boss
     if (groupNumber != 2) {
         let enemyNumber = rangeRand(enemies.min,enemies.max);   //出现敌人的数量
-        console.log(enemyNumber);
         let candidate = []; //候选敌人列表
 
         //若候选敌人列表中为空，则表示候选敌人为全体类型的敌人
@@ -285,6 +284,7 @@ function selectEnemy(groupNumber) {
                     addComponentsToArray(addBattleScene.group_1,battle.battleInfo);
                     game.currentScene.addChild(info);
                 }
+                //敌人参战完成
                 battle.enemyLoaded = true;
             }
         })();
@@ -384,9 +384,13 @@ function unique(array,property,name) {
 
     return ret;
 }
-
+/**
+ * emyList 敌人列表
+ * ability 武器攻击范围
+ *
+ */
 function fight(emyList,ability) {
-    ability = 'one';
+    // ability = 'one';
     let target;
 
     if(emyList.length === 1) {
@@ -403,14 +407,14 @@ function fight(emyList,ability) {
     battle.actionQueue = battle.enemies.concat(p1).sort(function(a,b) {
         return a.getSpeed() < b.getSpeed();
     });
-
-    if(isForestall() && !battle.battleStart) {
-        battle.actionQueue = [p1];    //先制攻击
-        battle.battleStart = true;
-    } else if(isSneak() && !battle.battleStart) {
-        battle.actionQueue = battle.enemies;  //被偷袭
-        battle.battleStart = true;
-    }
+    console.log(battle.actionQueue);
+    // if(isForestall() && !battle.battleStart) {
+    //     battle.actionQueue = [p1];    //先制攻击
+    //     battle.battleStart = true;
+    // } else if(isSneak() && !battle.battleStart) {
+    //     battle.actionQueue = battle.enemies;  //被偷袭
+    //     battle.battleStart = true;
+    // }
 
     (function actionByQueue() {
         if(battle.actionQueue.length && battle.roundEnd) {
@@ -489,7 +493,6 @@ function fightAnimation(target,callback) {
                     animationScene.addChild(explosion);
 
                     let damage = hitStrength(p1.getAttack());
-                    console.log('explosion',t);
                     t.hp -= damage;
 
                     battle.damageInfo = new textLabel((t.aliasName || t.name) +'损伤了'+damage+'!<br/>',battle.msgPoint[0],battle.msgPoint[1]+ 20 * idx_target);
@@ -549,7 +552,7 @@ function fightAnimation(target,callback) {
                                 if(battle.enemies.length === 0) {
                                     game.gp += battle.gp;
                                     game.exp += battle.exp;
-                                    let info = new textLabel(`消灭了怪物!<br/>${p1.player.name}获得了${battle.exp}点经验和${battle.gp}G!<br/>`,140,game.height-70+5);
+                                    let info = new textLabel(`消灭了怪物!<br/>${p1.player.name}获得了${battle.exp}点经验和${battle.gp}G!<br/>`,battle.msgPoint[0],battle.msgPoint[1]);
                                     let currentLevel = p1.player.level;
                                     for(let i = currentLevel; i < p1.player.levelStats.length; i++) {
                                         if(currentLevel === (p1.player.levelStats.length - 1)) break;
@@ -569,13 +572,13 @@ function fightAnimation(target,callback) {
 
                                     let battleResultScene = new enchant.Scene();
 
-                                    setTimeout(function() {
-                                        new SoundManage('music17');
-                                        game.currentScene.removeChild(battle.damageInfo);
-                                        battleResultScene.addChild(info);
+                                    // setTimeout(function() {
+                                    //     new SoundManage('music17');
+                                    //     game.currentScene.removeChild(battle.damageInfo);
+                                    //     battleResultScene.addChild(info);
                                         game.pushScene(battleResultScene);
 
-                                        let keyCount = 0;
+                                        // let keyCount = 0;
                                         let waitFor = battleResultScene.age + 30;
                                         battleResultScene.on('enterframe',function() {
                                             if(this.age >= waitFor) {
@@ -592,7 +595,7 @@ function fightAnimation(target,callback) {
                                                 } else keyCount = 0;
                                             }
                                         });
-                                    },400);
+                                    // },400);
                                 }
                             }
                         }
