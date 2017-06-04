@@ -129,6 +129,17 @@ var gameSprite = enchant.Class.create(enchant.Sprite,{
         return this;
     }
 });
+var animationSprite = enchant.Class.create(enchant.Sprite,{
+    initialize:function(image,x,y,width,height,scaleX,scaleY) {
+        let imgObj = game.assets[image];
+        enchant.Sprite.call(this,width || imgObj.width,height || imgObj.height);
+        this.x = x;
+        this.y = y;
+        this.scale(scaleX || 1,scaleY || 1);
+        this.image = imgObj;
+        return this;
+    }
+});
 
 //创建对话选项
 var choiceText = enchant.Class.create(enchant.Group,{
@@ -475,6 +486,8 @@ var textLabel = enchant.Class.create(enchant.Label,{
         return this;
     }
 });
+//菜单
+
 
 //卖道具
 function sellItem(itemList,scene,dialog) {

@@ -9,10 +9,12 @@ enchant();
 window.onload = wl;
 var resList = {
         'tileSet': './images/assets/室内.png',
-        'player1': './images/player.png',
+        'player1': './images/movePic/NPC (24).png',
         'tank': './images/blackTank.png',
         'select': './bgm/select.mp3',
         'player1_battle':'./images/battlePic/tank.png',
+        'cannonball':'./images/battlePic/cannonball.png',
+        '220Animation':'./images/battlePic/220Animation.png',
         'weapon01':'./images/weapon01.png',
         'ammo':'./images/ammo.png',
         'explosion':'./images/explosion.png',
@@ -62,8 +64,8 @@ var resList = {
         keyA:0, //用于防止按键连续触发
         keyB:0, //同上
         keyI:0, //同上
-        keyE:0, //同上
-        inTank:false
+        keyE:0 //同上
+
     },
     key = {
         'up':87,
@@ -116,7 +118,7 @@ function wl() {
         game.exp = p1.player.exp;  //经验值
         game.hp = p1.maxHp = p1.getHp();
         game.item_p1 = p1.player.items;    //角色一物品
-        game.encounter = true; //不可以遇敌
+        game.encounter = true; //遇敌开关
         //实例化地图
         let map = setHome2Map();
         p1.map = map[0];
@@ -257,6 +259,8 @@ function wl() {
 
             if(config.keyE === 1) {//仅当值为1时触发
                 new SoundManage('select');
+                let item = new Item();
+                item.show();
 
             }
 
@@ -273,6 +277,8 @@ function gameInit() {
     game.mapCode = 'home2';
     game.spriteWidth = config.spriteWidth;
     game.spriteHeight = config.spriteHeight;
+    game.inTank = false;
+    game.tankImg = 'tank';
 
     // game.fps = config.fps;
     game.playerList = [];
@@ -705,5 +711,70 @@ function findDialogByID(id,type) {
             }
         });
         return data;
+    }
+}
+
+//玩家菜单
+class Item{
+    // constructor(){
+    //
+    // }
+
+    show(){
+        /*
+         -----------------------1--------------------------
+         |           | ------------------------ |         |
+         |----3------| ------------------------ |         |
+         |           | ------------------------ |         |
+         -----------------6--------------------------------
+         */
+        let line1 = new whiteSprite(0,game.height-70,game.width,1);
+        let line2 = new whiteSprite(130,game.height-70,1,100);
+        let line3 = new whiteSprite(0,game.height-42,130,1);
+        let line4 = new whiteSprite(game.width-1,game.height-70,1,70);
+        let line5 = new whiteSprite(0,game.height-70,1,70);
+        let line6 = new whiteSprite(0,game.height-1,game.width,1);
+        let line7 = new whiteSprite(game.width-71,game.height-70,1,100);
+
+        let opLabel = new textLabel('对话',30,game.height-40);
+        let opLabel2 = new textLabel('道具',90,game.height-40);
+        let opLabel3 = new textLabel('装备',30,game.height-20);
+        let opLabel4 = new textLabel('乘降',90,game.height-20);
+
+//x,y,number,verticalStep,horizonalStep
+        let choice = new cursor2(10,game.height-40,4,20,60);
+//玩家信息
+        let playerName = new textLabel(p1.player.name,20,game.height-64);
+        let p1Hp = new textLabel('HP '+p1.player.hp,game.width-70+1,game.height-65);
+        let group = addToStage([line1,line2,line3,line4,line5,line6,line7,opLabel,opLabel2,opLabel3,opLabel4,choice,playerName,p1Hp]);
+        let scene = new enchant.Scene();
+        scene.addChild(group);
+        game.pushScene(scene);
+        let keyCount = 0;
+        scene.on('enterframe',()=>{
+            if(choice.visible && game.input.a) {
+                if( (++keyCount) === 1) {
+                    console.log(keyCount);
+
+                    new SoundManage('select');
+                    switch (choice.selected) {
+                        case 0://对话
+                            break;
+                        case 1://道具
+                            break;
+                        case 2://装备
+                            break;
+                        case 3://乘降
+                            console.log('ssss');
+                            new gameSprite('')
+                            p1.player.image = game.assets['player1'];
+                            game.popScene();
+                            game.currentScene.addChild(group);
+                            break;
+                    }
+                }else keyCount=0;
+            }
+        })
+
     }
 }

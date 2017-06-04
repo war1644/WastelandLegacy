@@ -450,16 +450,16 @@ var dialogue = [
     },
     {
         npcID:'badguyleader',
-        name:'喽啰头领',
+        name:'神秘少女',
         dialogID:9,
         startIndex:0,
         dialog_0:{
-            text:'喂！小子，这里不是你该来的地方，快滚！',
+            text:'喂！小子，外面守不住了，诺亚军队快攻进镇子了！',
             nextDialog:-1,
             random:[1]
         },
         dialog_1:{
-            text:'没听到吗?要不要弟兄们给你长长记性?哈哈哈!',
+            text:'。。。。。',
             nextDialog:-1
         }
     }

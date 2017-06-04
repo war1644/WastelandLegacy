@@ -278,12 +278,12 @@ function selectEnemy(groupNumber) {
                     }
                 })();
             } else {
-                if(isForestall()) {
-                    let info = new textLabel(`${enemyNames[groupCount]}出现了!<br/>但怪物还没有发现${p1.player.name}!<br/>`,battle.msgPoint[0],battle.msgPoint[1]+20 * groupCount);
-                    battle.battleInfo.push(info);
-                    addComponentsToArray(addBattleScene.group_1,battle.battleInfo);
-                    game.currentScene.addChild(info);
-                }
+                // if(isForestall()) {
+                //     let info = new textLabel(`${enemyNames[groupCount]}出现了!<br/>但怪物还没有发现${p1.player.name}!<br/>`,battle.msgPoint[0],battle.msgPoint[1]+20 * groupCount);
+                //     battle.battleInfo.push(info);
+                //     addComponentsToArray(addBattleScene.group_1,battle.battleInfo);
+                //     game.currentScene.addChild(info);
+                // }
                 //敌人参战完成
                 battle.enemyLoaded = true;
             }
@@ -407,7 +407,7 @@ function fight(emyList,ability) {
     battle.actionQueue = battle.enemies.concat(p1).sort(function(a,b) {
         return a.getSpeed() < b.getSpeed();
     });
-    console.log(battle.actionQueue);
+    // console.log(battle.actionQueue);
     // if(isForestall() && !battle.battleStart) {
     //     battle.actionQueue = [p1];    //先制攻击
     //     battle.battleStart = true;
@@ -439,7 +439,7 @@ function fight(emyList,ability) {
 function fightAnimation(target,callback) {
     game.currentScene.removeChild(battle.damageInfo);
     battle.roundEnd = false;
-    addBattleScene.group_2[1].visible =  true;  //显示武器
+    // addBattleScene.group_2[1].visible =  true;  //显示武器
 
     let centerArray = [];   //用于保存该组敌人的中心位置
 
@@ -449,12 +449,16 @@ function fightAnimation(target,callback) {
 
 
     let info = new textLabel(p1.player.name +'攻击!',140,game.height-70+5);
-    //炮弹
-    let p1WeaponAmmo = new gameSprite('ammo',game.width-50,(game.height>>3)+10);
+    //炮弹飞行
+    let p1WeaponAmmo = new gameSprite('cannonball',game.width-50,(game.height>>3)+10);
     p1WeaponAmmo.visible = false;
-    let animationScene = new enchant.Scene();
+    //开炮动画
+    // let cannonball = new animationSprite('220Animation',game.width-50,(game.height>>3)+10,189,175);
+    // cannonball.frame = [0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4];
 
+    let animationScene = new enchant.Scene();
     animationScene.addChild(info);
+    // animationScene.addChild(cannonball);
     animationScene.addChild(p1WeaponAmmo);
 
     let waitFor = animationScene.age + 20;
@@ -488,8 +492,9 @@ function fightAnimation(target,callback) {
                     let t = target.shift();
 
                     //爆炸效果
-                    let explosion = new triangle('explosion',centerArray[idx_target][0] - 30,centerArray[idx_target][1] - 30,64,64);
-                    explosion.frame = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,null];
+                    // let explosion = new animationSprite('220Animation',centerArray[idx_target][0] - 30,centerArray[idx_target][1] - 30,189,175);
+                    let explosion = new animationSprite('220Animation',t.x-30,t.y-100,189,175);
+                    explosion.frame = [10,10,10,10,11,11,11,11,12,12,12,12,13,13,13,13,14,14,14,14,15,15,15,15,16,16,16,16];
                     animationScene.addChild(explosion);
 
                     let damage = hitStrength(p1.getAttack());
@@ -498,15 +503,16 @@ function fightAnimation(target,callback) {
                     battle.damageInfo = new textLabel((t.aliasName || t.name) +'损伤了'+damage+'!<br/>',battle.msgPoint[0],battle.msgPoint[1]+ 20 * idx_target);
 
                     explosion.on('enterframe',function() {
-                        if(this.frame === 24) {
-                            animationScene.removeChild(this);
-                            animationScene.removeChild(info);
-                            game.currentScene.addChild(battle.damageInfo);
-                            idx_target++;
-                            explosionRunning = false;
-                            this.frame = 0;
-                            setTimeout(effectEx,0);
-                        }
+                        // if(this.frame === 16) {
+                        //     animationScene.removeChild(this);
+                        //     animationScene.removeChild(info);
+                        //     game.currentScene.addChild(battle.damageInfo);
+                        //     idx_target++;
+                        //     explosionRunning = false;
+                        //     this.frame = 0;
+                        //     effectEx();
+                        //     // setTimeout(effectEx,0);
+                        // }
                     });
 
                     let targetLife = t.age + 20;
@@ -565,18 +571,16 @@ function fightAnimation(target,callback) {
                                             }
                                         }
                                     }
-                                    console.log(game.exp,p1.player.level,currentLevel);
-
                                     battle.gp = 0;
                                     battle.exp = 0;
 
                                     let battleResultScene = new enchant.Scene();
 
                                     // setTimeout(function() {
-                                    //     new SoundManage('music17');
                                     //     game.currentScene.removeChild(battle.damageInfo);
                                     //     battleResultScene.addChild(info);
-                                        game.pushScene(battleResultScene);
+                                    game.pushScene(battleResultScene);
+                                    new SoundManage('music17');
 
                                         // let keyCount = 0;
                                         let waitFor = battleResultScene.age + 30;
@@ -586,6 +590,7 @@ function fightAnimation(target,callback) {
                                                     if(keyCount++ === 1) {
                                                         game.popScene();
                                                         game.popScene();
+                                                        delete  battle;
                                                         battle.enemyLoaded = false;
                                                         battle.roundEnd = true;
                                                         //标记boss为死亡状态 后端控制，不由前端控制
@@ -605,13 +610,14 @@ function fightAnimation(target,callback) {
                 } else {//爆炸效果完成则退出场景
                     setTimeout(function() {
                         game.popScene();
-                        addBattleScene.group_2[1].visible = false;  //隐藏武器
+                        // addBattleScene.group_2[1].visible = false;  //隐藏武器
                         //addBattleScene.group_2[0].visible = true;   //显示手形指针
+
                         setTimeout(function() {
                             battle.roundEnd = true;
                             callback && callback();
-                        },1300);
-                    },1000);
+                        },500);
+                    },800);
                 }
             })();
 
