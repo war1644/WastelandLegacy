@@ -43,6 +43,8 @@ var resList = {
         'triangle_down':'./images/down.png',
         'spBg':'./images/label.png',
         'aBtn':'./images/A.png',
+        'apad':'./images/apad.png',
+        'pad':'./images/pad.png',
         'tankNpc01':'./images/movePic/NPC_1.png',
         'sister':'./images/movePic/NPC_2.png',
         'dade':'./images/movePic/NPC_3.png',
@@ -118,7 +120,7 @@ function wl() {
         game.exp = p1.player.exp;  //经验值
         game.hp = p1.maxHp = p1.getHp();
         game.item_p1 = p1.player.items;    //角色一物品
-        game.encounter = true; //遇敌开关
+        game.encounter = false; //遇敌开关
         //实例化地图
         let map = setHome2Map();
         p1.map = map[0];
@@ -171,10 +173,15 @@ function wl() {
         game.curBGM = 'NameSetting_mp3';
         new SoundManage('',true);
         let scene = new enchant.Scene();
-        let stage = addToStage([map[0],map[1],map[2],p1.player,npc01,npc02,map[3]]);
+        let controller = new enchant.APad();
+        controller.x = 0;
+        controller.y = 220;
+        window.stage = addToStage([map[0],map[1],map[2],p1.player,npc01,npc02,map[3]]);
         scene.addChild(stage);
-
+        scene.addChild(controller);
         game.replaceScene(scene);
+        // game.currentScene.addChild();
+        // game.rootScene.addChild();
 
         p1.player.on('enterframe',function() {
             if(this.stop) return;
@@ -264,7 +271,6 @@ function wl() {
 
             }
 
-
             //镜头跟随角色
             setCamera(map[0].width,map[0].height,game.playerList,stage);
         });
@@ -277,7 +283,8 @@ function gameInit() {
     game.mapCode = 'home2';
     game.spriteWidth = config.spriteWidth;
     game.spriteHeight = config.spriteHeight;
-    game.inTank = false;
+    game.inTank = true;
+    game.playerImg = 'player1';
     game.tankImg = 'tank';
 
     // game.fps = config.fps;
@@ -539,7 +546,6 @@ function displayDialog(id,type,npc,scene) {
                             //根据设置随机选取对话
                             if(dialog[message].random) {
                                 dialog.startIndex = dialog[message].random[Math.random()*dialog[message].random.length>>0];
-                                console.log(dialog.startIndex,dialog[message]);
                             } else {
                                 i = start;  //重置段落计数器
                             }
@@ -741,21 +747,21 @@ class Item{
         let opLabel3 = new textLabel('装备',30,game.height-20);
         let opLabel4 = new textLabel('乘降',90,game.height-20);
 
-//x,y,number,verticalStep,horizonalStep
+        //x,y,number,verticalStep,horizonalStep
         let choice = new cursor2(10,game.height-40,4,20,60);
-//玩家信息
+        //玩家信息
         let playerName = new textLabel(p1.player.name,20,game.height-64);
         let p1Hp = new textLabel('HP '+p1.player.hp,game.width-70+1,game.height-65);
         let group = addToStage([line1,line2,line3,line4,line5,line6,line7,opLabel,opLabel2,opLabel3,opLabel4,choice,playerName,p1Hp]);
         let scene = new enchant.Scene();
         scene.addChild(group);
         game.pushScene(scene);
+        //显示money
+        disPlayGold();
         let keyCount = 0;
         scene.on('enterframe',()=>{
             if(choice.visible && game.input.a) {
                 if( (++keyCount) === 1) {
-                    console.log(keyCount);
-
                     new SoundManage('select');
                     switch (choice.selected) {
                         case 0://对话
@@ -765,16 +771,28 @@ class Item{
                         case 2://装备
                             break;
                         case 3://乘降
-                            console.log('ssss');
-                            new gameSprite('')
-                            p1.player.image = game.assets['player1'];
+                            if (!game.tank) {
+                                game.tank = new animationSprite(game.tankImg,p1.player.x,p1.player.y,24,24);
+                            }
+                            if (game.inTank) {
+                                game.inTank = false;
+                                p1.player.image = game.assets[game.playerImg];
+                                window.stage.insertBefore(game.tank,p1.player);
+                                game.tank.x = p1.player.x;
+                                game.tank.y = p1.player.y;
+                            } else {
+                                console.log(game.inTank);
+                                game.inTank = true;
+                                p1.player.image = game.assets[game.tankImg];
+                                window.stage.removeChild(game.tank);
+                            }
                             game.popScene();
-                            game.currentScene.addChild(group);
                             break;
                     }
                 }else keyCount=0;
             }
         })
-
     }
+
+
 }

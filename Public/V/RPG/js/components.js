@@ -55,6 +55,61 @@ var Global = (()=>{
     return Global;
 })();
 
+// var Controller = enchant.Class.create(enchant.Sprite, {
+//     /**
+//      * 方向キーパッドオブジェクトを作成する。
+//      * @constructs
+//      * @extends enchant.Sprite
+//      */
+//     initialize: function() {
+//         let image = game.assets['pad'];
+//         enchant.Sprite.call(this, image.width / 2, image.height);
+//         this.image = image;
+//         this.input = { left: false, right: false, up: false, down: false };
+//         this.addEventListener('touchstart', function(e) {
+//             this._updateInput(this._detectInput(e.localX, e.localY));
+//         });
+//         this.addEventListener('touchmove', function(e) {
+//             this._updateInput(this._detectInput(e.localX, e.localY));
+//         });
+//         this.addEventListener('touchend', function(e) {
+//             this._updateInput({ left: false, right: false, up: false, down: false });
+//         });
+//     },
+//     _detectInput: function(x, y) {
+//         x -= this.width / 2;
+//         y -= this.height / 2;
+//         let input = { left: false, right: false, up: false, down: false };
+//         if (x * x + y * y > 200) {
+//             if (x < 0 && y < x * x * 0.1 && y > x * x * -0.1) {
+//                 input.left = true;
+//             }
+//             if (x > 0 && y < x * x * 0.1 && y > x * x * -0.1) {
+//                 input.right = true;
+//             }
+//             if (y < 0 && x < y * y * 0.1 && x > y * y * -0.1) {
+//                 input.up = true;
+//             }
+//             if (y > 0 && x < y * y * 0.1 && x > y * y * -0.1) {
+//                 input.down = true;
+//             }
+//         }
+//         return input;
+//     },
+//     _updateInput: function(input) {
+//         let core = enchant.Core.instance;
+//         ['left', 'right', 'up', 'down'].forEach(function(type) {
+//             if (this.input[type] && !input[type]) {
+//                 core.dispatchEvent(new enchant.Event(type + 'buttonup'));
+//             }
+//             if (!this.input[type] && input[type]) {
+//                 core.dispatchEvent(new enchant.Event(type + 'buttondown'));
+//             }
+//         }, this);
+//         this.input = input;
+//     }
+// });
+
 //A button
 var confirmBtn = enchant.Class.create(enchant.Sprite,{
     initialize:function() {
@@ -133,8 +188,8 @@ var animationSprite = enchant.Class.create(enchant.Sprite,{
     initialize:function(image,x,y,width,height,scaleX,scaleY) {
         let imgObj = game.assets[image];
         enchant.Sprite.call(this,width || imgObj.width,height || imgObj.height);
-        this.x = x;
-        this.y = y;
+        this.x = x || 0;
+        this.y = y || 0;
         this.scale(scaleX || 1,scaleY || 1);
         this.image = imgObj;
         return this;
