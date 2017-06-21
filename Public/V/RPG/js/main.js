@@ -173,12 +173,12 @@ function wl() {
         game.curBGM = 'NameSetting_mp3';
         new SoundManage('',true);
         let scene = new enchant.Scene();
-        let controller = new enchant.APad();
-        controller.x = 0;
-        controller.y = 220;
-        window.stage = addToStage([map[0],map[1],map[2],p1.player,npc01,npc02,map[3]]);
+        let controller = new enchant.Pad();
+        controller.x = 20;
+        controller.y = 100;
+        window.stage = addToStage([map[0],map[1],map[2],p1.player,npc01,npc02,map[3],controller]);
         scene.addChild(stage);
-        scene.addChild(controller);
+        // scene.addChild();
         game.replaceScene(scene);
         // game.currentScene.addChild();
         // game.rootScene.addChild();
@@ -229,36 +229,12 @@ function wl() {
 
             if(config.keyA === 1) {//仅当值为1时触发
                 new SoundManage('select');
-                let facingSquare = p1.facingSquare();
-                if(facingSquare) {
-                    //找玩家附近是否有事件
-                    let evTile = gameEv.findTile(facingSquare.x,facingSquare.y,game.mapCode);
-                    console.log(evTile);
-                    evTile && evTile.action();
-
-                    let npc = game.npcList[game.mapCode].npc;
-
-                    npc.forEach(function(o) {
-                        if(o.tileX === facingSquare.x &&
-                            o.tileY === facingSquare.y &&
-                            o.x % tileSize === 0 && o.y % tileSize === 0 &&
-                            p1.player.isMoving === false) {
-                            o.action();
-                        } else if(p1.map.hitTest(facingSquare.x * tileSize,facingSquare.y * tileSize) &&
-                            o.facingSquare().x === facingSquare.x &&
-                            o.facingSquare().y === facingSquare.y &&
-                            o.x % tileSize === 0 && o.y % tileSize === 0 &&
-                            p1.player.isMoving === false &&
-                            (p1.player.x === o.x || p1.player.y === o.y)) {
-                            //隔着障碍物也能对话
-                            o.action();
-                        }
-                    });
-                }
+                let item = new Item();
+                item.show();
             }
 
             //处理按下e键的情况
-            if(game.input.e){
+            /*if(game.input.e){
                 config.keyE++;
             } else {
                 config.keyE = 0;
@@ -269,7 +245,7 @@ function wl() {
                 let item = new Item();
                 item.show();
 
-            }
+            }*/
 
             //镜头跟随角色
             setCamera(map[0].width,map[0].height,game.playerList,stage);
@@ -450,7 +426,7 @@ var SignPostLabel = enchant.Class.create(enchant.Sprite, {
  * @param scene 场景
  * @param npc npc对象
  */
-dialogDirection = {
+var dialogDirection = {
     0:3,    //下
     1:2,    //左
     2:1,    //右
@@ -728,11 +704,7 @@ class Item{
 
     show(){
         /*
-         -----------------------1--------------------------
-         |           | ------------------------ |         |
-         |----3------| ------------------------ |         |
-         |           | ------------------------ |         |
-         -----------------6--------------------------------
+
          */
         let line1 = new whiteSprite(0,game.height-70,game.width,1);
         let line2 = new whiteSprite(130,game.height-70,1,100);
@@ -742,10 +714,12 @@ class Item{
         let line6 = new whiteSprite(0,game.height-1,game.width,1);
         let line7 = new whiteSprite(game.width-71,game.height-70,1,100);
 
-        let opLabel = new textLabel('对话',30,game.height-40);
-        let opLabel2 = new textLabel('道具',90,game.height-40);
-        let opLabel3 = new textLabel('装备',30,game.height-20);
-        let opLabel4 = new textLabel('乘降',90,game.height-20);
+        let opLabel = new textLabel('对话',30,game.height-60);
+        let opLabel2 = new textLabel('道具',90,game.height-60);
+        let opLabel3 = new textLabel('装备',30,game.height-40);
+        let opLabel4 = new textLabel('乘降',90,game.height-40);
+        let opLabel5 = new textLabel('调查',30,game.height-20);
+        let opLabel6 = new textLabel('强度',90,game.height-20);
 
         //x,y,number,verticalStep,horizonalStep
         let choice = new cursor2(10,game.height-40,4,20,60);
@@ -788,11 +762,45 @@ class Item{
                             }
                             game.popScene();
                             break;
+                        case 4://调查
+                            break;
+                        case 5://强度
+                            break;
                     }
                 }else keyCount=0;
             }
         })
     }
+}
 
+class InputA{
+    findEvent(){
+        let facingSquare = p1.facingSquare();
+        if(facingSquare) {
+            //找玩家附近是否有事件
+            let evTile = gameEv.findTile(facingSquare.x,facingSquare.y,game.mapCode);
+            console.log(evTile);
+            evTile && evTile.action();
+
+            let npc = game.npcList[game.mapCode].npc;
+
+            npc.forEach(function(o) {
+                if(o.tileX === facingSquare.x &&
+                    o.tileY === facingSquare.y &&
+                    o.x % tileSize === 0 && o.y % tileSize === 0 &&
+                    p1.player.isMoving === false) {
+                    o.action();
+                } else if(p1.map.hitTest(facingSquare.x * tileSize,facingSquare.y * tileSize) &&
+                    o.facingSquare().x === facingSquare.x &&
+                    o.facingSquare().y === facingSquare.y &&
+                    o.x % tileSize === 0 && o.y % tileSize === 0 &&
+                    p1.player.isMoving === false &&
+                    (p1.player.x === o.x || p1.player.y === o.y)) {
+                    //隔着障碍物也能对话
+                    o.action();
+                }
+            });
+        }
+    }
 
 }

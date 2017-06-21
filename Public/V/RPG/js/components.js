@@ -1034,8 +1034,8 @@ function makeArray(array) {
 }
 
 function gameOver() {
-    var gameover = new triangle(205,152,'gameover',189,97);
-    var overScene = new Scene();
+    let gameover = new triangle(205,152,'gameover',189,97);
+    let overScene = new enchant.Scene();
     overScene.addChild(gameover);
     game.pushScene(overScene);
 }
