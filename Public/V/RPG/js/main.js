@@ -704,29 +704,34 @@ class Item{
 
     show(){
         /*
-
+         -----------------------1--------------------------
+         |           | ------------------------ |         |
+         |----3------| ------------------------ |         |
+         |           | ------------------------ |         |
+         -----------------6--------------------------------
          */
-        let line1 = new whiteSprite(0,game.height-70,game.width,1);
-        let line2 = new whiteSprite(130,game.height-70,1,100);
-        let line3 = new whiteSprite(0,game.height-42,130,1);
-        let line4 = new whiteSprite(game.width-1,game.height-70,1,70);
-        let line5 = new whiteSprite(0,game.height-70,1,70);
+        let itemH = 90;
+        let line1 = new whiteSprite(0,game.height-itemH,game.width,1);
+        let line3 = new whiteSprite(0,game.height-65,100,1);
         let line6 = new whiteSprite(0,game.height-1,game.width,1);
-        let line7 = new whiteSprite(game.width-71,game.height-70,1,100);
+        let line2 = new whiteSprite(100,game.height-itemH,1,itemH);
+        let line4 = new whiteSprite(game.width-1,game.height-70,1,itemH);
+        let line5 = new whiteSprite(0,game.height-itemH,1,itemH);
+        let line7 = new whiteSprite(game.width-71,game.height-itemH,1,itemH);
 
-        let opLabel = new textLabel('对话',30,game.height-60);
-        let opLabel2 = new textLabel('道具',90,game.height-60);
-        let opLabel3 = new textLabel('装备',30,game.height-40);
-        let opLabel4 = new textLabel('乘降',90,game.height-40);
-        let opLabel5 = new textLabel('调查',30,game.height-20);
-        let opLabel6 = new textLabel('强度',90,game.height-20);
+        let opLabel = new textLabel('对话',20,game.height-60);
+        let opLabel2 = new textLabel('道具',70,game.height-60);
+        let opLabel3 = new textLabel('装备',20,game.height-40);
+        let opLabel4 = new textLabel('乘降',70,game.height-40);
+        let opLabel5 = new textLabel('调查',20,game.height-20);
+        let opLabel6 = new textLabel('强度',70,game.height-20);
 
         //x,y,number,verticalStep,horizonalStep
-        let choice = new cursor2(10,game.height-40,4,20,60);
+        let choice = new cursor2(3,game.height-60,6,20,48);
         //玩家信息
-        let playerName = new textLabel(p1.player.name,20,game.height-64);
-        let p1Hp = new textLabel('HP '+p1.player.hp,game.width-70+1,game.height-65);
-        let group = addToStage([line1,line2,line3,line4,line5,line6,line7,opLabel,opLabel2,opLabel3,opLabel4,choice,playerName,p1Hp]);
+        let playerName = new textLabel(p1.player.name,20,game.height-90);
+        let p1Hp = new textLabel('HP '+p1.player.hp,game.width-100+1,game.height-95);
+        let group = addToStage([line1,line2,line3,line4,line5,line6,line7,opLabel,opLabel2,opLabel3,opLabel4,opLabel5,opLabel6,choice,playerName,p1Hp]);
         let scene = new enchant.Scene();
         scene.addChild(group);
         game.pushScene(scene);
