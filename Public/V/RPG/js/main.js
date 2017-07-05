@@ -229,8 +229,9 @@ function wl() {
 
             if(config.keyA === 1) {//仅当值为1时触发
                 new SoundManage('select');
-                let item = new Item();
-                item.show();
+                // let item = new Item();
+                // item.show();
+                Item.show();
             }
 
             //处理按下e键的情况
@@ -699,10 +700,10 @@ function findDialogByID(id,type) {
 //玩家菜单
 class Item{
     // constructor(){
-    //
+    //     this.show();
     // }
 
-    show(){
+    static show(){
         /*
          -----------------------1--------------------------
          |           | ------------------------ |         |
@@ -729,8 +730,8 @@ class Item{
         //x,y,number,verticalStep,horizonalStep
         let choice = new cursor2(3,game.height-60,6,20,48);
         //玩家信息
-        let playerName = new textLabel(p1.player.name,20,game.height-90);
-        let p1Hp = new textLabel('HP '+p1.player.hp,game.width-100+1,game.height-95);
+        let playerName = new textLabel(p1.player.name,5,game.height-itemH+5);
+        let p1Hp = new textLabel('HP '+p1.player.hp,game.width-70,game.height-itemH+1);
         let group = addToStage([line1,line2,line3,line4,line5,line6,line7,opLabel,opLabel2,opLabel3,opLabel4,opLabel5,opLabel6,choice,playerName,p1Hp]);
         let scene = new enchant.Scene();
         scene.addChild(group);
@@ -744,6 +745,8 @@ class Item{
                     new SoundManage('select');
                     switch (choice.selected) {
                         case 0://对话
+                            // let a = new InputA();
+                            ItemInput.findEvent();
                             break;
                         case 1://道具
                             break;
@@ -776,10 +779,8 @@ class Item{
             }
         })
     }
-}
 
-class InputA{
-    findEvent(){
+    static findEvent(){
         let facingSquare = p1.facingSquare();
         if(facingSquare) {
             //找玩家附近是否有事件
@@ -807,5 +808,9 @@ class InputA{
             });
         }
     }
+}
+
+class ItemInput{
+
 
 }

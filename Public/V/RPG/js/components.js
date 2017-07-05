@@ -999,9 +999,9 @@ function showItemList(itemList,scene,dialog) {
 
 //显示金钱
 function disPlayGold() {
-    disPlayGold.gpSprite = new backSprite(60,16,game.width-90,game.height-90);
+    disPlayGold.gpSprite = new backSprite(60,16,0,game.height-110);
     //text,x,y,width,height,color,textAlign,visible,font
-    disPlayGold.gpText = new textLabel('G:'+game.gp,game.width-92,game.height-88,60,16,'','center');
+    disPlayGold.gpText = new textLabel('G:'+game.gp,0,game.height-110,60,16,'','center');
 
     disPlayGold.gpSprite && game.currentScene.removeChild(disPlayGold.gpSprite);
     disPlayGold.gpText && game.currentScene.removeChild(disPlayGold.gpText);
