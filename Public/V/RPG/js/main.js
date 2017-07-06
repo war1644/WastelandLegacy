@@ -173,7 +173,7 @@ function wl() {
         game.curBGM = 'NameSetting_mp3';
         new SoundManage('',true);
         let scene = new enchant.Scene();
-        let controller = new enchant.Pad();
+        let controller = new enchant.ui.Pad();
         controller.x = 20;
         controller.y = 100;
         window.stage = addToStage([map[0],map[1],map[2],p1.player,npc01,npc02,map[3],controller]);
@@ -182,6 +182,11 @@ function wl() {
         game.replaceScene(scene);
         // game.currentScene.addChild();
         // game.rootScene.addChild();
+        let button = new enchant.ui.Button("Press me");
+        button.addEventListener("touchstart", function(){
+            console.log('xxxxxx');
+        });
+        game.rootScene.addEventListener(button);
 
         p1.player.on('enterframe',function() {
             if(this.stop) return;
@@ -716,7 +721,7 @@ class Item{
         let line3 = new whiteSprite(0,game.height-65,100,1);
         let line6 = new whiteSprite(0,game.height-1,game.width,1);
         let line2 = new whiteSprite(100,game.height-itemH,1,itemH);
-        let line4 = new whiteSprite(game.width-1,game.height-70,1,itemH);
+        let line4 = new whiteSprite(game.width-1,game.height-itemH,1,itemH);
         let line5 = new whiteSprite(0,game.height-itemH,1,itemH);
         let line7 = new whiteSprite(game.width-71,game.height-itemH,1,itemH);
 
@@ -746,7 +751,7 @@ class Item{
                     switch (choice.selected) {
                         case 0://对话
                             // let a = new InputA();
-                            ItemInput.findEvent();
+                            this.findEvent();
                             break;
                         case 1://道具
                             break;
@@ -776,6 +781,10 @@ class Item{
                             break;
                     }
                 }else keyCount=0;
+            }else if (game.input.b) {
+                new SoundManage('select');
+                game.popScene();
+
             }
         })
     }

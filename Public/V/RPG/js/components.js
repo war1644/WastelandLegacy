@@ -165,7 +165,9 @@ var whiteSprite = enchant.Class.create(enchant.Sprite,{
 var triangle = enchant.Class.create(enchant.Sprite,{
     initialize:function(image,x,y,width,height,scaleX,scaleY) {
         let imgObj = game.assets[image];
-        enchant.Sprite.call(this,width || imgObj.width,height || imgObj.height);
+        width = width || imgObj.width;
+        height = height || imgObj.height
+        enchant.Sprite.call(this,width,height);
         this.x = x;
         this.y = y;
         this.scale(scaleX || 1,scaleY || 1);
@@ -825,8 +827,8 @@ function showItemList(itemList,scene,dialog) {
     let c = new cursor(65,8,'vertical',5,20);
 
     //上下箭头 x,y,img
-    let triangle_up = new triangle(game.width>>1,3,'triangle_up');
-    let triangle_down = new triangle(game.width>>1,(game.height>>1)-5,'triangle_down');
+    let triangle_up = new triangle('triangle_up',game.width>>1,3);
+    let triangle_down = new triangle('triangle_down',game.width>>1,(game.height>>1)-5);
 
     let len = itemList.length;
     let index = 0;  //选中物品的索引
@@ -1034,7 +1036,7 @@ function makeArray(array) {
 }
 
 function gameOver() {
-    let gameover = new triangle(205,152,'gameover',189,97);
+    let gameover = new triangle('gameover',205,152,189,97);
     let overScene = new enchant.Scene();
     overScene.addChild(gameover);
     game.pushScene(overScene);

@@ -7000,6 +7000,7 @@ enchant.Tween = enchant.Class.create(enchant.Action, {
     }
 });
 
+    enchant.ui = {};
     /**
      * @fileOverview
      * ui.enchant.js v2 (2012/11/05)
@@ -7050,7 +7051,7 @@ enchant.Tween = enchant.Class.create(enchant.Action, {
      * 方向キーパッドのクラス: Pad
      * @scope enchant.ui.Pad
      */
-    enchant.Pad = enchant.Class.create(enchant.Sprite, {
+    enchant.ui.Pad = enchant.Class.create(enchant.Sprite, {
         /**
          * 方向キーパッドオブジェクトを作成する。
          * @constructs
@@ -7060,48 +7061,49 @@ enchant.Tween = enchant.Class.create(enchant.Action, {
             let image = game.assets['pad'];
             enchant.Sprite.call(this, image.width / 2, image.height);
             this.image = image;
-            this.input = { left: false, right: false, up: false, down: false };
+            this.input = -1;
             this.addEventListener('touchstart', function(e) {
                 this._updateInput(this._detectInput(e.localX, e.localY));
             });
-            this.addEventListener('touchmove', function(e) {
-                this._updateInput(this._detectInput(e.localX, e.localY));
-            });
-            this.addEventListener('touchend', function(e) {
-                this._updateInput({ left: false, right: false, up: false, down: false });
-            });
+            // this.addEventListener('touchmove', function(e) {
+            //     this._updateInput(this._detectInput(e.localX, e.localY));
+            // });
+            // this.addEventListener('touchend', function(e) {
+            //     this._updateInput(-1);
+            // });
         },
         _detectInput: function(x, y) {
             x -= this.width / 2;
             y -= this.height / 2;
-            var input = { left: false, right: false, up: false, down: false };
+            let input = -1;
             if (x * x + y * y > 200) {
                 if (x < 0 && y < x * x * 0.1 && y > x * x * -0.1) {
-                    input.left = true;
+                    input = 1;
                 }
                 if (x > 0 && y < x * x * 0.1 && y > x * x * -0.1) {
-                    input.right = true;
+                    input = 2;
                 }
                 if (y < 0 && x < y * y * 0.1 && x > y * y * -0.1) {
-                    input.up = true;
+                    input = 3;
                 }
                 if (y > 0 && x < y * y * 0.1 && x > y * y * -0.1) {
-                    input.down = true;
+                    input = 0;
                 }
             }
             return input;
         },
         _updateInput: function(input) {
             console.log(input);
-            var core = enchant.Core.instance;
-            ['left', 'right', 'up', 'down'].forEach(function(type) {
-                if (this.input[type] && !input[type]) {
-                    core.dispatchEvent(new enchant.Event(type + 'buttonup'));
-                }
-                if (!this.input[type] && input[type]) {
-                    core.dispatchEvent(new enchant.Event(type + 'buttondown'));
-                }
-            }, this);
+            // let core = enchant.Core.instance;
+            // // ['left', 'right', 'up', 'down'].forEach(function(type) {
+            // //
+            // // }, this);
+            // if ( (this.input !== -1) && (input === -1) ) {
+            //     core.dispatchEvent(new enchant.Event(type + 'buttonup'));
+            // }
+            // if ( (this.input === -1) && (input !== -1) ) {
+            //     core.dispatchEvent(new enchant.Event(type + 'buttondown'));
+            // }
             this.input = input;
         }
     });
@@ -7114,7 +7116,7 @@ enchant.Tween = enchant.Class.create(enchant.Action, {
      * @deprecated
      * @classes
      */
-    enchant.Button = enchant.Class.create(enchant.Entity, {
+    enchant.ui.Button = enchant.Class.create(enchant.Entity, {
         /**
          * ボタンオブジェクトを作成する。
          * @constructs
@@ -7151,7 +7153,7 @@ enchant.Tween = enchant.Class.create(enchant.Action, {
 
             if (typeof theme === "string") {
                 // theme 引数が string なら、その名前のデフォルトテーマを使う
-                this.theme = enchant.Button.DEFAULT_THEME[theme];
+                this.theme = enchant.ui.Button.DEFAULT_THEME[theme];
             } else {
                 // theme 引数が object なら、その引数をテーマとして扱う
                 this.theme = theme;
@@ -7245,6 +7247,72 @@ enchant.Tween = enchant.Class.create(enchant.Action, {
             element.style.textAlign = this._textAlign;
         }
     });
+
+    enchant.ui.Button.theme2css = function(theme) {
+        var prefix = '-' + enchant.ENV.VENDOR_PREFIX + '-';
+        var obj = {};
+        var bg = theme.background;
+        var bd = theme.border;
+        var ts = theme.textShadow;
+        var bs = theme.boxShadow;
+        obj['background-image'] = prefix + bg.type + '('+ [ bg.start, bg.end ] + ')';
+        obj['color'] = theme.color;
+        obj['border'] = bd.color + ' ' + bd.width + ' ' + bd.type;
+        obj['text-shadow'] = ts.offsetX + 'px ' + ts.offsetY + 'px ' + ts.blur + ' ' + ts.color;
+        obj['box-shadow'] = bs.offsetX + 'px ' + bs.offsetY + 'px ' + bs.blur + ' ' + bs.color;
+        return obj;
+    };
+
+    enchant.ui.Button.DEFAULT_THEME = {
+        dark: {
+            normal: {
+                color: '#fff',
+                background: {type: 'linear-gradient', start: '#666', end: '#333'},
+                border: {color: '#333', width: 1, type: 'solid'},
+                textShadow: {offsetX: 0, offsetY: 1, blur: 0, color: '#666'},
+                boxShadow: {offsetX: 0, offsetY: 1, blur: 0, color: 'rgba(255, 255, 255, 0.3)'}
+            },
+            active: {
+                color: '#ccc',
+                background: {type: 'linear-gradient', start: '#333', end: '#000'},
+                border: {color: '#333', width: 1, type: 'solid'},
+                textShadow: {offsetX: 0, offsetY: 1, blur: 0, color: '#000'},
+                boxShadow: {offsetX: 0, offsetY: 1, blur: 0, color: 'rgba(255, 255, 255, 0.3)'}
+            }
+        },
+        light: {
+            normal: {
+                color: '#333',
+                background: {type: 'linear-gradient', start: '#fff', end: '#ccc'},
+                border: {color: '#999', width: 1, type: 'solid'},
+                textShadow: {offsetX: 0, offsetY: 1, blur: 0, color: '#fff'},
+                boxShadow: {offsetX: 0, offsetY: 1, blur: 0, color: 'rgba(0, 0, 0, 1)'},
+            },
+            active: {
+                color: '#333',
+                background: {type: 'linear-gradient', start: '#ccc', end: '#999'},
+                border: {color: '#666', width: 1, type: 'solid'},
+                textShadow: {offsetX: 0, offsetY: 1, blur: 0, color: '#ccc'},
+                boxShadow: {offsetX: 0, offsetY: 1, blur: 0, color: 'rgba(255, 255, 255, 0.3)'}
+            }
+        },
+        blue: {
+            normal: {
+                color: '#fff',
+                background: {type: 'linear-gradient', start: '#04f', end: '#04c'},
+                border: {color: '#026', width: 1, type: 'solid'},
+                textShadow: {offsetX: 0, offsetY: 1, blur: 0, color: '#666'},
+                boxShadow: {offsetX: 0, offsetY: 1, blur: 0, color: 'rgba(0, 0, 0, 0.5)'}
+            },
+            active: {
+                color: '#ccc',
+                background: {type: 'linear-gradient', start: '#029', end: '#026'},
+                border: {color: '#026', width: 1, type: 'solid'},
+                textShadow: {offsetX: 0, offsetY: 1, blur: 0, color: '#000'},
+                boxShadow: 'none'
+            }
+        }
+    }
 
 
 
