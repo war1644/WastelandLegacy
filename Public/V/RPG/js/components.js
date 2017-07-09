@@ -166,7 +166,7 @@ var triangle = enchant.Class.create(enchant.Sprite,{
     initialize:function(image,x,y,width,height,scaleX,scaleY) {
         let imgObj = game.assets[image];
         width = width || imgObj.width;
-        height = height || imgObj.height
+        height = height || imgObj.height;
         enchant.Sprite.call(this,width,height);
         this.x = x;
         this.y = y;
