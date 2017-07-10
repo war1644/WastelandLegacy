@@ -57,7 +57,7 @@ var loadIndex = 0;
 /**对象变量*/
 //玩家
 var player;
-//团队数据
+//玩家团队数据
 var mainTeam;
 // 当前地图
 var CurrentMap;
@@ -80,8 +80,8 @@ function main(){
 	//LGlobal.cant
 	//准备读取图片
 	// imgData.push({type:"js",path:"./js/dcagent.min.js"});
-    imgData.push({name:'start_mp3',path:"./Sound/Bgm/Startup.mp3"});
-    imgData.push({name:'town_mp3',path:"./Sound/Bgm/TownTheme.mp3"});
+    imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
+    imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});
     imgData.push({type:"js",path:"./js/talklist.js"});
 	//imgData.push({type:"js",path:"./js/rpg.js"});
 	imgData.push({type:"js",path:"./js/Talk.js"});
@@ -96,11 +96,11 @@ function main(){
 	imgData.push({type:"js",path:"./js/fightmenu.js"});
 	imgData.push({type:"js",path:"./js/fight.js"});
 	imgData.push({type:"js",path:"./js/fighter.js"});
-	imgData.push({name:"cover",path:"./image/cover.jpg"});
-    imgData.push({name:"start_png",path:"./image/start.bmp"});
+	// imgData.push({name:"cover",path:"./image/cover.jpg"});
+    // imgData.push({name:"start_png",path:"./image/start.bmp"});
 
-    imgData.push({name: "gameover", path: "./image/gameover.jpg" });
-	imgData.push({name: "tobecont", path: "./image/tobecont.jpg" });
+    // imgData.push({name: "gameover", path: "./image/gameover.jpg" });
+    // imgData.push({name: "tobecont", path: "./image/tobecont.jpg" });
 	imgData.push({name:"button1",path:"./image/button1.png"});
 	imgData.push({name:"button1_down",path:"./image/button1_down.png"});
 	imgData.push({name:"map1",path:"./image/tileset1.png"});
@@ -134,9 +134,9 @@ function main(){
 	imgData.push({name: "heal1", path: "./image/heal1.png" });
 	imgData.push({name: "mUse", path: "./image/mUse.png" });
 	imgData.push({name: "bigdragon", path: "./image/bigdragon.png" });
-	//imgData.push({name: "bigdragonf",path:"./image/bigdragonf.png"});
+	imgData.push({name: "bigdragonf",path:"./image/bigdragonf.png"});
 	imgData.push({name: "empty", path: "./image/empty.png" });
-	imgData.push({name: "dragonchest", path: "./image/dragonchest.png" });
+	// imgData.push({name: "dragonchest", path: "./image/dragonchest.png" });
 	imgData.push({name: "right", path: "./image/right.png" });
 	
 	loadingLayer = new LoadingSample7();
@@ -206,20 +206,18 @@ function getAccountId() {
 
 // 一个基本背景
 function drawBack(){
-	var bitmapdata2 = new LBitmapData("#000", 0, 0, WIDTH, HEIGHT);
-    var bitmap2 = new LBitmap(bitmapdata2);
-    // bitmap2.x = 0;
-    backLayer.addChildAt(bitmap2, 0);
+    backLayer.graphics.drawRect(1,'#000',[0,0,WIDTH,HEIGHT],true,'#000');
     // 加入刷新提示
-	var name = new LTextField();
+	let name = new LTextField();
 	name.x = WIDTH/ 2;
 	name.y = HEIGHT/ 2;
  	name.textAlign= "center";
 	name.textBaseline= "middle";
 	name.size = "15";
-	name.color = "#FFFFFF";
-	name.text = "【请重新载入游戏】";
+	name.color = "#fff";
+	name.text = "【初始化失败，请重新载入游戏】";
 	backLayer.addChildAt(name, 1);
+    console.log(backLayer.childList);
 }
 
 function drawMap(aMap){
@@ -356,9 +354,9 @@ function setHero(ax, ay, aface){
 		} else row= 4;
 		if (mainTeam.getHero().getPerson().col) {
 			col= mainTeam.getHero().getPerson().col;
-		} else col= 3;
-		heroImg= mainTeam.getHero().getPerson().chara;
-		bitmapdata = new LBitmapData(imglist[heroImg]);
+		} else col= 4;
+		heroImg = mainTeam.getHero().getPerson().chara;
+		let bitmapdata = new LBitmapData(imglist[heroImg]);
 		//chara = new Character(true, 0, bitmapdata, 4, 3, 1);
 		chara = new Character(true, 0, bitmapdata, row, col, 1);
 		player = chara;

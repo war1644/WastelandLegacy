@@ -377,9 +377,9 @@ function initScript(ax, ay, aface){
 	CurrentMap= stage.map;
 	// 首先添加人物，为了确定地图的自动移动
 	addChara();
-	// 然后画地图
+
 	setHero(ax, ay, aface);
-	//
+	// 绘制地图
 	drawMap(CurrentMap);
 	// 立即检测自动动作
 	checkAuto();

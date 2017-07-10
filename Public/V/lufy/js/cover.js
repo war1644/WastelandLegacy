@@ -187,27 +187,28 @@ RPG.howToUse= function(){
 RPG.drawCover= function() {
 	// 封面图
 	RPG.setState(RPG.IN_COVER);
-	var sLayer= effectLayer;
-	var bitmapdata = new LBitmapData(imglist["start_png"]);
-	var bitmap = new LBitmap(bitmapdata);
+	let sLayer= effectLayer;
+	// let bitmapdata = new LBitmapData(imglist["start_png"]);
+	// let bitmap = new LBitmap(bitmapdata);
 	sLayer.removeAllChild();
-	//
-	bitmap.scaleX = WIDTH/ bitmap.width;
-	bitmap.scaleY = HEIGHT/ bitmap.height;
-	bitmap.x = 0;
-	bitmap.y = 0;
-	bitmap.alpha = 1;
-	sLayer.addChild(bitmap);
+    backLayer.removeChildAt(1);
+
+	// bitmap.scaleX = WIDTH/ bitmap.width;
+	// bitmap.scaleY = HEIGHT/ bitmap.height;
+	// bitmap.x = 0;
+	// bitmap.y = 0;
+	// bitmap.alpha = 1;
+	// sLayer.addChild(bitmap);
 	// 新的开始
-    var button01= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 200, "新游戏", function(e){
-    	// 放按钮被透过窗口点击
+    let button01= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 200, "新游戏", function(e){
+    	// 按钮被透过窗口点击
     	if (RPG.checkState(RPG.IN_COVER)) {
 			RPG.newGame();
 		}
     });
     sLayer.addChild(button01);
     // 继续
-    var button02= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 160, "载入进度", function(e){
+    let button02= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 160, "载入进度", function(e){
     	if (RPG.checkState(RPG.IN_COVER)) {
 	    	RPG.openLoadMenu();
 	    }
@@ -215,14 +216,14 @@ RPG.drawCover= function() {
 	button02.setState(LButton.STATE_DISABLE);
 	sLayer.addChild(button02);
 	// 使用说明
-    var button03= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 120, "使用说明", function(e){
+    let button03= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 120, "使用说明", function(e){
     	if (RPG.checkState(RPG.IN_COVER)) {
 	    	RPG.howToUse();
 	    }
 	});
 	sLayer.addChild(button03);
 	if (window.localStorage) {
-		var saveList= JSON.parse(window.localStorage.getItem("SaiFuSaveList"));
+		let saveList= JSON.parse(window.localStorage.getItem("WLSaveList"));
 		if (saveList) {
 			button02.setState(LButton.STATE_ENABLE);
 			RPG.copySaveList(saveList);
