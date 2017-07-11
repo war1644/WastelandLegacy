@@ -551,13 +551,13 @@ RPG.openMenu= function() {
 	//将对话层清空
 	talkLayer.removeAllChild();
 	//当对话开始，且按照顺序进行对话
-	var gap= 10;
-	var i;
+	let gap= 10;
+	let i;
 	RPG.menuWidth= WIDTH- gap* 2;
 	RPG.menuHeight= HEIGHT- gap* 2;
-	var iconMenuItem;
-	var iconWidth;
-	var bitmapdata, bitmap;
+	let iconMenuItem;
+	let iconWidth;
+	let bitmapdata, bitmap;
 	//对话背景
 	talkLayer.x = 10;
 	talkLayer.y = 10;
@@ -625,7 +625,7 @@ RPG.dealMenu= function(ax, ay){
 	var	iconMenuItem;
 	var checkStep= STEP/ 2;
 	RPG.cmdChoose= -1;
-	for (i=0; i< RPG.iconMenu.length; i++){
+	for (let i=0; i< RPG.iconMenu.length; i++){
 		iconMenuItem= RPG.iconMenu[i];
 		if (ax> iconMenuItem.ox- checkStep && ax< iconMenuItem.ox+ checkStep &&
 			ay> iconMenuItem.oy- checkStep && ay< iconMenuItem.oy+ checkStep) {
@@ -634,7 +634,7 @@ RPG.dealMenu= function(ax, ay){
 		}
 	}
 	if (RPG.cmdChoose>= 0){
-		for (i=0; i< RPG.iconMenu.length; i++){
+		for (let i=0; i< RPG.iconMenu.length; i++){
 			iconMenuItem= RPG.iconMenu[i];
 			if (i==RPG.cmdChoose) {
 				iconMenuItem.bmp.scaleX= RPG.largeIconScale;

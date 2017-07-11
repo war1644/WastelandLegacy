@@ -145,42 +145,45 @@ RPG.checkSwitch= function(aName){
 RPG.layerInit= function() {
 	backLayer = new LSprite();
 	addChild(backLayer);
-		//地图层添加
-		mapLayer = new LSprite();
-		backLayer.addChild(mapLayer);
-		//人物层添加
-		charaLayer = new LSprite();
-		backLayer.addChild(charaLayer);
-		//上地图层添加
-		upLayer = new LSprite();
-		backLayer.addChild(upLayer);
-		//效果层添加
-		effectLayer = new LSprite();
-		backLayer.addChild(effectLayer);
-		//菜单层添加
-		talkLayer = new LSprite();
-		backLayer.addChild(talkLayer);
-}
+	//地图层
+	mapLayer = new LSprite();
+	backLayer.addChild(mapLayer);
+	//人物层
+	charaLayer = new LSprite();
+	backLayer.addChild(charaLayer);
+	//上地图层
+	upLayer = new LSprite();
+	backLayer.addChild(upLayer);
+	//效果层
+	effectLayer = new LSprite();
+	backLayer.addChild(effectLayer);
+	//菜单层
+	talkLayer = new LSprite();
+	backLayer.addChild(talkLayer);
+};
 
-RPG.drawWindow= function(aLayer, ax, ay, aw, ah, aPha) {
-	bitmapdata = new LBitmapData(imglist["winback"]);
-	bitmap = new LBitmap(bitmapdata);
-	bitmap.scaleX = aw/ bitmap.width;
-	bitmap.scaleY = ah/ bitmap.height;
-	bitmap.x = ax;
-	bitmap.y = ay;
-	if (aPha) {
-		bitmap.alpha = aPha;
+/**
+ *
+ */
+RPG.drawWindow= function(layer, x, y, w, h, alpha) {
+	let talkWindow = new LSprite();
+    talkWindow.graphics.drawRect(5,'#ffe',[0,0,w,h],true,'#009');
+	// bitmap.scaleX = w/ bitmap.width;
+	// bitmap.scaleY = h/ bitmap.height;
+    talkWindow.x = x;
+    talkWindow.y = y;
+	if (alpha) {
+        talkWindow.alpha = alpha;
 	} else {
-		bitmap.alpha = 0.7;
+        talkWindow.alpha = 0.9;
 	}
-	aLayer.addChild(bitmap);
-	return bitmap;
-}
+	layer.addChild(talkWindow);
+	return talkWindow;
+};
 
 RPG.drawScale= function(aLayer, aColor, ax, ay, aw, ah) {
-	bitmapdata = new LBitmapData(imglist[aColor]);
-	bitmap = new LBitmap(bitmapdata);
+	let bitmapdata = new LBitmapData(imglist[aColor]);
+	let bitmap = new LBitmap(bitmapdata);
 	bitmap.scaleX = aw/ bitmap.width;
 	bitmap.scaleY = ah/ bitmap.height;
 	bitmap.x = ax;
@@ -190,8 +193,8 @@ RPG.drawScale= function(aLayer, aColor, ax, ay, aw, ah) {
 }
 
 RPG.drawFocus= function(aLayer, ax, ay, aw, ah) {
-	bitmapdata = new LBitmapData(imglist["focus"]);
-	bitmap = new LBitmap(bitmapdata);
+	let bitmapdata = new LBitmapData(imglist["focus"]);
+	let bitmap = new LBitmap(bitmapdata);
 	bitmap.scaleX = aw/ bitmap.width;
 	bitmap.scaleY = ah/ bitmap.height;
 	bitmap.x = ax;
@@ -296,9 +299,11 @@ RPG.getMoveDir= function(ax, ay) {
 RPG.dealNormal= function(ax, ay){
     // 根据点击位置，判断移动方向
     if (player) {
-    	var ret= RPG.getMoveDir(ax, ay);
-    	if (ret.length==0) {
-	        timer= setTimeout(RPG.openMenu, 500 );    		
+    	let ret= RPG.getMoveDir(ax, ay);
+        console.log('ret',ret.length);
+        if (ret.length === 0) {
+	        // timer = setTimeout(RPG.openMenu, 500);
+            RPG.openMenu();
     	} else {
 	        player.changeDirAlt(ret);
     	}

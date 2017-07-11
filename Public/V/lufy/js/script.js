@@ -52,15 +52,15 @@
 		     		RPG.startTalk(stage.talk.talk3);
 		     	}
 		     }},
-		     {chara:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function(){
+		     /*{chara:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function(){
 		     	// 自动发言
 		     	RPG.setTalkPos("middle");
 		     	RPG.startTalk(stage.talk.talk4);
-	     		RPG.setSwitch("autoTalk", true);
-		     	RPG.waitTalk(function(){
-			     	RPG.makeChoise(stage.choice.choice1);
-		     	});
-		     }},
+		     	RPG.setSwitch("autoTalk", true);
+		     	// RPG.waitTalk(function(){
+			     // 	RPG.makeChoise(stage.choice.choice1);
+		     	// });
+		     }},*/
 		     {chara:"npc", img:"",     x:2,   y:1, action: function(){
 		     	// 获得浆果
 		     	RPG.getBerry(1,1,stage.talk.talk8);
@@ -93,9 +93,9 @@
 		     ],
 		talk: talklist1,
 		choice: {
-			choice1:{ img: "fhero", msg: "你还记得老师的教诲么？",
+			choice1:{ img: "face2", msg: "操作教程",
 	    	        choise:[
-	    	        	{text:"回忆一下（新手请选）",action: function(){
+	    	        	{text:"看",action: function(){
 							// triggerEvent("BeginNew");
 				     		RPG.closeTalk();
 				     		RPG.startTalk(stage.talk.talk6);
@@ -106,7 +106,7 @@
 			    			 	});
 		    			 	});
 		     			}},
-		     			{text:"那还用说",action: function(){
+		     			{text:"不看",action: function(){
 							// triggerEvent("Begin");
 				     		RPG.closeTalk();
 				     		RPG.startTalk(stage.talk.talk7);
@@ -456,13 +456,11 @@ function checkTouch(){
 
 // 自动触发型
 function checkAuto(){
-	var jump = stage.events;
-	var jumpevent;
-	var xx, yy, ff;
-	for(var i=0;i<jump.length;i++){
+	let jump = stage.events;
+	let jumpevent;
+	for(let i=0;i<jump.length;i++){
 		jumpevent = jump[i];
 		if (jumpevent.chara==="auto"){
-			//console.log(jumpstage);
 			if (jumpevent.visible && jumpevent.visible()){
 				if (jumpevent.action){
 					// 一旦触发事件，按键取消

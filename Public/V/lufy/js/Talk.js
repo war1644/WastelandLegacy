@@ -22,7 +22,7 @@
 function addTalk(){
 	// 仅在地图控制状态可以启动新对话
 	if (RPG.checkState(RPG.MAP_CONTROL) && player){
-		var key,tx = player.px,ty = player.py;
+		let key,tx = player.px,ty = player.py;
 		switch (player.direction){
 		case UP:
 			ty -= 1;
@@ -79,10 +79,10 @@ RPG.setTalkPos= function(aPos) {
 	}
 }
 
-RPG.makeChoise= function(aChoiseScript) {
+RPG.makeChoise= function(optionScript) {
 	//如果对话内容为空，则开始判断是否可以对话
 	if (!RPG.choiseScript){
-		RPG.choiseScript = aChoiseScript;
+		RPG.choiseScript = optionScript;
 		if(RPG.choiseScript == null) return;
 	}	
 	// 状态切换
@@ -93,21 +93,21 @@ RPG.makeChoise= function(aChoiseScript) {
 			//对话背景
 			RPG.drawWindow(talkLayer, RPG.TALKLEFT, RPG.TALKTOP, RPG.TALKWIDTH, RPG.TALKHEIGHT);
 			//对话头像
-			if (aChoiseScript.img!="") {
-				bitmapdata = new LBitmapData(imglist[aChoiseScript.img]);
-				bitmap = new LBitmap(bitmapdata);
-				bitmap.x = aChoiseScript.x==null?RPG.TALKLEFT:aChoiseScript.x;
-				bitmap.y = aChoiseScript.y==null?RPG.TALKTOP-bitmap.height:aChoiseScript.y;
+			if (optionScript.img) {
+				let bitmapdata = new LBitmapData(imglist[optionScript.img]);
+				let bitmap = new LBitmap(bitmapdata);
+				bitmap.x = optionScript.x || RPG.TALKLEFT;
+				bitmap.y = optionScript.y || RPG.TALKTOP-bitmap.height;
 				talkLayer.addChild(bitmap);
 			}
 			//对话人物名称
-			if (aChoiseScript.msg!=""){
+			if (optionScript.msg!=""){
 				var name = new LTextField();
 				name.x = RPG.TALKLEFT+ 5;
 				name.y = RPG.TALKTOP+ 5;
 				name.size = "15";
 				name.color = "#FFFFFF";
-				name.text = aChoiseScript.msg;
+				name.text = optionScript.msg;
 				talkLayer.addChild(name);
 				// 对话初始行的位置
 				RPG.talkLinePos= name.y+ 20;
@@ -116,9 +116,9 @@ RPG.makeChoise= function(aChoiseScript) {
 			}
 		
 		//分支选项
-		for (var i= 0; i< aChoiseScript.choise.length; i++){
+		for (var i= 0; i< optionScript.choise.length; i++){
 			//var y=
-   			var button01= RPG.newSimpleButton(RPG.TALKWIDTH- 10, 22, RPG.TALKLEFT+ 5, RPG.talkLinePos, aChoiseScript.choise[i].text, aChoiseScript.choise[i].action);
+   			var button01= RPG.newSimpleButton(RPG.TALKWIDTH- 10, 22, RPG.TALKLEFT+ 5, RPG.talkLinePos, optionScript.choise[i].text, optionScript.choise[i].action);
 			talkLayer.addChild(button01);
 			RPG.talkLinePos= RPG.talkLinePos+ 25;
 		}
@@ -126,12 +126,13 @@ RPG.makeChoise= function(aChoiseScript) {
 		talkLayer.y = 0;
 }
 
-RPG.startTalk= function(aTalkScript) {
-	//如果对话内容为空，则开始判断是否可以对话
+RPG.startTalk= function(talkList) {
+	let border = 10;
+    //如果对话内容为空，则开始判断是否可以对话
 	if (!RPG.talkScript){
-		RPG.talkScript = aTalkScript;
+		RPG.talkScript = talkList;
 		RPG.talkIndex = 0;
-		if(RPG.talkScript == null) return;
+        if(!talkList) return;
 	}	
 	// 状态切换
 	if (!RPG.checkState(RPG.IN_TALKING)) {
@@ -147,47 +148,47 @@ RPG.startTalk= function(aTalkScript) {
 	//当对话开始，且按照顺序进行对话
 	if(RPG.talkIndex < RPG.talkScript.length){
 		//得到对话内容
-		var talkObject = RPG.talkScript[RPG.talkIndex];
-		if (talkObject.part) {
+		let talkObject = RPG.talkScript[RPG.talkIndex];
 
+		//将对话层清空
+		talkLayer.removeAllChild();
+		//对话背景
+		RPG.drawWindow(talkLayer, RPG.TALKLEFT, RPG.TALKTOP, RPG.TALKWIDTH, RPG.TALKHEIGHT);
+		//对话头像
+		if (talkObject.img) {
+			let imgData = new LBitmapData(imglist[talkObject.img]);
+			let bitmap = new LBitmap(imgData);
+            bitmap.scaleX = 0.5;
+            bitmap.scaleY = 0.5;
+			bitmap.x = talkObject.x || RPG.TALKLEFT;
+			bitmap.y = talkObject.y || RPG.TALKTOP-bitmap.height/2;
+			talkLayer.addChild(bitmap);
+		}
+		//对话人物名称
+		if (talkObject.name){
+			let name = new LTextField();
+			name.x = RPG.TALKLEFT + border;
+			name.y = RPG.TALKTOP + border;
+			name.size = "15";
+			name.color = "#FFFFFF";
+			name.text = "【" + talkObject.name + "】";
+			talkLayer.addChild(name);
+			// 对话初始行的位置
+			RPG.talkLinePos= name.y + 20;
 		} else {
-			//将对话层清空
-			talkLayer.removeAllChild();
-			//对话背景
-			RPG.drawWindow(talkLayer, RPG.TALKLEFT, RPG.TALKTOP, RPG.TALKWIDTH, RPG.TALKHEIGHT);
-			//对话头像
-			if (talkObject.img!="") {
-				bitmapdata = new LBitmapData(imglist[talkObject.img]);
-				bitmap = new LBitmap(bitmapdata);
-				bitmap.x = talkObject.x==null?RPG.TALKLEFT:talkObject.x;
-				bitmap.y = talkObject.y==null?RPG.TALKTOP-bitmap.height:talkObject.y;
-				talkLayer.addChild(bitmap);
-			}
-			//对话人物名称
-			if (talkObject.name!=""){
-				var name = new LTextField();
-				name.x = RPG.TALKLEFT+ 5;
-				name.y = RPG.TALKTOP+ 5;
-				name.size = "15";
-				name.color = "#FFFFFF";
-				name.text = "【" + talkObject.name + "】";
-				talkLayer.addChild(name);
-				// 对话初始行的位置
-				RPG.talkLinePos= name.y+ 20;
-			} else {
-				RPG.talkLinePos= RPG.TALKTOP+ 5;
-			}
+			RPG.talkLinePos = RPG.TALKTOP + border;
 		}
 		//对话内容
-		var msg = new LTextField();
-		msg.width = RPG.TALKWIDTH- 5* 2;
-		msg.x = RPG.TALKLEFT+ 5;
+		let msg = new LTextField();
+		msg.width = RPG.TALKWIDTH - border*2;
+		msg.x = RPG.TALKLEFT + border;
 		msg.y = RPG.talkLinePos;
 		msg.size = "15";
 		msg.color = "#FFFFFF";
 		msg.text = talkObject.msg;
-		msg.setWordWrap(true, 20)
+		msg.setWordWrap(true, 20);
 		talkLayer.addChild(msg);
+        msg.speed = 1;
 		//对话内容逐字显示
 		msg.wind(RPG.closeSentence);
 		RPG.sentenceFinish= false;
@@ -196,15 +197,15 @@ RPG.startTalk= function(aTalkScript) {
 		talkLayer.x = 0;
 		talkLayer.y = 0;
 		RPG.talkIndex++;
-		RPG.talkLinePos= RPG.talkLinePos+ 20;
+		RPG.talkLinePos = RPG.talkLinePos + 20;
 	}else{
 		RPG.closeTalk();
 	}
-}
+};
 
 RPG.closeSentence= function() {
 	RPG.sentenceFinish= true;
-}
+};
 
 RPG.closeTalk= function() {
 	RPG.popState();
@@ -217,9 +218,10 @@ RPG.closeTalk= function() {
 	isKeyDown= false;
 }
 
-RPG.waitTalk= function (aCallBack){ 
-	if (RPG.talkScript != null) { 
-		setTimeout(function(){RPG.waitTalk(aCallBack);}, 100);
+RPG.waitTalk= function (aCallBack){
+    if (RPG.talkScript) {
+        console.log(1);
+        setTimeout(function(){RPG.waitTalk(aCallBack);}, 500);
 	} else {
 		if (aCallBack) {
 			aCallBack();

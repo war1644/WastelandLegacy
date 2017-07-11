@@ -113,15 +113,18 @@ function main(){
     imgData.push({name:"npc24",path:"./image/movePic/npc24.png"});
     imgData.push({name:"blackTank",path:"./image/movePic/blackTank.png"});
 
-    
-	imgData.push({name:"m1_npc_1",path:"./image/m1_npc_1.png"});
-	imgData.push({name:"m1_npc_1f",path:"./image/m1_npc_1f.png"});
+    //face
+    imgData.push({name:"face1",path:"./image/face/face1.png"});
+    imgData.push({name:"face2",path:"./image/face/face2.png"});
+    imgData.push({name:"face3",path:"./image/face/face3.png"});
+    imgData.push({name:"face4",path:"./image/face/face4.png"});
+
+
+    imgData.push({name:"m1_npc_1",path:"./image/m1_npc_1.png"});
 	imgData.push({name:"m1_npc_2",path:"./image/m1_npc_2.png"});
 	imgData.push({name:"m1_npc_3",path:"./image/m1_npc_3.png"});
-	imgData.push({name:"m1_npc_4f",path:"./image/m1_npc_4f.png"});
 	imgData.push({name:"m1_npc_5",path:"./image/m1_npc_5.png"});
 	imgData.push({name:"iconset",path:"./image/IconSet.png"});
-	imgData.push({name: "winback", path: "./image/back.png" });
 	imgData.push({name: "focus", path: "./image/focus.png" });
 	imgData.push({name: "hp", path: "./image/hp.png" });
 	imgData.push({name: "mp", path: "./image/mp.png" });
@@ -217,7 +220,6 @@ function drawBack(){
 	name.color = "#fff";
 	name.text = "【初始化失败，请重新载入游戏】";
 	backLayer.addChildAt(name, 1);
-    console.log(backLayer.childList);
 }
 
 function drawMap(aMap){
@@ -426,10 +428,12 @@ function addChara(){
 function ondown(event) {
     // 如果点击位置有NPC事件，优先触发talk事件
     isKeyDown = true;
+
     if (RPG.checkState(RPG.UNDER_MENU)) {
     	RPG.dealMenu(event.offsetX, event.offsetY);
     } else if (RPG.checkState(RPG.MAP_CONTROL)) {
-    	// 地图状态下可以进行移动和弹出菜单的操作
+        console.log('checkState',RPG.checkState(RPG.MAP_CONTROL));
+        // 地图状态下可以进行移动和弹出菜单的操作
     	RPG.dealNormal(event.offsetX, event.offsetY);
     } else if (RPG.checkState(RPG.IN_TALKING)) {
     	RPG.startTalk();
@@ -442,7 +446,7 @@ function onup(event){
 		clearTimeout(timer);
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
     		RPG.dealMenuUp(event.offsetX, event.offsetY);
-    	} else if (RPG.checkState(RPG.MAP_CONTROL)) {
+    	} else if(RPG.checkState(RPG.MAP_CONTROL)) {
 			addTalk();
 		}
 	}
