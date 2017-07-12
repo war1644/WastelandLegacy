@@ -1,10 +1,10 @@
 ﻿talklist1= {
 	talk1: [
-		{img: "face2", name: "陌生人", msg: "远来的年轻人，你叫什么名字？" },
-        {img: "face4", name: "路漫漫", msg: "我的名字叫路漫漫。" },
-        {img: "face2", name: "陌生人", msg: "我知道了，我在这里等你多日了。今天你可来了。" },
-        {img: "face4", name: "路漫漫", msg: "等我？可我并不认识您啊。" },
-        {img: "face2", name: "陌生人", msg: "你连日奔波辛苦了，请到帐篷来休息一下。让我慢慢讲给你听。" }
+		{img: "face2", name: "陌生人", msg: "嘿，你叫啥？" },
+        {img: "face4", name: "路漫漫", msg: "路漫漫。" },
+        {img: "face2", name: "陌生人", msg: "哦，饿不？困不？" },
+        {img: "face4", name: "路漫漫", msg: "。。。。。" },
+        {img: "face2", name: "陌生人", msg: "那就进来吧" }
 	],
 	talk2: [
 		{img: "face4", name: "路漫漫", msg: "别随便进别人的帐篷。" }
@@ -15,43 +15,43 @@
 	talk4: [
 		{img: "face4",name: "路漫漫", msg: "你被自己的队友背叛，赏金首役差点丧命，逃亡到了这。" },
 		{img: "face4",name: "路漫漫", msg: "我快编不下去了，都是04让编的" },
-		{img: "face3", name: "04", msg: "你。。，你居然摔锅！" },
-		{img: "face3", name: "04", msg: "懂吗？" },
-		{img: "face3", name: "04", msg: "。。。。。" },
+		{img: "face3",name: "04", msg: "你。。，你居然摔锅！" },
+		{img: "face3",name: "04", msg: "懂吗？" },
+		{img: "face3",name: "04", msg: "。。。。。" },
 		{img: "face4",name: "路漫漫", msg: "听不懂" },
 	],
 	talk5: [
-		{img: "face4", name: "路漫漫", msg: "赞美安拉，让我逢凶化吉，还得到了神鞭。" },
+		{img: "face4", name: "路漫漫", msg: "神鞭..." },
 	],
 	talk6: [
-		{img: "face3", name: "04", msg: "在地图上点击，就可以向相应的方向行走。" },
-		{img: "face3", name: "04", msg: "如果点击自己的话，就会打开菜单。" },
-		{img: "face3", name: "04", msg: "在物品列表里，长按物品就可以使用或者装备。" },
-		{img: "face3", name: "04", msg: "在状态显示区里，长按装备可以卸下。" },
-		{img: "face3", name: "04", msg: "如果有多名队员，在状态显示区里，左右滑动可以换人。" },
-		{img: "face3", name: "04", msg: "走路碰到NPC会自动说话，碰到敌人就会发生战斗。" },
-		{img: "face3", name: "04", msg: "再给你一个忠告：经常保存进度，否则一旦遇到无法战胜的敌人就麻烦了。" },
+		{img: "face3", name: "04", msg: "点击地图移动" },
+		{img: "face3", name: "04", msg: "点击自己打开菜单" },
+		{img: "face3", name: "04", msg: "物品列表页长按物品使用或装备" },
+		{img: "face3", name: "04", msg: "状态显示页长按装备可卸下" },
+		{img: "face3", name: "04", msg: "多名队员，状态显示页，左右滑动可切换" },
+		{img: "face3", name: "04", msg: "走路碰到NPC自动对话" },
+		{img: "face3", name: "04", msg: "WARNING：遇到凶残的敌人就跑吧，不然没人救你哦" },
 	],
 	talk7: [
 		{msg: "只是到现在你已经两天两夜没有休息过了，筋疲力尽，饥渴难耐。" },
 		{msg: "你希望能找到一些食物充饥。" },
 	],
 	talk8: [
-		{msg: "灌木丛里有味道不错的浆果" },
+		{msg: "生命药丸" },
 	]
 };
 talklist2= {
 	talk1: [
-		{img: "face4", name: "路漫漫", msg: "这里是蝙蝠的巢穴，如果捣毁了这里，蝙蝠都不会再出现了。" },
+		{img: "face4", name: "路漫漫", msg: "这里是生化蝙蝠的巢穴，如果捣毁了这里，蝙蝠都不会再出现了。" },
 	],
 	talk2: [
-		{img: "face4", name: "路漫漫", msg: "这里是蝎子的巢穴，如果捣毁了这里，蝎子就不会再出现了。" },
+		{img: "face4", name: "路漫漫", msg: "这里是生化蝎子的巢穴，如果捣毁了这里，蝎子就不会再出现了。" },
 	],
 	talk3: [
-		{img: "face4", name: "路漫漫", msg: "这里曾经是蝙蝠的巢穴，现在已经被捣毁。" },
+		{img: "face4", name: "路漫漫", msg: "这里曾经是生化蝙蝠的巢穴，现在已经被捣毁。" },
 	],
 	talk4: [
-		{img: "face4", name: "路漫漫", msg: "这里曾经是蝎子的巢穴，现在已经被捣毁。" },
+		{img: "face4", name: "路漫漫", msg: "这里曾经是生化蝎子的巢穴，现在已经被捣毁。" },
 	],
 	talk5: [
 		{img: "face4", name: "路漫漫", msg: "真不敢相信，终于逃出来了。" },
@@ -65,7 +65,7 @@ talklist2= {
 	talk8: [
 		{img: "face2", name: "陌生人", msg: "看来只能动手抢了！" },
 	]
-}
+};
 talklist3= {
 	talk1: [
 		{img: "face2", name: "陌生人", msg: "这洞中有一个宝藏，被魔王占据。他有一根神鞭。" },
@@ -100,9 +100,9 @@ talklist3= {
 	talk8: [
 		{img: "face4", name: "路漫漫", msg: "在这里睡觉是不明智的，还是尽快离开比较好。" },
 	]
-}
+};
 talklist4= {
 	talk2: [
-		{img: "bigdragonf", name: "魔王", msg: "你好大的胆子，竟敢闯到我的洞府来！" },
+		{img: "face8", name: "魔王", msg: "你好大的胆子，竟敢闯到我的洞府来！" },
 	]
-}
+};

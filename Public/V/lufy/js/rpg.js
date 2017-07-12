@@ -29,7 +29,7 @@ RPG.beget= function(o){
 		G.init();
 	}
 	return G;
-}
+};
 // RPG基本管理参数，根据不同项目，应当调整
 
 	//方向常量
@@ -97,12 +97,12 @@ RPG.setState= function(aState){
 RPG.pushState= function(aState){
 	RPG.stateStack.push(aState);
 	RPG.state= aState;
-	//console.log("push", RPG.state, RPG.stateStack);
+	console.log("push", RPG.state, RPG.stateStack);
 }
 RPG.popState= function(){
 	RPG.stateStack.pop();
-	RPG.state= RPG.stateStack[RPG.stateStack.length- 1];
-	//console.log("pop", RPG.state, RPG.stateStack);
+	RPG.state = RPG.stateStack[RPG.stateStack.length- 1];
+	console.log("pop", RPG.state, RPG.stateStack);
 }
 RPG.checkState= function(aState){
 	if (aState< 50) {
@@ -125,22 +125,21 @@ RPG.checkState= function(aState){
 		}
 
 	}
-}
+};
 
-RPG.initSwitch= function(aNum){
-	RPG.SWITCH={};
-}
-RPG.setSwitch= function(aName, aValue){
-	if (!aValue) aValue= true;
-	RPG.SWITCH[aName]= aValue;
-}
-RPG.checkSwitch= function(aName){
-	if(RPG.SWITCH[aName]) {
-		return Boolean(RPG.SWITCH[aName]);
+RPG.initSwitch = function(){
+	RPG.SWITCH = {};
+};
+RPG.setSwitch= function(k,v=true){
+	RPG.SWITCH[k]= v;
+};
+RPG.checkSwitch= function(k){
+	if(RPG.SWITCH[k]) {
+		return Boolean(RPG.SWITCH[k]);
 	} else {
 		return false;
 	}
-}
+};
 
 RPG.layerInit= function() {
 	backLayer = new LSprite();
@@ -154,7 +153,8 @@ RPG.layerInit= function() {
 	//上地图层
 	upLayer = new LSprite();
 	backLayer.addChild(upLayer);
-	//效果层
+
+    //效果层
 	effectLayer = new LSprite();
 	backLayer.addChild(effectLayer);
 	//菜单层
@@ -163,13 +163,11 @@ RPG.layerInit= function() {
 };
 
 /**
- *
+ * 背景框
  */
 RPG.drawWindow= function(layer, x, y, w, h, alpha) {
 	let talkWindow = new LSprite();
     talkWindow.graphics.drawRect(5,'#ffe',[0,0,w,h],true,'#009');
-	// bitmap.scaleX = w/ bitmap.width;
-	// bitmap.scaleY = h/ bitmap.height;
     talkWindow.x = x;
     talkWindow.y = y;
 	if (alpha) {
@@ -182,19 +180,19 @@ RPG.drawWindow= function(layer, x, y, w, h, alpha) {
 };
 
 RPG.drawScale= function(aLayer, aColor, ax, ay, aw, ah) {
-	let bitmapdata = new LBitmapData(imglist[aColor]);
-	let bitmap = new LBitmap(bitmapdata);
+	let bitmapData = new LBitmapData(imglist[aColor]);
+	let bitmap = new LBitmap(bitmapData);
 	bitmap.scaleX = aw/ bitmap.width;
 	bitmap.scaleY = ah/ bitmap.height;
 	bitmap.x = ax;
 	bitmap.y = ay;
 	bitmap.alpha = 1;
 	aLayer.addChild(bitmap);
-}
+};
 
 RPG.drawFocus= function(aLayer, ax, ay, aw, ah) {
-	let bitmapdata = new LBitmapData(imglist["focus"]);
-	let bitmap = new LBitmap(bitmapdata);
+	let bitmapData = new LBitmapData(imglist["focus"]);
+	let bitmap = new LBitmap(bitmapData);
 	bitmap.scaleX = aw/ bitmap.width;
 	bitmap.scaleY = ah/ bitmap.height;
 	bitmap.x = ax;
@@ -202,28 +200,26 @@ RPG.drawFocus= function(aLayer, ax, ay, aw, ah) {
 	bitmap.alpha = 0.5;
 	aLayer.addChild(bitmap);
 	return bitmap;
-}
+};
 
-RPG.moveChar= function(aChar, aStepArray){
-	aChar.moveMode= 2;
-	aChar.stepArray= aStepArray;
-	if (aChar.stepArray.length> 0){
-		aChar.changeDir(aChar.stepArray[0]);
+RPG.moveNpc= function(npc, stepArr){
+	npc.moveMode= 2;
+	npc.stepArray= stepArr;
+	if (npc.stepArray.length> 0){
+		npc.changeDir(npc.stepArray[0]);
 	}
-}
+};
 RPG.hideChar= function(aChar){
 	charaLayer.removeChild(aChar);
 	//aChar.die();
-}
-RPG.waitCharPos= function (aChar, ax, ay, aCallBack){ 
-	if (aChar.x/ STEP != ax || aChar.y/ STEP != ay) { 
-		setTimeout(function(){RPG.waitCharPos(aChar, ax, ay, aCallBack);}, 100);
+};
+RPG.waitCharPos= function (npc, x, y, callback){
+    if ((npc.x/STEP)<<0 !== x || (npc.y/STEP)<<0 !== y) {
+        setTimeout(function(){RPG.waitCharPos(npc, x, y, callback);}, 500);
 	} else {
-		if (aCallBack) {
-			aCallBack();
-		}
+		if (callback) callback();
 	}
-} 
+};
 RPG.Serialize= function (obj){
     switch(obj.constructor){     
         case Object:     
@@ -265,19 +261,18 @@ RPG.Serialize= function (obj){
              return "\"" + obj.toString() + "\"";     
              break;         
      }     
- }     
-RPG.jumpStage= function(aStage, ax, ay, aface){
-	//console.log(aStage);
-	stage = aStage;
+ };
+RPG.jumpStage = function(newStage, x, y, face){
+    stage = newStage;
 	//开始跳转
-	initScript(ax, ay, aface);
-}
+	initScript(x, y, face);
+};
 // 获得移动方向，返回为一个数组，可以二选一
 RPG.getMoveDir= function(ax, ay) {
-    var a = ax - player.x - charaLayer.x- STEP/ 2;
-    var b = ay - player.y - charaLayer.y- STEP/ 2;
-    var ret1= [];
-    var ret2= [];
+    let a = ax - player.x - charaLayer.x- STEP/ 2;
+    let b = ay - player.y - charaLayer.y- STEP/ 2;
+    let ret1= [];
+    let ret2= [];
     if (a > STEP/ 2) {
     	ret1.push(RIGHT);
     } else if (a< - STEP/ 2) {
@@ -293,40 +288,99 @@ RPG.getMoveDir= function(ax, ay) {
 	} else {
 		return ret2.concat(ret1);
 	}
-}
+};
 
-//
-RPG.dealNormal= function(ax, ay){
+/**
+ * 点击地图处理
+ **/
+RPG.dealNormal= function(x, y){
     // 根据点击位置，判断移动方向
     if (player) {
-    	let ret= RPG.getMoveDir(ax, ay);
-        console.log('ret',ret.length);
+    	//获取移动方向
+    	let ret = RPG.getMoveDir(x, y);
+        console.log('ret',ret);
         if (ret.length === 0) {
-	        // timer = setTimeout(RPG.openMenu, 500);
             RPG.openMenu();
     	} else {
 	        player.changeDirAlt(ret);
     	}
 	}
-}
+};
 
-RPG.newButton= function(aw, ah, ax, ay, aText, aFunc) {
+RPG.imgButton = (text)=>{
+    let bitmapDataUp = new LBitmapData(result["ok_button"],0,0,98,48);
+    let bitmapUp = new LBitmap(bitmapDataUp);
+    let bitmapDataOver = new LBitmapData(result["ok_button"],0,48,98,48);
+    let bitmapOver = new LBitmap(bitmapDataOver);
+    bitmapUp.scaleX = 0.5;
+    bitmapOver.scaleX = 0.5;
+    let button = new LButton(bitmapUp,bitmapOver);
+    button.x = 50;
+    button.y = 150;
+    let title = new LTextField();
+    title.text = text;
+    title.color = "#FF0000";
+    title.size = 20;
+    title.x = (button.getWidth() - title.getWidth())*0.5;
+    title.y = (button.getHeight() - title.getHeight())*0.5;
+    button.addChild(title);
+    return button;
+};
+/**
+ * diy按钮
+ **/
+RPG.diyButton = ()=>{
+    let title;
+    let upState = new LShape("#666",200,50);
+    title = new LTextField();
+    title.text = "upState";
+    title.color = "#FF0000";
+    title.size = 20;
+    title.x = (upState.getWidth() - title.getWidth())*0.5;
+    title.y = (upState.getHeight() - title.getHeight())*0.5;
+    upState.addChild(title);
+    let overState = new LShape("#999",200,50);
+    title = new LTextField();
+    title.text = "overState";
+    title.color = "#FF0000";
+    title.size = 20;
+    title.x = (upState.getWidth() - title.getWidth())*0.5;
+    title.y = (upState.getHeight() - title.getHeight())*0.5;
+    overState.addChild(title);
+    let downState = new LShape("#CCC",200,50);
+    title = new LTextField();
+    title.text = "downState";
+    title.color = "#FF0000";
+    title.size = 20;
+    title.x = (upState.getWidth() - title.getWidth())*0.5;
+    title.y = (upState.getHeight() - title.getHeight())*0.5;
+    downState.addChild(title);
+    let button01 = new LButton(upState,overState,downState);
+    button01.x = 50;
+    button01.y = 50;
+    return button01;
+};
+
+/**
+ * 普通白底按钮
+ **/
+RPG.newButton= function(aw, ah, ax, ay, aText, callback) {
 	// 这个是普通的按钮
-	var bitmapDataUp = new LBitmapData(imglist["button1"]);
-	var bitmapUp = new LBitmap(bitmapDataUp);
+	let bitmapDataUp = new LBitmapData(imglist["button1"]);
+	let bitmapUp = new LBitmap(bitmapDataUp);
 	bitmapUp.scaleX= aw/ 30;
 	bitmapUp.scaleY= ah/ 30;
-	var bitmapDataDown = new LBitmapData(imglist["button1_down"]);
-	var bitmapDown = new LBitmap(bitmapDataDown);
+	let bitmapDataDown = new LBitmapData(imglist["button1_down"]);
+	let bitmapDown = new LBitmap(bitmapDataDown);
 	bitmapDown.scaleX= aw/ 30;
 	bitmapDown.scaleY= ah/ 30;
 	// 保持进度的按钮
-	var button02 = new LButton(bitmapUp,null,bitmapDown);
+	let button02 = new LButton(bitmapUp,null,bitmapDown);
 	button02.x= ax;
 	button02.y= ay;
-	var text = new LTextField();
+	let text = new LTextField();
 	text.size = "15";
-	text.color = "#FFFFFF";
+	text.color = "#FFF";
 	text.text = aText;
 	text.textAlign= "center";
 	text.textBaseline= "middle";
@@ -339,32 +393,34 @@ RPG.newButton= function(aw, ah, ax, ay, aText, aFunc) {
 		RPG.currentButton= button02;
 	});
 	button02.addEventListener(LMouseEvent.MOUSE_UP, function () {
-		if (RPG.currentButton== button02) {
-			if (aFunc) aFunc();
+		if (RPG.currentButton == button02) {
+			if (callback) callback();
 		}
 	});
 	return button02;
-}
+};
 
+/**
+ * option白底按钮
+ **/
 RPG.newSimpleButton= function(aw, ah, ax, ay, aText, aFunc) {
-	// 这个是处理多选项用的白底按钮
-	var bitmapDataUp = new LBitmapData(imglist["focus"]);
-	var bitmapUp = new LBitmap(bitmapDataUp);
+	let bitmapDataUp = new LBitmapData(imglist["focus"]);
+	let bitmapUp = new LBitmap(bitmapDataUp);
 	bitmapUp.scaleX= aw/ bitmapUp.width;
 	bitmapUp.scaleY= ah/ bitmapUp.height;
 	bitmapUp.alpha= 0.2;
-	var bitmapDataDown = new LBitmapData(imglist["focus"]);
-	var bitmapDown = new LBitmap(bitmapDataDown);
+	let bitmapDataDown = new LBitmapData(imglist["focus"]);
+	let bitmapDown = new LBitmap(bitmapDataDown);
 	bitmapDown.scaleX= aw/ bitmapDown.width;
 	bitmapDown.scaleY= ah/ bitmapDown.height;
 	bitmapDown.alpha= 0.5;
 	// 保持进度的按钮
-	var button02 = new LButton(bitmapUp,bitmapDown,bitmapDown);
+	let button02 = new LButton(bitmapUp,bitmapDown,bitmapDown);
 	button02.x= ax;
 	button02.y= ay;
-	var text = new LTextField();
+	let text = new LTextField();
 	text.size = "15";
-	text.color = "#FFFFFF";
+	text.color = "#FFF";
 	text.text = aText;
 	text.textAlign= "center";
 	text.textBaseline= "middle";
@@ -382,35 +438,37 @@ RPG.newSimpleButton= function(aw, ah, ax, ay, aText, aFunc) {
 		}
 	});
 	return button02;
-}
+};
 
+/**
+ * ico图标按钮
+ **/
 RPG.newIconButton= function(aPicUp, aPicDown, aPicDis, ax, ay, aRate, aText, aFunc) {
 	// 这个是图标按钮
-	var bitmapDataUp = new LBitmapData(imglist["iconset"], aPicUp.x*RPG.iconStep, aPicUp.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
-	var bitmapUp = new LBitmap(bitmapDataUp);
+	let bitmapDataUp = new LBitmapData(imglist["iconset"], aPicUp.x*RPG.iconStep, aPicUp.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+	let bitmapUp = new LBitmap(bitmapDataUp);
 	bitmapUp.scaleX= aRate;
 	bitmapUp.scaleY= aRate;
-	var bitmapDataDown = new LBitmapData(imglist["iconset"], aPicDown.x*RPG.iconStep, aPicDown.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
-	var bitmapDown = new LBitmap(bitmapDataDown);
-	var bitmapDataDis = new LBitmapData(imglist["iconset"], aPicDis.x*RPG.iconStep, aPicDis.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
-	var bitmapDis = new LBitmap(bitmapDataDis);
+	let bitmapDataDown = new LBitmapData(imglist["iconset"], aPicDown.x*RPG.iconStep, aPicDown.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+	let bitmapDown = new LBitmap(bitmapDataDown);
+	let bitmapDataDis = new LBitmapData(imglist["iconset"], aPicDis.x*RPG.iconStep, aPicDis.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+	let bitmapDis = new LBitmap(bitmapDataDis);
 	bitmapDis.scaleX= aRate;
 	bitmapDis.scaleY= aRate;
 	bitmapDown.scaleX= aRate;
 	bitmapDown.scaleY= aRate;
 	// 保持进度的按钮
-	var btn = new LButton(bitmapUp, null, bitmapDown, bitmapDis);
+	let btn = new LButton(bitmapUp, null, bitmapDown, bitmapDis);
 	btn.x= ax;
 	btn.y= ay;
-	var text = new LTextField();
+	let text = new LTextField();
 	text.size = "15";
-	text.color = "#FFFFFF";
+	text.color = "#FFF";
 	text.text = aText;
 	text.textAlign= "center";
 	text.textBaseline= "middle";
 	text.x = btn.getWidth()/ 2;
 	text.y = btn.getHeight()+ 10;
-	//text.y = btn.getHeight()+ ay+ 10;
 	btn.addChild(text);
 	btn.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
 		RPG.currentButton= btn;
@@ -421,26 +479,26 @@ RPG.newIconButton= function(aPicUp, aPicDown, aPicDis, ax, ay, aRate, aText, aFu
 		}
 	});
 	return btn;
-}
+};
 
 RPG.getRandomNum= function(Min,Max){
-	var Range = Max - Min;
-	var Rand = Math.random();
+	let Range = Max - Min;
+	let Rand = Math.random();
 	return(Min + Math.floor(Rand * Range));
-}
+};
 
 // 重排动态角色，以便正确遮盖
 RPG.resetChildIndex= function(aLayer){
 	// 排序以脚为准
-	var y1, y2, h1, h2;
-	for (var i=0; i< aLayer.childList.length; i++){
+	let y1, y2, h1, h2;
+	for (let i=0; i< aLayer.childList.length; i++){
 		h1= charaLayer.childList[i].ph;
 		if (!h1) {
 			h1= charaLayer.childList[i].height+ 1;
 		}
 		y1= charaLayer.childList[i].y+ h1;
 		//c1= charaLayer.getChildIndex(charaLayer.childList[i]);
-		for (var j= i+ 1; j< aLayer.childList.length; j++){
+		for (let j= i+ 1; j< aLayer.childList.length; j++){
 			h2= charaLayer.childList[j].ph;
 			if (!h2) {
 				h2= charaLayer.childList[j].height+ STEP;
@@ -455,4 +513,4 @@ RPG.resetChildIndex= function(aLayer){
 			}
 		}
 	}
-}
+};

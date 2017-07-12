@@ -31,21 +31,20 @@
 
 RPG.menuShowState= function() {
 	//对话人物名称
-	var valueLength;
-	var hero1= mainTeam.heroList[RPG.currentHeroShow];
-	var rightPos= 110;
-	var leftPos= 10;
-	var topPos= 10;
-	var gap= 10;
-	var item1;
+	let valueLength,
+		hero1 = mainTeam.heroList[RPG.currentHeroShow],
+		rightPos = 110,
+		leftPos = 10,
+		topPos = 10,
+		gap = 10,
+		item1,
+		name;
 
-	if (!hero1){
-		hero1= mainTeam.heroList[0];
-	}
+	if (!hero1) hero1= mainTeam.heroList[0];
 	// 姓名
 	RPG.menuPage= 1;
 	ctrlLayer.removeAllChild();
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = rightPos;
 	name.y = topPos;
 	name.size = "14";
@@ -53,8 +52,8 @@ RPG.menuShowState= function() {
 	name.text = hero1.getName();
 	ctrlLayer.addChild(name);
 	// 头像
-	bitmapdata = new LBitmapData(imglist[hero1.getFace()]);
-	bitmap = new LBitmap(bitmapdata);
+	let imgData = new LBitmapData(imglist[hero1.getFace()]);
+	let bitmap = new LBitmap(imgData);
 	bitmap.x = leftPos;
 	bitmap.y = topPos;
 	ctrlLayer.addChild(bitmap);
@@ -65,7 +64,7 @@ RPG.menuShowState= function() {
 	RPG.drawScale(ctrlLayer, "hp", rightPos, 52, valueLength* hero1.getHpRate(), 12);
 	// 文字
 	topPos+= 20;
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = rightPos;
 	name.y = topPos;
 	name.size = "14";
@@ -73,7 +72,7 @@ RPG.menuShowState= function() {
 	name.text = "[" + "HP" + "]";
 	ctrlLayer.addChild(name);
 	topPos+= 20;
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = rightPos;
 	name.y = topPos;
 	name.size = "14";
@@ -85,14 +84,14 @@ RPG.menuShowState= function() {
 	valueLength= (RPG.menuWidth- rightPos)- gap;
 	RPG.drawScale(ctrlLayer, "winback", rightPos, 92, valueLength, 12);
 	RPG.drawScale(ctrlLayer, "mp", rightPos, 92, valueLength* hero1.getMpRate(), 12);
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = rightPos;
 	name.y = 70;
 	name.size = "14";
 	name.color = "#FFFFFF";
 	name.text = "[" + "MP" + "]";
 	ctrlLayer.addChild(name);
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = rightPos;
 	name.y = 90;
 	name.size = "14";
@@ -100,14 +99,14 @@ RPG.menuShowState= function() {
 	name.text = hero1.Mp+ "/"+ hero1.MaxMp;
 	ctrlLayer.addChild(name);
 	// 等级
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = leftPos;
 	name.y = 110;
 	name.size = "14";
 	name.color = "#FFFFFF";
 	name.text = "[" + "等级" + "]";
 	ctrlLayer.addChild(name);
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = leftPos;
 	name.y = 130;
 	name.size = "14";
@@ -119,23 +118,23 @@ RPG.menuShowState= function() {
 	valueLength= (RPG.menuWidth- rightPos)- gap;
 	RPG.drawScale(ctrlLayer, "winback", rightPos, 132, valueLength, 12);
 	RPG.drawScale(ctrlLayer, "exp", rightPos, 132, valueLength* hero1.getExpRate(), 12);
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = rightPos;
 	name.y = 110;
 	name.size = "14";
 	name.color = "#FFFFFF";
 	name.text = "[" + "经验" + "]";
 	ctrlLayer.addChild(name);
-	var name = new LTextField();
+	name = new LTextField();
 	name.x = rightPos;
 	name.y = 130;
 	name.size = "14";
 	name.color = "#FFFFFF";
 	name.text = hero1.Exp;
 	ctrlLayer.addChild(name);
-	// 显示持有物品
-	var showedItems=["weapon","armor","ornament"];
-	for (var i= 0; i<= 2; i++) {
+	// 显示持有物品 武器 防具 饰物
+	let showedItems=["weapon","armor","ornament"];
+	for (let i= 0; i<= 2; i++) {
 		item1= RPG.ItemList[hero1[showedItems[i]]];
 		if (item1) {
 			// 图片
@@ -154,7 +153,7 @@ RPG.menuShowState= function() {
 			ctrlLayer.addChild(text);
 		}
 	}
-}
+};
 
 RPG.menuShowItems= function(aTeam) {
 	RPG.menuPage= 2;
@@ -606,7 +605,7 @@ RPG.closeMenu= function() {
 	RPG.cmdChoose= -1;
 	// 这个动作，是为了屏蔽鼠标抬起事件
 	isKeyDown= false;
-}
+};
 
 RPG.waitMenu= function (aCallBack){ 
 	if (RPG.checkState(RPG.UNDER_WINDOWS)) { 
@@ -616,14 +615,14 @@ RPG.waitMenu= function (aCallBack){
 			aCallBack();
 		}
 	}
-} 
+};
 
 RPG.dealMenu= function(ax, ay){
     // 根据点击位置，判断移动方向
-    ax= ax- talkLayer.x;
-    ay= ay- talkLayer.y;
-	var	iconMenuItem;
-	var checkStep= STEP/ 2;
+    ax = ax- talkLayer.x;
+    ay = ay- talkLayer.y;
+	let	iconMenuItem;
+	let checkStep= STEP/ 2;
 	RPG.cmdChoose= -1;
 	for (let i=0; i< RPG.iconMenu.length; i++){
 		iconMenuItem= RPG.iconMenu[i];
@@ -636,7 +635,7 @@ RPG.dealMenu= function(ax, ay){
 	if (RPG.cmdChoose>= 0){
 		for (let i=0; i< RPG.iconMenu.length; i++){
 			iconMenuItem= RPG.iconMenu[i];
-			if (i==RPG.cmdChoose) {
+			if (i===RPG.cmdChoose) {
 				iconMenuItem.bmp.scaleX= RPG.largeIconScale;
 				iconMenuItem.bmp.scaleY= RPG.largeIconScale;
 				iconMenuItem.bmp.x= iconMenuItem.ox- RPG.iconStep* RPG.largeIconScale/ 2;
@@ -650,28 +649,35 @@ RPG.dealMenu= function(ax, ay){
  				iconMenuItem.bmp.alpha= 0.5;
 			}
 			//console.log(iconMenuItem.bmp);
-		}		
-		if (RPG.iconMenu[RPG.cmdChoose].cmd==0){
-			setTimeout(RPG.closeMenu, 100);
-		}else if (RPG.iconMenu[RPG.cmdChoose].cmd==1){
-			RPG.menuShowState();
-		}else if (RPG.iconMenu[RPG.cmdChoose].cmd==2){
-			RPG.menuShowItems(mainTeam);
-		}else if (RPG.iconMenu[RPG.cmdChoose].cmd==3){
-			RPG.menuShowTasks();
-		}else if (RPG.iconMenu[RPG.cmdChoose].cmd==4){
-			RPG.menuShowSave(true);
+		}
+
+		switch (RPG.iconMenu[RPG.cmdChoose].cmd){
+			case 0:
+                RPG.closeMenu();
+                break;
+            case 1:
+                RPG.menuShowState();
+                break;
+            case 2:
+                RPG.menuShowItems(mainTeam);
+                break;
+            case 3:
+                RPG.menuShowTasks();
+                break;
+            case 4:
+                RPG.menuShowSave(true);
+                break;
 		}
 	}
 	// 点击的时候记录鼠标位置
 	RPG.MouseX= ax;
 	RPG.MouseY= ay;
 	// 分页处理
-	if (RPG.menuPage==2){
+	if (RPG.menuPage===2){
 		// 拉动物品条，以及长按使用物品
 		//console.log(ax, ay);
 		RPG.listLayer_Y= RPG.listLayer.y;
-		var cc= Math.floor((ay- RPG.listLayer.y)/ 30);
+		let cc= Math.floor((ay- RPG.listLayer.y)/ 30);
 		//RPG.
 		//if (ax> RPG.listLayer.x && ax< RPG.listLayer.)
 		//console.log(cc);
@@ -679,14 +685,14 @@ RPG.dealMenu= function(ax, ay){
 			RPG.menuShowOneItem(cc);
        		RPG.dragTimer= setTimeout(function(){RPG.dragItemBegin(ax- 90, ay- 90, cc);}, 500);
        	}
-	} else if (RPG.menuPage==1){
+	} else if (RPG.menuPage===1){
 		// 长按卸下装备
 		RPG.dragTimer= setTimeout(function(){
-			var cc= Math.floor((ay- 160)/ 40);
-			var hero1= mainTeam.heroList[RPG.currentHeroShow];
+			let cc= Math.floor((ay- 160)/ 40);
+			let hero1= mainTeam.heroList[RPG.currentHeroShow];
 			switch (cc) {
 				case 0: 
-					mainTeam.addItem(hero1.changeWeopen(-1), 1);
+					mainTeam.addItem(hero1.changeWeapon(-1), 1);
 					RPG.menuShowState();
 					break;
 				case 1: 
@@ -699,16 +705,16 @@ RPG.dealMenu= function(ax, ay){
 					break;
 			}
 		}, 500);
-	} else if (RPG.menuPage==4 || RPG.menuPage==5){
+	} else if (RPG.menuPage===4 || RPG.menuPage===5){
 		// 选择存档槽
-		var cc= Math.floor((ay- RPG.listLayer.y)/ 30);
+		let cc= Math.floor((ay- RPG.listLayer.y)/ 30);
 		//console.log(cc);
 		if (cc>= 0 && cc< 8) {
 			RPG.listFocus.y= cc* 30;
 			RPG.saveSlot= cc;
        	}
 	}
-}
+};
 RPG.dealMenuMove= function(ax, ay){
 	if (isKeyDown){
 	    ax= ax- talkLayer.x;

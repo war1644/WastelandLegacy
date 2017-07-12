@@ -1,48 +1,31 @@
-﻿var script = {
+﻿let script = {
 	stage01:{
-		name: "沙漠旅途",
+		name: "河畔镇外郊",
 		id: "stage01",
 		map: map1_desert,
 		mapdata: {},
 		events:[
 			 // 获胜离开点
-		     {chara:"touch", img:"right", x:19,  y:18, row:1, col:3, visible: function(){return (RPG.checkSwitch("gate1win"));},action: function(aChar){
+		     {chara:"touch", img:"right", x:19,  y:18, row:1, col:3, visible: function(){return (RPG.checkSwitch("gate1win"));},action: ()=>{
 		     	RPG.startTalk(stage.talk.talk5);
-		     	RPG.waitTalk(function(){
-					// triggerEvent("WinGame");
+		     	RPG.waitTalk(()=>{
 		     		RPG.winGame();
 		     	});
 		     }},
 	     	 // 启动第一轮对话
-		     {chara:"npc", img:"m1_npc_1", x:12,  y:16, visible: function(){return (!RPG.checkSwitch("firstTalk"));},action: function(aChar){
+		     {chara:"npc", img:"npc17", x:12,  y:16,col:4, visible: ()=>{return (!RPG.checkSwitch("firstTalk"));},action: (npc)=>{
 		     	RPG.pushState(RPG.MAP_WAITING);
 		     	RPG.startTalk(stage.talk.talk1);
-		     	RPG.waitTalk(function(){
-		     		aChar.speed=1;
-		     		RPG.moveChar(aChar, [0,0,2,2,2,2,3,3,3]);
-		     		RPG.waitCharPos(aChar, 16, 17, function(){
-		     			//aChar.h
+		     	RPG.waitTalk(()=>{
+		     		npc.speed=2;
+		     		RPG.moveNpc(npc, [0,0,2,2,2,2,3,3,3]);
+		     		RPG.waitCharPos(npc, 16, 17, ()=>{
 				     	RPG.popState();
-			     		RPG.hideChar(aChar);
+			     		RPG.hideChar(npc);
 			     		RPG.setSwitch("firstTalk", true);
 		     		});
 		     	});
 		     }},
-			//测试添加玩家
-            {chara:"player", img:"npc24", x:12,  y:18,action: function(aChar){
-                RPG.pushState(RPG.MAP_WAITING);
-                RPG.startTalk(stage.talk.talk1);
-                RPG.waitTalk(function(){
-                    aChar.speed=1;
-                    RPG.moveChar(aChar, [0,0,2,2,2,2,3,3,3]);
-                    RPG.waitCharPos(aChar, 16, 17, function(){
-                        //aChar.h
-                        RPG.popState();
-                        RPG.hideChar(aChar);
-                        RPG.setSwitch("firstTalk", true);
-                    });
-                });
-            }},
 		     {chara:"npc", img:"",     x:9,   y:13, action: function(){
 		     	// 进入山洞
 		     	if (RPG.checkSwitch("accept")) {
@@ -81,7 +64,7 @@
 		     	// 从山顶回到山洞
 	     		RPG.jumpStage(script.stage02, 12, 16, RPG.DOWN);
 		     }},
-		     {chara:"npc", img:"",     x:16,  y:16, action: function(){
+		     {chara:"npc",x:16,y:16,action:()=>{
 		     	// 进入帐篷
 		     	if (RPG.checkSwitch("firstTalk")) {
 		     		// 切换场景
@@ -95,22 +78,20 @@
 		choice: {
 			choice1:{ img: "face2", msg: "操作教程",
 	    	        choise:[
-	    	        	{text:"看",action: function(){
-							// triggerEvent("BeginNew");
+	    	        	{text:"看",action: ()=>{
 				     		RPG.closeTalk();
 				     		RPG.startTalk(stage.talk.talk6);
-					     	RPG.waitTalk(function(){
+					     	RPG.waitTalk(()=>{
 					     		RPG.startTalk(stage.talk.talk7);
-						     	RPG.waitTalk(function(){
+						     	RPG.waitTalk(()=>{
 			    			 		RPG.setTalkPos("bottom");
 			    			 	});
 		    			 	});
 		     			}},
-		     			{text:"不看",action: function(){
-							// triggerEvent("Begin");
+		     			{text:"不看",action: ()=>{
 				     		RPG.closeTalk();
 				     		RPG.startTalk(stage.talk.talk7);
-					     	RPG.waitTalk(function(){
+					     	RPG.waitTalk(()=>{
 		    			 		RPG.setTalkPos("bottom");
 		    			 	});
 		     			}}]
@@ -133,7 +114,7 @@
 				     	//RPG.pushState(RPG.MAP_WAITING);
 			     		player.setCoordinate(4, 2, 3);
 			     		if (stage.charaList["boss"]) {
-			     			var char1= stage.charaList["boss"];
+			     			let char1= stage.charaList["boss"];
 				     		char1.setCoordinate(4, 1, 0);
 			     			char1.visible= true;
 			     		}
@@ -151,15 +132,15 @@
 	     		}
 		     }},
 		     // 备用地图角色
-		     {chara:"npc", img:"m1_npc_1", x:-2,  y:-2, list:"boss"},
+		     {chara:"npc", img:"npc17", x:-2,  y:-2, list:"boss"},
 			 // 山洞战斗者
-		     {chara:"touch", img:"m1_npc_5", x:6,  y:5, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){RPG.simpleFight(1, aChar);}},
-		     {chara:"touch", img:"m1_npc_5", x:14,  y:4, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){RPG.simpleFight(1, aChar);}},
-		     {chara:"touch", img:"m1_npc_5", x:13,  y:9, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){RPG.simpleFight(1, aChar);}},
-		     {chara:"touch", img:"m1_npc_2", x:9,  y:11, move:1, visible: function(){return (!RPG.checkSwitch("HookDenTaken"));}, action: function(aChar){RPG.simpleFight(0, aChar);}},
-		     {chara:"touch", img:"m1_npc_2", x:5,  y:15, move:1, visible: function(){return (!RPG.checkSwitch("HookDenTaken"));}, action: function(aChar){RPG.simpleFight(0, aChar);}},
-		     {chara:"touch", img:"m1_npc_2", x:14,  y:16, move:1, visible: function(){return (!RPG.checkSwitch("HookDenTaken"));}, action: function(aChar){RPG.simpleFight(0, aChar);}},
-		     {chara:"touch", img:"m1_npc_2", x:17,  y:14, move:1, visible: function(){return (!RPG.checkSwitch("HookDenTaken"));}, action: function(aChar){RPG.simpleFight(0, aChar);}},
+		     {chara:"touch", img:"npc5", x:6,  y:5, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){RPG.simpleFight(1, aChar);}},
+		     {chara:"touch", img:"npc5", x:14,  y:4, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){RPG.simpleFight(1, aChar);}},
+		     {chara:"touch", img:"npc5", x:13,  y:9, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){RPG.simpleFight(1, aChar);}},
+		     {chara:"touch", img:"npc1", x:9,  y:11, move:1, visible: function(){return (!RPG.checkSwitch("HookDenTaken"));}, action: function(aChar){RPG.simpleFight(0, aChar);}},
+		     {chara:"touch", img:"npc1", x:5,  y:15, move:1, visible: function(){return (!RPG.checkSwitch("HookDenTaken"));}, action: function(aChar){RPG.simpleFight(0, aChar);}},
+		     {chara:"touch", img:"npc1", x:14,  y:16, move:1, visible: function(){return (!RPG.checkSwitch("HookDenTaken"));}, action: function(aChar){RPG.simpleFight(0, aChar);}},
+		     {chara:"touch", img:"npc1", x:17,  y:14, move:1, visible: function(){return (!RPG.checkSwitch("HookDenTaken"));}, action: function(aChar){RPG.simpleFight(0, aChar);}},
 		     {chara:"npc", img:"empty",     x:10,   y:7, action: function(){
 		     	// 蝙蝠巢穴
 		     	if (!RPG.checkSwitch("BatDenTaken")){
@@ -201,10 +182,9 @@
 		     ],
 		talk: talklist2,
 		choice: {
-			choice1:{ img: "fhero", msg: "是否把神鞭交给他？",
+			choice1:{ img: "face7", msg: "是否把副炮交给他？",
 	    	        choise:[
 	    	        	{text:"给",action: function(){
-							triggerEvent("GiveSilly");
 				     		RPG.closeTalk();
 				     		mainTeam.takeItem(0);
 				     		RPG.enemyTeam[5].getHero(0).weapon= 0;
@@ -215,7 +195,6 @@
 				     		});
 		     			}},
 		     			{text:"不给",action: function(){
-							triggerEvent("CleverFight");
 				     		RPG.closeTalk();
 				     		RPG.enemyTeam[5].getHero(0).weapon= -1;
 				     		RPG.enemyTeam[5].itemList=[];
@@ -228,12 +207,12 @@
 		}
 	},
 	stage03:{
-		name: "陌生人帐篷",
+		name: "商人帐篷",
 		id: "stage03",
 		map: map1_2_tent,
 		mapdata: {},
 		events:[
-		     {chara:"npc", img:"m1_npc_1", x:3,  y:5, visible: function(){return (RPG.checkSwitch("firstTalk") && !RPG.checkSwitch("gate1win"));},action: function(aChar){
+		     {chara:"npc", img:"npc1", x:3,  y:5, visible: function(){return (RPG.checkSwitch("firstTalk") && !RPG.checkSwitch("gate1win"));},action: function(aChar){
 		     	// 第二轮说话
 		     	if (RPG.checkSwitch("accept")) {
 		     		RPG.startTalk(stage.talk.talk4);
@@ -286,7 +265,7 @@
 		     ],
 		talk: talklist3,
 		choice: {
-			choice1:{ img: "fhero", msg: "是否同意去取神鞭？",
+			choice1:{ img: "face7", msg: "是否同意去？",
 	    	        choise:[
 	    	        	{text:"去",action: function(){
 				     		RPG.closeTalk();
@@ -311,29 +290,28 @@
 		hasBig: true,
 		events:[
 			 // 魔王龙
-		     {chara:"touch", img:"bigdragon", x:8,  y:7, col:4, move:1, action: function(aChar){
+		     {chara:"touch", img:"no17", x:8,  y:7, col:4, move:1, action: (npc)=>{
 				RPG.startTalk(stage.talk.talk2);
-				RPG.waitTalk(function(){
-		     		RPG.simpleFight(4, aChar);
+				RPG.waitTalk(()=>{
+		     		RPG.simpleFight(4, npc);
 		     	});
 		     }},
 		     // 宝箱
-		     {chara:"npc", img:"dragonchest", x:8,  y:8, move:0, 
-		     	action: function(aChar){
-		     		if (!RPG.checkSwitch("dragonchest")){
-			    	 	aChar.anime.setAction(3);
-			    	 	RPG.setSwitch("dragonchest", true);
+		     {chara:"npc", img:"box", x:8,  y:8, move:0,
+		     	action: function(npc){
+		     		if (!RPG.checkSwitch("box")){
+			    	 	npc.anime.setAction(3);
+			    	 	RPG.setSwitch("box", true);
 			    	 	mainTeam.addItem(0, 1, true);
-						triggerEvent("GotWhip");
 			    	 }
 		     	},
-		     	preSet: function(aChar){
-		     		if (RPG.checkSwitch("dragonchest")){
-			    	 	aChar.anime.setAction(3,0);
+		     	preSet: function(npc){
+		     		if (RPG.checkSwitch("box")){
+			    	 	npc.anime.setAction(3,0);
 			    	 	// 走一帧，以使正常显示
-						aChar.anime.onframe();
+						npc.anime.onframe();
 		     		} else {
-			    	 	aChar.anime.setAction(0);		     			
+			    	 	npc.anime.setAction(0);
 		     		}
 		     	}
 		     },
@@ -365,8 +343,10 @@
 
 
 //根据脚本，初始化游戏画面
-function initScript(ax, ay, aface){
-    
+/**
+ * x,y 玩家进入场景的x,y坐标
+ **/
+function initScript(x,y,frame=0){
 	//效果层初始化
 	effectLayer.removeAllChild();
 	//对话层初始化
@@ -375,97 +355,94 @@ function initScript(ax, ay, aface){
 	RPG.setTalkPos("bottom");
 	//当前场景地图
 	CurrentMap= stage.map;
-	// 首先添加人物，为了确定地图的自动移动
+	//先添加人物NPC，为了确定地图的自动移动
 	addChara();
 
-	setHero(ax, ay, aface);
+	setHero(x,y,frame);
 	// 绘制地图
 	drawMap(CurrentMap);
 	// 立即检测自动动作
 	checkAuto();
 }
+
 //走到触发型
-function checkJump(){
-	var jump = stage.events;
-	var jumpevent;
-	var xx, yy, ff;
-	for(var i=0;i<jump.length;i++){
-		jumpevent = jump[i];
-		if (jumpevent.img===""){
-			//console.log(jumpstage);
-			if(player.x == jumpevent.x * 32 && player.y == jumpevent.y * 32){
+function checkTrigger(){
+	let events = stage.events;
+	let triggerEvent;
+	for(let i=0;i<events.length;i++){
+		triggerEvent = events[i];
+		if (!triggerEvent.img){
+			if( (player.x === triggerEvent.x * STEP) && (player.y === triggerEvent.y * STEP) ){
 				//获取该场景脚本数据
-				if (jumpevent.action){
+				if (triggerEvent.action){
 					// 一旦触发事件，按键取消
 					isKeyDown= false;
-					jumpevent.action();
+					triggerEvent.action();
 					return;
 				}
 			}
 		}
 	}
 }
-// 与NPC触碰触发型
+/**
+ * 检测NPC碰撞触发型事件
+ */
 function checkTouch(){
 	// 仅在地图状态下可以触发
-	if (!RPG.checkState(RPG.MAP_CONTROL)) {
-		return;		
-	}
-	var jump = stage.events;
-	var jumpaction, chara;
-	var xx, yy, ff;
-	var ww1, ww2, hh1, hh2;
-		for(key in charaLayer.childList){
-			//不可见的不处理
-			if (!charaLayer.childList[key].visible){
-				continue;
+	if (!RPG.checkState(RPG.MAP_CONTROL)) return;
+	let actionEvent, npc,ww1, ww2, hh1, hh2;
+	for(let key in charaLayer.childList){
+		//不可见的不处理
+		if (!charaLayer.childList[key].visible) continue;
+        console.log(key);
+        //判断周围有npc
+		actionEvent = charaLayer.childList[key].rpgEvent;
+		if (charaLayer.childList[key].touch){
+			npc = charaLayer.childList[key];
+			ww1= ww2= npc.getWidth()/ STEP;
+			hh1= hh2= npc.getHeight()/ STEP;
+			console.log('npc',npc);
+			console.log('wh',ww1,hh1);
+			if (ww1> 2) {
+				ww1= 2;
+				ww2= 2;
 			}
-			//判断周围有npc
-			jumpaction= charaLayer.childList[key].rpgEvent;			
-			if (charaLayer.childList[key].touch){
-				chara= charaLayer.childList[key];
-				ww1= ww2= chara.getWidth()/ STEP;
-				hh1= hh2= chara.getHeight()/ STEP;
-				if (ww1> 2) {
-					ww1= 2;
-					ww2= 2;
-				}
-				if (hh1> 1) {
-					//hh1= hh1+ ;
-					hh2= 1;
-				}
-				//console.log(jumpstage);
-				if(player.px >= chara.px- ww1 &&
-					player.px <= chara.px+ ww2 &&
-			 		player.py >= chara.py- hh1 &&
-				 	player.py <= chara.py+ hh2){
-					//获取该场景脚本数据
-					if (jumpaction){
-						// 首先转身
-						chara.anime.setAction(3- player.direction);
-						chara.anime.onframe();
-						// 一旦触发事件，按键取消
-						isKeyDown= false;
-						jumpaction(chara);
-						return;
+			if (hh1> 1) {
+				hh2= 1;
+			}
+			if( player.px >= npc.px- ww1 &&
+				player.px <= npc.px+ ww2 &&
+				player.py >= npc.py- hh1 &&
+				player.py <= npc.py+ hh2 ){
+				//获取该场景脚本数据
+				if (actionEvent){
+					// 首先转身
+					npc.anime.setAction(3 - player.direction);
+					npc.anime.onframe();
+					// 一旦触发事件，按键取消
+					isKeyDown= false;
+					actionEvent(npc);
+					return;
 				}
 			}
 		}
 	}
 }
 
-// 自动触发型
+/**
+ * 检测自动触发型事件
+ */
 function checkAuto(){
-	let jump = stage.events;
-	let jumpevent;
-	for(let i=0;i<jump.length;i++){
-		jumpevent = jump[i];
-		if (jumpevent.chara==="auto"){
-			if (jumpevent.visible && jumpevent.visible()){
-				if (jumpevent.action){
+	let events = stage.events;
+	let autoEvent;
+	for(let i=0;i<events.length;i++){
+		autoEvent = events[i];
+		if (autoEvent.chara==="auto"){
+			if (autoEvent.visible && autoEvent.visible()){
+				if (autoEvent.action){
 					// 一旦触发事件，按键取消
 					isKeyDown= false;
-					jumpevent.action();
+					autoEvent.action();
 					return;
 				}
 			}

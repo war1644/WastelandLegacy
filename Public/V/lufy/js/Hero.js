@@ -2,12 +2,12 @@
 	RPG.MAXEXP= 100;
 	// 英雄信息
 	RPG.HeroList= [
-		{index:0, chara:"blackTank", face:"fhero",col:4,name:"路漫漫", atkEff: "pSword", force:100, mind:80, atk:50, def: 50, hp: 500, hpAdd: 50,desc:["主角"]},
-		{index:1, chara:"m1_npc_1", face:"m1_npc_1f", name:"路人甲", force:50, mind:60, atk:40, def: 50, hp: 400, hpAdd: 50, desc:["骗子"]},
-		{index:2, chara:"m1_npc_2", face:"", name:"蝎子", desc:"蝎子", atkEff: "pAttack", force:50, mind:20, atk:65, def: 45, hp: 350, hpAdd: 40},
-		{index:3, chara:"m1_npc_5", face:"", name:"蝙蝠", desc:"蝙蝠", atkEff: "pStick", force:50, mind:20, atk:60, def: 40, hp: 300, hpAdd: 40},
-		{index:4, chara:"bigdragon", face:"bigdragon", col:4, name:"魔王", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["魔王"]},
-        {index:5, chara:"npc24", face:"bigdragon", col:4, name:"机械师", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["魔王"]}
+		{index:0, chara:"blackTank", face:"face7",col:4,name:"路漫漫", atkEff: "pSword", force:100, mind:80, atk:50, def: 50, hp: 500, hpAdd: 50,desc:["主角"]},
+		{index:1, chara:"npc1", face:"face6", name:"白色战车", force:50, mind:60, atk:40, def: 50, hp: 400, hpAdd: 50, desc:["xxxxxxx"]},
+		{index:2, chara:"npc5", face:"", name:"商人", desc:"商人", atkEff: "pAttack", force:50, mind:20, atk:65, def: 45, hp: 350, hpAdd: 40},
+		{index:3, chara:"npc24", face:"", name:"黑色战车", desc:"黑色战车", atkEff: "pStick", force:50, mind:20, atk:60, def: 40, hp: 300, hpAdd: 40},
+		{index:4, chara:"no17", face:"face1", col:4, name:"红色战车", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxxx"]},
+        {index:5, chara:"npc17", face:"face3", col:4, name:"雷娜", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]}
 	];
 
 RPG.HeroPlayer={
@@ -54,11 +54,11 @@ RPG.HeroPlayer={
 		return this.Exp/ 100;
 	},
 	// 设置等级，直接影响的是上限值
-	setLevel: function(aLev) {
-		var person= this.getPerson();
-		this.Level= aLev;
-		this.MaxHp= person.hp+ person.hpAdd* aLev;
-		this.MaxMp= Math.ceil(person.mind* 5* (aLev+ 10)/ 200);
+	setLevel: function(lv) {
+		let person= this.getPerson();
+		this.Level= lv;
+		this.MaxHp= person.hp+ person.hpAdd* lv;
+		this.MaxMp= Math.ceil(person.mind* 5* (lv+ 10)/ 200);
 	},
 	// 满回复
 	fullHeal: function(){
@@ -66,17 +66,17 @@ RPG.HeroPlayer={
 		this.Mp= this.MaxMp;
 	},
 	// 受攻击，减血
-	beHit: function(aHit){
-		aHit= Math.floor(aHit);
-		this.Hp= this.Hp- aHit;
+	beHit: function(hit){
+		hit= Math.floor(hit);
+		this.Hp= this.Hp- hit;
 		if (this.Hp<= 0) {
 			this.Hp= 0;
 			this.alive= false;
 		}
 	},
-	addHp: function(aHit){
-		aHit= Math.ceil(aHit);
-		this.Hp= Number(this.Hp)+ Number(aHit);
+	addHp: function(hit){
+		hit= Math.ceil(hit);
+		this.Hp= Number(this.Hp)+ Number(hit);
 		if (this.Hp>= this.MaxHp) {
 			this.Hp= this.MaxHp;
 		}
@@ -85,37 +85,37 @@ RPG.HeroPlayer={
 			this.alive= true;
 		}
 	},
-	addMp: function(aHit){
-		aHit= Math.ceil(aHit);
-		this.Mp= this.Mp+ aHit;
+	addMp: function(hit){
+		hit= Math.ceil(hit);
+		this.Mp= this.Mp+ hit;
 		if (this.Mp>= this.MaxMp) {
 			this.Mp= this.MaxMp;
 		}
 	},
 	// 增加经验值
-	addExp: function(aExp){
-		aExp= Math.ceil(aExp);
-		this.Exp= Number(this.Exp)+ Number(aExp);
+	addExp: function(exp){
+		exp= Math.ceil(exp);
+		this.Exp= Number(this.Exp)+ Number(exp);
 		while (this.Exp> RPG.MAXEXP) {
 			this.setLevel(Number(this.Level)+ 1);
 			this.Exp -= RPG.MAXEXP;
 		}
 	},
 	// 更换武器
-	changeWeopen: function(aId){
-		var a= this.weapon;
-		this.weapon= aId;
+	changeWeapon: function(id){
+		let a= this.weapon;
+		this.weapon= id;
 		return Number(a);
 	},
 	// 更换防具
 	changeArmor: function(aId){
-		var a= this.armor;
+		let a= this.armor;
 		this.armor= aId;
 		return Number(a);
 	},
 	// 更换装饰
 	changeOrn: function(aId){
-		var a= this.ornament;
+		let a= this.ornament;
 		this.ornament= aId;
 		return Number(a);
 	},
@@ -126,48 +126,48 @@ RPG.HeroPlayer={
 		return RPG.ItemList[this.armor];
 	},
 
-}
+};
 
 // 物理攻击效果的计算
-RPG.physicalAttack= function(aHeroAtk, aHeroDef){
-	var atk1, def1;
-	var pAtk= aHeroAtk.getPerson();
-	var pDef= aHeroDef.getPerson();
-	var weaponAddOn= 1;
-	var armorAddOn= 1;
-	var vaporAtk, vaporDef;
+RPG.physicalAttack= function(heroAtk, heroDef){
+	let atk, def;
+	let pAtk= heroAtk.getPerson();
+	let pDef= heroDef.getPerson();
+	let weaponAddOn= 1;
+	let armorAddOn= 1;
+	let vaporAtk, vaporDef;
 	// 攻方兵器加成
-	if (aHeroAtk.weapon>= 0) {
-		var aon= aHeroAtk.getWeapon().addon;
+	if (heroAtk.weapon>= 0) {
+		let aon= heroAtk.getWeapon().addon;
 		if (aon){
 			//weaponAddOn= (aon+ 100)/ 100;
 			weaponAddOn= aon;
 		}
 	}
 	// 士气加成
-	vaporAtk= (aHeroAtk.Hp/ aHeroAtk.MaxHp+ 1)/ 2* 100;
+	vaporAtk= (heroAtk.Hp/ heroAtk.MaxHp+ 1)/ 2* 100;
 	// 攻击力
-	atk1= (4000/ (140- pAtk.force)+ pAtk.atk* 2+ vaporAtk)* (aHeroAtk.Level/ 10+ 1)* weaponAddOn;
+	atk= (4000/ (140- pAtk.force)+ pAtk.atk* 2+ vaporAtk)* (heroAtk.Level/ 10+ 1)* weaponAddOn;
 	// 防守方护甲加成
-	if (aHeroDef.armor>= 0) {
-		var aon= aHeroDef.getArmor().addon;
+	if (heroDef.armor>= 0) {
+		let aon= heroDef.getArmor().addon;
 		if (aon){
 			//armorAddOn= (aon+ 100)/ 100;
 			armorAddOn= aon;
 		}
 	}
 	// 士气加成
-	vaporDef= (aHeroDef.Hp/ aHeroDef.MaxHp+ 1)/ 2* 100;
+	vaporDef= (heroDef.Hp/ heroDef.MaxHp+ 1)/ 2* 100;
 	// 防御力
-	def1= (4000/ (140- pDef.force)+ pDef.def* 2+ vaporDef)* (aHeroDef.Level/ 10+ 1)* armorAddOn;
+	def= (4000/ (140- pDef.force)+ pDef.def* 2+ vaporDef)* (heroDef.Level/ 10+ 1)* armorAddOn;
 	// 攻击效果随机加成 0.9~1.1
-	var ran= (RPG.getRandomNum(0, 100)+ 1000)/ 1000;
-	var result= (atk1- def1/ 2)* ran;
+	let ran= (RPG.getRandomNum(0, 100)+ 1000)/ 1000;
+	let result= (atk- def/ 2)* ran;
 	if (result<= 0) {
 		result= 1;
 	}
-	if (result> aHeroDef.Hp) {
-		result= aHeroDef.Hp;
+	if (result> heroDef.Hp) {
+		result= heroDef.Hp;
 	}
 	return result;
-}
+};

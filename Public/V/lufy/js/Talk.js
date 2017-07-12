@@ -55,7 +55,7 @@ function addTalk(){
 		}
 		//如果前方没有npc，则检查跳转的可能
 		if(!RPG.talkScript) {
-			checkJump();
+            checkTrigger();
 			return;
 		}
 	} else{
@@ -77,7 +77,7 @@ RPG.setTalkPos= function(aPos) {
 	 	RPG.TALKHEIGHT= 100;
 	 	RPG.TALKTOP= HEIGHT - RPG.TALKHEIGHT- RPG.TALKLEFT;
 	}
-}
+};
 
 RPG.makeChoise= function(optionScript) {
 	//如果对话内容为空，则开始判断是否可以对话
@@ -116,15 +116,14 @@ RPG.makeChoise= function(optionScript) {
 			}
 		
 		//分支选项
-		for (var i= 0; i< optionScript.choise.length; i++){
-			//var y=
-   			var button01= RPG.newSimpleButton(RPG.TALKWIDTH- 10, 22, RPG.TALKLEFT+ 5, RPG.talkLinePos, optionScript.choise[i].text, optionScript.choise[i].action);
+		for (let i= 0; i< optionScript.choise.length; i++){
+   			let button01= RPG.newSimpleButton(RPG.TALKWIDTH- 10, 22, RPG.TALKLEFT+ 5, RPG.talkLinePos, optionScript.choise[i].text, optionScript.choise[i].action);
 			talkLayer.addChild(button01);
 			RPG.talkLinePos= RPG.talkLinePos+ 25;
 		}
 		talkLayer.x = 0;
 		talkLayer.y = 0;
-}
+};
 
 RPG.startTalk= function(talkList) {
 	let border = 10;
@@ -216,15 +215,12 @@ RPG.closeTalk= function() {
 	RPG.choiseScript = null;
 	RPG.ScriptIndex++;
 	isKeyDown= false;
-}
+};
 
-RPG.waitTalk= function (aCallBack){
+RPG.waitTalk= function (callback){
     if (RPG.talkScript) {
-        console.log(1);
-        setTimeout(function(){RPG.waitTalk(aCallBack);}, 500);
+        setTimeout(function(){RPG.waitTalk(callback);}, 500);
 	} else {
-		if (aCallBack) {
-			aCallBack();
-		}
+		if (callback) callback();
 	}
-} 
+};

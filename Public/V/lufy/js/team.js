@@ -63,7 +63,7 @@ RPG.PlayerTeam= {
 			// 装配类
 			switch (item1.getItemDesc().type) {
 				case 1: 
-					this.addItem(hero1.changeWeopen(item1.index), 1);
+					this.addItem(hero1.changeWeapon(item1.index), 1);
 					break;
 				case 2: 
 					this.addItem(hero1.changeArmor(item1.index), 1);
