@@ -5,7 +5,7 @@
  * @email lufy.legend@gmail.com
  **/
 // 图区大小
-let STEP = 32;
+let STEP = 24;
 let WIDTH= 256;
 let tempLength= 0;
 if (window.innerHeight>=window.innerWidth){
@@ -61,6 +61,8 @@ let loadingLayer,
  	CurrentMap,
 // 当前地图的行动控制层
  	CurrentMapMove,
+	// 当前地图的事件控制层
+    CurrentMapEvents,
 //图片path数组
  	imgData = [],
  	stage,//当前场景
@@ -75,8 +77,8 @@ function main(){
 		LSystem.screen(LStage.FULL_SCREEN);
 	}
 	//准备读取图片
-    //imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
-    //imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});
+    imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
+    imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});
     imgData.push({type:"js",path:"./js/talklist.js"});
 	imgData.push({type:"js",path:"./js/Talk.js"});
 	imgData.push({type:"js",path:"./js/Character.js"});
@@ -116,7 +118,13 @@ function main(){
     imgData.push({name:"face7",path:"./image/face/face7.png"});
     imgData.push({name:"face8",path:"./image/face/face8.png"});
 
-	imgData.push({name:"iconset",path:"./image/IconSet.png"});
+    //map
+    imgData.push({name:"home1_0",path:"./assets/home1_0.png"});
+    imgData.push({name:"home1_1",path:"./assets/home1_1.png"});
+    // imgData.push({name:"home1",type:"text",path:"./assets/home1.json"});
+
+
+    imgData.push({name:"iconset",path:"./image/IconSet.png"});
 	imgData.push({name: "focus", path: "./image/focus.png" });
 	imgData.push({name: "hp", path: "./image/hp.png" });
 	imgData.push({name: "mp", path: "./image/mp.png" });
@@ -141,7 +149,7 @@ function main(){
 		},
 		function(result){
 			imglist = result;
-			removeChild(loadingLayer);
+            removeChild(loadingLayer);
 			loadingLayer = null;
 			gameInit();
 		}
@@ -150,7 +158,6 @@ function main(){
 function gameInit(){
 	//数据初始化优先于显示部分的初始化
 	LGlobal.aspectRatio = PORTRAIT;
-	
 	//游戏层显示初始化
 	RPG.layerInit();
 
@@ -202,6 +209,18 @@ function drawBack(){
 	name.color = "#fff";
 	name.text = "【初始化失败，请重新载入游戏】";
 	backLayer.addChildAt(name, 1);
+}
+function drawImgMap(map) {
+    //得到瓦片
+    let bitmapData = new LBitmapData(imglist['home1_0']);
+    let bitmapDataUp = new LBitmapData(imglist['home1_1']);
+    let bitmap = new LBitmap(bitmapData);
+    let bitmapUp = new LBitmap(bitmapDataUp);
+	// 行动控制层
+    CurrentMapMove= map.layers[5];
+    CurrentMapEvents = map.layers[6]['objects'];
+	upLayer.addChild(bitmapUp);
+	mapLayer.addChild(bitmap);
 }
 
 function drawMap(aMap){
@@ -275,9 +294,9 @@ function drawMap(aMap){
 			}
 			//瓦片换算为在地图的x,y坐标
 			xx= j % ww;
-			yy= Math.floor(j / hh);
+			yy= (j / hh)<<0;
 			//瓦片换算为在瓦片集的x,y坐标
-			indexY = Math.floor(index /a);
+			indexY = (index /a)<<0;
 			indexX = index- indexY* a;
 			//console.log(index,xx, yy,indexX, indexY);
 			//小图片的横坐标
@@ -362,6 +381,16 @@ function setHero(x, y, frame){
 	charaLayer.addChild(hero);
     hero.anime.setAction(frame);
 }
+
+/**
+ * tile map event data process
+ */
+function mapEventProcess() {
+    let len = CurrentMapEvents.length;
+    for (let i = 0; i < len; i++) {
+        stage.events[CurrentMapEvents[i].id]
+    }
+}
 //添加人物
 function addChara(){
 	let charaList = stage.events,
@@ -369,6 +398,7 @@ function addChara(){
 		charaObj,
 		valid;
 	charaLayer.removeAllChild();
+
 	for(let i=0;i<charaList.length;i++){
 		charaObj = charaList[i];
 		if(charaObj.chara === "player"){
@@ -466,4 +496,35 @@ function onFrame(){
 			}
 		}
 	}
+}
+
+/**
+ * 游戏音乐管理类
+ * @param sound {string} 音乐名
+ * @param loop  {boolean} 是否循环播放
+ * @param volume  {number} 音量0~1
+ * @returns
+ */
+class SoundManage{
+    constructor(sound=false,loop=false,volume=0.6){
+        this.soundName = sound;
+        if (sound) {
+            this.bgm = imglist[sound];
+        } else {
+            this.bgm = imglist[RPG.curBGM];
+        }
+        this.bgm = new LSound(this.bgm);
+        this.play(loop,volume);
+    }
+
+    play(loop,volume) {
+        this.bgm.setVolume(volume);
+        this.bgm.play();
+        if (loop) {
+            this.bgm.data.loop = true;
+            if (this.soundName) {
+                RPG.curBGM = this.soundName;
+            }
+        }
+    }
 }

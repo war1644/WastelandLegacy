@@ -28,7 +28,7 @@ RPG.newGame = function () {
 	//*/
 	RPG.initSwitch();
 	//载入场景
-	stage = script.stage01;
+    stage = script.stage05;
 	//初始化敌人
     // RPG.initEnemyTeam();
 

@@ -220,23 +220,23 @@ Character.prototype.onmove = function (){
 		checkTouch();
 		self.moveIndex = 0;
 		//一个地图步长移动完成后，如果地图处于滚动状态，则移除多余地图块
-		if(self.isHero && mapmove){
+		 /*if(self.isHero && mapmove){
 			// MapLayer 复位到32的整数位
 			if (mapLayer.x % STEP !== 0) {
-				console.log(mapLayer.x);
+				console.log('mapLayerx',mapLayer.x);
 				mapLayer.x= mapLayer.x- mapLayer.x % STEP;
 				upLayer.x= mapLayer.x;
 				charaLayer.x= mapLayer.x;
 			}
 			if (mapLayer.y % STEP !== 0) {
-				console.log(mapLayer.y);
+				console.log('mapLayery',mapLayer.y);
 				mapLayer.y= mapLayer.y- mapLayer.y % STEP;
 				upLayer.y= mapLayer.y;
 				charaLayer.y= mapLayer.y;
 			}
 			//drawMap(CurrentMap);
 			//delMap();
-		}
+		}*/
 		//判断方向是否改变
 		if(self.direction !== self.direction_next){
 			self.direction = self.direction_next;
@@ -308,7 +308,7 @@ Character.prototype.takePlace = function (){
  **/
 Character.prototype.checkRoad = function (dir){
 	let self = this;
-	let tox,toy,myCoordinate;
+	let toX,toY,myCoordinate;
 
     // 指定路线时，不受障碍物限制
 	if (self.moveMode===2) return true;
@@ -319,38 +319,39 @@ Character.prototype.checkRoad = function (dir){
 	//开始计算移动目的地的坐标
 	switch (dir){
 		case UP:
-			tox = myCoordinate.x;
-			toy = myCoordinate.y - 1;
+			toX = myCoordinate.x;
+			toY = myCoordinate.y - 1;
 			break;
 		case LEFT:
-			tox = myCoordinate.x - 1;
-			toy = myCoordinate.y ;
+			toX = myCoordinate.x - 1;
+			toY = myCoordinate.y ;
 			break;
 		case RIGHT:
-			tox = myCoordinate.x + 1;
-			toy = myCoordinate.y;
+			toX = myCoordinate.x + 1;
+			toY = myCoordinate.y;
 			break;
 		case DOWN:
-			tox = myCoordinate.x;
-			toy = myCoordinate.y + 1;
+			toX = myCoordinate.x;
+			toY = myCoordinate.y + 1;
 			break;
 	}
 	
 	//超过地图边界
-	if(toy <= -1 || tox <= -1) return false;
-	if(toy >= CurrentMap.height || tox >= CurrentMap.width) return false;
+    console.log('toX',toX,'toY',toY);
+    if(toY <= -1 || toX <= -1) return false;
+	if(toY >= CurrentMap.height || toX >= CurrentMap.width) return false;
 
 	//目的地为障碍，则不可移动
-	if(CurrentMapMove.data[toy*CurrentMap.width+ tox] > 0) return false;
+	if(CurrentMapMove.data[toY*CurrentMap.width+ toX] > 0) return false;
 
 	//如果前方有NPC，同样不可移动
 	for(let key in charaLayer.childList){
         // 不可见的NPC不在考虑内
 		if (!charaLayer.childList[key].visible) continue;
         // NPC本身占位
-		if(charaLayer.childList[key].x/ STEP === tox && charaLayer.childList[key].y/ STEP === toy) return false;
+		if(charaLayer.childList[key].x/ STEP === toX && charaLayer.childList[key].y/ STEP === toY) return false;
         // 运动中NPC，则是它预占位
-		if(charaLayer.childList[key].px === tox && charaLayer.childList[key].py === toy) return false;
+		if(charaLayer.childList[key].px === toX && charaLayer.childList[key].py === toY) return false;
 	}
 	return true;
 };

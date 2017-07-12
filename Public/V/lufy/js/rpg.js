@@ -1,17 +1,18 @@
 // 全局标记参数
-var RPG = {};
+let RPG = {};
+
 // based on https://github.com/documentcloud/underscore/blob/bf657be243a075b5e72acc8a83e6f12a564d8f55/underscore.js#L767
 RPG.extend = function ( obj, source ) {
 	// ECMAScript5 compatibility based on: http://www.nczonline.net/blog/2012/12/11/are-your-mixins-ecmascript-5-compatible/
 	if ( Object.keys ) {
-		var keys = Object.keys( source );
-		for (var i = 0, il = keys.length; i < il; i++) {
-			var prop = keys[i];
+		let keys = Object.keys( source );
+		for (let i = 0, il = keys.length; i < il; i++) {
+			let prop = keys[i];
 			Object.defineProperty( obj, prop, Object.getOwnPropertyDescriptor( source, prop ) );
 		}
 	} else {
-		var safeHasOwnProperty = {}.hasOwnProperty;
-		for ( var prop in source ) {
+		let safeHasOwnProperty = {}.hasOwnProperty;
+		for ( let prop in source ) {
 			if ( safeHasOwnProperty.call( source, prop ) ) {
 				obj[prop] = source[prop];
 			}
@@ -22,108 +23,99 @@ RPG.extend = function ( obj, source ) {
 
 // beget继承方法
 RPG.beget= function(o){
-	var F= function(){};
+	let F= function(){};
 	F.prototype= o;
-	var G= new F();
+	let G= new F();
 	if (G.init) {
 		G.init();
 	}
 	return G;
 };
 // RPG基本管理参数，根据不同项目，应当调整
+RPG.curBGM = {};
+//方向常量
+RPG.DOWN = 0;
+RPG.LEFT = 1;
+RPG.RIGHT = 2;
+RPG.UP = 3;
+// 地图单位
+RPG.STEP = 32;
+RPG.ctrState= 0;
+//显示进度条所用层
+RPG.loadingLayer={};
+//游戏底层
+RPG.backLayer={};
+//地图层
+RPG.mapLayer={};
+//人物层
+RPG.charaLayer={};
+//效果层
+RPG.effectLayer={};
+//对话层（及菜单，战斗）
+RPG.talkLayer={};
+//子菜单层（多个菜单页）
+RPG.ctrlLayer={};
+RPG.descLayer={};
+// 状态控制===========================================================
+// 状态变量
+RPG.state=-1;
+// 状态栈
+RPG.stateStack=[];
+// 单值状态值
+RPG.IN_COVER= 0;           // 封面
+RPG.COVER_MENU= 1;         // 封面载入菜单
+RPG.MAP_CONTROL= 2;        // 正常控制
+RPG.MAP_WAITING= 3;        // 等待NPC移动，不可控制
+RPG.IN_MENU= 4;            // 菜单中
+RPG.IN_FIGHTING= 5;        // 在战斗菜单中
+RPG.IN_TALKING= 6;         // 对话状态中
+RPG.IN_CHOOSING= 7;        // 选择状态中
+RPG.IN_HELP= 8;            // 在帮助窗口下
+RPG.IN_OVER= 9;            // 在结束状态下
+RPG.FIGHT_RESULT= 10;      // 检查战斗结果（防止战斗异常重入）
+// 组合状态，100以上
+RPG.UNDER_MAP= 101;        // 地图下，包括地图控制和地图等待
+RPG.UNDER_MENU= 102;       // 菜单下，包括主菜单和载入菜单
+RPG.UNDER_WINDOWS= 103;       // 各种窗口下，包括主菜单、载入菜单、战斗系统
+RPG.stateList={101:[RPG.MAP_CONTROL,RPG.MAP_WAITING],
+				102:[RPG.IN_MENU,RPG.COVER_MENU],
+				103:[RPG.IN_MENU,RPG.COVER_MENU,RPG.IN_FIGHTING]};
+// 流程控制==============================================
+// 内置开关量
+RPG.SWITCH={};
+// 敌人战斗队数据集合
+RPG.enemyTeam=[];
+//======================================================================
+// 按钮管理
+RPG.currentButton= null;
+// ==========================================================
 
-	//方向常量
-	RPG.DOWN = 0;
-	RPG.LEFT = 1;
-	RPG.RIGHT = 2;
-	RPG.UP = 3;
-	// 地图单位
-	RPG.STEP = 32;
-	RPG.ctrState= 0;
-	/**层变量*/
-	//显示进度条所用层
-	RPG.loadingLayer;
-	//游戏底层
-	RPG.backLayer;
-	//地图层
-	RPG.mapLayer;
-	//人物层
-	RPG.charaLayer;
-	//效果层
-	RPG.effectLayer;
-	//对话层（及菜单，战斗）
-	RPG.talkLayer;
-	//子菜单层（多个菜单页）
-	RPG.ctrlLayer;
-	RPG.descLayer;
-	// 状态控制===========================================================
-	// 状态变量
-	RPG.state;
-	// 状态栈
-	RPG.stateStack=[];
-	// 单值状态值
-	RPG.IN_COVER= 0;           // 封面
-	RPG.COVER_MENU= 1;         // 封面载入菜单
-	RPG.MAP_CONTROL= 2;        // 正常控制
-	RPG.MAP_WAITING= 3;        // 等待NPC移动，不可控制
-	RPG.IN_MENU= 4;            // 菜单中
-	RPG.IN_FIGHTING= 5;        // 在战斗菜单中
-	RPG.IN_TALKING= 6;         // 对话状态中
-	RPG.IN_CHOOSING= 7;        // 选择状态中
-	RPG.IN_HELP= 8;            // 在帮助窗口下
-	RPG.IN_OVER= 9;            // 在结束状态下
-	RPG.FIGHT_RESULT= 10;      // 检查战斗结果（防止战斗异常重入）
-	// 组合状态，100以上
-	RPG.UNDER_MAP= 101;        // 地图下，包括地图控制和地图等待
-	RPG.UNDER_MENU= 102;       // 菜单下，包括主菜单和载入菜单
-	RPG.UNDER_WINDOWS= 103;       // 各种窗口下，包括主菜单、载入菜单、战斗系统
-	RPG.stateList={101:[RPG.MAP_CONTROL,RPG.MAP_WAITING], 
-					102:[RPG.IN_MENU,RPG.COVER_MENU], 
-					103:[RPG.IN_MENU,RPG.COVER_MENU,RPG.IN_FIGHTING]};
- 	// 流程控制==============================================
- 	// 内置开关量
- 	RPG.SWITCH={};
- 	// 敌人战斗队数据集合
-	RPG.enemyTeam=[];
- 	//======================================================================
- 	// 按钮管理
- 	RPG.currentButton= null;
-	// ==========================================================
-RPG.setState= function(aState){
-	//PG.state= aState;
+RPG.setState= function(state){
 	RPG.stateStack.length= 0;
-	RPG.pushState(aState);
-}
-RPG.pushState= function(aState){
-	RPG.stateStack.push(aState);
-	RPG.state= aState;
-	console.log("push", RPG.state, RPG.stateStack);
-}
+	RPG.pushState(state);
+};
+RPG.pushState= function(state){
+	RPG.stateStack.push(state);
+	RPG.state= state;
+	// console.log("push", RPG.state, RPG.stateStack);
+};
 RPG.popState= function(){
 	RPG.stateStack.pop();
 	RPG.state = RPG.stateStack[RPG.stateStack.length- 1];
-	console.log("pop", RPG.state, RPG.stateStack);
-}
-RPG.checkState= function(aState){
-	if (aState< 50) {
-		if (RPG.state== aState){
-			return true;
-		} else {
-			return false;
-		}
+	// console.log("pop", RPG.state, RPG.stateStack);
+};
+RPG.checkState= function(state){
+	if (state< 50) {
+		if(RPG.state === state) return true;
+		return false;
 	} else {
-		var stateSet= RPG.stateList[aState];
-		if (stateSet){
-			for (var i= 0; i< stateSet.length; i++) {
-				if (RPG.state== stateSet[i]){
-					return true;
-				}
-			}
-			return false;
-		} else {
-			return false;
-		}
+		let stateSet= RPG.stateList[state];
+		if (!stateSet) return false;
 
+		for (let i= 0; i< stateSet.length; i++) {
+			if (RPG.state === stateSet[i]) return true;
+		}
+		return false;
 	}
 };
 
@@ -298,7 +290,6 @@ RPG.dealNormal= function(x, y){
     if (player) {
     	//获取移动方向
     	let ret = RPG.getMoveDir(x, y);
-        console.log('ret',ret);
         if (ret.length === 0) {
             RPG.openMenu();
     	} else {
