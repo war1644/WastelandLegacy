@@ -335,9 +335,6 @@ Character.prototype.checkRoad = function (dir){
 			toY = myCoordinate.y + 1;
 			break;
 	}
-	
-	//超过地图边界
-    console.log('toX',toX,'toY',toY);
     if(toY <= -1 || toX <= -1) return false;
 	if(toY >= CurrentMap.height || toX >= CurrentMap.width) return false;
 

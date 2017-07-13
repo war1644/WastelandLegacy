@@ -74,10 +74,10 @@ RPG.PlayerTeam= {
 			}
 		}
 	},
-	addHero: function (aId, aLev){
-		var h1= RPG.beget(RPG.HeroPlayer);
-		h1.index= aId;
-		h1.setLevel(aLev);
+	addHero: function (id, lv){
+		let h1= RPG.beget(RPG.HeroPlayer);
+		h1.index= id;
+		h1.setLevel(lv);
 		h1.fullHeal();
 		this.heroList.push(h1);
 	},

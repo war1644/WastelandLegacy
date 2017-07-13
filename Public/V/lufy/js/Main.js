@@ -77,8 +77,8 @@ function main(){
 		LSystem.screen(LStage.FULL_SCREEN);
 	}
 	//准备读取图片
-    imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
-    imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});
+    // imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
+    // imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});
     imgData.push({type:"js",path:"./js/talklist.js"});
 	imgData.push({type:"js",path:"./js/Talk.js"});
 	imgData.push({type:"js",path:"./js/Character.js"});
