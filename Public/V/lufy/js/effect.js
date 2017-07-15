@@ -4,7 +4,7 @@
 
 RPG.Effect= function (data, aw, ah){
 	base(this,LSprite,[]);
-	var self = this;
+	let self = this;
 	//设定人物动作速度
 	self.speed = 0;
 	self.speedIndex = 0;
@@ -12,12 +12,12 @@ RPG.Effect= function (data, aw, ah){
 	//设定人物大小
 	data.setProperties(0,0,aw,ah);
 	//得到人物图片拆分数组
-	var col= data.image.width/ aw;
-	var row= data.image.height/ ah;
-	var list = LGlobal.divideCoordinate(data.image.width,data.image.height,row,col);
+	let col= data.image.width/ aw;
+	let row= data.image.height/ ah;
+	let list = LGlobal.divideCoordinate(data.image.width,data.image.height,row,col);
 	// 动作效果合并
-	var list2=[], list3=[];
-	for (var i= 0; i< list.length; i++){
+	let list2=[], list3=[];
+	for (let i= 0; i< list.length; i++){
 		list2= list2.concat(list[i]);
 	}
 	list3.push(list2);
@@ -37,7 +37,7 @@ RPG.Effect= function (data, aw, ah){
 RPG.Effect.prototype.onframe = function (){
 	// 目前，仅战斗状态下有效
 	if (!RPG.checkState(RPG.IN_FIGHTING)) return;
-	var self = this;
+	let self = this;
 	if (!self.move) return;
 	if(self.speedIndex++ < self.speed) return;
 	self.speedIndex = 0;
@@ -55,7 +55,7 @@ RPG.Effect.prototype.onframe = function (){
 
 RPG.Effect.prototype.play = function (aTimes, aFunc){
 	// 打开菜单时停止运动
-	var self = this;
+	let self = this;
 	self.move= false;
 	self.speedIndex = 0;
 	self.anime.setAction(0, 0, 1, false);
@@ -68,17 +68,17 @@ RPG.Effect.prototype.play = function (aTimes, aFunc){
 
 RPG.loadEffect= function(aName){
 	if (!RPG.effectList[aName]){
-		var bitmapdata, chara;
-		bitmapdata = new LBitmapData(imglist[aName]);
-		chara = new RPG.Effect(bitmapdata, 48, 48);
+		let bitmapData, chara;
+        bitmapData = new LBitmapData(imglist[aName]);
+		chara = new RPG.Effect(bitmapData, 48, 48);
 		RPG.effectList[aName]= chara;
 	}
 	return RPG.effectList[aName];
-}
+};
 
 // 屏幕从黑切换到白，模拟过去了一天的效果
 RPG.nightAndDay= function(aFunc){
-	var bmp= RPG.drawWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
+	let bmp= RPG.drawWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
 	LTweenLite.to(bmp,2,
 		{alpha:1,ease:Quad.easeOut,
 			onComplete:function(){
@@ -96,21 +96,21 @@ RPG.nightAndDay= function(aFunc){
 			}
 		}
 	)
-}
+};
 
 // 显示获得物品
-RPG.showGetItem= function(aId, aNum){
-	var bmp= RPG.drawWindow(effectLayer,0,0,WIDTH, 40);
-	var item1= RPG.ItemList[aId];
-	var gap= 10;
+RPG.showGetItem= function(id, num){
+    RPG.drawWindow(effectLayer,0,0,WIDTH, 40);
+	let item1 = RPG.ItemList[id],
+		gap = 10,
 		// 图片
-		bitmapdata = new LBitmapData(imglist["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
-		bitmap = new LBitmap(bitmapdata);
+		bitmapData = new LBitmapData(imglist["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep),
+		bitmap = new LBitmap(bitmapData);
 		bitmap.x= gap* 2;
 		bitmap.y= gap;
 		effectLayer.addChild (bitmap);
 		// 物品名称
-		text = new LTextField();
+		let text = new LTextField();
 		text.x = gap* 2+ 30;
 		text.y = gap+ 5;
 		text.size = "14";
@@ -123,9 +123,9 @@ RPG.showGetItem= function(aId, aNum){
 		text.y = gap+ 5;
 		text.size = "14";
 		text.color = "#FFFFFF";
-		text.text = aNum;
+		text.text = num;
 		effectLayer.addChild(text);
 	setTimeout(function(){
 		effectLayer.removeAllChild();
 	}, 1000);
-}
+};

@@ -55,7 +55,7 @@ RPG.effectLayer={};
 RPG.talkLayer={};
 //子菜单层（多个菜单页）
 RPG.ctrlLayer={};
-RPG.descLayer={};
+RPG.descLayer=new LSprite();
 // 状态控制===========================================================
 // 状态变量
 RPG.state=-1;
@@ -155,6 +155,18 @@ RPG.layerInit= function() {
 };
 
 /**
+ * 边框绘制
+ */
+RPG.drawBorder= function(layer,color='#ffe',x=0, y=0, w, h,linW=2,alpha=0.9) {
+    let rectBorder = new LSprite();
+    rectBorder.graphics.drawRect(linW,color,[x,y,w,h]);
+    rectBorder.x = x;
+    rectBorder.y = y;
+	rectBorder.alpha = alpha;
+    layer.addChild(rectBorder);
+    return rectBorder;
+};
+/**
  * 背景框
  */
 RPG.drawWindow= function(layer, x, y, w, h, alpha) {
@@ -171,15 +183,19 @@ RPG.drawWindow= function(layer, x, y, w, h, alpha) {
 	return talkWindow;
 };
 
-RPG.drawScale= function(aLayer, aColor, ax, ay, aw, ah) {
-	let bitmapData = new LBitmapData(imglist[aColor]);
-	let bitmap = new LBitmap(bitmapData);
-	bitmap.scaleX = aw/ bitmap.width;
-	bitmap.scaleY = ah/ bitmap.height;
-	bitmap.x = ax;
-	bitmap.y = ay;
-	bitmap.alpha = 1;
-	aLayer.addChild(bitmap);
+RPG.drawScale= function(layer, color, x, y, w, h,borderColor='#ffe') {
+    let barChart = new LSprite();
+    barChart.graphics.drawRect(1,borderColor,[0,0,w,h],true,color);
+    barChart.x = x;
+    barChart.y = y;
+// let bitmapData = new LBitmapData(imglist[aColor]);
+// let bitmap = new LBitmap(bitmapData);
+// bitmap.scaleX = w/ bitmap.width;
+// bitmap.scaleY = h/ bitmap.height;
+// bitmap.x = x;
+// bitmap.y = y;
+// bitmap.alpha = 1;
+    layer.addChild(barChart);
 };
 
 RPG.drawFocus= function(aLayer, ax, ay, aw, ah) {
@@ -256,6 +272,7 @@ RPG.Serialize= function (obj){
  };
 RPG.jumpStage = function(newStage, x, y, face){
     stage = newStage;
+
 	//开始跳转
 	initScript(x, y, face);
 };

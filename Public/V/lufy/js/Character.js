@@ -458,9 +458,9 @@ Character.prototype.checkMap = function (dir){
     //如果不是英雄，则地图不需要滚动
     if(!self.isHero)return;
 
-	let w1= Math.floor(WIDTH / 2);
+	let w1= (WIDTH / 2)<<0;
 	let w2= Math.ceil(WIDTH / 2);
-	let h1= Math.floor(HEIGHT / 2);
+	let h1= (HEIGHT / 2)<<0;
 	let h2= Math.ceil(HEIGHT / 2);
 	mapmove = false;
     //console.log(self.y, charaLayer.y, HEIGHT / 2);

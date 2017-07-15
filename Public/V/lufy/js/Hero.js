@@ -24,9 +24,9 @@ RPG.HeroPlayer={
 	// 技能列表
 	skillList: [],
 	// 装备：武器、防具、装饰
-	weapon: -1,
-	armor: -1,
-	ornament: -1,
+	weapon: 24,
+	armor: 11,
+	ornament: 10,
 	getPerson: function(){
 		return RPG.HeroList[this.index];
 	},
@@ -138,7 +138,7 @@ RPG.physicalAttack= function(heroAtk, heroDef){
 	let vaporAtk, vaporDef;
 	// 攻方兵器加成
 	if (heroAtk.weapon>= 0) {
-		let aon= heroAtk.getWeapon().addon;
+		let aon= heroAtk.getWeapon().addOn;
 		if (aon){
 			//weaponAddOn= (aon+ 100)/ 100;
 			weaponAddOn= aon;
@@ -150,7 +150,7 @@ RPG.physicalAttack= function(heroAtk, heroDef){
 	atk= (4000/ (140- pAtk.force)+ pAtk.atk* 2+ vaporAtk)* (heroAtk.Level/ 10+ 1)* weaponAddOn;
 	// 防守方护甲加成
 	if (heroDef.armor>= 0) {
-		let aon= heroDef.getArmor().addon;
+		let aon= heroDef.getArmor().addOn;
 		if (aon){
 			//armorAddOn= (aon+ 100)/ 100;
 			armorAddOn= aon;

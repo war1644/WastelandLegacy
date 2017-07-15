@@ -1,5 +1,5 @@
 ﻿let script = {
-	stage01:{
+	/*stage01:{
 		name: "河畔镇外郊",
 		id: "stage01",
 		map: map_home1,
@@ -35,7 +35,7 @@
 		     		RPG.startTalk(stage.talk.talk3);
 		     	}
 		     }},
-		     /*{chara:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function(){
+		     /!*{chara:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function(){
 		     	// 自动发言
 		     	RPG.setTalkPos("middle");
 		     	RPG.startTalk(stage.talk.talk4);
@@ -43,7 +43,7 @@
 		     	// RPG.waitTalk(function(){
 			     // 	RPG.makeChoise(stage.choice.choice1);
 		     	// });
-		     }},*/
+		     }},*!/
 		     {chara:"npc", img:"",     x:2,   y:1, action: function(){
 		     	// 获得浆果
 		     	RPG.getBerry(1,1,stage.talk.talk8);
@@ -338,15 +338,16 @@
 		     }},
 		     ],
 		talk: talklist4,
-	},
+	},*/
     stage05:{
         name: "战车工厂",
         id: "stage05",
         map: map_home1,
+        imgName:['home1_0','home1_1'],
         mapdata: {},
         events: [
             {
-                type: "npc", img: "npc1", x: 13, y: 15, visible: true, action: function (npc) {
+                type: "npc", img: "npc1", x: 13, y: 15, action: function (npc) {
                     // 第二轮说话
                     if (RPG.checkSwitch("accept")) {
                         RPG.startTalk(stage.talk.talk4);
@@ -361,141 +362,136 @@
                     }
                 }
             },
-            {
-                type: "npc", img: "empty", x: 6, y: 11, action: function () {
-                    // 隐藏宝箱
-                    if (RPG.checkSwitch("gate1win")) {
-                        if (!RPG.checkSwitch("breadTake")) {
-                            RPG.startTalk(stage.talk.talk7);
-                            RPG.waitTalk(function () {
-                                mainTeam.addItem(12, 3, true);
-                                RPG.setSwitch("breadTake", true);
-                            });
-                        }
-                    } else {
-                        RPG.startTalk(stage.talk.talk6);
-                    }
+            {chara:"npc", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
+                // 隐藏的食物
+                if (!RPG.checkSwitch("breadTake1")){
+                    RPG.startTalk(stage.talk.talk7);
+                    RPG.waitTalk(function(){
+                        npc.anime.setAction(1);
+                        mainTeam.addItem(12, 3, true);
+                        RPG.setSwitch("breadTake1", true);
+                    });
+                }else {
+                    RPG.startTalk(stage.talk.talk6);
                 }
-            },
-            {
-                type: "npc", img: "empty", x: 6, y: 12, action: function () {
-                    // 隐藏宝箱
-                    if (RPG.checkSwitch("gate1win")) {
-                        if (!RPG.checkSwitch("breadTake")) {
-                            RPG.startTalk(stage.talk.talk7);
-                            RPG.waitTalk(function () {
-                                mainTeam.addItem(12, 3, true);
-                                RPG.setSwitch("breadTake", true);
-                            });
-                        }
-                    } else {
-                        RPG.startTalk(stage.talk.talk6);
-                    }
+            }},
+            {chara:"npc", img:"box",col:1,row:2, x:6,  y:12, action: function(npc){
+                // 隐藏的食物
+				if (!RPG.checkSwitch("breadTake2")){
+					RPG.startTalk(stage.talk.talk7);
+					RPG.waitTalk(function(){
+                        npc.anime.setAction(1);
+                        mainTeam.addItem(12, 3, true);
+						RPG.setSwitch("breadTake2", true);
+					});
+				}else {
+                    RPG.startTalk(stage.talk.talk6);
                 }
-            },
+            }},
             {
                 type: "npc", img: "", x: 6, y: 13, action: function () {
                     // 回到大地图
-                    RPG.jumpStage(script.stage01, 16, 17, 0);
+                    RPG.jumpStage(script.stage06, 1, 7, 0);
                 }
+            }
+
+        ],
+        talk: talklist3,
+        choice: {
+            choice1:{ img: "face7", msg: "是否同意去？",
+                choise:[
+                    {text:"去",action: function(){
+                        RPG.closeTalk();
+                        RPG.startTalk(stage.talk.talk2);
+                        RPG.setSwitch("accept", true);
+                        RPG.waitTalk(function(){
+                            mainTeam.addItem(1, 5, true);
+                        });
+                    }},
+                    {text:"不去",action: function(){
+                        RPG.closeTalk();
+                        RPG.startTalk(stage.talk.talk3);
+                    }}]
+            }
+        }
+    },
+    stage06:{
+        name: "猎人家",
+        id: "stage06",
+        map: map_home2,
+        imgName:['home2_0','home2_1'],
+        mapdata: {},
+        events: [
+            {
+                type: "npc", img: "npc1", x: 13, y: 15, action: function (npc) {
+                // 第二轮说话
+                if (RPG.checkSwitch("accept")) {
+                    RPG.startTalk(stage.talk.talk4);
+                } else if (RPG.checkSwitch("secondTalk")) {
+                    RPG.makeChoise(stage.choice.choice1);
+                } else {
+                    RPG.startTalk(stage.talk.talk1);
+                    RPG.setSwitch("secondTalk", true);
+                    RPG.waitTalk(function () {
+                        RPG.makeChoise(stage.choice.choice1);
+                    });
+                }
+            }
+            },
+            {chara:"npc", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
+                // 隐藏的食物
+                if (!RPG.checkSwitch("breadTake1")){
+                    RPG.startTalk(stage.talk.talk7);
+                    RPG.waitTalk(function(){
+                        npc.anime.setAction(1);
+                        mainTeam.addItem(12, 3, true);
+                        RPG.setSwitch("breadTake1", true);
+                    });
+                }else {
+                    RPG.startTalk(stage.talk.talk6);
+                }
+            }},
+            {chara:"npc", img:"box",col:1,row:2, x:6,  y:12, action: function(npc){
+                // 隐藏的食物
+                if (!RPG.checkSwitch("breadTake2")){
+                    RPG.startTalk(stage.talk.talk7);
+                    RPG.waitTalk(function(){
+                        npc.anime.setAction(1);
+                        mainTeam.addItem(12, 3, true);
+                        RPG.setSwitch("breadTake2", true);
+                    });
+                }else {
+                    RPG.startTalk(stage.talk.talk6);
+                }
+            }},
+            {
+                type: "npc", img: "", x: 6, y: 13, action: function () {
+                // 回到大地图
+                RPG.jumpStage(script.stage05, 16, 17, 0);
+            }
             },
             {
                 type: "npc", img: "empty", x: 12, y: 9, row: 1, col: 1, action: function () {
-                    // 休息一夜
-                    if (RPG.checkSwitch("gate1win")) {
-                        RPG.startTalk(stage.talk.talk8);
-                    } else if (RPG.checkSwitch("accept")) {
-                        RPG.pushState(RPG.MAP_WAITING);
-                        RPG.startTalk(stage.talk.talk5);
-                        RPG.waitTalk(function () {
-                            player.setCoordinate(9, 5, 0);
-                            RPG.resetChildIndex(charaLayer);
-                            RPG.nightAndDay(function () {
-                                player.setCoordinate(8, 5, 0);
-                                mainTeam.fullHeal();
-                                RPG.popState();
-                            });
+                // 休息一夜
+                if(!RPG.setSwitch("accept")){
+                    RPG.startTalk(stage.talk.talk8);
+                }else {
+                    RPG.pushState(RPG.MAP_WAITING);
+                    RPG.startTalk(stage.talk.talk5);
+                    RPG.waitTalk(function () {
+                        player.setCoordinate(9, 5, 0);
+                        RPG.resetChildIndex(charaLayer);
+                        RPG.nightAndDay(function () {
+                            player.setCoordinate(8, 5, 0);
+                            mainTeam.fullHeal();
+                            RPG.popState();
                         });
-                    }
+                    });
                 }
+
+            }
             }
         ],
-        // events: {
-        //     '13-15': {
-        //         type: "npc", img: "npc1", x: 13, y: 15, visible: true, action: function (npc) {
-        //             // 第二轮说话
-        //             if (RPG.checkSwitch("accept")) {
-        //                 RPG.startTalk(stage.talk.talk4);
-        //             } else if (RPG.checkSwitch("secondTalk")) {
-        //                 RPG.makeChoise(stage.choice.choice1);
-        //             } else {
-        //                 RPG.startTalk(stage.talk.talk1);
-        //                 RPG.setSwitch("secondTalk", true);
-        //                 RPG.waitTalk(function () {
-        //                     RPG.makeChoise(stage.choice.choice1);
-        //                 });
-        //             }
-        //         }
-        //     },
-        //     '6-11': {
-        //         type: "npc", img: "empty", x: 6, y: 11, action: function () {
-        //             // 隐藏宝箱
-        //             if (RPG.checkSwitch("gate1win")) {
-        //                 if (!RPG.checkSwitch("breadTake")) {
-        //                     RPG.startTalk(stage.talk.talk7);
-        //                     RPG.waitTalk(function () {
-        //                         mainTeam.addItem(12, 3, true);
-        //                         RPG.setSwitch("breadTake", true);
-        //                     });
-        //                 }
-        //             } else {
-        //                 RPG.startTalk(stage.talk.talk6);
-        //             }
-        //         }
-        //     },
-        //     '6-12': {
-        //         type: "npc", img: "empty", x: 6, y: 12, action: function () {
-        //             // 隐藏宝箱
-        //             if (RPG.checkSwitch("gate1win")) {
-        //                 if (!RPG.checkSwitch("breadTake")) {
-        //                     RPG.startTalk(stage.talk.talk7);
-        //                     RPG.waitTalk(function () {
-        //                         mainTeam.addItem(12, 3, true);
-        //                         RPG.setSwitch("breadTake", true);
-        //                     });
-        //                 }
-        //             } else {
-        //                 RPG.startTalk(stage.talk.talk6);
-        //             }
-        //         }
-        //     },
-        //     '6-13': {
-        //         type: "npc", img: "", x: 6, y: 13, action: function () {
-        //             // 回到大地图
-        //             RPG.jumpStage(script.stage01, 16, 17, 0);
-        //         }
-        //     },
-        //     '12-9': {
-        //         type: "npc", img: "empty", x: 12, y: 9, row: 1, col: 1, action: function () {
-        //             // 休息一夜
-        //             if (RPG.checkSwitch("gate1win")) {
-        //                 RPG.startTalk(stage.talk.talk8);
-        //             } else if (RPG.checkSwitch("accept")) {
-        //                 RPG.pushState(RPG.MAP_WAITING);
-        //                 RPG.startTalk(stage.talk.talk5);
-        //                 RPG.waitTalk(function () {
-        //                     player.setCoordinate(9, 5, 0);
-        //                     RPG.resetChildIndex(charaLayer);
-        //                     RPG.nightAndDay(function () {
-        //                         player.setCoordinate(8, 5, 0);
-        //                         mainTeam.fullHeal();
-        //                         RPG.popState();
-        //                     });
-        //                 });
-        //             }
-        //         }
-        //     }
-        // },
         talk: talklist3,
         choice: {
             choice1:{ img: "face7", msg: "是否同意去？",
@@ -531,6 +527,7 @@ function initScript(x,y,frame=0){
 	RPG.setTalkPos("bottom");
 	//当前场景地图
 	CurrentMap= stage.map;
+    CurrentMapImg = stage.imgName;
 	//先添加人物NPC，为了确定地图的自动移动
 	addChara();
 

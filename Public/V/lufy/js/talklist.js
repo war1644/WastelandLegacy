@@ -20,9 +20,7 @@
 		{img: "face3",name: "04", msg: "。。。。。" },
 		{img: "face4",name: "路漫漫", msg: "听不懂" },
 	],
-	talk5: [
-		{img: "face4", name: "路漫漫", msg: "神鞭..." },
-	],
+
 	talk6: [
 		{img: "face3", name: "04", msg: "点击地图移动" },
 		{img: "face3", name: "04", msg: "点击自己打开菜单" },
@@ -32,6 +30,9 @@
 		{img: "face3", name: "04", msg: "走路碰到NPC自动对话" },
 		{img: "face3", name: "04", msg: "WARNING：遇到凶残的敌人就跑吧，不然没人救你哦" },
 	],
+    talk5: [
+        {img: "face4", name: "路漫漫", msg: "神鞭..." },
+    ],
 	talk7: [
 		{msg: "只是到现在你已经两天两夜没有休息过了，筋疲力尽，饥渴难耐。" },
 		{msg: "你希望能找到一些食物充饥。" },
@@ -99,7 +100,10 @@ talklist3= {
 	],
 	talk8: [
 		{img: "face4", name: "路漫漫", msg: "在这里睡觉是不明智的，还是尽快离开比较好。" },
-	]
+	],
+    talk9: [
+        {img: "face4", name: "路漫漫", msg: "拿过了，还翻个毛线" },
+    ],
 };
 talklist4= {
 	talk2: [

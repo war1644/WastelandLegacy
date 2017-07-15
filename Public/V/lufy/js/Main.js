@@ -59,6 +59,7 @@ let loadingLayer,
  	mainTeam,
 // 当前地图
  	CurrentMap,
+    CurrentMapImg,
 // 当前地图的行动控制层
  	CurrentMapMove,
 	// 当前地图的事件控制层
@@ -96,10 +97,10 @@ function main(){
 
 	imgData.push({name:"button1",path:"./image/button1.png"});
 	imgData.push({name:"button1_down",path:"./image/button1_down.png"});
-	imgData.push({name:"map1",path:"./image/tileset1.png"});
-	imgData.push({name:"map2",path:"./image/tileset2.png"});
+	// imgData.push({name:"map1",path:"./image/tileset1.png"});
+	// imgData.push({name:"map2",path:"./image/tileset2.png"});
 	imgData.push({name:"carpet",path:"./image/carpet.png"});
-	imgData.push({name:"room",path:"./image/room.png"});
+	// imgData.push({name:"room",path:"./image/room.png"});
 	//movePic
     imgData.push({name:"npc24",path:"./image/movePic/npc24.png"});
     imgData.push({name:"blackTank",path:"./image/movePic/blackTank.png"});
@@ -121,14 +122,13 @@ function main(){
     //map
     imgData.push({name:"home1_0",path:"./assets/home1_0.png"});
     imgData.push({name:"home1_1",path:"./assets/home1_1.png"});
+    imgData.push({name:"home2_0",path:"./assets/home2_0.png"});
+    imgData.push({name:"home2_1",path:"./assets/home2_1.png"});
     // imgData.push({name:"home1",type:"text",path:"./assets/home1.json"});
 
 
     imgData.push({name:"iconset",path:"./image/IconSet.png"});
 	imgData.push({name: "focus", path: "./image/focus.png" });
-	imgData.push({name: "hp", path: "./image/hp.png" });
-	imgData.push({name: "mp", path: "./image/mp.png" });
-	imgData.push({name: "exp", path: "./image/exp.png" });
 	imgData.push({name: "pSword", path: "./image/pSword.png" });
 	imgData.push({name: "pAttack", path: "./image/pAttack.png" });
 	imgData.push({name: "pStick", path: "./image/pStick.png" });
@@ -212,13 +212,15 @@ function drawBack(){
 }
 function drawImgMap(map) {
     //得到瓦片
-    let bitmapData = new LBitmapData(imglist['home1_0']);
-    let bitmapDataUp = new LBitmapData(imglist['home1_1']);
+    let bitmapData = new LBitmapData(imglist[CurrentMapImg[0]]);
+    let bitmapDataUp = new LBitmapData(imglist[CurrentMapImg[1]]);
     let bitmap = new LBitmap(bitmapData);
     let bitmapUp = new LBitmap(bitmapDataUp);
-	// 行动控制层
-    CurrentMapMove= map.layers[5];
-    CurrentMapEvents = map.layers[6]['objects'];
+    CurrentMapEvents = map.layers.pop();
+    // 行动控制层
+    CurrentMapMove = map.layers.pop();
+    mapLayer.removeAllChild();
+    upLayer.removeAllChild();
 	upLayer.addChild(bitmapUp);
 	mapLayer.addChild(bitmap);
 }
@@ -425,10 +427,8 @@ function addChara(){
 					chara.py = charaObj.y;
 					//碰撞型事件
 					if (charaObj.chara === "touch") chara.touch= true;
-					if (charaObj.preSet){
-						// 任何一个地图对象都可以有预设动作
-						charaObj.preSet(chara);
-					}
+                    // 预设动作
+					if (charaObj.preSet) charaObj.preSet(chara);
 					// 如果是情节人物，则进入情节列表
 					if (charaObj.list) {
 						stage.charaList[charaObj.list]= chara;
@@ -444,10 +444,10 @@ function onDown(event) {
     isKeyDown = true;
 
     if (RPG.checkState(RPG.UNDER_MENU)) {
-    	RPG.dealMenu(event.offsetX, event.offsetY);
+    	RPG.dealMenu(event.offsetX<<0, event.offsetY<<0);
     } else if (RPG.checkState(RPG.MAP_CONTROL)) {
         // 地图状态下可以进行移动和弹出菜单的操作
-    	RPG.dealNormal(event.offsetX, event.offsetY);
+    	RPG.dealNormal(event.offsetX<<0, event.offsetY<<0);
     } else if (RPG.checkState(RPG.IN_TALKING)) {
     	RPG.startTalk();
     }
@@ -468,7 +468,7 @@ function onUp(event){
 function onMove(event){
 	if (isKeyDown) {
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
-    		RPG.dealMenuMove(event.offsetX, event.offsetY);
+    		RPG.dealMenuMove(event.offsetX<<0, event.offsetY<<0);
         }
     }
 }

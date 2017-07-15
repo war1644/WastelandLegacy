@@ -89,7 +89,7 @@ RPG.initEnemyTeam= function(){
 	RPG.enemyTeam.push(team1);
 };
 
-RPG.newSaveList = function () {
+RPG.newSaveList = function(){
 	// 存档记录为空
 	RPG.saveList=[];
 	for (let i= 0; i< RPG.MaxSaveSlot; i++){
