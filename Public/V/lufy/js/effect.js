@@ -21,9 +21,9 @@ RPG.Effect= function (data, aw, ah){
 		list2= list2.concat(list[i]);
 	}
 	list3.push(list2);
-	//console.log(list);	
-	//console.log(list2);	
-	//console.log(list3);	
+	// console.log(list);
+	// console.log(list2);
+	// console.log(list3);
 	//设定人物动画
 	self.anime = new LAnimation(this,data,list3);
 	self.maxFrame= list3[0].length;
@@ -77,18 +77,17 @@ RPG.loadEffect= function(aName){
 };
 
 // 屏幕从黑切换到白，模拟过去了一天的效果
-RPG.nightAndDay= function(aFunc){
-	let bmp= RPG.drawWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
+RPG.nightAndDay= function(callback){
+	let bmp= drawColorWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
 	LTweenLite.to(bmp,2,
 		{alpha:1,ease:Quad.easeOut,
 			onComplete:function(){
-				//console.log("c");
 				LTweenLite.to(bmp,2,
 					{alpha:0,ease:Quad.easeIn,
 						onComplete:function(){
 							effectLayer.removeChild(bmp);
-							if (aFunc) {
-								aFunc();
+							if (callback) {
+								callback();
 							}
 						}
 					}

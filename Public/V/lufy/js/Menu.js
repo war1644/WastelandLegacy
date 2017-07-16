@@ -211,7 +211,7 @@ RPG.menuShowItems = function(team) {
 		text.x = gap* 2+ 30;
 		text.y = i* 30+ gap+ 5;
 		text.size = "14";
-		text.color = "#FFFFFF";
+		text.color = "#FFF";
 		text.text = RPG.ItemList[item1.index].name;
 		RPG.listLayer.addChild(text);
 
@@ -412,10 +412,8 @@ RPG.menuShowTasks= function() {
 
 RPG.menuShowSave= function(aResetFocus) {
 	RPG.menuPage= 4;
-	var gap= 10;
 	ctrlLayer.removeAllChild();
-	//
-	var text = new LTextField();
+	let text = new LTextField();
 	text.x = RPG.menuWidth/ 2;
 	text.y = 10;
 	text.width= 200;
@@ -452,7 +450,7 @@ RPG.menuShowSave= function(aResetFocus) {
 		text.text = RPG.showSaveSlot(i);
 		RPG.listLayer.addChild(text);
 	}
-    var button01= RPG.newButton(90, 30, gap* 2, RPG.menuHeight- 85, "回到标题", function(e){
+    let button01= RPG.newButton(90, 30, gap* 2, RPG.menuHeight- 85, "回到标题", function(e){
 		RPG.closeMenu();
     	RPG.drawCover();
     });
@@ -465,10 +463,10 @@ RPG.menuShowSave= function(aResetFocus) {
 
 RPG.menuShowLoad= function() {
 	RPG.menuPage= 5;
-	var gap= 10;
+	let gap= 10;
 	ctrlLayer.removeAllChild();
 	//
-	var text = new LTextField();
+	let text = new LTextField();
 	text.x = RPG.menuWidth/ 2;
 	text.y = 10;
 	text.width= 200;
@@ -491,7 +489,7 @@ RPG.menuShowLoad= function() {
 	RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, RPG.menuWidth- gap* 2, 30);
 	RPG.saveSlot= 0;
     // 
-	for (i= 0; i< RPG.MaxSaveSlot; i++){
+	for (let i= 0; i< RPG.MaxSaveSlot; i++){
 		// 物品名称
 		text = new LTextField();
 		text.x = gap* 2;
@@ -502,7 +500,7 @@ RPG.menuShowLoad= function() {
 		RPG.listLayer.addChild(text);
 	}
 	// 空白按钮图片
-   var button01= RPG.newButton(90, 30, gap* 2, RPG.menuHeight- 60, "载入进度", function(e){
+   let button01= RPG.newButton(90, 30, gap* 2, RPG.menuHeight- 60, "载入进度", function(e){
 		RPG.closeMenu();
 		RPG.loadGame(RPG.saveSlot);
     });
@@ -519,13 +517,8 @@ RPG.openLoadMenu= function() {
 	//将对话层清空
 	talkLayer.removeAllChild();
 	//当对话开始，且按照顺序进行对话
-	var gap= 10;
-	var i;
 	RPG.menuWidth= WIDTH- gap* 2;
 	RPG.menuHeight= HEIGHT- gap* 2;
-	var iconMenuItem;
-	var iconWidth;
-	var bitmapdata, bitmap;
 	//对话背景
 	talkLayer.x = 10;
 	talkLayer.y = 10;
@@ -583,7 +576,7 @@ RPG.closeMenu= function() {
 
 RPG.waitMenu= function (aCallBack){ 
 	if (RPG.checkState(RPG.UNDER_WINDOWS)) { 
-		setTimeout(function(){RPG.waitMenu(aCallBack);}, 100);
+		setTimeout(function(){RPG.waitMenu(aCallBack);}, 500);
 	} else {
 		if (aCallBack) {
 			aCallBack();

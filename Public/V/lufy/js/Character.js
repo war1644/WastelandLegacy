@@ -212,41 +212,18 @@ Character.prototype.onmove = function (){
 				self.py++;
 				break;
 		}
-		//console.log(self.px, self.py);
-		//self.px= self.x;
-		//self.py= self.y;
+
 		//一个地图步长移动完成后，判断地图是否跳转
 		checkTrigger();
 		checkTouch();
+		checkIntoBattle();
 		self.moveIndex = 0;
-		//一个地图步长移动完成后，如果地图处于滚动状态，则移除多余地图块
-		 /*if(self.isHero && mapmove){
-			// MapLayer 复位到32的整数位
-			if (mapLayer.x % STEP !== 0) {
-				console.log('mapLayerx',mapLayer.x);
-				mapLayer.x= mapLayer.x- mapLayer.x % STEP;
-				upLayer.x= mapLayer.x;
-				charaLayer.x= mapLayer.x;
-			}
-			if (mapLayer.y % STEP !== 0) {
-				console.log('mapLayery',mapLayer.y);
-				mapLayer.y= mapLayer.y- mapLayer.y % STEP;
-				upLayer.y= mapLayer.y;
-				charaLayer.y= mapLayer.y;
-			}
-			//drawMap(CurrentMap);
-			//delMap();
-		}*/
 		//判断方向是否改变
 		if(self.direction !== self.direction_next){
 			self.direction = self.direction_next;
 			self.anime.setAction(self.direction);
 		}
-		//如果已经松开移动键，或者前方为障碍物，则停止移动，否则继续移动
-		//if(!isKeyDown || !self.checkRoad(self.direction)){
-		//	self.move = false;
-		//	return;
-		//}
+
 		// 继续移动情况下，重新计算移动方向
 		if (isKeyDown){
 			let ret= RPG.getMoveDir(mouseX, mouseY);
@@ -269,6 +246,7 @@ Character.prototype.onmove = function (){
    		self.checkMap(self.direction);
 	}
 };
+
 // 预占位
 Character.prototype.takePlace = function (){
 	let self = this;
@@ -365,7 +343,7 @@ Character.prototype.setCoordinate = function (x,y,frame){
 	self.px= x;
 	self.py= y;
 	self.anime.setAction(frame);
-	self.x = x*STEP- (self.pw- STEP)/ 2;
+	self.x = x*STEP- ((self.pw- STEP)>>1);
 	self.y = y*STEP- (self.ph- STEP);
 };
 /**
@@ -381,7 +359,7 @@ Character.prototype.getCoordinate = function (){
 Character.prototype.changeDir = function (dir){
 	let self = this;
 	//如果正在移动，则无效
-	if(!self.move && self.moveIndex==0){
+	if(!self.move && self.moveIndex===0){
 		//设定人物方向
 		self.direction = dir;
 		self.direction_next = dir;
@@ -442,6 +420,7 @@ Character.prototype.changeDirAlt = function (dirs){
 		}
 		//如果可以移动，则开始移动
 		self.move = true;
+		player.tmp ++;
 		//self.moveIndex = 0;
 	}else {
 		dir = dirs[0];
@@ -458,10 +437,10 @@ Character.prototype.checkMap = function (dir){
     //如果不是英雄，则地图不需要滚动
     if(!self.isHero)return;
 
-	let w1= (WIDTH / 2)<<0;
-	let w2= Math.ceil(WIDTH / 2);
-	let h1= (HEIGHT / 2)<<0;
-	let h2= Math.ceil(HEIGHT / 2);
+	let w1= WIDTH>>1;
+	let w2= Math.ceil(WIDTH/2);
+	let h1= HEIGHT>>1;
+	let h2= Math.ceil(HEIGHT/2);
 	mapmove = false;
     //console.log(self.y, charaLayer.y, HEIGHT / 2);
     switch (dir){

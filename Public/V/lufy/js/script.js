@@ -346,6 +346,22 @@
         imgName:['home1_0','home1_1'],
         mapdata: {},
         events: [
+            {type: "npc", img: "npc1", x: 13, y: 15,
+				action: function (npc) {
+					// 第二轮说话
+					if (RPG.checkSwitch("accept")) {
+						RPG.startTalk(stage.talk.talk4);
+					} else if (RPG.checkSwitch("secondTalk")) {
+						RPG.makeChoise(stage.choice.choice1);
+					} else {
+						RPG.startTalk(stage.talk.talk1);
+						RPG.setSwitch("secondTalk", true);
+						RPG.waitTalk(function () {
+							RPG.makeChoise(stage.choice.choice1);
+						});
+					}
+				}
+            },
             {
                 type: "npc", img: "npc1", x: 13, y: 15, action: function (npc) {
                     // 第二轮说话
@@ -427,18 +443,18 @@
             {
                 type: "npc", img: "npc1", x: 13, y: 15, action: function (npc) {
                 // 第二轮说话
-                if (RPG.checkSwitch("accept")) {
-                    RPG.startTalk(stage.talk.talk4);
-                } else if (RPG.checkSwitch("secondTalk")) {
-                    RPG.makeChoise(stage.choice.choice1);
-                } else {
-                    RPG.startTalk(stage.talk.talk1);
-                    RPG.setSwitch("secondTalk", true);
-                    RPG.waitTalk(function () {
-                        RPG.makeChoise(stage.choice.choice1);
-                    });
-                }
-            }
+					if (RPG.checkSwitch("accept")) {
+						RPG.startTalk(stage.talk.talk4);
+					} else if (RPG.checkSwitch("secondTalk")) {
+						RPG.makeChoise(stage.choice.choice1);
+					} else {
+						RPG.startTalk(stage.talk.talk1);
+						RPG.setSwitch("secondTalk", true);
+						RPG.waitTalk(function () {
+							RPG.makeChoise(stage.choice.choice1);
+						});
+					}
+            	}
             },
             {chara:"npc", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
                 // 隐藏的食物

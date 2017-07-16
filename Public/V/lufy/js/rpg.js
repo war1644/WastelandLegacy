@@ -133,27 +133,6 @@ RPG.checkSwitch= function(k){
 	}
 };
 
-RPG.layerInit= function() {
-	backLayer = new LSprite();
-	addChild(backLayer);
-	//地图层
-	mapLayer = new LSprite();
-	backLayer.addChild(mapLayer);
-	//人物层
-	charaLayer = new LSprite();
-	backLayer.addChild(charaLayer);
-	//上地图层
-	upLayer = new LSprite();
-	backLayer.addChild(upLayer);
-
-    //效果层
-	effectLayer = new LSprite();
-	backLayer.addChild(effectLayer);
-	//菜单层
-	talkLayer = new LSprite();
-	backLayer.addChild(talkLayer);
-};
-
 /**
  * 边框绘制
  */
@@ -169,19 +148,16 @@ RPG.drawBorder= function(layer,color='#ffe',x=0, y=0, w, h,linW=2,alpha=0.9) {
 /**
  * 背景框
  */
-RPG.drawWindow= function(layer, x, y, w, h, alpha) {
+RPG.drawWindow= function(layer, x, y, w, h, alpha=0.9) {
 	let talkWindow = new LSprite();
     talkWindow.graphics.drawRect(5,'#ffe',[0,0,w,h],true,'#009');
     talkWindow.x = x;
     talkWindow.y = y;
-	if (alpha) {
-        talkWindow.alpha = alpha;
-	} else {
-        talkWindow.alpha = 0.9;
-	}
+	talkWindow.alpha = alpha;
 	layer.addChild(talkWindow);
 	return talkWindow;
 };
+
 
 RPG.drawScale= function(layer, color, x, y, w, h,borderColor='#ffe') {
     let barChart = new LSprite();
@@ -272,7 +248,6 @@ RPG.Serialize= function (obj){
  };
 RPG.jumpStage = function(newStage, x, y, face){
     stage = newStage;
-
 	//开始跳转
 	initScript(x, y, face);
 };
@@ -311,9 +286,12 @@ RPG.dealNormal= function(x, y){
             RPG.openMenu();
     	} else {
 	        player.changeDirAlt(ret);
-    	}
+            // RPG.simpleFight(1,);
+        }
 	}
 };
+
+
 
 RPG.imgButton = (text)=>{
     let bitmapDataUp = new LBitmapData(result["ok_button"],0,0,98,48);
@@ -337,35 +315,35 @@ RPG.imgButton = (text)=>{
 /**
  * diy按钮
  **/
-RPG.diyButton = ()=>{
+RPG.diyButton = (x, y, text, callback,scale=1.5)=>{
     let title;
-    let upState = new LShape("#666",200,50);
+    let upState = new LPanel("#ccc");
     title = new LTextField();
-    title.text = "upState";
-    title.color = "#FF0000";
+    title.text = text;
     title.size = 20;
+    text.textAlign= "center";
+    text.textBaseline= "middle";
     title.x = (upState.getWidth() - title.getWidth())*0.5;
     title.y = (upState.getHeight() - title.getHeight())*0.5;
     upState.addChild(title);
-    let overState = new LShape("#999",200,50);
-    title = new LTextField();
-    title.text = "overState";
-    title.color = "#FF0000";
-    title.size = 20;
-    title.x = (upState.getWidth() - title.getWidth())*0.5;
-    title.y = (upState.getHeight() - title.getHeight())*0.5;
-    overState.addChild(title);
-    let downState = new LShape("#CCC",200,50);
-    title = new LTextField();
-    title.text = "downState";
-    title.color = "#FF0000";
-    title.size = 20;
-    title.x = (upState.getWidth() - title.getWidth())*0.5;
-    title.y = (upState.getHeight() - title.getHeight())*0.5;
+    let downState = new LPanel("#eee");
     downState.addChild(title);
-    let button01 = new LButton(upState,overState,downState);
-    button01.x = 50;
-    button01.y = 50;
+    // downState.scaleX=scale;
+    // downState.scaleY=scale;
+    // upState.scaleX=scale;
+    // upState.scaleY=scale;
+
+    let button01 = new LButton(upState,null,downState);
+    button01.x = x;
+    button01.y = y;
+    button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+        RPG.currentButton = button01;
+    });
+    button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
+        if (RPG.currentButton === button01) {
+            if (callback) callback();
+        }
+    });
     return button01;
 };
 
@@ -482,7 +460,7 @@ RPG.newIconButton= function(aPicUp, aPicDown, aPicDis, ax, ay, aRate, aText, aFu
 		RPG.currentButton= btn;
 	});
 	btn.addEventListener(LMouseEvent.MOUSE_UP, function () {
-		if (RPG.currentButton== btn) {
+		if (RPG.currentButton=== btn) {
 			if (aFunc) aFunc();
 		}
 	});
@@ -505,18 +483,14 @@ RPG.resetChildIndex= function(aLayer){
 			h1= charaLayer.childList[i].height+ 1;
 		}
 		y1= charaLayer.childList[i].y+ h1;
-		//c1= charaLayer.getChildIndex(charaLayer.childList[i]);
 		for (let j= i+ 1; j< aLayer.childList.length; j++){
 			h2= charaLayer.childList[j].ph;
 			if (!h2) {
 				h2= charaLayer.childList[j].height+ STEP;
 			}
 			y2= charaLayer.childList[j].y+ h2;
-			//c2= charaLayer.getChildIndex(charaLayer.childList[j]);
-			//if ((c1> c2 && y1< y2) || (c1< c2 && y1> y2)) {
 			if (y1> y2) {
 				charaLayer.setChildIndex(charaLayer.childList[j], i);
-				//c1= c2;
 				y1= y2;
 			}
 		}

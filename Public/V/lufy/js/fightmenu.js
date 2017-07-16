@@ -7,9 +7,9 @@ RPG.setFormation= function(){
 		RPG.fightMenuLayer = new LSprite();
 	}
 	RPG.fightMenuLayer.removeAllChild();
-	var x0= 0
-	var y0= HEIGHT- 150;
-	var name = new LTextField();
+	let x0 = 0;
+	let y0 = HEIGHT - 150;
+	let name = new LTextField();
 	name.x = WIDTH/ 2;
 	name.y = HEIGHT- 125;
  	name.textAlign= "center";
@@ -20,9 +20,9 @@ RPG.setFormation= function(){
 	RPG.drawWindow(RPG.fightMenuLayer, x0, y0, RPG.menuWidth, 50);
 	RPG.fightMenuLayer.addChildAt(name, 1);
 	talkLayer.addChild(RPG.fightMenuLayer);
-}
+};
 
 RPG.closeFormation= function(){
 	talkLayer.removeChild(RPG.fightMenuLayer);
 	RPG.fightMenuLayer.removeAllChild();
-}
+};

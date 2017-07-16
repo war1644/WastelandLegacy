@@ -159,7 +159,7 @@ function gameInit(){
 	//数据初始化优先于显示部分的初始化
 	LGlobal.aspectRatio = PORTRAIT;
 	//游戏层显示初始化
-	RPG.layerInit();
+    gameLayerInit();
 
 	//添加帧事件，开始游戏循环
 	backLayer.addEventListener(LEvent.ENTER_FRAME,onFrame);
@@ -171,7 +171,7 @@ function gameInit(){
 	backLayer.addEventListener(LMouseEvent.MOUSE_UP,onUp);
 	talkLayer.addEventListener(LMouseEvent.MOUSE_MOVE,onMove);
 	//加载失败提示页
-	drawBack();
+	// drawBack();
     // 第一关的直接设置
     RPG.drawCover();
 }
@@ -181,7 +181,7 @@ function gameInit(){
  */
 function getChannelFromUrl() {
     let source = ['wechat', 'qq', 'weibo', 'uc'];
-    let url = location.href
+    let url = location.href;
     for (let i = 0; i < source.length; i += 1) {
         if (url.indexOf('channel=' + source[i]) > -1) {
             return source[i]
@@ -197,7 +197,7 @@ function getAccountId() {
  
 
 // 一个基本背景
-function drawBack(){
+/*function drawBack(){
     backLayer.graphics.drawRect(1,'#000',[0,0,WIDTH,HEIGHT],true,'#000');
     // 加入刷新提示
 	let name = new LTextField();
@@ -209,7 +209,7 @@ function drawBack(){
 	name.color = "#fff";
 	name.text = "【初始化失败，请重新载入游戏】";
 	backLayer.addChildAt(name, 1);
-}
+}*/
 function drawImgMap(map) {
     //得到瓦片
     let bitmapData = new LBitmapData(imglist[CurrentMapImg[0]]);
@@ -227,8 +227,8 @@ function drawImgMap(map) {
 
 function setHero(x, y, frame){
 	if (x === null) return;
-	let w1= (WIDTH/ STEP/ 2)<<0,
-		h1= (HEIGHT/ STEP/ 2)<<0,
+	let w1= (WIDTH/STEP)>>1,
+		h1= (HEIGHT/STEP)>>1,
 		w2= Math.ceil(WIDTH/ STEP/ 2),
 		h2= Math.ceil(HEIGHT/ STEP/ 2),
 		moveX=0,
@@ -237,7 +237,7 @@ function setHero(x, y, frame){
 		heroImg;
 	// 把玩家置于屏幕的正中
 	if (CurrentMap.width< w1+ w2) {
-		moveX= ((CurrentMap.width- w2- w1)/ 2)<<0;
+		moveX= (CurrentMap.width- w2- w1)>>1;
 	} else {
 		if (x< w1){
 			moveX= 0;
@@ -248,7 +248,7 @@ function setHero(x, y, frame){
 		}
 	}
 	if (CurrentMap.height< h1+ h2) {
-		moveY= ((CurrentMap.height- h2- h1)/ 2)<<0;
+		moveY= (CurrentMap.height- h2- h1)>>1;
 	} else {
 		if (y< h1){
 			moveY= 0;
@@ -276,10 +276,13 @@ function setHero(x, y, frame){
 	let imgData = new LBitmapData(imglist[heroImg]);
 	hero = new Character(true, 0, imgData, row, col, 1);
 	player = hero;
-	hero.x = x * STEP- (hero.pw- STEP)/ 2;
+	//玩家遇敌率
+	player.enemyShow = 10;
+    player.tmp = 0;
+	hero.x = x * STEP- ((hero.pw- STEP)>>1);
 	hero.y = y * STEP- (hero.ph- STEP);
-	hero.px= x;
-	hero.py= y;
+	hero.px = x;
+	hero.py = y;
 	charaLayer.addChild(hero);
     hero.anime.setAction(frame);
 }
@@ -454,84 +457,24 @@ function initScript(x,y,frame=0){
     checkAuto();
 }
 
-//走到触发型
-function checkTrigger(){
-    let events = stage.events;
-    let triggerEvent;
-    for(let i=0;i<events.length;i++){
-        triggerEvent = events[i];
-        if (!triggerEvent.img){
-            if( (player.x/STEP<<0 === triggerEvent.x) && (player.y/STEP<<0 === triggerEvent.y) ){
-                //获取该场景脚本数据
-                if (triggerEvent.action){
-                    // 一旦触发事件，按键取消
-                    isKeyDown= false;
-                    triggerEvent.action();
-                    return;
-                }
-            }
-        }
-    }
-}
-/**
- * 检测NPC碰撞触发型事件
- */
-function checkTouch(){
-    // 仅在地图状态下可以触发
-    if (!RPG.checkState(RPG.MAP_CONTROL)) return;
-    let actionEvent, npc,ww1, ww2, hh1, hh2;
-    for(let key in charaLayer.childList){
-        //不可见的不处理
-        if (!charaLayer.childList[key].visible) continue;
-        //判断周围有npc
-        actionEvent = charaLayer.childList[key].rpgEvent;
-        if (charaLayer.childList[key].touch){
-            npc = charaLayer.childList[key];
-            // ww1= ww2= npc.getWidth()/ STEP;
-            // hh1= hh2= npc.getHeight()/ STEP;
-            // if (ww1> 2) {
-            // 	ww1= 2;
-            // 	ww2= 2;
-            // }
-            // if (hh1> 1) {
-            // 	hh2= 1;
-            // }
-            if( player.px >= npc.px - 1 &&
-                player.px <= npc.px + 1 &&
-                player.py >= npc.py - 1 &&
-                player.py <= npc.py + 1 ){
-                //获取该场景脚本数据
-                if (actionEvent){
-                    //朝向玩家
-                    npc.anime.setAction(3 - player.direction);
-                    npc.anime.onframe();
-                    // 一旦触发事件，按键取消
-                    isKeyDown= false;
-                    actionEvent(npc);
-                    return;
-                }
-            }
-        }
-    }
-}
+function gameLayerInit() {
+    backLayer = new LSprite();
+    backLayer.graphics.drawRect(0,'#000',[0,0,WIDTH,HEIGHT],true,'#000');
+    addChild(backLayer);
+    //地图层
+    mapLayer = new LSprite();
+    backLayer.addChild(mapLayer);
+    //人物层
+    charaLayer = new LSprite();
+    backLayer.addChild(charaLayer);
+    //上地图层
+    upLayer = new LSprite();
+    backLayer.addChild(upLayer);
 
-/**
- * 检测自动触发型事件
- */
-function checkAuto(){
-    let events = stage.events;
-    let autoEvent;
-    for(let i=0;i<events.length;i++){
-        autoEvent = events[i];
-        if (autoEvent.chara==="auto"){
-            if (autoEvent.visible && autoEvent.visible()){
-                if (autoEvent.action){
-                    // 一旦触发事件，按键取消
-                    isKeyDown= false;
-                    autoEvent.action();
-                    return;
-                }
-            }
-        }
-    }
+    //效果层
+    effectLayer = new LSprite();
+    backLayer.addChild(effectLayer);
+    //菜单层
+    talkLayer = new LSprite();
+    backLayer.addChild(talkLayer);
 }

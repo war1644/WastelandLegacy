@@ -10,10 +10,10 @@ RPG.newGame = function () {
 	// 测试数据
 	mainTeam= RPG.beget(RPG.PlayerTeam);
 	mainTeam.addHero(0, 1);
-	mainTeam.getHero().Hp= 150;
-	mainTeam.getHero().Mp= 2;
+	mainTeam.getHero().Hp= 9999;
+	mainTeam.getHero().Mp= 5;
 	mainTeam.getHero().Exp= 15;
-	// mainTeam.addHero(1, 1);
+	mainTeam.addHero(1, 1);
 	// console.log(mainTeam);
 	/*
 	mainTeam.addItem(1, 10);
@@ -172,26 +172,23 @@ RPG.getDateTimeStr= function(){
 	return result;
 };
 RPG.howToUse= function(){
-	// 图片展示
-
+	RPG.startTalk(talklist1.talk6);
 };
 RPG.drawCover= function() {
 	// 封面图
 	RPG.setState(RPG.IN_COVER);
 	let sLayer = effectLayer;
-	// let bitmapdata = new LBitmapData(imglist["start_png"]);
-	// let bitmap = new LBitmap(bitmapdata);
 	sLayer.removeAllChild();
-    backLayer.removeChildAt(1);
+    let title = new LTextField();
+    title.text = '废土战记';
+    title.color = '#fff';
+    title.size = '35';
+    title.x = (WIDTH-title.width)>>1;
+    title.y = 50;
+    sLayer.addChild(title);
 
-	// bitmap.scaleX = WIDTH/ bitmap.width;
-	// bitmap.scaleY = HEIGHT/ bitmap.height;
-	// bitmap.x = 0;
-	// bitmap.y = 0;
-	// bitmap.alpha = 1;
-	// sLayer.addChild(bitmap);
 	// 新的开始
-    let button01= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 200, "新游戏", function(e){
+    let button01= gameTitleButton(120, 30, (WIDTH - 120)>>1, HEIGHT- 200, "新游戏", function(e){
     	// 按钮被透过窗口点击
     	if (RPG.checkState(RPG.IN_COVER)) {
 			RPG.newGame();
@@ -199,15 +196,15 @@ RPG.drawCover= function() {
     });
     sLayer.addChild(button01);
     // 继续
-    let button02= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 160, "载入进度", function(e){
+    let button02= gameTitleButton(120, 30, (WIDTH- 120)>>1, HEIGHT- 160, "载入进度", function(e){
     	if (RPG.checkState(RPG.IN_COVER)) {
 	    	RPG.openLoadMenu();
 	    }
 	});
 	button02.setState(LButton.STATE_DISABLE);
 	sLayer.addChild(button02);
-	// 使用说明
-    let button03= RPG.newButton(120, 30, (WIDTH- 120)/ 2, HEIGHT- 120, "使用说明", function(e){
+	// 说明
+    let button03= gameTitleButton(120, 30, (WIDTH- 120)>>1, HEIGHT- 120, "使用说明", function(e){
     	if (RPG.checkState(RPG.IN_COVER)) {
 	    	RPG.howToUse();
 	    }
@@ -223,6 +220,14 @@ RPG.drawCover= function() {
 			RPG.newSaveList();
 		}
 	}
+    // let bitmapdata = new LBitmapData(imglist["start_png"]);
+    // let bitmap = new LBitmap(bitmapdata);
+    // bitmap.scaleX = WIDTH/ bitmap.width;
+    // bitmap.scaleY = HEIGHT/ bitmap.height;
+    // bitmap.x = 0;
+    // bitmap.y = 0;
+    // bitmap.alpha = 1;
+    // sLayer.addChild(bitmap);
 };
 
 RPG.drawGameOver= function() {

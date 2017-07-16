@@ -2,12 +2,14 @@
 	RPG.MAXEXP= 100;
 	// 英雄信息
 	RPG.HeroList= [
-		{index:0, chara:"blackTank", face:"face7",col:4,name:"路漫漫", atkEff: "pSword", force:100, mind:80, atk:50, def: 50, hp: 500, hpAdd: 50,desc:["主角"]},
+		{index:0, chara:"blackTank", face:"face7",col:4,name:"路漫漫", atkEff: "mUse", force:100, mind:80, atk:50, def: 50, hp: 500, hpAdd: 50,desc:["主角"]},
 		{index:1, chara:"npc1", face:"face6", name:"白色战车", force:50, mind:60, atk:40, def: 50, hp: 400, hpAdd: 50, desc:["xxxxxxx"]},
 		{index:2, chara:"npc5", face:"", name:"商人", desc:"商人", atkEff: "pAttack", force:50, mind:20, atk:65, def: 45, hp: 350, hpAdd: 40},
-		{index:3, chara:"npc24", face:"", name:"黑色战车", desc:"黑色战车", atkEff: "pStick", force:50, mind:20, atk:60, def: 40, hp: 300, hpAdd: 40},
+		{index:3, chara:"npc24", face:"", name:"黑色战车", desc:"黑色战车", atkEff: "mAttack", force:50, mind:20, atk:60, def: 40, hp: 300, hpAdd: 40},
 		{index:4, chara:"no17", face:"face1", col:4, name:"红色战车", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxxx"]},
-        {index:5, chara:"npc17", face:"face3", col:4, name:"雷娜", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]}
+        {index:5, chara:"npc17", face:"face3", col:4, name:"雷娜", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]},
+        {index:6, chara:"enemy00", face:"face3", row:1,col:1, name:"杀人虫", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]}
+
 	];
 
 RPG.HeroPlayer={
