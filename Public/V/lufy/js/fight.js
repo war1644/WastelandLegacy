@@ -23,33 +23,33 @@ RPG.gameState;
 RPG.noTrophy= false;
 
 RPG.checkFight= function(){
-	var a;
-	var hero1;
+	let a;
+	let hero1;
 	// 首先检查敌人队伍人数
 	a= 0;
-	for (var i= 0; i< RPG.eTeam.heroList.length; i++){
+	for (let i= 0; i< RPG.eTeam.heroList.length; i++){
 		hero1= RPG.eTeam.heroList[i];
 		if (hero1.alive) {
 			a++;
 		}
 	}
-	if (a== 0) {
+	if (a=== 0) {
 		RPG.gameState= RPG.WIN;
 		return true;
 	}
 	a= 0;
-	for (var i= 0; i< RPG.pTeam.heroList.length; i++){
+	for (let i= 0; i< RPG.pTeam.heroList.length; i++){
 		hero1= RPG.pTeam.heroList[i];
 		if (hero1.alive) {
 			a++;
 		}
 	}
-	if (a== 0) {
+	if (a=== 0) {
 		RPG.gameState= RPG.LOST;
 		return true;
 	}
 	return false;
-}
+};
 
 // 计算经验值
 RPG.calcExp= function(){
@@ -94,7 +94,7 @@ RPG.calcExp= function(){
 		getExp.push(Math.floor(a));
 	}
 	return getExp;
-}
+};
 
 RPG.showResult= function(){
 	if (RPG.gameState==RPG.WIN) {
@@ -169,7 +169,7 @@ RPG.showResult= function(){
 			hero1.fighter.x= RPG.menuWidth/ 2- hero1.fighter.getWidth()/ 2;
 		}
 	}
-}
+};
 
 RPG.doNormalFight= function(aHero, aToHero, aAct, aAfterFunc){
 	// 我方物理攻击
@@ -229,7 +229,7 @@ RPG.doNormalFight= function(aHero, aToHero, aAct, aAfterFunc){
 			}
 		}
 	)
-}
+};
 // 快速战斗
 RPG.doQuickFight= function(aHero, aToHero, aAct, aAfterFunc){
 	// 只进行胜负检查
@@ -246,7 +246,7 @@ RPG.doQuickFight= function(aHero, aToHero, aAct, aAfterFunc){
 	if (aAfterFunc) {
 		aAfterFunc();
 	}
-}
+};
 
 RPG.autoFight= function(aId){
 	// 简单的顺序，我方依次先动，敌方依次再动
@@ -341,7 +341,7 @@ RPG.autoFight= function(aId){
 			RPG.doNormalFight(hero1, hero2, eff, function(){RPG.autoFight(aId+ 1);});
 		}
 	}
-}
+};
 
 RPG.calcMaxValue= function(){
 	var hero1;
@@ -364,7 +364,7 @@ RPG.calcMaxValue= function(){
 			RPG.maxMpAll= hero1.Mp;
 		}
 	}
-}
+};
 RPG.drawData= function(){
 	// 战斗窗口基本站位
 	var hero1, chara, bitmapdata;
@@ -412,7 +412,7 @@ RPG.drawData= function(){
 		RPG.drawScale(RPG.ctrlLayer,"winback", x0- w3, gap* 2+ space* i+ STEP+ 10, w3,5);
 		RPG.drawScale(RPG.ctrlLayer,"mp", x0- w4, gap* 2+ space* i+ STEP+ 10, w4,5);
 	}
-}
+};
 RPG.drawFighters= function(){
 	// 战斗窗口基本站位
 	var hero1, chara, bitmapdata;
@@ -462,7 +462,7 @@ RPG.drawFighters= function(){
 		RPG.descLayer.addChild(chara);
 		hero1.fighter= chara;
 	}
-}
+};
 
 
 RPG.drawActButton= function(canLeave){
@@ -555,7 +555,7 @@ RPG.drawActButton= function(canLeave){
 	//
 	talkLayer.addChild(button03);
 	if (!canLeave) button03.setState(LButton.STATE_DISABLE);			
-}
+};
 RPG.startFight= function(eTeam, pTeam, canLeave, aNoTrophy){
 	//	设置控制状态
 	RPG.pushState(RPG.IN_FIGHTING);
@@ -606,59 +606,59 @@ RPG.startFight= function(eTeam, pTeam, canLeave, aNoTrophy){
 	RPG.drawData();
 	RPG.drawActButton(canLeave);
 	//RPG.menuShowLoad();
-}
+};
 
 // 普通战斗
-RPG.simpleFight= function(aTeamId, aChar){
-	var hero1= RPG.beget(RPG.HeroPlayer);
-	var hero2= RPG.beget(RPG.HeroPlayer);
-	RPG.extend(hero1, RPG.enemyTeam[aTeamId].getHero(0));
-	RPG.extend(hero2, mainTeam.getHero(0));
+RPG.simpleFight= function(teamId, npc){
+	let enemyHero= RPG.beget(RPG.HeroPlayer);
+	let playerHero= RPG.beget(RPG.HeroPlayer);
+	RPG.extend(enemyHero, RPG.enemyTeam[teamId].getHero(0));
+	RPG.extend(playerHero, mainTeam.getHero(0));
 	// 敌方满血
-	hero1.fullHeal();
-	// 攻击效果
-	var a1= RPG.physicalAttack(hero1, hero2);
-	var r1= a1/ hero2.Hp;
-	// 被攻击效果
-	var a2= RPG.physicalAttack(hero2, hero1);
-	var r2= a2/ hero1.Hp;
-	// 攻击力超过1倍，并无意义
-	if (r2> 1) r2= 1; 
-	if (hero1.Level<= hero2.Level- 3 && r2/ r1> 3) {
+	enemyHero.fullHeal();
+    // 被攻击预算
+    let a1= RPG.physicalAttack(enemyHero, playerHero);
+	let r1= a1/ playerHero.Hp;
+    // 攻击预算
+	let a2 = RPG.physicalAttack(playerHero, enemyHero);
+	let r2 = a2 / enemyHero.Hp;
+	// 攻击力超过敌人血量，秒杀并无意义
+	if (r2 > 1) r2 = 1;
+	if ((playerHero.Level-enemyHero.Level) >= 3 && r2/r1> 3) {
 		// 级别差三级以上，同时首击效果相差太大，则开始逃散
-		var choice1={ img: "", msg: "敌人四散奔逃，是否追击？",
+		let choice1={ img: "", msg: "敌人四散奔逃，是否追击？",
 	    	        choise:[
 	    	        	{text:"追击（经验少且无战利品）",action: function(){
 				     		RPG.closeTalk();
 							RPG.pushState(RPG.FIGHT_RESULT);
-							RPG.startFight(RPG.enemyTeam[aTeamId], mainTeam, true, true);
+							RPG.startFight(RPG.enemyTeam[teamId], mainTeam, true, true);
 							RPG.waitMenu(function(){
-								if (RPG.gameState==RPG.WIN) {
-									aChar.visible= false;
+								if (RPG.gameState===RPG.WIN) {
+									npc.visible= false;
 									RPG.popState();
-								} else if (RPG.gameState== RPG.LOST){
+								} else if (RPG.gameState=== RPG.LOST){
 									RPG.drawGameOver();
 								} else {
 									// 不胜不败
-									aChar.visible= false;
+									npc.visible= false;
 									RPG.popState();
 								}
 							});	
 		     			}},
 		     			{text:"不追击",action: function(){
 				     		RPG.closeTalk();
-							aChar.visible= false;
+							npc.visible= false;
 		     			}}]
 		    	  };
      	RPG.makeChoise(choice1);
 	} else {
 		RPG.pushState(RPG.FIGHT_RESULT);
-		RPG.startFight(RPG.enemyTeam[aTeamId], mainTeam, false);
+		RPG.startFight(RPG.enemyTeam[teamId], mainTeam, false);
 		RPG.waitMenu(function(){
-			if (RPG.gameState==RPG.WIN) {
-				aChar.visible= false;
+			if (RPG.gameState===RPG.WIN) {
+				npc.visible= false;
 				RPG.popState();
-			} else if (RPG.gameState== RPG.LOST){
+			} else if (RPG.gameState=== RPG.LOST){
 				RPG.drawGameOver();
 			} else {
 				// 不胜不败
@@ -666,7 +666,7 @@ RPG.simpleFight= function(aTeamId, aChar){
 			}
 		});			
 	}
-}
+};
 // 巢穴战斗
 RPG.denFight= function(aTeamId, aSwitch){
 	RPG.pushState(RPG.FIGHT_RESULT);
@@ -685,7 +685,7 @@ RPG.denFight= function(aTeamId, aSwitch){
 			RPG.popState();
 		}
 	});		
-}
+};
 // 特定的战斗
 RPG.gate1Fight= function(){
  	RPG.pushState(RPG.FIGHT_RESULT);
@@ -694,7 +694,7 @@ RPG.gate1Fight= function(){
 		if (RPG.gameState==RPG.WIN) {
 			RPG.popState();
 			RPG.setSwitch("gate1win");
-   			var char1= stage.charaList["boss"];
+   			let char1= stage.charaList["boss"];
    			char1.visible= false;
 		} else if (RPG.gameState== RPG.LOST){
 			// 结束游戏
@@ -704,4 +704,4 @@ RPG.gate1Fight= function(){
 			RPG.popState();
 		}
 	});		
-}
+};

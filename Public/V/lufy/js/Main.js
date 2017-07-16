@@ -225,110 +225,10 @@ function drawImgMap(map) {
 	mapLayer.addChild(bitmap);
 }
 
-function drawMap(aMap){
-	let i,j,k, index,indexX,indexY, a, b, xx, yy, ww, hh;
-	// 地图的起始位置
-	let mapX = mapLayer.x / STEP;
-	let mapY = mapLayer.y / STEP;
-	let bitmapdata,bitmap;
-	let isUp= false;
-	let MapName;
-	let imgNum;
-	mapLayer.removeAllChild();	
-	upLayer.removeAllChild();
-    //图层数
-	let ml= aMap.layers.length;
-	// 逐层画地图
-    //瓦片集x轴瓦片数
-	a= aMap.tilesets[0].imagewidth/ aMap.tilesets[0].tilewidth;
-	//瓦片集y轴瓦片数
-	b= aMap.tilesets[0].imageheight/ aMap.tilesets[0].tilewidth;
-	//地图x轴瓦片数
-	ww= aMap.width;
-	//地图y轴瓦片数
-	hh= aMap.height;
-	//console.log("drawMap");
-	//瓦片集name
-	MapName= aMap.tilesets[0].name;
-	//瓦片集数
-	imgNum= aMap.tilesets.length;
-	//遍历图层
-	for (i=0; i<ml; i++)
-	{
-		if(aMap.layers[i].name === "move"){
-			// 行动控制层不画
-			CurrentMapMove= aMap.layers[i];
-			continue;
-		}
-		if(aMap.layers[i].name === "up"){
-			// 行动控制层不画
-			isUp= true;
-		} else {
-			isUp= false;
-		}
-
-		//遍历该图层瓦片编号
-		for (j=0; j< aMap.layers[i].data.length; j++)
-		{
-			//当前瓦片编号
-            index= aMap.layers[i].data[j];
-			//为0则没有瓦片
-           if (index===0) continue;
-			//一个瓦片集，索引为0
-			if (imgNum===1) {
-				index=index- 1;
-			} else {
-				//遍历瓦片集
-				for (k= imgNum- 1; k>= 0; k--){
-					//瓦片号必须大于起始编号
-                    if (index>= aMap.tilesets[k].firstgid){
-                    	//索引从0开始
-						index= index- aMap.tilesets[k].firstgid;
-						//瓦片集name
-						MapName= aMap.tilesets[k].name;
-						//瓦片集x轴瓦片数
-						a= aMap.tilesets[k].imagewidth/ aMap.tilesets[k].tilewidth;
-						//瓦片集y轴瓦片数
-                       b= aMap.tilesets[k].imageheight/ aMap.tilesets[k].tilewidth;
-						break;
-					}
-				}
-			}
-			//瓦片换算为在地图的x,y坐标
-			xx= j % ww;
-			yy= (j / hh)<<0;
-			//瓦片换算为在瓦片集的x,y坐标
-			indexY = (index /a)<<0;
-			indexX = index- indexY* a;
-			//console.log(index,xx, yy,indexX, indexY);
-			//小图片的横坐标
-			//if (xx* STEP+STEP+ mapLayer.x< 0 ||	xx* STEP+ mapLayer.x> WIDTH || yy* STEP+STEP+ mapLayer.y< 0 || yy*STEP+ mapLayer.y> HEIGHT)
-
-			//得到瓦片
-			bitmapdata = new LBitmapData(imglist[MapName],indexX*STEP,indexY*STEP,STEP,STEP);
-			bitmap = new LBitmap(bitmapdata);
-			//设置瓦片的显示位置
-			bitmap.x = xx*STEP;// - mapLayer.x;
-			bitmap.y = yy*STEP;// - mapLayer.y;
-			//将瓦片显示到地图层
-			if (isUp){
-				if (stage.hasBig){
-					charaLayer.addChild(bitmap);
-				} else {
-					upLayer.addChild(bitmap);
-				}
-			} else {
-				mapLayer.addChild(bitmap);
-			}
-
-		}
-	}
-}
-
 function setHero(x, y, frame){
-	if (x == null) return;
-	let w1= Math.floor(WIDTH/ STEP/ 2),
-		h1= Math.floor(HEIGHT/ STEP/ 2),
+	if (x === null) return;
+	let w1= (WIDTH/ STEP/ 2)<<0,
+		h1= (HEIGHT/ STEP/ 2)<<0,
 		w2= Math.ceil(WIDTH/ STEP/ 2),
 		h2= Math.ceil(HEIGHT/ STEP/ 2),
 		moveX=0,
@@ -337,7 +237,7 @@ function setHero(x, y, frame){
 		heroImg;
 	// 把玩家置于屏幕的正中
 	if (CurrentMap.width< w1+ w2) {
-		moveX= Math.floor((CurrentMap.width- w2- w1)/ 2);
+		moveX= ((CurrentMap.width- w2- w1)/ 2)<<0;
 	} else {
 		if (x< w1){
 			moveX= 0;
@@ -348,7 +248,7 @@ function setHero(x, y, frame){
 		}
 	}
 	if (CurrentMap.height< h1+ h2) {
-		moveY= Math.floor((CurrentMap.height- h2- h1)/ 2);
+		moveY= ((CurrentMap.height- h2- h1)/ 2)<<0;
 	} else {
 		if (y< h1){
 			moveY= 0;
@@ -524,6 +424,113 @@ class SoundManage{
             this.bgm.data.loop = true;
             if (this.soundName) {
                 RPG.curBGM = this.soundName;
+            }
+        }
+    }
+}
+
+//根据脚本，初始化游戏画面
+/**
+ * x,y 玩家进入场景的x,y坐标
+ **/
+function initScript(x,y,frame=0){
+    //效果层初始化
+    effectLayer.removeAllChild();
+    //对话层初始化
+    talkLayer.removeAllChild();
+    //默认对话位置居中
+    RPG.setTalkPos("bottom");
+    //当前场景地图
+    CurrentMap= stage.map;
+    CurrentMapImg = stage.imgName;
+    //先添加人物NPC，为了确定地图的自动移动
+    addChara();
+
+    setHero(x,y,frame);
+    // 绘制地图
+    // drawMap(CurrentMap);
+    drawImgMap(CurrentMap);
+    // 立即检测自动动作
+    checkAuto();
+}
+
+//走到触发型
+function checkTrigger(){
+    let events = stage.events;
+    let triggerEvent;
+    for(let i=0;i<events.length;i++){
+        triggerEvent = events[i];
+        if (!triggerEvent.img){
+            if( (player.x/STEP<<0 === triggerEvent.x) && (player.y/STEP<<0 === triggerEvent.y) ){
+                //获取该场景脚本数据
+                if (triggerEvent.action){
+                    // 一旦触发事件，按键取消
+                    isKeyDown= false;
+                    triggerEvent.action();
+                    return;
+                }
+            }
+        }
+    }
+}
+/**
+ * 检测NPC碰撞触发型事件
+ */
+function checkTouch(){
+    // 仅在地图状态下可以触发
+    if (!RPG.checkState(RPG.MAP_CONTROL)) return;
+    let actionEvent, npc,ww1, ww2, hh1, hh2;
+    for(let key in charaLayer.childList){
+        //不可见的不处理
+        if (!charaLayer.childList[key].visible) continue;
+        //判断周围有npc
+        actionEvent = charaLayer.childList[key].rpgEvent;
+        if (charaLayer.childList[key].touch){
+            npc = charaLayer.childList[key];
+            // ww1= ww2= npc.getWidth()/ STEP;
+            // hh1= hh2= npc.getHeight()/ STEP;
+            // if (ww1> 2) {
+            // 	ww1= 2;
+            // 	ww2= 2;
+            // }
+            // if (hh1> 1) {
+            // 	hh2= 1;
+            // }
+            if( player.px >= npc.px - 1 &&
+                player.px <= npc.px + 1 &&
+                player.py >= npc.py - 1 &&
+                player.py <= npc.py + 1 ){
+                //获取该场景脚本数据
+                if (actionEvent){
+                    //朝向玩家
+                    npc.anime.setAction(3 - player.direction);
+                    npc.anime.onframe();
+                    // 一旦触发事件，按键取消
+                    isKeyDown= false;
+                    actionEvent(npc);
+                    return;
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 检测自动触发型事件
+ */
+function checkAuto(){
+    let events = stage.events;
+    let autoEvent;
+    for(let i=0;i<events.length;i++){
+        autoEvent = events[i];
+        if (autoEvent.chara==="auto"){
+            if (autoEvent.visible && autoEvent.visible()){
+                if (autoEvent.action){
+                    // 一旦触发事件，按键取消
+                    isKeyDown= false;
+                    autoEvent.action();
+                    return;
+                }
             }
         }
     }

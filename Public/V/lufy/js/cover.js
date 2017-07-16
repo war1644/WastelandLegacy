@@ -30,7 +30,7 @@ RPG.newGame = function () {
 	//载入场景
     stage = script.stage05;
 	//初始化敌人
-    // RPG.initEnemyTeam();
+    RPG.initEnemyTeam();
 
    	//进入地图控制状态
 	RPG.setState(RPG.MAP_CONTROL);
@@ -39,7 +39,7 @@ RPG.newGame = function () {
 };
 
 // 初始化敌人战斗队的数据
-RPG.initEnemyTeam= function(){
+RPG.initEnemyTeam = function(){
     let team1;
 	// 蝎子战队=0
 	team1= RPG.beget(RPG.PlayerTeam);
@@ -49,7 +49,7 @@ RPG.initEnemyTeam= function(){
 	team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
 	// 蝙蝠战队=1
-	team1= RPG.beget(RPG.PlayerTeam);
+	team1 = RPG.beget(RPG.PlayerTeam);
 	team1.clear();
 	team1.addHero(3, 1);
 	team1.addHero(3, 1);
@@ -85,7 +85,6 @@ RPG.initEnemyTeam= function(){
 	team1= RPG.beget(RPG.PlayerTeam);
 	team1.clear();
 	team1.addHero(1, 6);
-	//
 	RPG.enemyTeam.push(team1);
 };
 

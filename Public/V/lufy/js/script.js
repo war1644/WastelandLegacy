@@ -388,6 +388,8 @@
                     RPG.startTalk(stage.talk.talk6);
                 }
             }},
+            // 山洞战斗者
+            {chara:"touch", img:"npc5", x:6,  y:5, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){RPG.simpleFight(1, aChar);}},
             {
                 type: "npc", img: "", x: 6, y: 13, action: function () {
                     // 回到大地图
@@ -514,111 +516,3 @@
 };
 
 
-//根据脚本，初始化游戏画面
-/**
- * x,y 玩家进入场景的x,y坐标
- **/
-function initScript(x,y,frame=0){
-	//效果层初始化
-	effectLayer.removeAllChild();
-	//对话层初始化
-	talkLayer.removeAllChild();
-	//默认对话位置居中
-	RPG.setTalkPos("bottom");
-	//当前场景地图
-	CurrentMap= stage.map;
-    CurrentMapImg = stage.imgName;
-	//先添加人物NPC，为了确定地图的自动移动
-	addChara();
-
-	setHero(x,y,frame);
-	// 绘制地图
-	// drawMap(CurrentMap);
-    drawImgMap(CurrentMap);
-	// 立即检测自动动作
-	checkAuto();
-}
-
-//走到触发型
-function checkTrigger(){
-    let events = stage.events;
-	let triggerEvent;
-	for(let i=0;i<events.length;i++){
-		triggerEvent = events[i];
-		if (!triggerEvent.img){
-			if( (player.x/STEP<<0 === triggerEvent.x) && (player.y/STEP<<0 === triggerEvent.y) ){
-				//获取该场景脚本数据
-				if (triggerEvent.action){
-					// 一旦触发事件，按键取消
-					isKeyDown= false;
-					triggerEvent.action();
-					return;
-				}
-			}
-		}
-	}
-}
-/**
- * 检测NPC碰撞触发型事件
- */
-function checkTouch(){
-	// 仅在地图状态下可以触发
-	if (!RPG.checkState(RPG.MAP_CONTROL)) return;
-	let actionEvent, npc,ww1, ww2, hh1, hh2;
-	for(let key in charaLayer.childList){
-		//不可见的不处理
-		if (!charaLayer.childList[key].visible) continue;
-        //判断周围有npc
-		actionEvent = charaLayer.childList[key].rpgEvent;
-        if (charaLayer.childList[key].touch){
-			npc = charaLayer.childList[key];
-			ww1= ww2= npc.getWidth()/ STEP;
-			hh1= hh2= npc.getHeight()/ STEP;
-			console.log('npc',npc);
-			console.log('wh',ww1,hh1);
-			if (ww1> 2) {
-				ww1= 2;
-				ww2= 2;
-			}
-			if (hh1> 1) {
-				hh2= 1;
-			}
-			if( player.px >= npc.px- ww1 &&
-				player.px <= npc.px+ ww2 &&
-				player.py >= npc.py- hh1 &&
-				player.py <= npc.py+ hh2 ){
-				//获取该场景脚本数据
-				if (actionEvent){
-					//朝向玩家
-					npc.anime.setAction(3 - player.direction);
-					npc.anime.onframe();
-					// 一旦触发事件，按键取消
-					isKeyDown= false;
-					actionEvent(npc);
-					return;
-				}
-			}
-		}
-	}
-}
-
-/**
- * 检测自动触发型事件
- */
-function checkAuto(){
-	let events = stage.events;
-	let autoEvent;
-	for(let i=0;i<events.length;i++){
-		autoEvent = events[i];
-		if (autoEvent.chara==="auto"){
-			if (autoEvent.visible && autoEvent.visible()){
-				if (autoEvent.action){
-					// 一旦触发事件，按键取消
-					isKeyDown= false;
-					autoEvent.action();
-					return;
-				}
-			}
-		}
-	}
-}

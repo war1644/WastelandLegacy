@@ -522,3 +522,103 @@ RPG.resetChildIndex= function(aLayer){
 		}
 	}
 };
+
+function drawMap(aMap){
+    let i,j,k, index,indexX,indexY, a, b, xx, yy, ww, hh;
+    // 地图的起始位置
+    let mapX = mapLayer.x / STEP;
+    let mapY = mapLayer.y / STEP;
+    let bitmapdata,bitmap;
+    let isUp= false;
+    let MapName;
+    let imgNum;
+    mapLayer.removeAllChild();
+    upLayer.removeAllChild();
+    //图层数
+    let ml= aMap.layers.length;
+    // 逐层画地图
+    //瓦片集x轴瓦片数
+    a= aMap.tilesets[0].imagewidth/ aMap.tilesets[0].tilewidth;
+    //瓦片集y轴瓦片数
+    b= aMap.tilesets[0].imageheight/ aMap.tilesets[0].tilewidth;
+    //地图x轴瓦片数
+    ww= aMap.width;
+    //地图y轴瓦片数
+    hh= aMap.height;
+    //console.log("drawMap");
+    //瓦片集name
+    MapName= aMap.tilesets[0].name;
+    //瓦片集数
+    imgNum= aMap.tilesets.length;
+    //遍历图层
+    for (i=0; i<ml; i++)
+    {
+        if(aMap.layers[i].name === "move"){
+            // 行动控制层不画
+            CurrentMapMove= aMap.layers[i];
+            continue;
+        }
+        if(aMap.layers[i].name === "up"){
+            // 行动控制层不画
+            isUp= true;
+        } else {
+            isUp= false;
+        }
+
+        //遍历该图层瓦片编号
+        for (j=0; j< aMap.layers[i].data.length; j++)
+        {
+            //当前瓦片编号
+            index= aMap.layers[i].data[j];
+            //为0则没有瓦片
+            if (index===0) continue;
+            //一个瓦片集，索引为0
+            if (imgNum===1) {
+                index=index- 1;
+            } else {
+                //遍历瓦片集
+                for (k= imgNum- 1; k>= 0; k--){
+                    //瓦片号必须大于起始编号
+                    if (index>= aMap.tilesets[k].firstgid){
+                        //索引从0开始
+                        index= index- aMap.tilesets[k].firstgid;
+                        //瓦片集name
+                        MapName= aMap.tilesets[k].name;
+                        //瓦片集x轴瓦片数
+                        a= aMap.tilesets[k].imagewidth/ aMap.tilesets[k].tilewidth;
+                        //瓦片集y轴瓦片数
+                        b= aMap.tilesets[k].imageheight/ aMap.tilesets[k].tilewidth;
+                        break;
+                    }
+                }
+            }
+            //瓦片换算为在地图的x,y坐标
+            xx= j % ww;
+            yy= (j / hh)<<0;
+            //瓦片换算为在瓦片集的x,y坐标
+            indexY = (index /a)<<0;
+            indexX = index- indexY* a;
+            //console.log(index,xx, yy,indexX, indexY);
+            //小图片的横坐标
+            //if (xx* STEP+STEP+ mapLayer.x< 0 ||	xx* STEP+ mapLayer.x> WIDTH || yy* STEP+STEP+ mapLayer.y< 0 || yy*STEP+ mapLayer.y> HEIGHT)
+
+            //得到瓦片
+            bitmapdata = new LBitmapData(imglist[MapName],indexX*STEP,indexY*STEP,STEP,STEP);
+            bitmap = new LBitmap(bitmapdata);
+            //设置瓦片的显示位置
+            bitmap.x = xx*STEP;// - mapLayer.x;
+            bitmap.y = yy*STEP;// - mapLayer.y;
+            //将瓦片显示到地图层
+            if (isUp){
+                if (stage.hasBig){
+                    charaLayer.addChild(bitmap);
+                } else {
+                    upLayer.addChild(bitmap);
+                }
+            } else {
+                mapLayer.addChild(bitmap);
+            }
+
+        }
+    }
+}
