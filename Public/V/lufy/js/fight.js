@@ -428,58 +428,65 @@ RPG.drawData= function(){
 };
 
 /**
- * 绘制战场人物
- *
+ * 绘制战场
  **/
 RPG.drawFighters= function(){
 	// 战斗窗口基本站位
-	let hero1, chara, bitmapdata;
-	let gap= 10;
-	let space= 50;
-	let col, row;
-	let yy;
+	let hero1, chara, bitmapData,space= 50,col,x,y,team,hpText;
 	//
 	// let maxShowHp= RPG.menuWidth/ 2- gap* 2;
 	RPG.descLayer.removeAllChild();
-	yy= gap* 2;
-	for (let i= 0; i< RPG.eTeam.heroList.length; i++){
-		hero1= RPG.eTeam.heroList[i];
-		bitmapdata = new LBitmapData(imglist[RPG.HeroList[hero1.index].chara]);
-		if (hero1.getPerson().col) {
-			col= hero1.getPerson().col;
-		} else {
-			col= 4;
-		}
-		chara = new RPG.Fighter(bitmapdata, 4, col);
-		if (!hero1.alive){
-			yy= yy+ chara.getHeight()+ 15;
-			continue;
-		}
-		chara.changeDir(RPG.RIGHT);
-		chara.x = gap;
-		chara.y = yy;
-		RPG.descLayer.addChild(chara);
-		hero1.fighter= chara;
-		yy= yy+ chara.getHeight()+ 15;
-	}
-	for (let i= 0; i< RPG.pTeam.heroList.length; i++){
-		hero1= RPG.pTeam.heroList[i];
-		if (!hero1.alive){
-			continue;
-		}
-		bitmapdata = new LBitmapData(imglist[RPG.HeroList[hero1.index].chara]);
-		if (hero1.getPerson().col) {
-			col= hero1.getPerson().col;
-		} else {
-			col= 4;
-		}
-		chara = new RPG.Fighter(bitmapdata, 4, col);
-		chara.changeDir(RPG.LEFT);
-		chara.x = RPG.menuWidth- STEP- gap;
-		chara.y = gap* 2+ space* i;
-		RPG.descLayer.addChild(chara);
-		hero1.fighter= chara;
-	}
+    let text = new LTextField();
+    text.size = '12px';
+    text.color = '#fff';
+    text.textAlign= "center";
+    text.width = 40;
+	//绘制敌我两队到战场
+    for (let j = 0; j < 2; j++) {
+        team = j ? RPG.pTeam.heroList : RPG.eTeam.heroList;
+        dir = j ? RPG.LEFT : RPG.RIGHT;
+        x = j ? RPG.menuWidth - STEP - gap : gap;
+        y = gap * 2;
+        for (let i= 0; i< team.length; i++){
+            hero1 = team[i];
+            bitmapData = new LBitmapData(imglist[RPG.HeroList[hero1.index].chara]);
+            col = hero1.getPerson().col || 4;
+            chara = new RPG.Fighter(bitmapData, 4, col);
+            if (!hero1.alive){
+                y = y + chara.getHeight() + 30;
+                continue;
+            }
+            chara.changeDir(dir);
+            chara.x = x;
+            chara.y = y;
+            RPG.descLayer.addChild(chara);
+
+            hero1.fighter = chara;
+            y = y + chara.getHeight() + 30;
+
+            hpText = text.clone();
+            hpText.text = hero1.Hp;
+            hpText.x = x;
+            hpText.y = y-20;
+            RPG.descLayer.addChild(hpText);
+        }
+
+    }
+
+	// for (let i= 0; i< RPG.pTeam.heroList.length; i++){
+	// 	hero1= RPG.pTeam.heroList[i];
+	// 	if (!hero1.alive){
+	// 		continue;
+	// 	}
+	// 	bitmapData = new LBitmapData(imglist[RPG.HeroList[hero1.index].chara]);
+     //    col = hero1.getPerson().col || 4;
+	// 	chara = new RPG.Fighter(bitmapData, 4, col);
+	// 	chara.changeDir(RPG.LEFT);
+	// 	chara.x = RPG.menuWidth- STEP- gap;
+	// 	chara.y = gap* 2+ space* i;
+	// 	RPG.descLayer.addChild(chara);
+	// 	hero1.fighter= chara;
+	// }
 };
 
 /**
@@ -488,91 +495,36 @@ RPG.drawFighters= function(){
  **/
 RPG.drawActButton= function(canLeave){
 	// 控制按钮
-	let button01= null;
-	let button02= null;
-	let button03= null;
-	let button04= null;
+	let attackButton= null;
+	let exitButton= null;
 	let x0, y0;
-	// let gap= 10;
 	let useWidth= RPG.menuWidth- gap* 2;
 	x0= useWidth/ 8- RPG.iconStep* 1.5/ 2+ gap;
 	y0= HEIGHT- 100;
     RPG.finalButtonSetFunc= function() {
-        button01.setState(LButton.STATE_DISABLE);
-        // button04.setState(LButton.STATE_DISABLE);
-        // button02.setState(LButton.STATE_DISABLE);
-        button03.setState(LButton.STATE_ENABLE);
+        attackButton.setState(LButton.STATE_DISABLE);
+        exitButton.setState(LButton.STATE_ENABLE);
     };
-	button01 = fightBtn(x0,y0,"攻击",function(e){
+	attackButton = fightBtn(x0,y0,"攻击",function(e){
 			RPG.stopAuto= true;
-        	button03.setState(LButton.STATE_DISABLE);
-			// button02.setState(LButton.STATE_DISABLE);
-			// if (!canLeave) button03.setState(LButton.STATE_DISABLE);
-			// button04.setState(LButton.STATE_DISABLE);
+        	exitButton.setState(LButton.STATE_DISABLE);
 			RPG.fightState = 1;
 			RPG.autoFight(0);
 			// 首先等待自动战斗结束后，才能开启其他按钮
-			button01.setState(LButton.STATE_DISABLE);
+			attackButton.setState(LButton.STATE_DISABLE);
 			RPG.afterStop = function() {
-				button01.setState(LButton.STATE_ENABLE);
-				// button04.setState(LButton.STATE_ENABLE);
-				// button02.setState(LButton.STATE_ENABLE);
-				// if (!canLeave) {
-				// 	button03.setState(LButton.STATE_DISABLE);
-				// } else {
-					button03.setState(LButton.STATE_ENABLE);
-				// }
+				attackButton.setState(LButton.STATE_ENABLE);
+				exitButton.setState(LButton.STATE_ENABLE);
 				RPG.fightState= 0;
 			}
 	});
-	talkLayer.addChild(button01);
-
-	/*x0= x0+ useWidth/ 4;
-	button04= fightBtn(x0,y0,"总攻",function(e){
-		// 直接完成战斗，作用在于节约时间
-		RPG.quickFight= true;
-		RPG.stopAuto= false;
-		button01.setState(LButton.STATE_DISABLE);
-		button02.setState(LButton.STATE_DISABLE);
-		button03.setState(LButton.STATE_ENABLE);
-		button04.setState(LButton.STATE_DISABLE);
-		RPG.fightState= 1;
-		RPG.autoFight(0);
-	});
-	talkLayer.addChild(button04);
-
-
+	talkLayer.addChild(attackButton);
 	x0= x0+ useWidth/ 4;
-	button02= fightBtn(x0,y0,"指挥",function(e){
-		// 重新整队
-		if (RPG.fightSet) {
-			RPG.fightSet= false;
-			button01.setState(LButton.STATE_ENABLE);
-			button04.setState(LButton.STATE_ENABLE);
-			button02.setState(LButton.STATE_ENABLE);
-				if (!canLeave) {
-					button03.setState(LButton.STATE_DISABLE);
-				} else {
-					button03.setState(LButton.STATE_ENABLE);
-				}
-			RPG.closeFormation();
-		} else {
-			RPG.fightSet= true;
-			button01.setState(LButton.STATE_DISABLE);
-			button04.setState(LButton.STATE_DISABLE);
-			button02.setState(LButton.STATE_ENABLE);
-			button03.setState(LButton.STATE_DISABLE);
-			RPG.setFormation();
-		}
-	});
-	talkLayer.addChild(button02);*/
-	x0= x0+ useWidth/ 4;
-	button03= fightBtn(x0,y0,"逃跑",function(e){
+	exitButton= fightBtn(x0,y0,"逃跑",function(e){
 		// 直接获胜
 		RPG.closeMenu();
 	});
-	talkLayer.addChild(button03);
-	// if (!canLeave) button03.setState(LButton.STATE_DISABLE);
+	talkLayer.addChild(exitButton);
 };
 
 
@@ -618,13 +570,13 @@ RPG.startFight= function(enemyTeam, playerTeam, canLeave, aNoTrophy){
 	RPG.pTeam= playerTeam;
 	RPG.calcMaxValue();
 	RPG.drawFighters();
-	RPG.drawData();
+	// RPG.drawData();
 	RPG.drawActButton(canLeave);
 	//RPG.menuShowLoad();
 };
 
 // 普通战斗
-RPG.simpleFight= function(teamId, npc){
+RPG.simpleFight= function(teamId, npc=0){
 	let enemyHero= RPG.beget(RPG.HeroPlayer);
 	let playerHero= RPG.beget(RPG.HeroPlayer);
 	RPG.extend(enemyHero, RPG.enemyTeam[teamId].getHero(0));
@@ -649,20 +601,20 @@ RPG.simpleFight= function(teamId, npc){
 							RPG.startFight(RPG.enemyTeam[teamId], mainTeam, true, true);
 							RPG.waitMenu(function(){
 								if (RPG.gameState===RPG.WIN) {
-									npc.visible= false;
+									// npc.visible= false;
 									RPG.popState();
 								} else if (RPG.gameState=== RPG.LOST){
 									RPG.drawGameOver();
 								} else {
 									// 不胜不败
-									npc.visible= false;
+									// npc.visible= false;
 									RPG.popState();
 								}
 							});	
 		     			}},
 		     			{text:"不追击",action: function(){
 				     		RPG.closeTalk();
-							npc.visible= false;
+							// npc.visible= false;
 		     			}}]
 		    	  };
      	RPG.makeChoise(choice1);
@@ -671,7 +623,7 @@ RPG.simpleFight= function(teamId, npc){
 		RPG.startFight(RPG.enemyTeam[teamId], mainTeam, false);
 		RPG.waitMenu(function(){
 			if (RPG.gameState===RPG.WIN) {
-				npc.visible= false;
+				// npc.visible= false;
 				RPG.popState();
 			} else if (RPG.gameState=== RPG.LOST){
 				RPG.drawGameOver();
@@ -687,10 +639,10 @@ RPG.denFight= function(aTeamId, aSwitch){
 	RPG.pushState(RPG.FIGHT_RESULT);
 	RPG.startFight(RPG.enemyTeam[aTeamId], mainTeam, true);
 	RPG.waitMenu(function(){
-		if (RPG.gameState==RPG.WIN) {
+		if (RPG.gameState===RPG.WIN) {
 			RPG.setSwitch(aSwitch, true);
 			RPG.popState();
-		} else if (RPG.gameState== RPG.LOST){
+		} else if (RPG.gameState=== RPG.LOST){
 			// 巢穴战斗失败，仍然导致结束游戏
 			RPG.drawGameOver();
 			// 攻击巢穴失败，不结束游戏

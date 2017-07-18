@@ -10,24 +10,14 @@ RPG.newGame = function () {
 	//初始化玩家队伍
 	mainTeam = RPG.beget(RPG.PlayerTeam);
     //向玩家队伍增加人物（人物索引，人物等级)
-	mainTeam.addHero(0, 1);
-    mainTeam.addHero(1, 1);
+	mainTeam.addHero(0, 99);
+    mainTeam.addHero(1, 99);
 
     // mainTeam.getHero().Hp= 9999;
     // mainTeam.getHero().Mp= 5;
     // mainTeam.getHero().Exp= 15;
-    // console.log(mainTeam);
-	/*
-	mainTeam.addItem(1, 10);
-	mainTeam.addItem(2, 10);
-	mainTeam.addItem(5, 1);
-	mainTeam.addItem(6, 1);
-	mainTeam.addItem(7, 1);
-	mainTeam.addItem(8, 1);
-	mainTeam.addItem(9, 1);
-	mainTeam.addItem(10, 1);
-	mainTeam.addItem(11, 1);
-	//*/
+    console.log(mainTeam);
+
 	RPG.initSwitch();
 	//载入场景
     stage = script.stage05;
@@ -43,21 +33,21 @@ RPG.newGame = function () {
 // 初始化敌人战斗队的数据
 RPG.initEnemyTeam = function(){
     let team1;
-	// 蝎子战队=0
+	// A队=0
 	team1= RPG.beget(RPG.PlayerTeam);
 	team1.clear();
 	team1.addHero(2, 2);
 	team1.addHero(2, 2);
 	team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
-	// 蝙蝠战队=1
+	// B队=1
 	team1 = RPG.beget(RPG.PlayerTeam);
 	team1.clear();
 	team1.addHero(3, 1);
 	team1.addHero(3, 1);
 	team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
-	// 蝎子巢穴队=2
+	// C队=2
 	team1= RPG.beget(RPG.PlayerTeam);
 	team1.clear();
 	team1.addHero(2, 5);
@@ -67,7 +57,7 @@ RPG.initEnemyTeam = function(){
 	team1.addItem(1, 2);
 	//team1.addItem(2, 1);
 	RPG.enemyTeam.push(team1);
-	// 蝙蝠巢穴队=3
+	// D队=3
 	team1= RPG.beget(RPG.PlayerTeam);
 	team1.clear();
 	team1.addHero(3, 5);
@@ -76,14 +66,14 @@ RPG.initEnemyTeam = function(){
 	team1.addHero(3, 3);
 	team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
-	// 大龙战队=4
-	team1= RPG.beget(RPG.PlayerTeam);
+	// E队=4
+	team1 = RPG.beget(RPG.PlayerTeam);
 	team1.clear();
 	team1.addHero(4, 10);
 	team1.addHero(2, 5);
 	team1.addHero(3, 5);
 	RPG.enemyTeam.push(team1);
-	// 坏人战队=5
+	// F队=5
 	team1= RPG.beget(RPG.PlayerTeam);
 	team1.clear();
 	team1.addHero(1, 6);

@@ -155,7 +155,7 @@ function checkIntoBattle(){
         if (rangeRand(0,9)>2){
         	let enemy = charaLayer.childList[5];
         trace(enemy);
-            RPG.simpleFight(rangeRand(1,5),enemy);
+            RPG.simpleFight(rangeRand(1,5));
         }
         player.tmp = 0;
     }

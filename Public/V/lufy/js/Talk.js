@@ -22,7 +22,7 @@
 function addTalk(){
 	// 仅在地图控制状态可以启动新对话
 	if (RPG.checkState(RPG.MAP_CONTROL) && player){
-		let key,tx = player.px,ty = player.py;
+		let tx = player.px,ty = player.py;
 		switch (player.direction){
 		case UP:
 			ty -= 1;
@@ -37,13 +37,11 @@ function addTalk(){
 			ty += 1;
 			break;
 		}
-		for(key in charaLayer.childList){
-			if (!charaLayer.childList[key].visible){
-				// 不可见的对象，不在触发只列
-				continue;
-			}
+		for(let key in charaLayer.childList){
+            // 不可见的对象，不触发
+			if (!charaLayer.childList[key].visible) continue;
 			//判断前面有npc，有则开始对话
-			if (charaLayer.childList[key].px == tx && charaLayer.childList[key].py == ty){
+			if (charaLayer.childList[key].px === tx && charaLayer.childList[key].py === ty){
 				if (charaLayer.childList[key].rpgEvent) {
 					// 首先转身
 					charaLayer.childList[key].anime.setAction(3- player.direction);
@@ -94,19 +92,19 @@ RPG.makeChoise= function(optionScript) {
 			RPG.drawWindow(talkLayer, RPG.TALKLEFT, RPG.TALKTOP, RPG.TALKWIDTH, RPG.TALKHEIGHT);
 			//对话头像
 			if (optionScript.img) {
-				let bitmapdata = new LBitmapData(imglist[optionScript.img]);
-				let bitmap = new LBitmap(bitmapdata);
+				let bitmapData = new LBitmapData(imglist[optionScript.img]);
+				let bitmap = new LBitmap(bitmapData);
 				bitmap.x = optionScript.x || RPG.TALKLEFT;
 				bitmap.y = optionScript.y || RPG.TALKTOP-bitmap.height;
 				talkLayer.addChild(bitmap);
 			}
 			//对话人物名称
 			if (optionScript.msg!=""){
-				var name = new LTextField();
+				let name = new LTextField();
 				name.x = RPG.TALKLEFT+ 5;
 				name.y = RPG.TALKTOP+ 5;
 				name.size = "15";
-				name.color = "#FFFFFF";
+				name.color = "#FFF";
 				name.text = optionScript.msg;
 				talkLayer.addChild(name);
 				// 对话初始行的位置
