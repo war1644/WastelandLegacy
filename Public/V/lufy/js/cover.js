@@ -7,14 +7,16 @@
 
 // 新游戏初始化信息
 RPG.newGame = function () {
-	// 测试数据
-	mainTeam= RPG.beget(RPG.PlayerTeam);
+	//初始化玩家队伍
+	mainTeam = RPG.beget(RPG.PlayerTeam);
+    //向玩家队伍增加人物（人物索引，人物等级)
 	mainTeam.addHero(0, 1);
-	mainTeam.getHero().Hp= 9999;
-	mainTeam.getHero().Mp= 5;
-	mainTeam.getHero().Exp= 15;
-	mainTeam.addHero(1, 1);
-	// console.log(mainTeam);
+    mainTeam.addHero(1, 1);
+
+    // mainTeam.getHero().Hp= 9999;
+    // mainTeam.getHero().Mp= 5;
+    // mainTeam.getHero().Exp= 15;
+    // console.log(mainTeam);
 	/*
 	mainTeam.addItem(1, 10);
 	mainTeam.addItem(2, 10);
@@ -35,7 +37,7 @@ RPG.newGame = function () {
    	//进入地图控制状态
 	RPG.setState(RPG.MAP_CONTROL);
 	//初始化游戏脚本
-   	initScript(3,14);
+   	initScript(3,14,0);
 };
 
 // 初始化敌人战斗队的数据

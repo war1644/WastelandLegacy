@@ -23,7 +23,7 @@ function rand(n) {
 }
 
 function rangeRand(min,max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    return (Math.random() * (max - min + 1)>>1) + min;
 }
 function fightBtn(x,y,text,callback) {
     let button01 = new LButtonSample1(text,null,null,'#000');
@@ -150,9 +150,12 @@ function checkAuto(){
  * 检测战斗事件
  */
 function checkIntoBattle(){
+	trace(player.tmp)
     if(player.tmp >= player.enemyShow){
-        if (rangeRand(9)>4){
-            // RPG.simpleFight();
+        if (rangeRand(0,9)>2){
+        	let enemy = charaLayer.childList[5];
+        trace(enemy);
+            RPG.simpleFight(rangeRand(1,5),enemy);
         }
         player.tmp = 0;
     }
@@ -205,4 +208,23 @@ function drawColorWindow(layer, x, y, w, h, alpha=0.9,color='#000') {
     colorWindow.alpha = alpha;
     layer.addChild(colorWindow);
     return colorWindow;
+}
+
+/**
+ * 根据对外分发的URL来动态设置渠道
+ */
+function getChannelFromUrl() {
+    let source = ['wechat', 'qq', 'weibo', 'uc'];
+    let url = location.href;
+    for (let i = 0; i < source.length; i += 1) {
+        if (url.indexOf('channel=' + source[i]) > -1) {
+            return source[i]
+        }
+    }
+    return ''
+}
+
+function getAccountId() {
+    // 获取登录用户帐号
+    return ''
 }

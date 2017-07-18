@@ -2,39 +2,30 @@
  * 团队类
  * 包括团队物品，团队金钱
  * 已经角色数据
- * 包括姓名，头像，武艺，智力，生命力和法力
+ *
  **/
  
 // 用户操作的主队
 RPG.PlayerTeam= {
+    //物品列表
 	itemList: [],
+    //单位列表
 	heroList: [],
 	init: function (){
-		this.itemList=[
-            {index:14,num:5,name:'回复药',cost:'10G', kind: 2, type:1,description:'恢复少量生命值',effect:function(hero){hero.addHp(100);},useTo: function(hero){
-                if (RPG.ItemList[this.index].effect){
-                    RPG.ItemList[this.index].effect(hero);
-                }
-            },
-                getItemDesc: function(){
-                    return RPG.ItemList[this.index];
-                }},
-            {index:17,num:1,name:'手雷',cost:'20G',kind: 4, type:4,description:'能对软体怪物造成大量伤害',effect:function(enemy){enemy.beHit(50);},useTo: function(hero){
-                if (RPG.ItemList[this.index].effect){
-                    RPG.ItemList[this.index].effect(hero);
-                }
-            },
-                getItemDesc: function(){
-                    return RPG.ItemList[this.index];
-                }}
-		];
+		this.itemList=[];
 		this.heroList=[];
 	},
 	clear: function (){
 		this.itemList=[];
 		this.heroList=[];
 	},
-	// visible：是否给出一个提示框，显示得到了哪些物品
+    /**
+     * 使用物品
+     * @param visible {bool} 是否给出一个提示框，显示得到了哪些物品
+     * @param id  {int} 物品序号
+     * @param num  {int} 使用数量
+     * @returns
+     */
 	addItem: function (id, num=1, visible){
 		if (id < 0) return;
 		let found= false;
@@ -53,23 +44,27 @@ RPG.PlayerTeam= {
 		}
 		if (visible) RPG.showGetItem(id, num);
 	},
-	// 使用物品
-	removeItem: function(aHero, aId, aNum){
-		if (aHero<0 || aId< 0 || aHero>= this.heroList.length || aId>= this.itemList.length) {
-			return;
-		}
+    /**
+     * 使用物品
+     * @param heroId {int} 人物序号
+     * @param itemId  {int} 物品序号
+	 * @param num  {int} 使用数量
+     * @returns
+     */
+	removeItem: function(heroId, itemId, num){
+		if (heroId<0 || itemId< 0 || heroId>= this.heroList.length || itemId>= this.itemList.length)  return;
 		let item1;
-		let hero1= this.heroList[aHero];
-		item1= this.itemList[aId];
-		if (item1.num> aNum){
-			item1.num= item1.num- aNum;
+		let hero1= this.heroList[heroId];
+		item1= this.itemList[itemId];
+		if (item1.num> num){
+			item1.num= item1.num- num;
 		} else {
-			this.itemList= this.itemList.slice(0, aId).concat(this.itemList.slice(aId+ 1));
+			this.itemList= this.itemList.slice(0, itemId).concat(this.itemList.slice(itemId+ 1));
 		}
-		if (item1.getItemDesc().kind== 2){
+		if (item1.getItemDesc().kind=== 2){
 			// 使用类
 			item1.useTo(hero1);
-		} else if (item1.getItemDesc().kind== 1){
+		} else if (item1.getItemDesc().kind=== 1){
 			// 装配类
 			switch (item1.getItemDesc().type) {
 				case 1: 
@@ -84,6 +79,13 @@ RPG.PlayerTeam= {
 			}
 		}
 	},
+
+    /**
+     * 向队伍增加人物
+     * @param id {int} 序号
+     * @param lv  {int} 等级
+     * @returns
+     */
 	addHero: function (id, lv){
 		let h1= RPG.beget(RPG.HeroPlayer);
 		h1.index= id;
@@ -91,13 +93,19 @@ RPG.PlayerTeam= {
 		h1.fullHeal();
 		this.heroList.push(h1);
 	},
+    /**
+     * 获取队伍主角
+     */
 	getHero: function(){
-		if (this.heroList.length> 0){
+		if (this.heroList.length > 0){
 			return this.heroList[0];
 		} else {
 			return RPG.HeroPlayer;
 		}
 	},
+    /**
+     * 检查id人物是否存活
+     */
 	getAliveHero: function(aId){
 		if (aId< this.heroList.length && aId>=0 && this.heroList[aId].alive){
 			return this.heroList[aId];
@@ -109,15 +117,20 @@ RPG.PlayerTeam= {
 			}
 		}
 	},
+    /**
+     * 全队满血复活
+     */
 	fullHeal: function(){
 		for (let i= 0; i< this.heroList.length; i++){
 			this.heroList[i].alive= true;
 			this.heroList[i].fullHeal();
 		}		
 	},
+
 	keepHp: function(){
 		let hero1= this.heroList[0];
 	},
+
 	haveItem: function(aId){
 		// 判断是否有某物品，无论是否被装配
 		let item1, hero1;
@@ -137,6 +150,9 @@ RPG.PlayerTeam= {
 		//
 		return false;
 	},
+    /**
+     * 取走某物品，即使已经装配，一样取走，只取一个
+     */
 	takeItem: function(aId){
 		// 取走某物品，即使已经装配，一样取走，只取一个
 		let item1, hero1;

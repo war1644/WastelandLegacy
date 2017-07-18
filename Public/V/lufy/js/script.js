@@ -346,6 +346,27 @@
         imgName:['home1_0','home1_1'],
         mapdata: {},
         events: [
+        {
+                type: "npc", img: "empty", x: 12, y: 9, row: 1, col: 1, action: function () {
+                // 休息一夜
+                if(RPG.setSwitch("accept")){
+                    RPG.startTalk(stage.talk.talk8);
+                }else {
+                    RPG.pushState(RPG.MAP_WAITING);
+                    RPG.startTalk(stage.talk.talk5);
+                    RPG.waitTalk(function () {
+                        player.setCoordinate(12, 9, 0);
+                        RPG.resetChildIndex(charaLayer);
+                        RPG.nightAndDay(function () {
+                            player.setCoordinate(12, 10, 0);
+                            mainTeam.fullHeal();
+                            RPG.popState();
+                        });
+                    });
+                }
+
+            }
+            },
             {type: "npc", img: "npc1", x: 13, y: 15,
 				action: function (npc) {
 					// 第二轮说话

@@ -9,7 +9,6 @@
 		{index:4, chara:"no17", face:"face1", col:4, name:"红色战车", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxxx"]},
         {index:5, chara:"npc17", face:"face3", col:4, name:"雷娜", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]},
         {index:6, chara:"enemy00", face:"face3", row:1,col:1, name:"杀人虫", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]}
-
 	];
 
 RPG.HeroPlayer={
@@ -35,6 +34,7 @@ RPG.HeroPlayer={
 	getName: function() {
 		return RPG.HeroList[this.index].name;
 	},
+	//
 	getFace: function() {
 		return RPG.HeroList[this.index].face;
 	},
@@ -69,7 +69,7 @@ RPG.HeroPlayer={
 	},
 	// 受攻击，减血
 	beHit: function(hit){
-		hit= Math.floor(hit);
+		hit= hit>>0;
 		this.Hp= this.Hp- hit;
 		if (this.Hp<= 0) {
 			this.Hp= 0;
@@ -130,7 +130,12 @@ RPG.HeroPlayer={
 
 };
 
-// 物理攻击效果的计算
+/**
+ * 物理攻击效果的计算
+ * @param heroAtk  {object} 攻击方
+ * @param heroDef  {object} 防御方
+ * @returns
+ */
 RPG.physicalAttack= function(heroAtk, heroDef){
 	let atk, def;
 	let pAtk= heroAtk.getPerson();
@@ -138,25 +143,19 @@ RPG.physicalAttack= function(heroAtk, heroDef){
 	let weaponAddOn= 1;
 	let armorAddOn= 1;
 	let vaporAtk, vaporDef;
-	// 攻方兵器加成
-	if (heroAtk.weapon>= 0) {
-		let aon= heroAtk.getWeapon().addOn;
-		if (aon){
-			//weaponAddOn= (aon+ 100)/ 100;
-			weaponAddOn= aon;
-		}
+	// 有装备，加成
+	if (heroAtk.weapon >= 0) {
+		let aon = heroAtk.getWeapon().addOn;
+		if (aon) weaponAddOn= aon;
 	}
 	// 士气加成
-	vaporAtk= (heroAtk.Hp/ heroAtk.MaxHp+ 1)/ 2* 100;
+	vaporAtk= (heroAtk.Hp/ heroAtk.MaxHp + 1) / 2 * 100;
 	// 攻击力
 	atk= (4000/ (140- pAtk.force)+ pAtk.atk* 2+ vaporAtk)* (heroAtk.Level/ 10+ 1)* weaponAddOn;
 	// 防守方护甲加成
 	if (heroDef.armor>= 0) {
 		let aon= heroDef.getArmor().addOn;
-		if (aon){
-			//armorAddOn= (aon+ 100)/ 100;
-			armorAddOn= aon;
-		}
+		if (aon) armorAddOn= aon;
 	}
 	// 士气加成
 	vaporDef= (heroDef.Hp/ heroDef.MaxHp+ 1)/ 2* 100;
@@ -168,8 +167,9 @@ RPG.physicalAttack= function(heroAtk, heroDef){
 	if (result<= 0) {
 		result= 1;
 	}
-	if (result> heroDef.Hp) {
-		result= heroDef.Hp;
+	//秒杀
+	if (result > heroDef.Hp) {
+		result = heroDef.Hp;
 	}
 	return result;
 };

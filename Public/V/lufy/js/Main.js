@@ -156,6 +156,8 @@ function main(){
 	);
 }
 function gameInit(){
+	LGlobal.setDebug(true);
+trace(1);
 	//数据初始化优先于显示部分的初始化
 	LGlobal.aspectRatio = PORTRAIT;
 	//游戏层显示初始化
@@ -175,27 +177,6 @@ function gameInit(){
     // 第一关的直接设置
     RPG.drawCover();
 }
-
-/**
- * 根据对外分发的URL来动态设置渠道
- */
-function getChannelFromUrl() {
-    let source = ['wechat', 'qq', 'weibo', 'uc'];
-    let url = location.href;
-    for (let i = 0; i < source.length; i += 1) {
-        if (url.indexOf('channel=' + source[i]) > -1) {
-            return source[i]
-        }
-    }
-    return ''
-}
- 
-function getAccountId() {
-    // 获取登录用户帐号
-    return ''
-}
- 
-
 // 一个基本背景
 /*function drawBack(){
     backLayer.graphics.drawRect(1,'#000',[0,0,WIDTH,HEIGHT],true,'#000');
@@ -432,8 +413,8 @@ class SoundManage{
     }
 }
 
-//根据脚本，初始化游戏画面
 /**
+ * 根据脚本，初始化游戏画面
  * x,y 玩家进入场景的x,y坐标
  **/
 function initScript(x,y,frame=0){
@@ -451,12 +432,14 @@ function initScript(x,y,frame=0){
 
     setHero(x,y,frame);
     // 绘制地图
-    // drawMap(CurrentMap);
     drawImgMap(CurrentMap);
     // 立即检测自动动作
     checkAuto();
 }
 
+/**
+ * 各图层初始化
+ **/
 function gameLayerInit() {
     backLayer = new LSprite();
     backLayer.graphics.drawRect(0,'#000',[0,0,WIDTH,HEIGHT],true,'#000');
