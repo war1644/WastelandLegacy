@@ -204,7 +204,7 @@ RPG.doNormalFight= function(aHero, aToHero, aAct, aAfterFunc){
 				eff.play(1, function(){
 					// 刷新数据
 					//console.log("b");
-					RPG.drawData();
+					//RPG.drawData();
 					if (aToHero && !aToHero.alive) {
 						aToHero.fighter.visible= false;
 					}
@@ -252,6 +252,7 @@ RPG.doQuickFight= function(aHero, aToHero, aAct, aAfterFunc){
 	}
 };
 
+//绘制攻击中的特效动画
 RPG.autoFight = function(heroId){
 	// 简单的顺序，我方依次先动，敌方依次再动
 	let hero1, hero2;
@@ -281,10 +282,12 @@ RPG.autoFight = function(heroId){
 				a= RPG.getRandomNum(0, RPG.eTeam.heroList.length);
 				a= 10;
 				hero2= RPG.eTeam.getAliveHero(a);
+				trace(hero1.getName()+'攻击'+hero2.getName())
 				eff= "pSword";
 				// 计算攻击效果
 				let ret= RPG.physicalAttack(hero1, hero2);
 				hero2.beHit(ret);
+				trace(hero2.getName()+'损伤'+ret)
 				break;
 			case 2:	
 				a= RPG.getRandomNum(0, RPG.eTeam.heroList.length);
@@ -307,11 +310,13 @@ RPG.autoFight = function(heroId){
 			case 1:	
 				a= RPG.getRandomNum(0, RPG.pTeam.heroList.length);
 				hero2= RPG.pTeam.getAliveHero(a);
+				trace(hero1.getName()+'攻击'+hero2.getName())
 				eff= "pAttack";
 				if (hero2) {
 					let ret= RPG.physicalAttack(hero1, hero2);
 					hero2.beHit(ret);
 				}
+				trace(hero2.getName()+'损伤'+ret)
 				break;
 			case 2:	
 				a= RPG.getRandomNum(0, RPG.pTeam.heroList.length);

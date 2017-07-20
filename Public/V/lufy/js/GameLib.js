@@ -160,7 +160,7 @@ function checkAuto(){
 function checkIntoBattle(){
     if(player.tmp >= player.enemyShow){
         if (rangeRand(0,9)>2){
-            RPG.simpleFight(rangeRand(1,5));
+            RPG.simpleFight(4);
         }
         player.tmp = 0;
     }
