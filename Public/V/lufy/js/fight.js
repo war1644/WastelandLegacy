@@ -100,20 +100,20 @@ RPG.calcExp= function(){
 };
 
 RPG.showResult= function(){
-	if (RPG.gameState==RPG.WIN) {
+	if (RPG.gameState===RPG.WIN) {
 		// 胜利，获得经验及奖励物品
-		var exp= RPG.calcExp();
-		var hero1, item1;
-		var text;
-		var yy, xx;
+		let exp= RPG.calcExp();
+		let hero1, item1;
+		let text;
+		let yy, xx;
 		// 经验值的计算
 		if (RPG.noTrophy){
-			for (var j= 0; j< RPG.pTeam.heroList.length; j++){
+			for (let j= 0; j< RPG.pTeam.heroList.length; j++){
 				exp[j]= 1;
 			}
 		}
 		// 获得经验值
-		for (var j= 0; j< RPG.pTeam.heroList.length; j++){
+		for (let j= 0; j< RPG.pTeam.heroList.length; j++){
 			hero1= RPG.pTeam.heroList[j];
 			// 增加经验，及判断升级
 			hero1.addExp(exp[j]);
@@ -143,13 +143,13 @@ RPG.showResult= function(){
 		if (RPG.noTrophy){
 			// 无战利品
 		} else {
-			for (var j= 0; j< RPG.eTeam.itemList.length; j++){
+			for (let j= 0; j< RPG.eTeam.itemList.length; j++){
 				item1= RPG.eTeam.itemList[j];
 				// 获得敌队的物品
 				RPG.pTeam.addItem(item1.index, item1.num);
 				// 图片
-				bitmapdata = new LBitmapData(imglist["iconset"], RPG.ItemList[item1.index].pic.x*RPG.iconStep, RPG.ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
-				bitmap = new LBitmap(bitmapdata);
+				let bitmapData = new LBitmapData(imglist["iconset"], RPG.ItemList[item1.index].pic.x*RPG.iconStep, RPG.ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+                let bitmap = new LBitmap(bitmapData);
 				bitmap.x= xx- STEP;
 				bitmap.y= yy+ j* 30;
 				RPG.descLayer.addChild (bitmap);
@@ -158,16 +158,16 @@ RPG.showResult= function(){
 				text.x = xx;
 				text.y = yy+ j* 30+ 5;
 				text.size = "14";
-				text.color = "#FFFFFF";
+				text.color = "#FFF";
 				text.text = item1.num;
 				RPG.descLayer.addChild(text);
 			}
 		}
 	} else {
 		// 敌人占中正面
-		var hero1;
-		for (var j= 0; j< RPG.eTeam.heroList.length; j++){
-			hero1= RPG.eTeam.heroList[j];
+		let hero1;
+		for (let j= 0; j< RPG.eTeam.heroList.length; j++){
+			hero1 = RPG.eTeam.heroList[j];
 			hero1.fighter.changeDir(0);
 			hero1.fighter.x= RPG.menuWidth/ 2- hero1.fighter.getWidth()/ 2;
 		}
@@ -528,7 +528,7 @@ RPG.drawActButton= function(canLeave){
 };
 
 
-RPG.startFight= function(enemyTeam, playerTeam, canLeave, aNoTrophy){
+RPG.startFight = function(enemyTeam, playerTeam, canLeave, aNoTrophy){
 	//	设置控制状态
 	RPG.pushState(RPG.IN_FIGHTING);
 	// 设置战斗状态
@@ -576,7 +576,7 @@ RPG.startFight= function(enemyTeam, playerTeam, canLeave, aNoTrophy){
 };
 
 // 普通战斗
-RPG.simpleFight= function(teamId, npc=0){
+RPG.simpleFight= function(teamId, npc={}){
 	let enemyHero= RPG.beget(RPG.HeroPlayer);
 	let playerHero= RPG.beget(RPG.HeroPlayer);
 	RPG.extend(enemyHero, RPG.enemyTeam[teamId].getHero(0));

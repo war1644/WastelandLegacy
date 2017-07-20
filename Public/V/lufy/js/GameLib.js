@@ -1,14 +1,23 @@
 /**
+ *
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED█WOLF☆███▄▄▃▂
+ *  ███████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
  * Created by 路漫漫.
  * Link: ahmerry@qq.com
  * Date: 2017/7/16 19:58
  *
  */
+
+
 function MyListChildView(i){
     let self = this;
     base(self,LListChildView,[]);
     let rand = Math.random();
-    self.graphics.drawRect(1, "#000000", [0, 0, 100, 30],true,rand < 0.33?"#90EE90":(rand < 0.66 ? "#F4A460":"#E6E6FA"));
+    self.graphics.drawRect(1, "#000", [0, 0, 100, 30],true,rand < 0.33?"#90EE90":(rand < 0.66 ? "#F4A460":"#E6E6FA"));
     let t = new LTextField();
     t.text = "点击删除"+i;
     t.x = t.y = 5;
@@ -41,7 +50,6 @@ function fightBtn(x,y,text,callback) {
         }
     });
     return button01;
-    // trace("button01 click");
 }
 
 function gameTitleButton(w,h,x,y,text,callback) {
@@ -150,16 +158,14 @@ function checkAuto(){
  * 检测战斗事件
  */
 function checkIntoBattle(){
-	trace(player.tmp)
     if(player.tmp >= player.enemyShow){
         if (rangeRand(0,9)>2){
-        	let enemy = charaLayer.childList[5];
-        trace(enemy);
             RPG.simpleFight(rangeRand(1,5));
         }
         player.tmp = 0;
     }
 }
+
 //计算敌人的平均速度
 function getEmyAverageSpeed() {
     let sumSpeed = 0;
