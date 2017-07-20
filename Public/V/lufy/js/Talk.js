@@ -89,7 +89,7 @@ RPG.makeChoise= function(optionScript) {
 			//将对话层清空
 			talkLayer.removeAllChild();
 			//对话背景
-			RPG.drawWindow(talkLayer, RPG.TALKLEFT, RPG.TALKTOP, RPG.TALKWIDTH, RPG.TALKHEIGHT);
+			UI.drawBorderWindow(talkLayer, RPG.TALKLEFT, RPG.TALKTOP, RPG.TALKWIDTH, RPG.TALKHEIGHT);
 			//对话头像
 			if (optionScript.img) {
 				let bitmapData = new LBitmapData(imglist[optionScript.img]);
@@ -150,7 +150,7 @@ RPG.startTalk= function(talkList) {
 		//将对话层清空
 		talkLayer.removeAllChild();
 		//对话背景
-		RPG.drawWindow(talkLayer, RPG.TALKLEFT, RPG.TALKTOP, RPG.TALKWIDTH, RPG.TALKHEIGHT);
+		UI.drawBorderWindow(talkLayer, RPG.TALKLEFT, RPG.TALKTOP, RPG.TALKWIDTH, RPG.TALKHEIGHT);
 		//对话头像
 		if (talkObject.img) {
 			let imgData = new LBitmapData(imglist[talkObject.img]);

@@ -89,10 +89,10 @@ function main(){
 	imgData.push({type:"js",path:"./js/Menu.js"});
 	imgData.push({type:"js",path:"./js/team.js"});
 	imgData.push({type:"js",path:"./js/cover.js"});
-	imgData.push({type:"js",path:"./js/effect.js"});
+	imgData.push({type:"js",path:"./js/Effect.js"});
 	imgData.push({type:"js",path:"./js/fightmenu.js"});
-	imgData.push({type:"js",path:"./js/fight.js"});
-	imgData.push({type:"js",path:"./js/fighter.js"});
+	imgData.push({type:"js",path:"./js/Fight.js"});
+	imgData.push({type:"js",path:"./js/Fighter.js"});
     // imgData.push({name:"start_png",path:"./image/start.bmp"});
 
 	imgData.push({name:"button1",path:"./image/button1.png"});
@@ -157,7 +157,6 @@ function main(){
 }
 function gameInit(){
 	LGlobal.setDebug(true);
-trace(1);
 	//数据初始化优先于显示部分的初始化
 	LGlobal.aspectRatio = PORTRAIT;
 	//游戏层显示初始化
@@ -177,20 +176,7 @@ trace(1);
     // 第一关的直接设置
     RPG.drawCover();
 }
-// 一个基本背景
-/*function drawBack(){
-    backLayer.graphics.drawRect(1,'#000',[0,0,WIDTH,HEIGHT],true,'#000');
-    // 加入刷新提示
-	let name = new LTextField();
-	name.x = WIDTH/ 2;
-	name.y = HEIGHT/ 2;
- 	name.textAlign= "center";
-	name.textBaseline= "middle";
-	name.size = "15";
-	name.color = "#fff";
-	name.text = "【初始化失败，请重新载入游戏】";
-	backLayer.addChildAt(name, 1);
-}*/
+
 function drawImgMap(map) {
     //得到瓦片
     let bitmapData = new LBitmapData(imglist[CurrentMapImg[0]]);

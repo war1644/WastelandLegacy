@@ -145,18 +145,7 @@ RPG.drawBorder= function(layer,color='#ffe',x=0, y=0, w, h,linW=2,alpha=0.9) {
     layer.addChild(rectBorder);
     return rectBorder;
 };
-/**
- * 背景框
- */
-RPG.drawWindow= function(layer, x, y, w, h, alpha=0.9) {
-	let talkWindow = new LSprite();
-    talkWindow.graphics.drawRect(5,'#ffe',[0,0,w,h],true,'#009');
-    talkWindow.x = x;
-    talkWindow.y = y;
-	talkWindow.alpha = alpha;
-	layer.addChild(talkWindow);
-	return talkWindow;
-};
+
 
 
 RPG.drawScale= function(layer, color, x, y, w, h,borderColor='#ffe') {
@@ -467,7 +456,7 @@ RPG.newIconButton= function(aPicUp, aPicDown, aPicDis, ax, ay, aRate, aText, aFu
 	return btn;
 };
 
-RPG.getRandomNum= function(Min,Max){
+rangeRand= function(Min,Max){
 	let Range = Max - Min;
 	let Rand = Math.random();
 	return(Min + Math.floor(Rand * Range));

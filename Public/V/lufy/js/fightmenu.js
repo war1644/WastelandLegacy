@@ -17,7 +17,7 @@ RPG.setFormation= function(){
 	name.size = "15";
 	name.color = "#FFFFFF";
 	name.text = "还未学会此能力";
-	RPG.drawWindow(RPG.fightMenuLayer, x0, y0, RPG.menuWidth, 50);
+	UI.drawBorderWindow(RPG.fightMenuLayer, x0, y0, RPG.menuWidth, 50);
 	RPG.fightMenuLayer.addChildAt(name, 1);
 	talkLayer.addChild(RPG.fightMenuLayer);
 };

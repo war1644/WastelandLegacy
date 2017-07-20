@@ -426,7 +426,7 @@
                 }
             }},
             // 山洞战斗者
-            {chara:"touch", img:"npc5", x:6,  y:5, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){RPG.simpleFight(1, aChar);}},
+            {chara:"touch", img:"npc5", x:6,  y:5, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){Fight.simpleFight(1, aChar);}},
             {
                 type: "npc", img: "", x: 6, y: 13, action: function () {
                     // 回到大地图

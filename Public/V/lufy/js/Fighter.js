@@ -1,6 +1,6 @@
 // 在战斗窗口中的人物，以及菜单中的人物
 // 有各种战斗动作，及施法效果
-RPG.Fighter= function (data,row,col){
+let Fighter = function (data,row,col){
 	base(this,LSprite,[]);
 	let self = this;
 	//设定人物动作速度
@@ -20,7 +20,7 @@ RPG.Fighter= function (data,row,col){
 /**
  * 循环事件 
  **/
-RPG.Fighter.prototype.onframe = function (){
+Fighter.prototype.onframe = function (){
 	// 仅在战斗和菜单状态下有效
 	if (!RPG.checkState(RPG.UNDER_WINDOWS)) return;
 	// 打开菜单时停止运动
@@ -31,7 +31,7 @@ RPG.Fighter.prototype.onframe = function (){
 };
 
 // 改变人物朝向
-RPG.Fighter.prototype.changeDir = function (dir){
+Fighter.prototype.changeDir = function (dir){
 	let self = this;
 	self.direction = dir;
 	self.anime.setAction(dir);

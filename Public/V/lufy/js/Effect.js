@@ -2,7 +2,7 @@
 // 一类是战斗画面中的攻击效果动画
 // 另一类是全局的动态效果，总之都是效果类
 
-RPG.Effect= function (data, aw, ah){
+let Effect= function (data, w, h){
 	base(this,LSprite,[]);
 	let self = this;
 	//设定人物动作速度
@@ -10,10 +10,10 @@ RPG.Effect= function (data, aw, ah){
 	self.speedIndex = 0;
 	self.frameId= 0;
 	//设定人物大小
-	data.setProperties(0,0,aw,ah);
+	data.setProperties(0,0,w,h);
 	//得到人物图片拆分数组
-	let col= data.image.width/ aw;
-	let row= data.image.height/ ah;
+	let col= data.image.width/ w;
+	let row= data.image.height/ h;
 	let list = LGlobal.divideCoordinate(data.image.width,data.image.height,row,col);
 	// 动作效果合并
 	let list2=[], list3=[];
@@ -34,7 +34,7 @@ RPG.Effect= function (data, aw, ah){
 /**
  * 循环事件 
  **/
-RPG.Effect.prototype.onframe = function (){
+Effect.prototype.onframe = function (){
 	// 目前，仅战斗状态下有效
 	if (!RPG.checkState(RPG.IN_FIGHTING)) return;
 	let self = this;
@@ -43,17 +43,16 @@ RPG.Effect.prototype.onframe = function (){
 	self.speedIndex = 0;
 	self.anime.onframe();
 	self.frameId++;
-	//console.log(self.frameId);
-	//*
+
 	if (self.frameId>= self.maxFrame) {
 		self.move= false;
 		if (self.func){
 			self.func();
 		}
-	}//*/
+	}
 };
 
-RPG.Effect.prototype.play = function (aTimes, aFunc){
+Effect.prototype.play = function (aTimes, aFunc){
 	// 打开菜单时停止运动
 	let self = this;
 	self.move= false;
@@ -70,7 +69,7 @@ RPG.loadEffect= function(aName){
 	if (!RPG.effectList[aName]){
 		let bitmapData, chara;
         bitmapData = new LBitmapData(imglist[aName]);
-		chara = new RPG.Effect(bitmapData, 48, 48);
+		chara = new Effect(bitmapData, 48, 48);
 		RPG.effectList[aName]= chara;
 	}
 	return RPG.effectList[aName];
@@ -78,7 +77,7 @@ RPG.loadEffect= function(aName){
 
 // 屏幕从黑切换到白，模拟过去了一天的效果
 RPG.nightAndDay= function(callback){
-	let bmp= drawColorWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
+	let bmp = UI.drawColorWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
 	LTweenLite.to(bmp,2,
 		{alpha:1,ease:Quad.easeOut,
 			onComplete:function(){
@@ -99,7 +98,7 @@ RPG.nightAndDay= function(callback){
 
 // 显示获得物品
 RPG.showGetItem= function(id, num){
-    RPG.drawWindow(effectLayer,0,0,WIDTH, 40);
+    UI.drawWindow(effectLayer,0,0,WIDTH, 40);
 	let item1 = RPG.ItemList[id],
 		gap = 10,
 		// 图片

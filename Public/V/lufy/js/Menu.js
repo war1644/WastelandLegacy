@@ -298,7 +298,7 @@ RPG.dragItemBegin= function(ax, ay, aId){
 			let hero= mainTeam.heroList[i];
 			let heroImg= RPG.HeroList[hero.index].chara;
 			let bitmapData = new LBitmapData(imglist[heroImg]);
-			let chara = new RPG.Fighter(bitmapData,4,4);
+			let chara = new Fighter(bitmapData,4,4);
 			// 测试物品效果的英雄
 			let hero2= RPG.beget(RPG.HeroPlayer);
 			RPG.extend(hero2, hero);
@@ -321,13 +321,7 @@ RPG.dragItemBegin= function(ax, ay, aId){
                         tempItem= hero.ornament;
                         break;
                 }
-				if (tempItem>= 0) {
-					// iconbitmapdata = new LBitmapData(imglist["iconset"], RPG.ItemList[tempItem].pic.x*RPG.iconStep, RPG.ItemList[tempItem].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
-					// iconbitmap = new LBitmap(iconbitmapdata);
-					// iconbitmap.x= chara.x+ (6);
-					// iconbitmap.y= chara.y+ STEP+ 5;
-					// RPG.descLayer.addChild (iconbitmap);
-				}
+
 			} else if (item1.kind=== 2 || item1.kind=== 4) {
 				// 使用类，显示对应的值
 				let text1 = text.clone();
@@ -522,7 +516,7 @@ RPG.openLoadMenu= function() {
 	//对话背景
 	talkLayer.x = 10;
 	talkLayer.y = 10;
-	RPG.drawWindow(talkLayer, 0, 0, RPG.menuWidth, RPG.menuHeight);
+	UI.drawBorderWindow(talkLayer, 0, 0, RPG.menuWidth, RPG.menuHeight);
 	// 子菜单层
 	ctrlLayer = new LSprite();
 	talkLayer.addChild(ctrlLayer);
@@ -540,7 +534,7 @@ RPG.openMenu= function() {
 	//对话背景
 	talkLayer.x = 10;
 	talkLayer.y = 10;
-	RPG.drawWindow(talkLayer, 0, 0, RPG.menuWidth, RPG.menuHeight);
+	UI.drawBorderWindow(talkLayer, 0, 0, RPG.menuWidth, RPG.menuHeight);
 
 	for (let i=0; i< RPG.iconMenu.length; i++) {
 		let obj = RPG.iconMenu[i];

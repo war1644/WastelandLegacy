@@ -180,7 +180,7 @@ RPG.drawCover= function() {
     sLayer.addChild(title);
 
 	// 新的开始
-    let button01= gameTitleButton(120, 30, (WIDTH - 120)>>1, HEIGHT- 200, "新游戏", function(e){
+    let button01= UI.gameTitleButton(120, 30, (WIDTH - 120)>>1, HEIGHT- 200, "新游戏", function(e){
     	// 按钮被透过窗口点击
     	if (RPG.checkState(RPG.IN_COVER)) {
 			RPG.newGame();
@@ -188,7 +188,7 @@ RPG.drawCover= function() {
     });
     sLayer.addChild(button01);
     // 继续
-    let button02= gameTitleButton(120, 30, (WIDTH- 120)>>1, HEIGHT- 160, "载入进度", function(e){
+    let button02= UI.gameTitleButton(120, 30, (WIDTH- 120)>>1, HEIGHT- 160, "载入进度", function(e){
     	if (RPG.checkState(RPG.IN_COVER)) {
 	    	RPG.openLoadMenu();
 	    }
@@ -196,7 +196,7 @@ RPG.drawCover= function() {
 	button02.setState(LButton.STATE_DISABLE);
 	sLayer.addChild(button02);
 	// 说明
-    let button03= gameTitleButton(120, 30, (WIDTH- 120)>>1, HEIGHT- 120, "使用说明", function(e){
+    let button03= UI.gameTitleButton(120, 30, (WIDTH- 120)>>1, HEIGHT- 120, "使用说明", function(e){
     	if (RPG.checkState(RPG.IN_COVER)) {
 	    	RPG.howToUse();
 	    }
