@@ -456,11 +456,11 @@ RPG.newIconButton= function(aPicUp, aPicDown, aPicDis, ax, ay, aRate, aText, aFu
 	return btn;
 };
 
-rangeRand= function(Min,Max){
-	let Range = Max - Min;
-	let Rand = Math.random();
-	return(Min + Math.floor(Rand * Range));
-};
+// rangeRand= function(Min,Max){
+// 	let Range = Max - Min;
+// 	let Rand = Math.random();
+// 	return(Min + Math.floor(Rand * Range));
+// };
 
 // 重排动态角色，以便正确遮盖
 RPG.resetChildIndex= function(aLayer){

@@ -1,6 +1,4 @@
  	// 菜单状态=============================================================
-    //间隙
-	let gap = 10;
 	RPG.menuWidth = WIDTH - gap* 2;
     RPG.menuHeight = HEIGHT - gap* 2;
 	RPG.cmdChoose;

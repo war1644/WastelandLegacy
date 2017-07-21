@@ -1,3 +1,17 @@
+/**
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆███▄▄▃▂
+ *  █████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * Fight class 客户端战斗类
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2017/07/20 初版
+ */
+
 // 战斗状态：0=暂停中；1=自动进行中
 RPG.fightState= 0;
 // 战斗队，敌方，玩家方
@@ -10,7 +24,7 @@ RPG.stopAuto= false;
 RPG.afterStop= null;   /// func
 RPG.quickFight= false;
 RPG.finalButtonSetFunc= null;
-RPG.currentFighter;  // 当前正在动作的对象
+
 // 最大HP，用于对比显示，给一个最小的参考值，一场战斗一旦确定则不再改变
 RPG.maxHpAll= 1000;
 RPG.maxMpAll= 100;
@@ -20,16 +34,18 @@ RPG.LOST= 2;
 RPG.FIGHTING= 3;
 RPG.gameState;
 // 战斗结果控制
-RPG.noTrophy= false;
-        RPG.menuWidth = WIDTH - gap * 2;
-        RPG.menuHeight = HEIGHT - gap * 2;
+RPG.menuWidth = WIDTH - gap * 2;
+RPG.menuHeight = HEIGHT - gap * 2;
 let gameMenus = ['背包','乘降','强度','存档','任务','返回'];
 let fightMenus = ['攻击','阵形','道具','防御','逃跑','总攻'];
 
 let Fight = {
-    trophy: true,
+    //战利品和经验获得 凌弱战true
+    trophy: false,
+    // 当前正在动作的对象
+    currentFighter:{},
 
-    /**
+/**
      * 普通战斗
      */
     simpleFight: (teamId, npc = {}) => {
@@ -131,7 +147,8 @@ let Fight = {
         RPG.eTeam = enemyTeam;
         RPG.pTeam = playerTeam;
         showFightInfo();
-        let text = UI.text('遭遇战，敌我力量悬殊，敌方士气大减',gap,HEIGHT-150+gap);
+        let text = UI.text('遭遇战，敌我力量悬殊，敌方士气大减',gap,HEIGHT-150+gap,'10');
+        text.setWordWrap(true, 20);
         RPG.fightMenuLayer.addChildAt(text,1);
         Fight.drawFighters();
     },
@@ -250,7 +267,7 @@ let Fight = {
                 heroId = 0;
             }
         }
-        RPG.currentFighter = heroId;
+        Fight.currentFighter = heroId;
         b = rangeRand(1, RPG.eTeam.heroList.length);
         if (heroId < RPG.pTeam.heroList.length) {
             hero1 = RPG.pTeam.heroList[heroId];
@@ -446,8 +463,6 @@ let Fight = {
         });
     },
 
-
-
     /**
      * 计算经验值
      */
@@ -479,7 +494,7 @@ let Fight = {
                     b2 = 64 / (hero1.Level - hero2.Level + 2);
                 }
                 a = a + b1;
-                if (i == 0) {
+                if (i === 0) {
                     // 第一敌人，有额外的奖励经验
                     a = a + b2;
                 }
@@ -503,7 +518,7 @@ let Fight = {
             // 胜利，获得经验及奖励物品
             let exp = Fight.calculateExp(),hero1, item1,text,yy, xx;
             // 经验值的计算
-            if (!this.trophy) {
+            if (!Fight.trophy) {
                 for (let j = 0; j < RPG.pTeam.heroList.length; j++) {
                     exp[j] = 1;
                 }
@@ -530,7 +545,7 @@ let Fight = {
             xx = RPG.menuWidth / 2;
 
             // 获得物品
-			if (this.trophy) {
+			if (Fight.trophy) {
                 for (let j = 0; j < RPG.eTeam.itemList.length; j++) {
                     item1 = RPG.eTeam.itemList[j];
                     // 获得敌队的物品
