@@ -62,7 +62,7 @@
      		mainTeam.addItem(13, num, true);
 			RPG.setSwitch(str);
 			if (talk) {
-		     	RPG.startTalk(talk);
+		     	Talk.startTalk(talk);
 			}
 		}
 	};

@@ -6,7 +6,7 @@
  **/
  
 // 用户操作的主队
-RPG.PlayerTeam= {
+let PlayerTeam = {
     //物品列表
 	itemList: [],
     //单位列表
@@ -21,7 +21,7 @@ RPG.PlayerTeam= {
 	},
     /**
      * 使用物品
-     * @param visible {bool} 是否给出一个提示框，显示得到了哪些物品
+     * @param visible {boolean} 是否给出一个提示框，显示得到了哪些物品
      * @param id  {int} 物品序号
      * @param num  {int} 使用数量
      * @returns
@@ -87,7 +87,7 @@ RPG.PlayerTeam= {
      * @returns
      */
 	addHero: function (id, lv){
-		let h1= RPG.beget(RPG.HeroPlayer);
+		let h1= RPG.beget(HeroPlayer);
 		h1.index= id;
 		h1.setLevel(lv);
 		h1.fullHeal();
@@ -100,11 +100,11 @@ RPG.PlayerTeam= {
 		if (this.heroList.length > 0){
 			return this.heroList[0];
 		} else {
-			return RPG.HeroPlayer;
+			return HeroPlayer;
 		}
 	},
     /**
-     * 检查id人物是否存活
+     * 检查id人物是否存活，返回
      */
 	getAliveHero: function(aId){
 		if (aId< this.heroList.length && aId>=0 && this.heroList[aId].alive){

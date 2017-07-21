@@ -129,7 +129,7 @@ RPG.menuShowState= function() {
                 numObj = textObj.clone();
                 numObj.x = rightPos;
                 numObj.y = 130;
-                numObj.text = hero1.Exp+' / '+RPG.MAXEXP;
+                numObj.text = hero1.Exp+' / '+hero1.maxExp;
                 ctrlLayer.addChild(numObj);
                 break;
 		}
@@ -296,11 +296,11 @@ RPG.dragItemBegin= function(ax, ay, aId){
 		RPG.showItemEffectLabel.length= 0;
 		for (i=0; i< mainTeam.heroList.length; i++){
 			let hero= mainTeam.heroList[i];
-			let heroImg= RPG.HeroList[hero.index].chara;
+			let heroImg= HeroList[hero.index].chara;
 			let bitmapData = new LBitmapData(imglist[heroImg]);
 			let chara = new Fighter(bitmapData,4,4);
 			// 测试物品效果的英雄
-			let hero2= RPG.beget(RPG.HeroPlayer);
+			let hero2= RPG.beget(HeroPlayer);
 			RPG.extend(hero2, hero);
 			// 
 			chara.x = cc* i+ cc/ 2- STEP/ 2;
@@ -689,7 +689,7 @@ RPG.dealMenuMove= function(ax, ay){
 					// 可以选人的状态
 					let cc= (ax/ (RPG.menuWidth/ mainTeam.heroList.length))<<0;
 					if (cc>=0 && cc<mainTeam.heroList.length && ay> RPG.descLayer.y) {
-						RPG.nameText.text= RPG.HeroList[mainTeam.heroList[cc].index].name;
+						RPG.nameText.text= HeroList[mainTeam.heroList[cc].index].name;
 						RPG.chooseHero= cc;
 						RPG.showLabel(cc);
 						// 同时显示可能会出现的值的变化

@@ -8,7 +8,7 @@
 // 新游戏初始化信息
 RPG.newGame = function () {
 	//初始化玩家队伍
-	mainTeam = RPG.beget(RPG.PlayerTeam);
+	mainTeam = RPG.beget(PlayerTeam);
     //向玩家队伍增加人物（人物索引，人物等级)
 	mainTeam.addHero(0, 99);
     mainTeam.addHero(1, 99);
@@ -34,21 +34,21 @@ RPG.newGame = function () {
 RPG.initEnemyTeam = function(){
     let team1;
 	// A队=0
-	team1= RPG.beget(RPG.PlayerTeam);
+	team1= RPG.beget(PlayerTeam);
 	team1.clear();
 	team1.addHero(2, 2);
 	team1.addHero(2, 2);
 	team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
 	// B队=1
-	team1 = RPG.beget(RPG.PlayerTeam);
+	team1 = RPG.beget(PlayerTeam);
 	team1.clear();
 	team1.addHero(3, 1);
 	team1.addHero(3, 1);
 	team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
 	// C队=2
-	team1= RPG.beget(RPG.PlayerTeam);
+	team1= RPG.beget(PlayerTeam);
 	team1.clear();
 	team1.addHero(2, 5);
 	team1.addHero(2, 3);
@@ -58,7 +58,7 @@ RPG.initEnemyTeam = function(){
 	//team1.addItem(2, 1);
 	RPG.enemyTeam.push(team1);
 	// D队=3
-	team1= RPG.beget(RPG.PlayerTeam);
+	team1= RPG.beget(PlayerTeam);
 	team1.clear();
 	team1.addHero(3, 5);
 	team1.addHero(3, 3);
@@ -67,14 +67,14 @@ RPG.initEnemyTeam = function(){
 	team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
 	// E队=4
-	team1 = RPG.beget(RPG.PlayerTeam);
+	team1 = RPG.beget(PlayerTeam);
 	team1.clear();
 	team1.addHero(4, 10);
 	team1.addHero(2, 5);
 	team1.addHero(3, 5);
 	RPG.enemyTeam.push(team1);
 	// F队=5
-	team1= RPG.beget(RPG.PlayerTeam);
+	team1= RPG.beget(PlayerTeam);
 	team1.clear();
 	team1.addHero(1, 6);
 	RPG.enemyTeam.push(team1);
@@ -113,7 +113,7 @@ RPG.loadGame= function(aSlot){
 			if (tempStr) {
 				let tempData= eval("("+ tempStr+ ")");
 				//console.log(tempData);
-				mainTeam= RPG.beget(RPG.PlayerTeam);
+				mainTeam= RPG.beget(PlayerTeam);
 				//mainTeam.init();
 				for(let i= 0; i< tempData.items.length; i++){
 					mainTeam.addItem(tempData.items[i].index, tempData.items[i].num);
@@ -164,7 +164,7 @@ RPG.getDateTimeStr= function(){
 	return result;
 };
 RPG.howToUse= function(){
-	RPG.startTalk(talklist1.talk6);
+	Talk.startTalk(talklist1.talk6);
 };
 RPG.drawCover= function() {
 	// 封面图

@@ -80,14 +80,14 @@ function main(){
 	//准备读取图片
     // imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
     // imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});
-    imgData.push({type:"js",path:"./js/talklist.js"});
+    imgData.push({type:"js",path:"./js/TalkList.js"});
 	imgData.push({type:"js",path:"./js/Talk.js"});
 	imgData.push({type:"js",path:"./js/Character.js"});
 	imgData.push({type:"js",path:"./js/script.js"});
 	imgData.push({type:"js",path:"./js/Items.js"});
 	imgData.push({type:"js",path:"./js/Hero.js"});
 	imgData.push({type:"js",path:"./js/Menu.js"});
-	imgData.push({type:"js",path:"./js/team.js"});
+	imgData.push({type:"js",path:"./js/Team.js"});
 	imgData.push({type:"js",path:"./js/cover.js"});
 	imgData.push({type:"js",path:"./js/Effect.js"});
 	imgData.push({type:"js",path:"./js/fightmenu.js"});
@@ -319,7 +319,7 @@ function onDown(event) {
         // 地图状态下可以进行移动和弹出菜单的操作
     	RPG.dealNormal(event.offsetX<<0, event.offsetY<<0);
     } else if (RPG.checkState(RPG.IN_TALKING)) {
-    	RPG.startTalk();
+    	Talk.startTalk();
     }
 }
 
@@ -330,7 +330,7 @@ function onUp(event){
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
     		RPG.dealMenuUp(event.offsetX, event.offsetY);
     	} else if(RPG.checkState(RPG.MAP_CONTROL)) {
-			addTalk();
+			Talk.addTalk();
 		}
 	}
 	RPG.currentButton= null;
@@ -409,7 +409,7 @@ function initScript(x,y,frame=0){
     //对话层初始化
     talkLayer.removeAllChild();
     //默认对话位置居中
-    RPG.setTalkPos("bottom");
+    Talk.setTalkPos("bottom");
     //当前场景地图
     CurrentMap= stage.map;
     CurrentMapImg = stage.imgName;

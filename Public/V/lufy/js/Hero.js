@@ -1,17 +1,15 @@
-	// 升级经验值
-	RPG.MAXEXP= 100;
-	// 英雄信息
-	RPG.HeroList= [
-		{index:0, chara:"blackTank", face:"face7",col:4,name:"路漫漫", atkEff: "mUse", force:100, mind:80, atk:50, def: 50, hp: 500, hpAdd: 50,desc:["主角"]},
-		{index:1, chara:"npc1", face:"face6", name:"白色战车", force:50, mind:60, atk:40, def: 50, hp: 400, hpAdd: 50, desc:["xxxxxxx"]},
-		{index:2, chara:"npc5", face:"", name:"商人", desc:"商人", atkEff: "pAttack", force:50, mind:20, atk:65, def: 45, hp: 350, hpAdd: 40},
-		{index:3, chara:"npc24", face:"", name:"黑色战车", desc:"黑色战车", atkEff: "mAttack", force:50, mind:20, atk:60, def: 40, hp: 300, hpAdd: 40},
-		{index:4, chara:"no17", face:"face1", col:4, name:"红色战车", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxxx"]},
-        {index:5, chara:"npc17", face:"face3", col:4, name:"雷娜", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]},
-        {index:6, chara:"enemy00", face:"face3", row:1,col:1, name:"杀人虫", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]}
-	];
+// 英雄信息
+let HeroList= [
+	{index:0, chara:"blackTank", face:"face7",col:4,name:"路漫漫", atkEff: "mUse", force:100, mind:80, atk:50, def: 50, hp: 500, hpAdd: 50,desc:["主角"]},
+	{index:1, chara:"npc1", face:"face6", name:"白色战车", force:50, mind:60, atk:40, def: 50, hp: 400, hpAdd: 50, desc:["xxxxxxx"]},
+	{index:2, chara:"npc5", face:"", name:"商人", desc:"商人", atkEff: "pAttack", force:50, mind:20, atk:65, def: 45, hp: 350, hpAdd: 40},
+	{index:3, chara:"npc24", face:"", name:"黑色战车", desc:"黑色战车", atkEff: "mAttack", force:50, mind:20, atk:60, def: 40, hp: 300, hpAdd: 40},
+	{index:4, chara:"no17", face:"face1", col:4, name:"红色战车", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxxx"]},
+	{index:5, chara:"npc17", face:"face3", col:4, name:"雷娜", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]},
+	{index:6, chara:"enemy00", face:"face3", row:1,col:1, name:"杀人虫", atkEff: "pAttack", force:130, mind:80, atk:100, def: 100, hp: 800, hpAdd: 80,desc:["xxxxxx"]}
+];
 
-RPG.HeroPlayer={
+let HeroPlayer={
 	// 人物列表中人物编号
 	index: 0,
 	// 各种战斗信息
@@ -21,6 +19,8 @@ RPG.HeroPlayer={
 	MaxMp: 100,
 	Level: 1,
 	Exp: 0,
+    // 升级经验值
+    maxExp: 100,
 	alive: true,
 	// 技能列表
 	skillList: [],
@@ -29,14 +29,14 @@ RPG.HeroPlayer={
 	armor: 11,
 	ornament: 10,
 	getPerson: function(){
-		return RPG.HeroList[this.index];
+		return HeroList[this.index];
 	},
 	getName: function() {
-		return RPG.HeroList[this.index].name;
+		return HeroList[this.index].name;
 	},
 	//
 	getFace: function() {
-		return RPG.HeroList[this.index].face;
+		return HeroList[this.index].face;
 	},
 	getHpRate: function() {
 		if (this.MaxHp> 0) {
@@ -61,6 +61,7 @@ RPG.HeroPlayer={
 		this.Level= lv;
 		this.MaxHp= person.hp+ person.hpAdd* lv;
 		this.MaxMp= Math.ceil(person.mind* 5* (lv+ 10)/ 200);
+        this.maxExp= this.MaxHp*2;
 	},
 	// 满回复
 	fullHeal: function(){
@@ -98,9 +99,9 @@ RPG.HeroPlayer={
 	addExp: function(exp){
 		exp= Math.ceil(exp);
 		this.Exp= Number(this.Exp)+ Number(exp);
-		while (this.Exp> RPG.MAXEXP) {
+		while (this.Exp> this.maxExp) {
 			this.setLevel(Number(this.Level)+ 1);
-			this.Exp -= RPG.MAXEXP;
+			this.Exp -= this.maxExp;
 		}
 	},
 	// 更换武器
@@ -110,15 +111,15 @@ RPG.HeroPlayer={
 		return Number(a);
 	},
 	// 更换防具
-	changeArmor: function(aId){
+	changeArmor: function(id){
 		let a= this.armor;
-		this.armor= aId;
+		this.armor= id;
 		return Number(a);
 	},
 	// 更换装饰
-	changeOrn: function(aId){
+	changeOrn: function(id){
 		let a= this.ornament;
-		this.ornament= aId;
+		this.ornament= id;
 		return Number(a);
 	},
 	getWeapon: function(){
