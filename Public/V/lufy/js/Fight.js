@@ -21,6 +21,8 @@ RPG.FIGHTING= 3;
 RPG.gameState;
 // 战斗结果控制
 RPG.noTrophy= false;
+        RPG.menuWidth = WIDTH - gap * 2;
+        RPG.menuHeight = HEIGHT - gap * 2;
 let gameMenus = ['背包','乘降','强度','存档','任务','返回'];
 let fightMenus = ['攻击','阵形','道具','防御','逃跑','总攻'];
 
@@ -90,9 +92,7 @@ let Fight = {
         //当对话开始，且按照顺序进行对话
         isKeyDown = false;
 
-        let gap = 10;
-        RPG.menuWidth = WIDTH - gap * 2;
-        RPG.menuHeight = HEIGHT - gap * 2;
+
         //对话背景
         talkLayer.x = 10;
         talkLayer.y = 10;
@@ -111,6 +111,9 @@ let Fight = {
         RPG.fightState = 0;
         RPG.eTeam = enemyTeam;
         RPG.pTeam = playerTeam;
+        showFightInfo()
+        let text = UI.text('遭遇战，敌我力量悬殊，敌方士气大减',gap,HEIGHT-150+gap);
+        RPG.fightMenuLayer.addChildAt(text,1);
         Fight.drawFighters();
         Fight.drawActButton();
     },

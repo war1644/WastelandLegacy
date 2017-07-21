@@ -26,3 +26,15 @@ RPG.closeFormation= function(){
 	talkLayer.removeChild(RPG.fightMenuLayer);
 	RPG.fightMenuLayer.removeAllChild();
 };
+
+function showFightInfo(){
+	// 
+	if (!RPG.fightMenuLayer) {
+		RPG.fightMenuLayer = new LSprite();
+	}
+	RPG.fightMenuLayer.removeAllChild();
+	let x0 = 0;
+	let y0 = HEIGHT - 150;
+	UI.drawBorderWindow(RPG.fightMenuLayer, x0, y0, RPG.menuWidth, 50)
+	talkLayer.addChild(RPG.fightMenuLayer);
+};

@@ -203,6 +203,8 @@ let UI = {
         textObj.size = size;
         textObj.color = color;
         textObj.text = text;
+        textObj.width=RPG.menuWidth;
+        textObj.height =RPG.menuHeight;
         return textObj;
     },
 
