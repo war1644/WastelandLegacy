@@ -14,10 +14,12 @@
  	RPG.TALKTOP= HEIGHT- RPG.TALKHEIGHT- RPG.TALKLEFT;
  	// 一句话说完有标记
  	RPG.sentenceFinish= true;
-	RPG.msgCurrent;
-	RPG.msgText;
+
 
 let Talk = {
+    msgCurrent,
+    msgText,
+
     makeChoice:(optionScript)=>{
         //如果对话内容为空，则开始判断是否可以对话
         if (!RPG.choiseScript){
@@ -85,7 +87,7 @@ let Talk = {
 	 * 对话内容逐字显示
 	 */
     closeSentence:()=>{
-        RPG.sentenceFinish = true;
+        sentenceFinish = true;
     },
 
     /**
@@ -123,8 +125,8 @@ let Talk = {
         // 前半句话没说完的情况下，先说完
         if (!RPG.sentenceFinish) {
             RPG.sentenceFinish= true;
-            RPG.msgCurrent.windRunning= false;
-            RPG.msgCurrent.text= RPG.msgText;
+            Talk.msgCurrent.windRunning= false;
+            Talk.msgCurrent.text= Talk.msgText;
             return;
         }
         //当对话开始，且按照顺序进行对话
@@ -164,8 +166,8 @@ let Talk = {
             //对话内容逐字显示
             msg.wind(Talk.closeSentence);
             RPG.sentenceFinish= false;
-            RPG.msgCurrent= msg;
-            RPG.msgText= talkObject.msg;
+            Talk.msgCurrent = msg;
+            Talk.msgText = talkObject.msg;
             talkLayer.x = 0;
             talkLayer.y = 0;
             RPG.talkIndex++;
