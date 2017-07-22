@@ -126,10 +126,10 @@ let Talk = {
 
     /**
      * 开始对话
-     * @param talkList {array} 攻击方
+     * @param talkList 攻击方
      * @returns
      */
-    startTalk:(talkList)=>{
+    startTalk:(talkList=false)=>{
         let border = 10;
         //如果对话内容为空，则开始判断是否可以对话
         if (!Talk.talkScript){

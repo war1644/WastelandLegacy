@@ -11,8 +11,7 @@
  * Date: 2017/7/16 19:58
  *
  */
-//间隙
-let gap = 10;
+
 
 function MyListChildView(i){
     let self = this;
@@ -115,16 +114,44 @@ function checkAuto(){
  * 检测战斗事件
  */
 function checkIntoBattle(){
-    if(player.tmp >= player.enemyShow){
-        if (rangeRand(0,9)>2){
-            Fight.simpleFight(4);
-        }
-        player.tmp = 0;
-    }
+    Fight.simpleFight(1);
+    // if(player.tmp >= player.enemyShow){
+    //     if (rangeRand(0,9)>2){
+    //         Fight.simpleFight(5);
+    //     }
+    //     player.tmp = 0;
+    // }
 }
 let Lib = {
-
+    /**
+     * 重排角色，以便正确遮盖
+     * */
+    resetChildIndex:(layer)=>{
+        // 排序以脚为准
+        let y1, y2, h1, h2;
+        for (let i=0; i< layer.childList.length; i++){
+            h1= charaLayer.childList[i].ph;
+            if (!h1) {
+                h1= charaLayer.childList[i].height+ 1;
+            }
+            y1= charaLayer.childList[i].y+ h1;
+            for (let j= i+ 1; j< layer.childList.length; j++){
+                h2= charaLayer.childList[j].ph;
+                if (!h2) {
+                    h2= charaLayer.childList[j].height+ STEP;
+                }
+                y2= charaLayer.childList[j].y+ h2;
+                if (y1> y2) {
+                    charaLayer.setChildIndex(charaLayer.childList[j], i);
+                    y1= y2;
+                }
+            }
+        }
+    },
 };
+
+
+
 
 let UI = {
     /**
@@ -195,7 +222,7 @@ let UI = {
     },
 
     /**
-     * 战斗按钮
+     * 文本
      */
     text:(text,x,y,size='14',color='#fff')=>{
         let textObj = new LTextField();
@@ -204,8 +231,23 @@ let UI = {
         textObj.size = size;
         textObj.color = color;
         textObj.text = text;
-        textObj.width = RPG.menuWidth;
-        // textObj.height = RPG.menuHeight;
+        textObj.width = menuWidth-2*gap;
+        // textObj.height = menuHeight;
+        return textObj;
+    },
+
+    /**
+     * 文本
+     */
+    textScorll:(text,x,y,size='14',color='#fff')=>{
+        let textObj = new LTextFieldType();
+        textObj.x = x;
+        textObj.y = y;
+        textObj.size = size;
+        textObj.color = color;
+        textObj.text = text;
+        textObj.width = menuWidth-2*gap;
+        // textObj.height = menuHeight;
         return textObj;
     },
 
@@ -218,7 +260,30 @@ let UI = {
         bitmap.x= x;
         bitmap.y= y;
         layer.addChild(bitmap);
-    }
+    },
+
+    // 显示获得物品
+    showGetItem:(id, num)=>{
+        UI.drawBorderWindow(effectLayer,0,0,WIDTH, 40);
+        let item1 = RPG.ItemList[id];
+        // 图片
+        // bitmapData = new LBitmapData(imglist["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep),
+        // bitmap = new LBitmap(bitmapData);
+        // bitmap.x= gap* 2;
+        // bitmap.y= gap;
+        // effectLayer.addChild (bitmap);
+        // 物品名称
+        let text = UI.text(item1.name,gap* 2+ 30,gap+ 5);
+        effectLayer.addChild(text);
+        // 物品数量
+        let numText = text.clone();
+        numText.x = 180;
+        numText.text = num;
+        effectLayer.addChild(numText);
+        setTimeout(function(){
+            effectLayer.removeAllChild();
+        }, 1000);
+    },
 
 
 };

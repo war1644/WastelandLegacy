@@ -1,35 +1,46 @@
 // 两类内容
 // 一类是战斗画面中的攻击效果动画
 // 另一类是全局的动态效果，总之都是效果类
-
-let Effect= function (data, w, h){
+// 效果集合
+let effectList=[];
+let Effect= function (data,row,col,type=1){
 	base(this,LSprite,[]);
-	let self = this;
+	let self = this,list;
 	//设定人物动作速度
 	self.speed = 0;
 	self.speedIndex = 0;
 	self.frameId= 0;
-	//设定人物大小
-	data.setProperties(0,0,w,h);
-	//得到人物图片拆分数组
-	let col= data.image.width/ w;
-	let row= data.image.height/ h;
-	let list = LGlobal.divideCoordinate(data.image.width,data.image.height,row,col);
+
+    //设定帧动画大小
+	if (type){
+        data.setProperties(0,0,data.image.width/col,data.image.height/row);
+        //得到帧动画图片拆分数组
+        list = LGlobal.divideCoordinate(data.image.width,data.image.height,row,col);
+    } else {
+        let w = row;
+        let h = col;
+		data.setProperties(0,0,w,h);
+        let tmpCol = data.image.width / w;
+        let tmpRow = data.image.height / h;
+        //得到帧动画图片拆分数组
+        list = LGlobal.divideCoordinate(data.image.width,data.image.height,tmpRow,tmpCol);
+	}
+
 	// 动作效果合并
 	let list2=[], list3=[];
-	for (let i= 0; i< list.length; i++){
-		list2= list2.concat(list[i]);
+	for (let i = 0; i< list.length; i++){
+		list2 = list2.concat(list[i]);
 	}
 	list3.push(list2);
-	// console.log(list);
-	// console.log(list2);
-	// console.log(list3);
+	// console.log('list',list);
+	// console.log('list2',list2);
+	// console.log('list3',list3);
 	//设定人物动画
 	self.anime = new LAnimation(this,data,list3);
-	self.maxFrame= list3[0].length;
+	self.maxFrame = list3[0].length;
 	//在一个移动步长中的移动次数设定
-	self.move= false;
-	self.func= null;
+	self.move = false;
+	self.func = null;
 };
 /**
  * 循环事件 
@@ -65,14 +76,14 @@ Effect.prototype.play = function (aTimes, aFunc){
 	//self.anime.addEventListener(LEvent.COMPLETE, aFunc);
 };
 
-RPG.loadEffect= function(aName){
-	if (!RPG.effectList[aName]){
+RPG.loadEffect= function(name,w=48,h=48,type=0){
+	if (!effectList[name]){
 		let bitmapData, chara;
-        bitmapData = new LBitmapData(imglist[aName]);
-		chara = new Effect(bitmapData, 48, 48);
-		RPG.effectList[aName]= chara;
+        bitmapData = new LBitmapData(imglist[name]);
+		chara = new Effect(bitmapData, w, h,type);
+		effectList[name]= chara;
 	}
-	return RPG.effectList[aName];
+	return effectList[name];
 };
 
 // 屏幕从黑切换到白，模拟过去了一天的效果
@@ -96,34 +107,4 @@ RPG.nightAndDay= function(callback){
 	)
 };
 
-// 显示获得物品
-RPG.showGetItem= function(id, num){
-    UI.drawWindow(effectLayer,0,0,WIDTH, 40);
-	let item1 = RPG.ItemList[id],
-		gap = 10,
-		// 图片
-		bitmapData = new LBitmapData(imglist["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep),
-		bitmap = new LBitmap(bitmapData);
-		bitmap.x= gap* 2;
-		bitmap.y= gap;
-		effectLayer.addChild (bitmap);
-		// 物品名称
-		let text = new LTextField();
-		text.x = gap* 2+ 30;
-		text.y = gap+ 5;
-		text.size = "14";
-		text.color = "#FFFFFF";
-		text.text = item1.name;
-		effectLayer.addChild(text);
-		// 物品数量
-		text = new LTextField();
-		text.x = 180;
-		text.y = gap+ 5;
-		text.size = "14";
-		text.color = "#FFFFFF";
-		text.text = num;
-		effectLayer.addChild(text);
-	setTimeout(function(){
-		effectLayer.removeAllChild();
-	}, 1000);
-};
+

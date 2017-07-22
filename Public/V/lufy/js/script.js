@@ -1,63 +1,89 @@
 ﻿let script = {
-    stage05:{
+    stage01:{
+        name: "河畔镇",
+        id: "stage01",
+        map: laduo,
+        imgName:['laduo_0','laduo_1'],
+        mapData: {},
+        events:[
+            // 获胜离开点
+            {chara:"touch", img:"right", x:19,  y:18, row:1, col:3,action: ()=>{}},
+            {chara:"npc", img:"npc17", x:12,  y:16,col:4, visible: ()=>{return (!RPG.checkSwitch("firstTalk"));},action: (npc)=>{
+                RPG.pushState(RPG.MAP_WAITING);
+                Talk.startTalk(stage.talk.talk1);
+                Talk.waitTalk(()=>{
+                    npc.speed = 2;
+                    //移动NPC到指定位置,并触发之后的func
+                    moveNpc(npc,[0,0,2,2,2,2,3,3,3],()=>{
+                        RPG.popState();
+                        RPG.hideChar(npc);
+                        RPG.setSwitch("firstTalk", true);
+                    });
+                });
+            }},
+            /*{chara:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function() {
+                // 自动发言
+                RPG.setTalkPos("middle");
+                Talk.startTalk(stage.talk.talk4);
+                RPG.setSwitch("autoTalk", true);
+                RPG.waitTalk(function () {
+                    Talk.makeChoice(stage.choice.choice1);
+                });
+            }},*/
+            {chara:"npc", img:"",x:5,   y:2, action: function(){
+                // 获得浆果
+                RPG.getBerry(2,1,stage.talk.talk8);
+            }},
+            {chara:"npc",x:16,y:16,action:()=>{
+                // 进入战车工厂
+                RPG.jumpStage(script.stage01, 5, 8, 3);
+            }}
+        ],
+        talk: talklist1,
+        choice: {
+            choice1:{ img: "face2", msg: "操作教程",
+            choise:[
+            {text:"看",action: ()=>{
+                Talk.closeTalk();
+                Talk.startTalk(stage.talk.talk6);
+                RPG.waitTalk(()=>{
+                    Talk.startTalk(stage.talk.talk7);
+                    RPG.waitTalk(()=>{
+                        RPG.setTalkPos("bottom");
+                    });
+                });
+            }},
+            {text:"不看",action: ()=>{
+                Talk.closeTalk();
+                Talk.startTalk(stage.talk.talk7);
+                RPG.waitTalk(()=>{
+                    RPG.setTalkPos("bottom");
+                });
+            }}]
+        }
+        }
+    },
+    stage02:{
         name: "战车工厂",
         id: "stage05",
-        map: map_home1,
+        map: home1,
         imgName:['home1_0','home1_1'],
-        mapdata: {},
+        mapData: {},
         events: [
-        {
-                type: "npc", img: "empty", x: 12, y: 9, row: 1, col: 1, action: function () {
-                // 休息一夜
-                if(RPG.setSwitch("accept")){
-                    Talk.startTalk(stage.talk.talk8);
-                }else {
-                    RPG.pushState(RPG.MAP_WAITING);
-                    Talk.startTalk(stage.talk.talk5);
-                    RPG.waitTalk(function () {
-                        player.setCoordinate(12, 9, 0);
-                        RPG.resetChildIndex(charaLayer);
-                        RPG.nightAndDay(function () {
-                            player.setCoordinate(12, 10, 0);
-                            mainTeam.fullHeal();
-                            RPG.popState();
-                        });
-                    });
-                }
-
-            }
-            },
             {type: "npc", img: "npc1", x: 13, y: 15,
 				action: function (npc) {
-					// 第二轮说话
 					if (RPG.checkSwitch("accept")) {
 						Talk.startTalk(stage.talk.talk4);
 					} else if (RPG.checkSwitch("secondTalk")) {
-						RPG.makeChoise(stage.choice.choice1);
+						Talk.makeChoice(stage.choice.choice1);
 					} else {
 						Talk.startTalk(stage.talk.talk1);
 						RPG.setSwitch("secondTalk", true);
 						RPG.waitTalk(function () {
-							RPG.makeChoise(stage.choice.choice1);
+							Talk.makeChoice(stage.choice.choice1);
 						});
 					}
 				}
-            },
-            {
-                type: "npc", img: "npc1", x: 13, y: 15, action: function (npc) {
-                    // 第二轮说话
-                    if (RPG.checkSwitch("accept")) {
-                        Talk.startTalk(stage.talk.talk4);
-                    } else if (RPG.checkSwitch("secondTalk")) {
-                        RPG.makeChoise(stage.choice.choice1);
-                    } else {
-                        Talk.startTalk(stage.talk.talk1);
-                        RPG.setSwitch("secondTalk", true);
-                        RPG.waitTalk(function () {
-                            RPG.makeChoise(stage.choice.choice1);
-                        });
-                    }
-                }
             },
             {chara:"npc", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
                 // 隐藏的食物
@@ -72,25 +98,11 @@
                     Talk.startTalk(stage.talk.talk6);
                 }
             }},
-            {chara:"npc", img:"box",col:1,row:2, x:6,  y:12, action: function(npc){
-                // 隐藏的食物
-				if (!RPG.checkSwitch("breadTake2")){
-					Talk.startTalk(stage.talk.talk7);
-					RPG.waitTalk(function(){
-                        npc.anime.setAction(1);
-                        mainTeam.addItem(12, 3, true);
-						RPG.setSwitch("breadTake2", true);
-					});
-				}else {
-                    Talk.startTalk(stage.talk.talk6);
-                }
-            }},
-            // 山洞战斗者
-            {chara:"touch", img:"npc5", x:6,  y:5, move:1, visible: function(){return (!RPG.checkSwitch("BatDenTaken"));}, action: function(aChar){Fight.simpleFight(1, aChar);}},
-            {
-                type: "npc", img: "", x: 6, y: 13, action: function () {
+            // fight test
+            {chara:"touch", img:"npc5", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
+            {x: 6, y: 13, action:()=>{
                     // 回到大地图
-                    RPG.jumpStage(script.stage06, 1, 7, 0);
+                    RPG.jumpStage(script.stage01, 2, 7, UP);
                 }
             }
 
@@ -103,7 +115,7 @@
                         Talk.closeTalk();
                         Talk.startTalk(stage.talk.talk2);
                         RPG.setSwitch("accept", true);
-                        RPG.waitTalk(function(){
+                        Talk.waitTalk(function(){
                             mainTeam.addItem(1, 5, true);
                         });
                     }},
@@ -114,25 +126,24 @@
             }
         }
     },
-    stage06:{
+    stage03:{
         name: "猎人家",
-        id: "stage06",
-        map: map_home2,
+        id: "stage03",
+        map: home2,
         imgName:['home2_0','home2_1'],
-        mapdata: {},
+        mapData: {},
         events: [
             {
-                type: "npc", img: "npc1", x: 13, y: 15, action: function (npc) {
-                // 第二轮说话
+                chara: "npc", img: "npc1", x: 13, y: 15, action: function (npc) {
 					if (RPG.checkSwitch("accept")) {
 						Talk.startTalk(stage.talk.talk4);
 					} else if (RPG.checkSwitch("secondTalk")) {
-						RPG.makeChoise(stage.choice.choice1);
+						Talk.makeChoice(stage.choice.choice1);
 					} else {
 						Talk.startTalk(stage.talk.talk1);
 						RPG.setSwitch("secondTalk", true);
-						RPG.waitTalk(function () {
-							RPG.makeChoise(stage.choice.choice1);
+                        Talk.waitTalk(function () {
+							Talk.makeChoice(stage.choice.choice1);
 						});
 					}
             	}
@@ -164,22 +175,22 @@
                 }
             }},
             {
-                type: "npc", img: "", x: 6, y: 13, action: function () {
+                chara: "npc", img: "", x: 6, y: 13, action: function () {
                 // 回到大地图
-                RPG.jumpStage(script.stage05, 16, 17, 0);
+                RPG.jumpStage(script.stage02, 16, 17, 0);
             }
             },
             {
-                type: "npc", img: "empty", x: 12, y: 9, row: 1, col: 1, action: function () {
+                chara: "npc", img: "empty", x: 12, y: 9, row: 1, col: 1, action: function () {
                 // 休息一夜
                 if(!RPG.setSwitch("accept")){
                     Talk.startTalk(stage.talk.talk8);
                 }else {
                     RPG.pushState(RPG.MAP_WAITING);
                     Talk.startTalk(stage.talk.talk5);
-                    RPG.waitTalk(function () {
+                    Talk.waitTalk(function () {
                         player.setCoordinate(9, 5, 0);
-                        RPG.resetChildIndex(charaLayer);
+                        Lib.resetChildIndex(charaLayer);
                         RPG.nightAndDay(function () {
                             player.setCoordinate(8, 5, 0);
                             mainTeam.fullHeal();
@@ -192,126 +203,12 @@
             }
         ],
         talk: talklist3,
-        choice: {
-            choice1:{ img: "face7", msg: "是否同意去？",
-                choise:[
-                    {text:"去",action: function(){
-                        Talk.closeTalk();
-                        Talk.startTalk(stage.talk.talk2);
-                        RPG.setSwitch("accept", true);
-                        RPG.waitTalk(function(){
-                            mainTeam.addItem(1, 5, true);
-                        });
-                    }},
-                    {text:"不去",action: function(){
-                        Talk.closeTalk();
-                        Talk.startTalk(stage.talk.talk3);
-                    }}]
-            }
-        }
+        choice: {}
     },
 };
 
 
-/*stage01:{
-    name: "河畔镇外郊",
-    id: "stage01",
-    map: map_home1,
-    mapdata: {},
-    events:[
-         // 获胜离开点
-         {chara:"touch", img:"right", x:19,  y:18, row:1, col:3, visible: function(){return (RPG.checkSwitch("gate1win"));},action: ()=>{
-             Talk.startTalk(stage.talk.talk5);
-             RPG.waitTalk(()=>{
-                 RPG.winGame();
-             });
-         }},
-          // 启动第一轮对话
-         {chara:"npc", img:"npc17", x:12,  y:16,col:4, visible: ()=>{return (!RPG.checkSwitch("firstTalk"));},action: (npc)=>{
-             RPG.pushState(RPG.MAP_WAITING);
-             Talk.startTalk(stage.talk.talk1);
-             RPG.waitTalk(()=>{
-                 npc.speed=2;
-                 RPG.moveNpc(npc, [0,0,2,2,2,2,3,3,3]);
-                 RPG.waitCharPos(npc, 16, 17, ()=>{
-                     RPG.popState();
-                     RPG.hideChar(npc);
-                     RPG.setSwitch("firstTalk", true);
-                 });
-             });
-         }},
-         {chara:"npc", img:"",     x:9,   y:13, action: function(){
-             // 进入山洞
-             if (RPG.checkSwitch("accept")) {
-                 // 切换场景
-                 RPG.jumpStage(script.stage02, 4, 2, 0);
-             }else{
-                 Talk.startTalk(stage.talk.talk3);
-             }
-         }},
-         /!*{chara:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function(){
-             // 自动发言
-             RPG.setTalkPos("middle");
-             Talk.startTalk(stage.talk.talk4);
-             RPG.setSwitch("autoTalk", true);
-             // RPG.waitTalk(function(){
-             // 	RPG.makeChoise(stage.choice.choice1);
-             // });
-         }},*!/
-         {chara:"npc", img:"",     x:2,   y:1, action: function(){
-             // 获得浆果
-             RPG.getBerry(1,1,stage.talk.talk8);
-         }},
-         {chara:"npc", img:"",     x:5,   y:2, action: function(){
-             // 获得浆果
-             RPG.getBerry(2,1,stage.talk.talk8);
-         }},
-         {chara:"npc", img:"",     x:10,   y:1, action: function(){
-             // 获得浆果
-             RPG.getBerry(3,1,stage.talk.talk8);
-         }},
-         {chara:"npc", img:"",     x:9,   y:4, action: function(){
-             // 从谷底回到山洞
-             RPG.jumpStage(script.stage02, 17, 5, RPG.UP);
-         }},
-         {chara:"npc", img:"",     x:1,   y:4, action: function(){
-             // 从山顶回到山洞
-             RPG.jumpStage(script.stage02, 12, 16, RPG.DOWN);
-         }},
-         {chara:"npc",x:16,y:16,action:()=>{
-             // 进入帐篷
-             if (RPG.checkSwitch("firstTalk")) {
-                 // 切换场景
-                 RPG.jumpStage(script.stage03, 5, 8, 3);
-             }else{
-                 Talk.startTalk(stage.talk.talk2);
-             }
-         }}
-         ],
-    talk: talklist1,
-    choice: {
-        choice1:{ img: "face2", msg: "操作教程",
-                choise:[
-                    {text:"看",action: ()=>{
-                         Talk.closeTalk();
-                         Talk.startTalk(stage.talk.talk6);
-                         RPG.waitTalk(()=>{
-                             Talk.startTalk(stage.talk.talk7);
-                             RPG.waitTalk(()=>{
-                                 RPG.setTalkPos("bottom");
-                             });
-                         });
-                     }},
-                     {text:"不看",action: ()=>{
-                         Talk.closeTalk();
-                         Talk.startTalk(stage.talk.talk7);
-                         RPG.waitTalk(()=>{
-                             RPG.setTalkPos("bottom");
-                         });
-                     }}]
-              }
-    }
-},
+/*
 stage02:{
     name: "荒漠洞穴",
     id: "stage02",
@@ -334,7 +231,7 @@ stage02:{
                      }
                      Talk.startTalk(stage.talk.talk6);
                      RPG.waitTalk(function(){
-                         RPG.makeChoise(stage.choice.choice1);
+                         Talk.makeChoice(stage.choice.choice1);
                      });
                  } else {
                      // 未得到宝物直接离洞
@@ -431,12 +328,12 @@ stage03:{
              if (RPG.checkSwitch("accept")) {
                  Talk.startTalk(stage.talk.talk4);
              } else if (RPG.checkSwitch("secondTalk")) {
-                 RPG.makeChoise(stage.choice.choice1);
+                 Talk.makeChoice(stage.choice.choice1);
              } else {
                  Talk.startTalk(stage.talk.talk1);
                  RPG.setSwitch("secondTalk", true);
                  RPG.waitTalk(function(){
-                     RPG.makeChoise(stage.choice.choice1);
+                     Talk.makeChoice(stage.choice.choice1);
                 });
              }
          }},

@@ -1,7 +1,6 @@
 /**
  * 团队类
- * 包括团队物品，团队金钱
- * 已经角色数据
+ * 包括团队物品，团队金钱,角色数据
  *
  **/
  
@@ -26,7 +25,7 @@ let PlayerTeam = {
      * @param num  {int} 使用数量
      * @returns
      */
-	addItem: function (id, num=1, visible){
+	addItem: function (id, num=1, visible=false){
 		if (id < 0) return;
 		let found= false;
 		for (let i=0; i< this.itemList.length; i++) {
@@ -42,7 +41,7 @@ let PlayerTeam = {
 			i1.num = num;
 			this.itemList.push(i1);
 		}
-		if (visible) RPG.showGetItem(id, num);
+		if (visible) UI.showGetItem(id, num);
 	},
     /**
      * 使用物品
@@ -84,15 +83,31 @@ let PlayerTeam = {
      * 向队伍增加人物
      * @param id {int} 序号
      * @param lv  {int} 等级
+	 * @param nick  {string} 等级
      * @returns
      */
-	addHero: function (id, lv){
-		let h1= RPG.beget(HeroPlayer);
-		h1.index= id;
+	addHero: function (id, lv, nick='路漫漫'){
+		let h1 = RPG.beget(HeroPlayer);
+        h1.index = id;
+        h1.nickName = nick;
 		h1.setLevel(lv);
 		h1.fullHeal();
 		this.heroList.push(h1);
 	},
+    /**
+     * 向队伍增加怪物
+     * @param id {int} 序号
+     * @param lv  {int} 等级
+     * @returns
+     */
+    addEnemy: function (id, lv){
+        let e1= RPG.beget(Enemy);
+        console.log('e1',e1);
+        e1.index = id;
+        e1.setLevel(lv);
+        e1.fullHeal();
+        this.heroList.push(e1);
+    },
     /**
      * 获取队伍主角
      */

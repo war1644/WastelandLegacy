@@ -1,6 +1,6 @@
  	// 菜单状态=============================================================
-	RPG.menuWidth = WIDTH - gap* 2;
-    RPG.menuHeight = HEIGHT - gap* 2;
+    // menuWidth = WIDTH - gap* 2;
+    // menuHeight = HEIGHT - gap* 2;
 	RPG.cmdChoose;
  	// 记录
  	RPG.MouseX= 0;
@@ -66,7 +66,7 @@ RPG.menuShowState= function() {
             case 'NAME':
                 obj.obj.x = rightPos;
                 obj.obj.y = topPos;
-                obj.obj.text = hero1.getName();
+                obj.obj.text = hero1.nickName;
                 break;
 			case 'FACE':
                 // 头像
@@ -78,7 +78,7 @@ RPG.menuShowState= function() {
                 break;
             case 'HP':
                 // hp血条
-                valueLength= (RPG.menuWidth- rightPos)- gap;
+                valueLength= (menuWidth- rightPos)- gap;
                 // RPG.drawScale(ctrlLayer, "winback", rightPos, 52, valueLength, 12);
                 // RPG.drawScale(ctrlLayer, "#ff565c", rightPos, 50, valueLength* hero1.getHpRate(), 15);
                 topPos+= 20;
@@ -93,7 +93,7 @@ RPG.menuShowState= function() {
                 break;
             /*case 'SP':
                 // 战车血条
-                valueLength= (RPG.menuWidth- rightPos)- gap;
+                valueLength= (menuWidth- rightPos)- gap;
                 // RPG.drawScale(ctrlLayer, "winback", rightPos, 92, valueLength, 12);
                 RPG.drawScale(ctrlLayer, "#2b92ff", rightPos, 92, valueLength* hero1.getMpRate(), 12);
                 obj.obj.x = rightPos;
@@ -118,7 +118,7 @@ RPG.menuShowState= function() {
                 break;
             case 'EXP':
                 // 经验条
-                valueLength= (RPG.menuWidth- rightPos)- gap;
+                valueLength= (menuWidth- rightPos)- gap;
                 // RPG.drawScale(ctrlLayer, "winback", rightPos, 132, valueLength, 12);
                 // RPG.drawScale(ctrlLayer, "#28ff4e", rightPos, 130, valueLength* hero1.getExpRate(), 15);
                 obj.obj.x = rightPos;
@@ -162,19 +162,14 @@ RPG.menuShowItems = function(team) {
 	item1, hero, heroImg,
 	bitmapData, bitmap, text, chara;
 
-	text = new LTextField();
-	text.x = RPG.menuWidth / 2;
-	text.y = 10;
-	text.width = 200;
-	text.textAlign = "center";
-	text.size = "20";
-	text.color = "#FFF";
-	text.text = "物品";
+	text = UI.text("物品",menuWidth / 2,10,'20');
+	// text.width = 200;
+	// text.textAlign = "center";
 	ctrlLayer.addChild(text);
 	// 所有物品画在一张图片上
 	let maskObj = new LSprite();
-	let maskHeight = RPG.menuHeight- 144- 40; // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
-    maskObj.graphics.drawRect(0, "#ff0000", [0, 40, RPG.menuWidth, maskHeight]);
+	let maskHeight = menuHeight- 144- 40; // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
+    maskObj.graphics.drawRect(0, "#ff0000", [0, 40, menuWidth, maskHeight]);
     if (!RPG.listLayer) {
     	RPG.listLayer= new LSprite();
     	RPG.listLayer.x= 0;
@@ -190,10 +185,10 @@ RPG.menuShowItems = function(team) {
     RPG.descLayer.x = gap;
     //RPG.descLayer.y= maskHeight+ gap* 2+ 70;
     // 保留144的空间即够用
-    RPG.descLayer.y = RPG.menuHeight - 144;
+    RPG.descLayer.y = menuHeight - 144;
     ctrlLayer.addChild(RPG.descLayer);
     // 选择高亮条
-	RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, RPG.menuWidth - gap* 2, 30);
+	RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, menuWidth - gap* 2, 30);
     // 物品列表
 	for (i= 0; i< team.itemList.length; i++){
 		// 逐个显示物品
@@ -205,12 +200,7 @@ RPG.menuShowItems = function(team) {
 		// bitmap.y= i* 30+ gap;
 		// RPG.listLayer.addChild (bitmap);
 		// 物品名称
-		text = new LTextField();
-		text.x = gap* 2+ 30;
-		text.y = i* 30+ gap+ 5;
-		text.size = "14";
-		text.color = "#FFF";
-		text.text = RPG.ItemList[item1.index].name;
+		text = UI.text(RPG.ItemList[item1.index].name,gap* 2+ 30,i* 30+ gap+ 5);
 		RPG.listLayer.addChild(text);
 
         let num = text.clone();
@@ -241,13 +231,8 @@ RPG.menuShowOneItem= function(id) {
 		RPG.listFocus.x = gap;
 		RPG.listFocus.y = id* 30+ 5;
 		// 详细描述
-		text = new LTextField();
-		text.x = gap* 2;
-		text.y = gap+ 5;
-		text.size = "14";
-		text.color = "#FFFFFF";
-		text.text = RPG.ItemList[item1.index].description;
-		text.width= RPG.menuWidth- gap* 8;
+		text = UI.text(RPG.ItemList[item1.index].description,gap* 2,gap+ 5);
+		// text.width= menuWidth- gap* 8;
 		text.setWordWrap(true, 20);
 		RPG.descLayer.addChild(text);
 	}
@@ -257,20 +242,14 @@ RPG.menuShowOneItem= function(id) {
 RPG.dragItemBegin= function(ax, ay, aId){
 	let item1,
 		iconbitmapdata, iconbitmap,
-		text, i,
-		gap= 10;
-    console.log('dx,dy',ax,ay);
+		text, i;
 
     // 详细信息
 	RPG.descLayer.removeAllChild();
 	// 显示单一物品详细信息
 	item1= mainTeam.itemList[aId].getItemDesc();
 	//
-	text = new LTextField();
-	text.x = gap* 2;
-	text.y = 5;
-	text.size = "14";
-	text.color = "#FFFFFF";
+	text = UI.text(''.description,gap* 2,5);
 	switch (item1.kind){
 		case 1:
             text.text = item1.name+ "装配：";
@@ -290,11 +269,11 @@ RPG.dragItemBegin= function(ax, ay, aId){
 		RPG.nameText.text = "";
 		RPG.descLayer.addChild(RPG.nameText);
 		RPG.chooseHero= -1;
-		let cc= (RPG.menuWidth- gap* 2)/ mainTeam.heroList.length;
+		let cc= (menuWidth- gap* 2)/ mainTeam.heroList.length;
 		RPG.showItemEffectLabel.length= 0;
 		for (i=0; i< mainTeam.heroList.length; i++){
 			let hero= mainTeam.heroList[i];
-			let heroImg= HeroList[hero.index].chara;
+			let heroImg= HeroList[hero.index].img;
 			let bitmapData = new LBitmapData(imglist[heroImg]);
 			let chara = new Fighter(bitmapData,4,4);
 			// 测试物品效果的英雄
@@ -357,7 +336,6 @@ RPG.dragItemBegin= function(ax, ay, aId){
 		RPG.nameText= null;
 		RPG.chooseItem= -1;
 	}
-	//*/
 
 	// 图标作为拖动物
 	// let bitmapData = new LBitmapData(imglist["iconset"], RPG.ItemList[item1.index].pic.x*RPG.iconStep, RPG.ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
@@ -405,14 +383,9 @@ RPG.menuShowTasks= function() {
 RPG.menuShowSave= function(aResetFocus) {
 	RPG.menuPage= 4;
 	ctrlLayer.removeAllChild();
-	let text = new LTextField();
-	text.x = RPG.menuWidth/ 2;
-	text.y = 10;
-	text.width= 200;
-	text.textAlign= "center";
-	text.size = "20";
-	text.color = "#FFFFFF";
-	text.text = "保存进度";
+    let text = UI.text("保存进度",menuWidth/ 2,10,'20');
+    // text.width= 200;
+    // text.textAlign= "center";
 	ctrlLayer.addChild(text);
 	// 可用存档槽
     if (!RPG.listLayer) {
@@ -426,28 +399,23 @@ RPG.menuShowSave= function(aResetFocus) {
     RPG.listLayer.mask = null;
     // 选择高亮条
     if (aResetFocus) {
-		RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, RPG.menuWidth- gap* 2, 30);
+		RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, menuWidth- gap* 2, 30);
 		RPG.saveSlot= 0;
 	} else {
-		RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, RPG.listFocus.y, RPG.menuWidth- gap* 2, 30);		
+		RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, RPG.listFocus.y, menuWidth- gap* 2, 30);
 	}
-    // 
-	for (i= 0; i< RPG.MaxSaveSlot; i++){
+
+	for (let i= 0; i< RPG.MaxSaveSlot; i++){
 		// 物品名称
-		text = new LTextField();
-		text.x = gap* 2;
-		text.y = i* 30+ 5;
-		text.size = "14";
-		text.color = "#FFFFFF";
-		text.text = RPG.showSaveSlot(i);
+		text = UI.text(RPG.showSaveSlot(i),gap* 2,i* 30+ 5);
 		RPG.listLayer.addChild(text);
 	}
-    let button01= RPG.newButton(90, 30, gap* 2, RPG.menuHeight- 85, "回到标题", function(e){
-		RPG.closeMenu();
+    let button01= RPG.newButton(90, 30, gap* 2, menuHeight- 85, "回到标题", function(e){
+		Menu.closeMenu();
     	RPG.drawCover();
     });
     ctrlLayer.addChild(button01);
-    ctrlLayer.addChild(RPG.newButton(90, 30, RPG.menuWidth- gap* 2- 90, RPG.menuHeight- 85, "保存进度", function(e){
+    ctrlLayer.addChild(RPG.newButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 85, "保存进度", function(e){
 		RPG.saveGame(RPG.saveSlot);
 		RPG.menuShowSave(false);
     }));
@@ -455,17 +423,10 @@ RPG.menuShowSave= function(aResetFocus) {
 
 RPG.menuShowLoad= function() {
 	RPG.menuPage= 5;
-	let gap= 10;
 	ctrlLayer.removeAllChild();
-	//
-	let text = new LTextField();
-	text.x = RPG.menuWidth/ 2;
-	text.y = 10;
-	text.width= 200;
-	text.textAlign= "center";
-	text.size = "20";
-	text.color = "#FFFFFF";
-	text.text = "载入进度";
+	let text = UI.text("载入进度",menuWidth/ 2,10,'20');
+	// text.width= 200;
+	// text.textAlign= "center";
 	ctrlLayer.addChild(text);
 	// 可用存档槽
     if (!RPG.listLayer) {
@@ -478,28 +439,23 @@ RPG.menuShowLoad= function() {
     ctrlLayer.addChild(RPG.listLayer);
     RPG.listLayer.mask = null;
     // 选择高亮条
-	RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, RPG.menuWidth- gap* 2, 30);
+	RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, menuWidth- gap* 2, 30);
 	RPG.saveSlot= 0;
     // 
 	for (let i= 0; i< RPG.MaxSaveSlot; i++){
 		// 物品名称
-		text = new LTextField();
-		text.x = gap* 2;
-		text.y = i* 30+ 5;
-		text.size = "14";
-		text.color = "#FFFFFF";
-		text.text = RPG.showSaveSlot(i);
+		text = UI.text(RPG.showSaveSlot(i),gap* 2,i* 30+ 5);
 		RPG.listLayer.addChild(text);
 	}
 	// 空白按钮图片
-   let button01= RPG.newButton(90, 30, gap* 2, RPG.menuHeight- 60, "载入进度", function(e){
-		RPG.closeMenu();
+   let button01= RPG.newButton(90, 30, gap* 2, menuHeight- 60, "载入进度", function(e){
+		Menu.closeMenu();
 		RPG.loadGame(RPG.saveSlot);
     });
     ctrlLayer.addChild(button01);
 	// 空白按钮图片
-    ctrlLayer.addChild(RPG.newButton(90, 30, RPG.menuWidth- gap* 2- 90, RPG.menuHeight- 60, "返回", function(e){
-		RPG.closeMenu();
+    ctrlLayer.addChild(RPG.newButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 60, "返回", function(e){
+		Menu.closeMenu();
     }));
 };
 // 从标题画面，打开载入进度菜单
@@ -509,12 +465,10 @@ RPG.openLoadMenu= function() {
 	//将对话层清空
 	talkLayer.removeAllChild();
 	//当对话开始，且按照顺序进行对话
-	RPG.menuWidth= WIDTH- gap* 2;
-	RPG.menuHeight= HEIGHT- gap* 2;
 	//对话背景
 	talkLayer.x = 10;
 	talkLayer.y = 10;
-	UI.drawBorderWindow(talkLayer, 0, 0, RPG.menuWidth, RPG.menuHeight);
+	UI.drawBorderWindow(talkLayer, 0, 0, menuWidth, menuHeight);
 	// 子菜单层
 	ctrlLayer = new LSprite();
 	talkLayer.addChild(ctrlLayer);
@@ -528,17 +482,17 @@ RPG.openMenu= function() {
 	//将对话层清空
 	talkLayer.removeAllChild();
 	let menusDown=40;
-	let menuWidth = RPG.menuWidth / RPG.iconMenu.length;
+	let tmpMenuWidth = menuWidth / RPG.iconMenu.length;
 	//对话背景
 	talkLayer.x = 10;
 	talkLayer.y = 10;
-	UI.drawBorderWindow(talkLayer, 0, 0, RPG.menuWidth, RPG.menuHeight);
+	UI.drawBorderWindow(talkLayer, 0, 0, menuWidth, menuHeight);
 
 	for (let i=0; i< RPG.iconMenu.length; i++) {
 		let obj = RPG.iconMenu[i];
         let text = new LTextField();
-        obj.x = text.x = (menuWidth*i + menusDown/2 - gap)<<0 ;
-        obj.y = text.y = (RPG.menuHeight - gap - menusDown)<<0;
+        obj.x = text.x = (tmpMenuWidth*i + menusDown/2 - gap)<<0 ;
+        obj.y = text.y = (menuHeight - gap - menusDown)<<0;
         text.text = obj.name;
         text.color = '#fff';
         obj.textObj = text;
@@ -556,25 +510,28 @@ RPG.openMenu= function() {
 	RPG.menuShowState();
 };
 
-RPG.closeMenu= function() {
-	// 切换状态
-	RPG.popState();
-	//将对话层清空
-	talkLayer.removeAllChild();
-	RPG.cmdChoose = -1;
-	// 这个动作，是为了屏蔽鼠标抬起事件
-	isKeyDown= false;
+
+let Menu = {
+    waitMenu:(callback)=>{
+        if (RPG.checkState(RPG.UNDER_WINDOWS)) {
+            setTimeout(function(){Menu.waitMenu(callback)}, 500);
+        } else {
+            if (callback)  callback();
+        }
+    },
+
+    closeMenu:()=>{
+        // 切换状态
+        RPG.popState();
+        //将对话层清空
+        talkLayer.removeAllChild();
+        RPG.cmdChoose = -1;
+        // 这个动作，是为了屏蔽鼠标抬起事件
+        isKeyDown= false;
+    },
 };
 
-RPG.waitMenu= function (aCallBack){ 
-	if (RPG.checkState(RPG.UNDER_WINDOWS)) { 
-		setTimeout(function(){RPG.waitMenu(aCallBack);}, 500);
-	} else {
-		if (aCallBack) {
-			aCallBack();
-		}
-	}
-};
+
 
 RPG.dealMenu= function(ax, ay){
     // 根据点击位置，判断移动方向
@@ -609,7 +566,7 @@ RPG.dealMenu= function(ax, ay){
 		}
 		switch (index.cmd){
 			case 0:
-                RPG.closeMenu();
+                Menu.closeMenu();
                 break;
             case 1:
                 RPG.menuShowState();
@@ -685,7 +642,7 @@ RPG.dealMenuMove= function(ax, ay){
 				// 动态选择人物
 				if (RPG.nameText) {
 					// 可以选人的状态
-					let cc= (ax/ (RPG.menuWidth/ mainTeam.heroList.length))<<0;
+					let cc= (ax/ (menuWidth/ mainTeam.heroList.length))<<0;
 					if (cc>=0 && cc<mainTeam.heroList.length && ay> RPG.descLayer.y) {
 						RPG.nameText.text= HeroList[mainTeam.heroList[cc].index].name;
 						RPG.chooseHero= cc;

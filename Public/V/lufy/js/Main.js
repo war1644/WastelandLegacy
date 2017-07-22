@@ -4,9 +4,22 @@
  * @blog http://blog.csdn.net/lufy_Legend
  * @email lufy.legend@gmail.com
  **/
+window._requestAF = (function() {
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+            window.setTimeout(callback, 1000/30);
+        };
+})();
+
 // 图区大小
 let STEP = 24;
 let WIDTH= 256;
+//间隙
+let gap = 10;
 let tempLength= 0;
 if (window.innerHeight>=window.innerWidth){
 	tempLength= window.innerHeight* WIDTH/window.innerWidth;
@@ -22,6 +35,11 @@ if (HEIGHT< 384) {
 	tempCells= Math.floor(tempLength/ STEP);
 	WIDTH= tempCells* STEP;
 }
+
+let menuWidth = WIDTH - gap * 2,
+menuHeight = HEIGHT - gap * 2;
+
+// window.innerWidth, window.innerHeight
 init(1000/30,"mylegend",WIDTH,HEIGHT,main);
 
 /**层变量*/
@@ -50,7 +68,7 @@ let loadingLayer,
  	isKeyDown = false,
  	timer,
 //地图滚动
- 	mapmove = false,
+ 	mapMove = false,
 //读取图片位置
  	loadIndex = 0,
 //玩家
@@ -70,6 +88,8 @@ let loadingLayer,
 	imglist;//读取完的图片数组
 
 function main(){
+    // LGlobal.speed=1000/30;
+
     if(LGlobal.canTouch){
 		LGlobal.stageScale = LStageScaleMode.EXACT_FIT;  //指定整个应用程序在指定区域中可见，但不尝试保持原始高宽比。
 		//LGlobal.stageScale = LStageScaleMode.NO_BORDER;  //指定整个应用程序填满指定区域，不会发生扭曲，但有可能会进行一些裁切，同时保持应用程序的原始高宽比。
@@ -78,69 +98,75 @@ function main(){
 		LSystem.screen(LStage.FULL_SCREEN);
 	}
 	//准备读取图片
+	//BGM SFX
     // imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
     // imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});
+
+	//js
     imgData.push({type:"js",path:"./js/TalkList.js"});
 	imgData.push({type:"js",path:"./js/Talk.js"});
 	imgData.push({type:"js",path:"./js/Character.js"});
 	imgData.push({type:"js",path:"./js/script.js"});
 	imgData.push({type:"js",path:"./js/Items.js"});
 	imgData.push({type:"js",path:"./js/Hero.js"});
+    imgData.push({type:"js",path:"./js/Enemy.js"});
 	imgData.push({type:"js",path:"./js/Menu.js"});
 	imgData.push({type:"js",path:"./js/Team.js"});
 	imgData.push({type:"js",path:"./js/cover.js"});
 	imgData.push({type:"js",path:"./js/Effect.js"});
-	imgData.push({type:"js",path:"./js/fightmenu.js"});
+	imgData.push({type:"js",path:"./js/FightMenu.js"});
 	imgData.push({type:"js",path:"./js/Fight.js"});
 	imgData.push({type:"js",path:"./js/Fighter.js"});
-    // imgData.push({name:"start_png",path:"./image/start.bmp"});
 
+	//game other img
+    // imgData.push({name:"start_png",path:"./image/start.bmp"});
 	imgData.push({name:"button1",path:"./image/button1.png"});
 	imgData.push({name:"button1_down",path:"./image/button1_down.png"});
-	// imgData.push({name:"map1",path:"./image/tileset1.png"});
-	// imgData.push({name:"map2",path:"./image/tileset2.png"});
 	imgData.push({name:"carpet",path:"./image/carpet.png"});
-	// imgData.push({name:"room",path:"./image/room.png"});
+    imgData.push({name:"iconset",path:"./image/IconSet.png"});
+    imgData.push({name: "focus", path: "./image/focus.png" });
+    imgData.push({name: "empty", path: "./image/empty.png" });
+    imgData.push({name: "box", path: "./image/box.png" });
+    imgData.push({name: "right", path: "./image/right.png" });
+
 	//movePic
-    imgData.push({name:"npc24",path:"./image/movePic/npc24.png"});
-    imgData.push({name:"blackTank",path:"./image/movePic/blackTank.png"});
-    imgData.push({name:"npc1",path:"./image/movePic/npc1.png"});
-    imgData.push({name:"npc5",path:"./image/movePic/npc5.png"});
-    imgData.push({name:"npc17",path:"./image/movePic/npc17.png"});
-    imgData.push({name:"no17",path:"./image/movePic/no17.png"});
+    imgData.push({name:"猎人",path:"./image/MovePic/猎人.png"});
+    imgData.push({name:"机械师",path:"./image/MovePic/机械师.png"});
+    imgData.push({name:"雷娜",path:"./image/MovePic/雷娜.png"});
+
+    //FightPic
+    imgData.push({name:"巨炮",path:"./image/FightPic/巨炮.png"});
+    imgData.push({name:"沙漠之舟",path:"./image/FightPic/沙漠之舟.png"});
 
     //face
-    imgData.push({name:"face1",path:"./image/face/face1.png"});
-    imgData.push({name:"face2",path:"./image/face/face2.png"});
-    imgData.push({name:"face3",path:"./image/face/face3.png"});
-    imgData.push({name:"face4",path:"./image/face/face4.png"});
-    imgData.push({name:"face5",path:"./image/face/face5.png"});
-    imgData.push({name:"face6",path:"./image/face/face6.png"});
-    imgData.push({name:"face7",path:"./image/face/face7.png"});
-    imgData.push({name:"face8",path:"./image/face/face8.png"});
+    imgData.push({name:"face女猎人",path:"./image/face/女猎人.png"});
+    imgData.push({name:"face女猎人2",path:"./image/face/女猎人2.png"});
+    imgData.push({name:"face女机械师",path:"./image/face/女机械师.png"});
+    imgData.push({name:"face女战士",path:"./image/face/女战士.png"});
+    imgData.push({name:"face雷娜",path:"./image/face/雷娜.png"});
 
     //map
     imgData.push({name:"home1_0",path:"./assets/home1_0.png"});
     imgData.push({name:"home1_1",path:"./assets/home1_1.png"});
     imgData.push({name:"home2_0",path:"./assets/home2_0.png"});
     imgData.push({name:"home2_1",path:"./assets/home2_1.png"});
-    // imgData.push({name:"home1",type:"text",path:"./assets/home1.json"});
+    imgData.push({name:"town_0",path:"./assets/laduo_0.png"});
+    imgData.push({name:"town_1",path:"./assets/laduo_1.png"});
+    imgData.push({name:"hunter_center_0",path:"./assets/hunter_center_0.png"});
+    imgData.push({name:"hunter_center_1",path:"./assets/hunter_center_1.png"});
 
-
-    imgData.push({name:"iconset",path:"./image/IconSet.png"});
-	imgData.push({name: "focus", path: "./image/focus.png" });
+	//effect
 	imgData.push({name: "pSword", path: "./image/pSword.png" });
 	imgData.push({name: "pAttack", path: "./image/pAttack.png" });
 	imgData.push({name: "pStick", path: "./image/pStick.png" });
 	imgData.push({name: "pSwipe", path: "./image/pSwipe.png" });
 	imgData.push({name: "mAttack", path: "./image/mAttack.png" });
-	imgData.push({name: "heal1", path: "./image/heal1.png" });
 	imgData.push({name: "mUse", path: "./image/mUse.png" });
-	imgData.push({name: "empty", path: "./image/empty.png" });
-	imgData.push({name: "box", path: "./image/box.png" });
-	imgData.push({name: "right", path: "./image/right.png" });
-	
-	loadingLayer = new LoadingSample7();
+    imgData.push({name: "heal", path: "./image/heal.png" });
+    imgData.push({name: "220Animation", path: "./image/220Animation.png" });
+
+
+    loadingLayer = new LoadingSample7();
 	addChild(loadingLayer);	
 	LLoadManage.load(
 		imgData,
@@ -171,8 +197,7 @@ function gameInit(){
 	backLayer.addEventListener(LMouseEvent.MOUSE_DOWN,onDown);
 	backLayer.addEventListener(LMouseEvent.MOUSE_UP,onUp);
 	talkLayer.addEventListener(LMouseEvent.MOUSE_MOVE,onMove);
-	//加载失败提示页
-	// drawBack();
+
     // 第一关的直接设置
     RPG.drawCover();
 }
@@ -232,14 +257,9 @@ function setHero(x, y, frame){
 	charaLayer.x= -moveX* STEP;
 	charaLayer.y= -moveY* STEP;
 
-	let row, col;
-	if (mainTeam.getHero().getPerson().row) {
-		row= mainTeam.getHero().getPerson().row;
-	} else row= 4;
-	if (mainTeam.getHero().getPerson().col) {
-		col= mainTeam.getHero().getPerson().col;
-	} else col= 4;
-	heroImg = mainTeam.getHero().getPerson().chara;
+    let row = mainTeam.getHero().getPerson().row || 4;
+    let col = mainTeam.getHero().getPerson().col || 4;
+	heroImg = mainTeam.getHero().getPerson().img;
 	let imgData = new LBitmapData(imglist[heroImg]);
 	hero = new Character(true, 0, imgData, row, col, 1);
 	player = hero;
@@ -254,15 +274,6 @@ function setHero(x, y, frame){
     hero.anime.setAction(frame);
 }
 
-/**
- * tile map event data process
- */
-function mapEventProcess() {
-    let len = CurrentMapEvents.length;
-    for (let i = 0; i < len; i++) {
-        stage.events[CurrentMapEvents[i].id]
-    }
-}
 //添加人物
 function addChara(){
 	let charaList = stage.events,
@@ -275,7 +286,7 @@ function addChara(){
 		charaObj = charaList[i];
 		if(charaObj.chara === "player"){
 			//加入英雄
-			setHero(charaObj.x, charaObj.y);
+			// setHero(charaObj.x, charaObj.y);
 		} else {
 			//加入npc
 			if (charaObj.img){
@@ -288,7 +299,6 @@ function addChara(){
 				if (valid){
 					let row= charaObj.row || 4;
 					let col= charaObj.col || 4;
-					//console.log("charaObj", charaObj);
                     let imgData = new LBitmapData(imglist[charaObj.img]);
 					chara = new Character(false,charaObj.move,imgData, row, col, 3, charaObj.action);
 					chara.x = charaObj.x * STEP- (chara.pw- STEP)/ 2;

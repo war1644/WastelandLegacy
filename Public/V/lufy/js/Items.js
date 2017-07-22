@@ -53,7 +53,7 @@
 	};
 
 	// 获得浆果的通用程序
-	RPG.getBerry= function(id, num=1, talk) {
+	RPG.getBerry = function(id, num=1, talk) {
 		let str= "Berry"+ id;
 		if (!RPG.checkSwitch(str)) {
 			if (!RPG.checkSwitch("firstBerry")) {

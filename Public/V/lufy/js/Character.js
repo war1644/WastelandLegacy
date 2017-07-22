@@ -8,13 +8,15 @@
  * @param speed 人物速度
  * @param actEvent 执行事件
  **/
+let moveTime = 0;//NPC自动移动间隔
 function Character(isHero,move=3,data,row=4,col=4,speed=3, actEvent=false){
 	base(this,LSprite,[]);
 	let self = this;
 	self.isHero = isHero;
 	// 1=随机自动；2=指定路线；3=外部装饰
 	self.moveMode= move;
-	self.rpgEvent= actEvent;
+	self.rpgEvent = actEvent;
+    self.callback = false;
 	//设定人物动作速度
 	self.speed = speed;
 	self.speedIndex = 0;
@@ -37,40 +39,37 @@ function Character(isHero,move=3,data,row=4,col=4,speed=3, actEvent=false){
  **/
 Character.prototype.onframe = function (){
 	// 仅在地图状态下动作
-	if (!RPG.checkState(RPG.UNDER_MAP)){
-		return;
-	}
+	if (!RPG.checkState(RPG.UNDER_MAP)) return;
 	let self = this;
-	if (!self.visible) {
-		return;
-	}
+	if (!self.visible) return;
 	//人物动作速度控制
-	if(self.speedIndex++ < self.speed)return;
+	if(self.speedIndex++ < self.speed) return;
 	self.speedIndex = 0;
 	// 不可见的对象不移动
 	// NPC自发移动
 	if (self.moveMode === 1) {
 		// 随机移动型
-		let a= Math.floor(Math.random()* 14);
+		let a = (Math.random()* 14)>>0;
 		if (a<4) {
 			self.changeDir(a);
 		}
-		//console.log(a);
-		//self.move= true;
 	}
 	//当人物可移动，则开始移动
 	if(self.move){
 		if (self.isHero){
 			self.onmove();
 		}else{
-			self.easyMove();
+			//npc达到间隔再移动
+            if (self.moveMode === 2) {
+                self.easyMove();
+			}else {
+            	moveTime++;
+                if (moveTime>30) self.easyMove();
+            }
 		}
-		if (stage.hasBig){
-			RPG.resetChildIndex(charaLayer);
-		}
+		// if (stage.hasBig) resetChildIndex(charaLayer);
 	}
 	//人物动画播放
-	//console.log('1');
 	self.anime.onframe();
 };
 
@@ -142,7 +141,9 @@ Character.prototype.easyMove = function (){
 			if (self.stepArray.length> 0){
 				self.changeDir(self.stepArray[0]);
 			} else {
+				//移动完成后触发回调
 				self.move= false;
+				if (self.callback) self.callback();
 			}
 		} else if  (self.moveMode === 1) {
 			// 对于随机移动的类型，进行预占位
@@ -162,7 +163,7 @@ Character.prototype.onmove = function (){
 	//根据移动方向，开始移动
 	switch (self.direction){
 		case UP:
-			if(mapmove){
+			if(mapMove){
 				mapLayer.y += ml;
 				upLayer.y += ml;
 				charaLayer.y += ml;
@@ -170,7 +171,7 @@ Character.prototype.onmove = function (){
 			self.y -= ml;
 			break;
 		case LEFT:
-			if(mapmove){
+			if(mapMove){
 				mapLayer.x += ml;
 				upLayer.x += ml;
 				charaLayer.x += ml;
@@ -178,7 +179,7 @@ Character.prototype.onmove = function (){
 			self.x -= ml;
 			break;
 		case RIGHT:
-			if(mapmove){
+			if(mapMove){
 				mapLayer.x -= ml;
 				upLayer.x -= ml;
 				charaLayer.x -= ml;
@@ -186,7 +187,7 @@ Character.prototype.onmove = function (){
 			self.x += ml;
 			break;
 		case DOWN:
-			if(mapmove){
+			if(mapMove){
 				mapLayer.y -= ml;
 				upLayer.y -= ml;
 				charaLayer.y -= ml;
@@ -374,7 +375,7 @@ Character.prototype.changeDir = function (dir){
 		//如果可以移动，则开始移动
 		self.move = true;
 		//self.moveIndex = 0;
-	}else if(dir != self.direction){
+	}else if(dir !== self.direction){
 		self.direction_next = dir;
 	}
 };
@@ -424,7 +425,7 @@ Character.prototype.changeDirAlt = function (dirs){
 		//self.moveIndex = 0;
 	}else {
 		dir = dirs[0];
-		if(dir != self.direction){
+		if(dir !== self.direction){
 			self.direction_next = dir;
 		}
 	}
@@ -441,29 +442,29 @@ Character.prototype.checkMap = function (dir){
 	let w2= Math.ceil(WIDTH/2);
 	let h1= HEIGHT>>1;
 	let h2= Math.ceil(HEIGHT/2);
-	mapmove = false;
+	mapMove = false;
     //console.log(self.y, charaLayer.y, HEIGHT / 2);
     switch (dir){
 		case UP:
 			if(self.y + charaLayer.y> h1) break;
 			if(mapLayer.y >= 0) break;
-			mapmove = true;
+			mapMove = true;
 			break;
 		case LEFT:
 			if(self.x + charaLayer.x  > w1) break;
 			if(mapLayer.x >= 0) break;
-			mapmove = true;
+			mapMove = true;
 			break;
 		case RIGHT:
 			if(self.x + charaLayer.x  < w2) break;
 			if(WIDTH - mapLayer.x >= CurrentMap.width*STEP) break;
-			mapmove = true;
+			mapMove = true;
 			break;
 		case DOWN:
 			if(self.y+ charaLayer.y < h2) break;
 			if(HEIGHT - mapLayer.y >= CurrentMap.height* STEP) break;
 			//drawMap(CurrentMap);
-			mapmove = true;
+			mapMove = true;
 			break;
 	}
 };

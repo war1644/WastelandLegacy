@@ -7,27 +7,21 @@
 
 // 新游戏初始化信息
 RPG.newGame = function () {
-	//初始化玩家队伍
+    //初始化玩家队伍
 	mainTeam = RPG.beget(PlayerTeam);
-    //向玩家队伍增加人物（人物索引，人物等级)
-	mainTeam.addHero(0, 99);
-    mainTeam.addHero(1, 99);
-
-    // mainTeam.getHero().Hp= 9999;
-    // mainTeam.getHero().Mp= 5;
-    // mainTeam.getHero().Exp= 15;
     console.log(mainTeam);
+    //向玩家队伍增加人物（人物索引，人物等级)
+	mainTeam.addHero(0, 50,'路漫漫');
+    mainTeam.addHero(1, 50,'废土04');
 
 	RPG.initSwitch();
-	//载入场景
-    stage = script.stage05;
-	//初始化敌人
+    //初始化敌人
     RPG.initEnemyTeam();
+	//载入场景
+	RPG.jumpStage(script.stage02,3,14,0);
 
    	//进入地图控制状态
 	RPG.setState(RPG.MAP_CONTROL);
-	//初始化游戏脚本
-   	initScript(3,14,0);
 };
 
 // 初始化敌人战斗队的数据
@@ -36,47 +30,40 @@ RPG.initEnemyTeam = function(){
 	// A队=0
 	team1= RPG.beget(PlayerTeam);
 	team1.clear();
-	team1.addHero(2, 2);
-	team1.addHero(2, 2);
+	team1.addEnemy(0, 10);
+	team1.addEnemy(1, 10);
 	team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
+
 	// B队=1
 	team1 = RPG.beget(PlayerTeam);
 	team1.clear();
-	team1.addHero(3, 1);
-	team1.addHero(3, 1);
-	team1.addItem(1, 2);
+    team1.addEnemy(0, 20);
+    team1.addEnemy(1, 20);
+    team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
+
 	// C队=2
 	team1= RPG.beget(PlayerTeam);
 	team1.clear();
-	team1.addHero(2, 5);
-	team1.addHero(2, 3);
-	team1.addHero(2, 3);
-	team1.addHero(2, 3);
+    team1.addEnemy(0, 50);
 	team1.addItem(1, 2);
-	//team1.addItem(2, 1);
 	RPG.enemyTeam.push(team1);
+
 	// D队=3
 	team1= RPG.beget(PlayerTeam);
 	team1.clear();
-	team1.addHero(3, 5);
-	team1.addHero(3, 3);
-	team1.addHero(3, 3);
-	team1.addHero(3, 3);
-	team1.addItem(1, 2);
+    team1.addEnemy(1, 50);
 	RPG.enemyTeam.push(team1);
+
 	// E队=4
 	team1 = RPG.beget(PlayerTeam);
 	team1.clear();
-	team1.addHero(4, 10);
-	team1.addHero(2, 5);
-	team1.addHero(3, 5);
-	RPG.enemyTeam.push(team1);
-	// F队=5
-	team1= RPG.beget(PlayerTeam);
-	team1.clear();
-	team1.addHero(1, 6);
+    team1.addEnemy(0, 20);
+    team1.addEnemy(1, 20);
+    team1.addEnemy(0, 20);
+    team1.addEnemy(1, 20);
+    team1.addItem(1, 2);
 	RPG.enemyTeam.push(team1);
 };
 
@@ -99,7 +86,6 @@ RPG.saveGame = function(aSlot){
 		if (window.localStorage){
 			window.localStorage.setItem("WLSaveList", JSON.stringify(RPG.saveList));
 			let tempData={x:player.px, y:player.py, items:mainTeam.itemList, heros:mainTeam.heroList, gate:stage.id, swt:RPG.SWITCH};
-			//alert(Serialize(tempData)); 
 			window.localStorage.setItem("WLSaveSlot"+ aSlot, RPG.Serialize(tempData));
 		}
 	}
@@ -109,12 +95,9 @@ RPG.loadGame= function(aSlot){
 	if (aSlot>=0 && aSlot< RPG.MaxSaveSlot){
 		if (window.localStorage){
 			let tempStr= window.localStorage.getItem("WLSaveSlot"+ aSlot);
-			//console.log(tempStr);
 			if (tempStr) {
 				let tempData= eval("("+ tempStr+ ")");
-				//console.log(tempData);
 				mainTeam= RPG.beget(PlayerTeam);
-				//mainTeam.init();
 				for(let i= 0; i< tempData.items.length; i++){
 					mainTeam.addItem(tempData.items[i].index, tempData.items[i].num);
 				}
@@ -125,12 +108,12 @@ RPG.loadGame= function(aSlot){
 				//RPG.SWITCH=tempData.swt.slice(0);
 				RPG.initSwitch();
 				RPG.extend(RPG.SWITCH, tempData.swt);
-				stage= script[tempData.gate];
+				RPG.jumpStage(script[tempData.gate],Number(tempData.x), Number(tempData.y));
 				RPG.initEnemyTeam();
 			   	// 进入地图控制状态
 				RPG.setState(RPG.MAP_CONTROL);
 				//初始化
-			   	initScript(Number(tempData.x), Number(tempData.y));
+			   	// initScript();
 
 			}
 		}
@@ -171,12 +154,9 @@ RPG.drawCover= function() {
 	RPG.setState(RPG.IN_COVER);
 	let sLayer = effectLayer;
 	sLayer.removeAllChild();
-    let title = new LTextField();
-    title.text = '废土战记';
-    title.color = '#fff';
-    title.size = '35';
+
+    let title = UI.text('废土战记',0,50,'35');
     title.x = (WIDTH-title.width)>>1;
-    title.y = 50;
     sLayer.addChild(title);
 
 	// 新的开始

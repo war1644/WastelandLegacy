@@ -175,20 +175,21 @@ RPG.drawFocus= function(aLayer, ax, ay, aw, ah) {
 	return bitmap;
 };
 
-RPG.moveNpc= function(npc, stepArr){
-	npc.moveMode= 2;
-	npc.stepArray= stepArr;
-	if (npc.stepArray.length> 0){
-		npc.changeDir(npc.stepArray[0]);
-	}
-};
 RPG.hideChar= function(aChar){
 	charaLayer.removeChild(aChar);
 	//aChar.die();
 };
-RPG.waitCharPos= function (npc, x, y, callback){
+let moveNpc = function(npc, stepArr ,callback){
+    npc.moveMode = 2;
+    npc.stepArray = stepArr;
+    if (npc.stepArray.length> 0){
+        npc.callback = callback;
+        npc.changeDir(npc.stepArray[0]);
+    }
+};
+let waitCharPos = function (npc, x, y, callback){
     if ((npc.x/STEP)<<0 !== x || (npc.y/STEP)<<0 !== y) {
-        setTimeout(function(){RPG.waitCharPos(npc, x, y, callback);}, 500);
+        setTimeout(function(){waitCharPos(npc, x, y, callback);}, 500);
 	} else {
 		if (callback) callback();
 	}
@@ -235,10 +236,10 @@ RPG.Serialize= function (obj){
              break;         
      }     
  };
-RPG.jumpStage = function(newStage, x, y, face){
+RPG.jumpStage = function(newStage, x, y, dir=0){
     stage = newStage;
 	//开始跳转
-	initScript(x, y, face);
+	initScript(x, y, dir);
 };
 // 获得移动方向，返回为一个数组，可以二选一
 RPG.getMoveDir= function(ax, ay) {
@@ -269,13 +270,13 @@ RPG.getMoveDir= function(ax, ay) {
 RPG.dealNormal= function(x, y){
     // 根据点击位置，判断移动方向
     if (player) {
-    	//获取移动方向
+        console.log('player',player);
+        //获取移动方向
     	let ret = RPG.getMoveDir(x, y);
         if (ret.length === 0) {
             RPG.openMenu();
     	} else {
 	        player.changeDirAlt(ret);
-            // RPG.simpleFight(1,);
         }
 	}
 };
@@ -368,7 +369,7 @@ RPG.newButton= function(aw, ah, ax, ay, aText, callback) {
 		RPG.currentButton= button02;
 	});
 	button02.addEventListener(LMouseEvent.MOUSE_UP, function () {
-		if (RPG.currentButton == button02) {
+		if (RPG.currentButton === button02) {
 			if (callback) callback();
 		}
 	});
@@ -456,132 +457,4 @@ RPG.newIconButton= function(aPicUp, aPicDown, aPicDis, ax, ay, aRate, aText, aFu
 	return btn;
 };
 
-// rangeRand= function(Min,Max){
-// 	let Range = Max - Min;
-// 	let Rand = Math.random();
-// 	return(Min + Math.floor(Rand * Range));
-// };
 
-// 重排动态角色，以便正确遮盖
-RPG.resetChildIndex= function(aLayer){
-	// 排序以脚为准
-	let y1, y2, h1, h2;
-	for (let i=0; i< aLayer.childList.length; i++){
-		h1= charaLayer.childList[i].ph;
-		if (!h1) {
-			h1= charaLayer.childList[i].height+ 1;
-		}
-		y1= charaLayer.childList[i].y+ h1;
-		for (let j= i+ 1; j< aLayer.childList.length; j++){
-			h2= charaLayer.childList[j].ph;
-			if (!h2) {
-				h2= charaLayer.childList[j].height+ STEP;
-			}
-			y2= charaLayer.childList[j].y+ h2;
-			if (y1> y2) {
-				charaLayer.setChildIndex(charaLayer.childList[j], i);
-				y1= y2;
-			}
-		}
-	}
-};
-
-function drawMap(aMap){
-    let i,j,k, index,indexX,indexY, a, b, xx, yy, ww, hh;
-    // 地图的起始位置
-    let mapX = mapLayer.x / STEP;
-    let mapY = mapLayer.y / STEP;
-    let bitmapdata,bitmap;
-    let isUp= false;
-    let MapName;
-    let imgNum;
-    mapLayer.removeAllChild();
-    upLayer.removeAllChild();
-    //图层数
-    let ml= aMap.layers.length;
-    // 逐层画地图
-    //瓦片集x轴瓦片数
-    a= aMap.tilesets[0].imagewidth/ aMap.tilesets[0].tilewidth;
-    //瓦片集y轴瓦片数
-    b= aMap.tilesets[0].imageheight/ aMap.tilesets[0].tilewidth;
-    //地图x轴瓦片数
-    ww= aMap.width;
-    //地图y轴瓦片数
-    hh= aMap.height;
-    //console.log("drawMap");
-    //瓦片集name
-    MapName= aMap.tilesets[0].name;
-    //瓦片集数
-    imgNum= aMap.tilesets.length;
-    //遍历图层
-    for (i=0; i<ml; i++)
-    {
-        if(aMap.layers[i].name === "move"){
-            // 行动控制层不画
-            CurrentMapMove= aMap.layers[i];
-            continue;
-        }
-        if(aMap.layers[i].name === "up"){
-            // 行动控制层不画
-            isUp= true;
-        } else {
-            isUp= false;
-        }
-
-        //遍历该图层瓦片编号
-        for (j=0; j< aMap.layers[i].data.length; j++)
-        {
-            //当前瓦片编号
-            index= aMap.layers[i].data[j];
-            //为0则没有瓦片
-            if (index===0) continue;
-            //一个瓦片集，索引为0
-            if (imgNum===1) {
-                index=index- 1;
-            } else {
-                //遍历瓦片集
-                for (k= imgNum- 1; k>= 0; k--){
-                    //瓦片号必须大于起始编号
-                    if (index>= aMap.tilesets[k].firstgid){
-                        //索引从0开始
-                        index= index- aMap.tilesets[k].firstgid;
-                        //瓦片集name
-                        MapName= aMap.tilesets[k].name;
-                        //瓦片集x轴瓦片数
-                        a= aMap.tilesets[k].imagewidth/ aMap.tilesets[k].tilewidth;
-                        //瓦片集y轴瓦片数
-                        b= aMap.tilesets[k].imageheight/ aMap.tilesets[k].tilewidth;
-                        break;
-                    }
-                }
-            }
-            //瓦片换算为在地图的x,y坐标
-            xx= j % ww;
-            yy= (j / hh)<<0;
-            //瓦片换算为在瓦片集的x,y坐标
-            indexY = (index /a)<<0;
-            indexX = index- indexY* a;
-            //console.log(index,xx, yy,indexX, indexY);
-            //小图片的横坐标
-            //if (xx* STEP+STEP+ mapLayer.x< 0 ||	xx* STEP+ mapLayer.x> WIDTH || yy* STEP+STEP+ mapLayer.y< 0 || yy*STEP+ mapLayer.y> HEIGHT)
-
-            //得到瓦片
-            bitmapdata = new LBitmapData(imglist[MapName],indexX*STEP,indexY*STEP,STEP,STEP);
-            bitmap = new LBitmap(bitmapdata);
-            //设置瓦片的显示位置
-            bitmap.x = xx*STEP;// - mapLayer.x;
-            bitmap.y = yy*STEP;// - mapLayer.y;
-            //将瓦片显示到地图层
-            if (isUp){
-                if (stage.hasBig){
-                    charaLayer.addChild(bitmap);
-                } else {
-                    upLayer.addChild(bitmap);
-                }
-            } else {
-                mapLayer.addChild(bitmap);
-            }
-
-        }
-    }
-}

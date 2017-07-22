@@ -12,13 +12,7 @@
  * v2017/07/20 初版
  */
 
-// 战斗状态：0=暂停中；1=自动进行中
-RPG.fightState= 0;
-// 战斗队，敌方，玩家方
-RPG.eTeam;
-RPG.pTeam;
-// 效果集合
-RPG.effectList=[];
+
 //  战斗过程控制
 RPG.stopAuto= false;
 RPG.afterStop= null;   /// func
@@ -28,14 +22,7 @@ RPG.finalButtonSetFunc= null;
 // 最大HP，用于对比显示，给一个最小的参考值，一场战斗一旦确定则不再改变
 RPG.maxHpAll= 1000;
 RPG.maxMpAll= 100;
-// 战斗胜负标记
-RPG.WIN= 1;
-RPG.LOST= 2;
-RPG.FIGHTING= 3;
-RPG.gameState;
-// 战斗结果控制
-RPG.menuWidth = WIDTH - gap * 2;
-RPG.menuHeight = HEIGHT - gap * 2;
+
 let gameMenus = ['背包','乘降','强度','存档','任务','返回'];
 let fightMenus = ['攻击','阵形','道具','防御','逃跑','总攻'];
 
@@ -44,8 +31,21 @@ let Fight = {
     trophy: false,
     // 当前正在动作的对象
     currentFighter:{},
+    // 当前战斗状态
+    state:-1,
+    // 战斗胜负标记
+    WIN:1,//胜利
+    LOST:2,//失败
+    FIGHTING:3,//战斗中
+    // 战斗队伍：敌方/玩家方
+    eTeam:[],
+    pTeam:[],
+    // 战斗状态：0=暂停中；1=自动进行中
+    fightState:0,
+    //战斗结束回调函数
+    endCallback:null,
 
-/**
+    /**
      * 普通战斗
      */
     simpleFight: (teamId, npc = {}) => {
@@ -53,6 +53,7 @@ let Fight = {
         let playerHero = RPG.beget(HeroPlayer);
         RPG.extend(enemyHero, RPG.enemyTeam[teamId].getHero(0));
         RPG.extend(playerHero, mainTeam.getHero(0));
+
         // 敌方满血
         enemyHero.fullHeal();
         // 被攻击预算
@@ -73,17 +74,18 @@ let Fight = {
                         Talk.closeTalk();
                         RPG.pushState(RPG.FIGHT_RESULT);
                         Fight.startFight(RPG.enemyTeam[teamId], mainTeam, true, true);
-                        RPG.waitMenu(function () {
-                            if (RPG.gameState === RPG.WIN) {
+                        Menu.waitMenu(()=>{
+                            if (Fight.state === Fight.WIN) {
                                 // npc.visible= false;
                                 RPG.popState();
-                            } else if (RPG.gameState === RPG.LOST) {
+                            } else if (Fight.state === Fight.LOST) {
                                 RPG.drawGameOver();
                             } else {
                                 // 不胜不败
                                 // npc.visible= false;
                                 RPG.popState();
                             }
+
                         });
                     }
                     },
@@ -98,11 +100,11 @@ let Fight = {
         } else {
             RPG.pushState(RPG.FIGHT_RESULT);
             Fight.startFight(RPG.enemyTeam[teamId], mainTeam);
-            RPG.waitMenu(function () {
-                if (RPG.gameState === RPG.WIN) {
+            Menu.waitMenu(()=>{
+                if (Fight.state === Fight.WIN) {
                     // npc.visible= false;
                     RPG.popState();
-                } else if (RPG.gameState === RPG.LOST) {
+                } else if (Fight.state === Fight.LOST) {
                     RPG.drawGameOver();
                 } else {
                     // 不胜不败
@@ -116,10 +118,10 @@ let Fight = {
      * 战斗初始化
      */
     startFight: (enemyTeam, playerTeam) => {
-        //	设置控制状态
+        //设置控制状态
         RPG.pushState(RPG.IN_FIGHTING);
         // 设置战斗状态
-        RPG.gameState = RPG.FIGHTING;
+        Fight.state = Fight.FIGHTING;
         //将对话层清空
         talkLayer.removeAllChild();
         // 进入即不可再开菜单了
@@ -127,11 +129,10 @@ let Fight = {
         //当对话开始，且按照顺序进行对话
         isKeyDown = false;
 
-
         //对话背景
         talkLayer.x = 10;
         talkLayer.y = 10;
-        UI.drawBorderWindow(talkLayer, 0, 0, RPG.menuWidth, RPG.menuHeight);
+        UI.drawBorderWindow(talkLayer, 0, 0, menuWidth, menuHeight);
         // 子菜单层
         if (!RPG.descLayer) RPG.descLayer = new LSprite();
         RPG.descLayer.removeAllChild();
@@ -143,12 +144,15 @@ let Fight = {
         // 敌人队全满参战
         enemyTeam.fullHeal();
         RPG.quickFight = false;
-        RPG.fightState = 0;
-        RPG.eTeam = enemyTeam;
-        RPG.pTeam = playerTeam;
+        Fight.fightState = 0;
+        Fight.eTeam = enemyTeam;
+        Fight.pTeam = playerTeam;
+        console.log('eTeam',Fight.eTeam);
+        console.log('pTeam',Fight.pTeam);
+
         showFightInfo();
-        let text = UI.text('遭遇战，敌我力量悬殊，敌方士气大减',gap,HEIGHT-150+gap,'10');
-        text.setWordWrap(true, 20);
+        let text = UI.text('遭遇战，敌我力量悬殊，敌方士气大减',gap,HEIGHT-100+gap,'10');
+        text.setWordWrap(true);
         RPG.fightMenuLayer.addChildAt(text,1);
         Fight.drawFighters();
     },
@@ -158,7 +162,7 @@ let Fight = {
      */
     drawFighters: () => {
         // 战斗窗口基本站位
-        let hero1, chara, bitmapData, col, x, y, team, hpText, dir;
+        let hero1, chara, bitmapData, col,row, x, y, team, hpText, dir;
         RPG.descLayer.removeAllChild();
         let text = new LTextField();
         text.size = '10';
@@ -167,15 +171,16 @@ let Fight = {
         text.width = 40;
         //绘制敌我两队到战场
         for (let j = 0; j < 2; j++) {
-            team = j ? RPG.pTeam.heroList : RPG.eTeam.heroList;
+            team = j ? Fight.pTeam.heroList : Fight.eTeam.heroList;
             dir = j ? RPG.LEFT : RPG.RIGHT;
             y = gap * 2;
-            x = j ? RPG.menuWidth - STEP - gap*2 : gap;
+            x = j ? menuWidth - STEP - gap*2 : gap;
             for (let i = 0; i < team.length; i++) {
                 hero1 = team[i];
-                bitmapData = new LBitmapData(imglist[HeroList[hero1.index].chara]);
+                bitmapData = new LBitmapData(imglist[hero1.img]);
                 col = hero1.getPerson().col || 4;
-                chara = new Fighter(bitmapData, 4, col);
+                row = hero1.getPerson().row || 4;
+                chara = new Fighter(bitmapData, row, col);
                 if (!hero1.alive) {
                     y = y + chara.getHeight() + 30;
                     continue;
@@ -209,43 +214,60 @@ let Fight = {
         let attackButton = null;
         let exitButton = null;
         let x0, y0;
-        let useWidth = RPG.menuWidth - gap * 2;
+        let useWidth = menuWidth - gap * 2;
         x0 = useWidth / 8 - RPG.iconStep * 1.5 / 2 + gap;
-        y0 = HEIGHT - 100;
+        y0 = HEIGHT - 120;
+        const list = [
+            {label:"攻击",list:[
+                {label:"主炮",click:()=>{trace("File");}},
+                {label:"副炮",click:()=>{trace("File");}},
+                {label:"SE",click:()=>{trace("Open File")}},
+            ]},
+            {label:"防御",click:()=>{trace("Test1");}},
+            {label:"逃跑",click:()=>{trace("Test1");}},
+            {label:"乘降",click:()=>{trace("Test1");}},
+        ];
 
-        attackButton = UI.fightButton(x0, y0, "攻击", function (e) {
-            RPG.stopAuto = true;
-            exitButton.setState(LButton.STATE_DISABLE);
-            RPG.fightState = 1;
-            Fight.autoFight(0);
-            // 首先等待自动战斗结束后，才能开启其他按钮
-            attackButton.setState(LButton.STATE_DISABLE);
-            RPG.afterStop = function () {
-                attackButton.setState(LButton.STATE_ENABLE);
-                exitButton.setState(LButton.STATE_ENABLE);
-                RPG.fightState = 0;
-            }
-        });
-        talkLayer.addChild(attackButton);
-        x0 = x0 + useWidth / 4;
-        exitButton = UI.fightButton(x0, y0, "逃跑", function (e) {
-            // 直接获胜
-            RPG.closeMenu();
-        });
-        talkLayer.addChild(exitButton);
+        let menu = new LMenubar(list,{textSize:10,textColor:"#000",lineColor:"#000",backgroundColor:"#eee"});
+        menu.x = x0;
+        menu.y = y0;
+        talkLayer.addChild(menu);
+        // attackButton = UI.fightButton(x0, y0, "攻击", function (e) {
+        //     RPG.stopAuto = true;
+        //     exitButton.setState(LButton.STATE_DISABLE);
+        //     Fight.fightState = 1;
+        //     Fight.autoFight(0);
+        //     // 首先等待自动战斗结束后，才能开启其他按钮
+        //     attackButton.setState(LButton.STATE_DISABLE);
+        //     RPG.afterStop = function () {
+        //         attackButton.setState(LButton.STATE_ENABLE);
+        //         exitButton.setState(LButton.STATE_ENABLE);
+        //         Fight.fightState = 0;
+        //     }
+        // });
+        // talkLayer.addChild(attackButton);
+        // x0 = x0 + useWidth / 4;
+        // exitButton = UI.fightButton(x0, y0, "逃跑", function (e) {
+        //     // 直接获胜
+        //     Menu.closeMenu();
+        // });
+        Fight.endCallback = ()=>{
+            exitButton.setState(LButton.STATE_ENABLE);
+        };
+        // talkLayer.addChild(exitButton);
         /*for (let i = 0; i < fightMenus.length; i++) {
             let currText = fightMenus[i];
             attackButton = UI.fightButton(x0, y0, currText, function (e) {
                 RPG.stopAuto = true;
                 exitButton.setState(LButton.STATE_DISABLE);
-                RPG.fightState = 1;
+                Fight.fightState = 1;
                 Fight.autoFight(0);
                 // 首先等待自动战斗结束后，才能开启其他按钮
                 attackButton.setState(LButton.STATE_DISABLE);
                 RPG.afterStop = function () {
                     attackButton.setState(LButton.STATE_ENABLE);
                     exitButton.setState(LButton.STATE_ENABLE);
-                    RPG.fightState = 0;
+                    Fight.fightState = 0;
                 }
             });
 
@@ -258,8 +280,8 @@ let Fight = {
         // 简单的顺序，我方依次先动，敌方依次再动
         let hero1, hero2;
         let a, b;
-        let eff;
-        if (heroId >= (RPG.pTeam.heroList.length + RPG.eTeam.heroList.length)) {
+        let effect;
+        if (heroId >= (Fight.pTeam.heroList.length + Fight.eTeam.heroList.length)) {
             if (RPG.stopAuto) {
                 if (RPG.afterStop) RPG.afterStop();
                 return;
@@ -268,48 +290,49 @@ let Fight = {
             }
         }
         Fight.currentFighter = heroId;
-        b = rangeRand(1, RPG.eTeam.heroList.length);
-        if (heroId < RPG.pTeam.heroList.length) {
-            hero1 = RPG.pTeam.heroList[heroId];
+        b = rangeRand(1, Fight.eTeam.heroList.length);
+        if (heroId < Fight.pTeam.heroList.length) {
+            hero1 = Fight.pTeam.heroList[heroId];
             if (!hero1.alive) {
                 Fight.autoFight(heroId + 1);
                 return;
             }
             switch (b) {
                 case 1:
-                    a = rangeRand(0, RPG.eTeam.heroList.length);
+                    a = rangeRand(0, Fight.eTeam.heroList.length);
                     a = 10;
-                    hero2 = RPG.eTeam.getAliveHero(a);
+                    hero2 = Fight.eTeam.getAliveHero(a);
                     trace(hero1.getName() + '攻击' + hero2.getName());
-                    eff = "pSword";
+                    effect = "pSword";
                     // 计算攻击效果
                     let ret = Fight.physicalAttack(hero1, hero2);
                     hero2.beHit(ret);
                     trace(hero2.getName() + '损伤' + ret);
                     break;
                 case 2:
-                    a = rangeRand(0, RPG.eTeam.heroList.length);
-                    hero2 = RPG.eTeam.getAliveHero(a);
-                    eff = "mAttack";
+                    a = rangeRand(0, Fight.eTeam.heroList.length);
+                    hero2 = Fight.eTeam.getAliveHero(a);
+                    effect = "mAttack";
                     break;
                 case 3:
-                    a = rangeRand(0, RPG.pTeam.heroList.length);
-                    hero2 = RPG.eTeam.getAliveHero(a);
-                    eff = "heal1";
+                    a = rangeRand(0, Fight.pTeam.heroList.length);
+                    hero2 = Fight.eTeam.getAliveHero(a);
+                    //回血动画
+                    effect = "heal";
                     break;
             }
-        } else if (heroId < RPG.pTeam.heroList.length + RPG.eTeam.heroList.length) {
-            hero1 = RPG.eTeam.heroList[heroId - RPG.pTeam.heroList.length];
+        } else if (heroId < Fight.pTeam.heroList.length + Fight.eTeam.heroList.length) {
+            hero1 = Fight.eTeam.heroList[heroId - Fight.pTeam.heroList.length];
             if (!hero1.alive) {
                 Fight.autoFight(heroId + 1);
                 return;
             }
             switch (b) {
                 case 1:
-                    a = rangeRand(0, RPG.pTeam.heroList.length);
-                    hero2 = RPG.pTeam.getAliveHero(a);
+                    a = rangeRand(0, Fight.pTeam.heroList.length);
+                    hero2 = Fight.pTeam.getAliveHero(a);
                     trace(hero1.getName() + '攻击' + hero2.getName());
-                    eff = "pAttack";
+                    effect = "pAttack";
                     if (hero2) {
                         let ret = Fight.physicalAttack(hero1, hero2);
                         hero2.beHit(ret);
@@ -317,37 +340,36 @@ let Fight = {
                     }
                     break;
                 case 2:
-                    a = rangeRand(0, RPG.pTeam.heroList.length);
-                    hero2 = RPG.pTeam.getAliveHero(a);
-                    eff = "mAttack";
+                    a = rangeRand(0, Fight.pTeam.heroList.length);
+                    hero2 = Fight.pTeam.getAliveHero(a);
+                    effect = "mAttack";
                     break;
                 case 3:
-                    a = rangeRand(0, RPG.pTeam.heroList.length);
-                    hero2 = RPG.pTeam.getAliveHero(a);
-                    eff = "heal1";
+                    a = rangeRand(0, Fight.pTeam.heroList.length);
+                    hero2 = Fight.pTeam.getAliveHero(a);
+                    effect = "heal";
                     break;
             }
         }
         if (hero1) {
             if (RPG.quickFight) {
                 console.log("Do quick attack", heroId);
-                Fight.doQuickFight(hero1, hero2, eff, function () {
+                Fight.doQuickFight(hero1, hero2, effect, function () {
                     Fight.autoFight(heroId + 1);
                 });
             } else {
                 console.log("Do normal attack", heroId);
                 // 获得正确的动画显示效果
-                let item1 = hero1.getWeapon();
-                if (item1) {
-                    eff= item1.atkEff;
-                } else {
-                    eff = hero1.getPerson().atkEff;
+                if(hero1.getWeapon){
+                    let item1 = hero1.getWeapon();
+                    if (item1) effect = item1.atkEff;
                 }
-                if (!eff) {
+
+                if (!effect) {
                     // 最后的默认值
-                    eff = "pSword";
+                    effect = ["220Animation",4,5];
                 }
-                Fight.doNormalFight(hero1, hero2, eff, function () {
+                Fight.doNormalFight(hero1, hero2, effect, function () {
                     Fight.autoFight(heroId + 1);
                 });
             }
@@ -360,13 +382,22 @@ let Fight = {
     doNormalFight: (hero, toHero, actEffect, afterFunc) => {
         // 我方物理攻击
         let x0, x1, effect;
-        effect = RPG.loadEffect(actEffect);
-        if (hero.fighter.x > RPG.menuWidth / 2) {
+        // let effectName = actEffect[0];
+        // let effectRow = actEffect[1];
+        // let effectCol = actEffect[2];
+        console.log('actEffect',actEffect);
+        if ( (typeof actEffect) === 'object'){
+            effect = RPG.loadEffect(actEffect[0],actEffect[1],actEffect[2],1);
+        } else {
+            effect = RPG.loadEffect(actEffect);
+        }
+
+        if (hero.fighter.x > menuWidth / 2) {
             x0 = hero.fighter.x;
-            x1 = RPG.menuWidth / 2 + gap;
+            x1 = menuWidth / 2 + gap;
         } else {
             x0 = hero.fighter.x;
-            x1 = RPG.menuWidth / 2 - gap - RPG.STEP;
+            x1 = menuWidth / 2 - gap - RPG.STEP;
         }
         // 人物前进
         LTweenLite.to(hero.fighter, 0.3,
@@ -384,8 +415,7 @@ let Fight = {
                     RPG.descLayer.addChild(effect);
                     effect.play(1, function () {
                         // 刷新数据
-                        //console.log("b");
-                        //RPG.drawData();
+                        //Fight.drawData();
                         if (toHero && !toHero.alive) {
                             toHero.fighter.visible = false;
                         }
@@ -399,6 +429,7 @@ let Fight = {
                                     if (Fight.checkFight()) {
                                         //显示战斗结果
                                         Fight.showResult();
+                                        Fight.endCallback();
                                         return;
                                     }
                                     // 下一个
@@ -420,25 +451,25 @@ let Fight = {
         let hero1;
         // 首先检查敌人队伍人数
         a = 0;
-        for (let i = 0; i < RPG.eTeam.heroList.length; i++) {
-            hero1 = RPG.eTeam.heroList[i];
+        for (let i = 0; i < Fight.eTeam.heroList.length; i++) {
+            hero1 = Fight.eTeam.heroList[i];
             if (hero1.alive) {
                 a++;
             }
         }
         if (a === 0) {
-            RPG.gameState = RPG.WIN;
+            Fight.state = Fight.WIN;
             return true;
         }
         a = 0;
-        for (let i = 0; i < RPG.pTeam.heroList.length; i++) {
-            hero1 = RPG.pTeam.heroList[i];
+        for (let i = 0; i < Fight.pTeam.heroList.length; i++) {
+            hero1 = Fight.pTeam.heroList[i];
             if (hero1.alive) {
                 a++;
             }
         }
         if (a === 0) {
-            RPG.gameState = RPG.LOST;
+            Fight.state = Fight.LOST;
             return true;
         }
         return false;
@@ -447,13 +478,13 @@ let Fight = {
     bossFight: () => {
         RPG.pushState(RPG.FIGHT_RESULT);
         Fight.startFight(RPG.enemyTeam[5], mainTeam, false);
-        RPG.waitMenu(function () {
-            if (RPG.gameState === RPG.WIN) {
+        Menu.waitMenu(function () {
+            if (Fight.state === Fight.WIN) {
                 RPG.popState();
                 RPG.setSwitch("gate1win");
                 let char1 = stage.charaList["boss"];
                 char1.visible = false;
-            } else if (RPG.gameState === RPG.LOST) {
+            } else if (Fight.state === Fight.LOST) {
                 // 结束游戏
                 RPG.drawGameOver();
             } else {
@@ -474,12 +505,12 @@ let Fight = {
         let a, b1, b2;
         // 参考折扣率，目前最多支持5个人同时战斗
         let rateList = [1, 0.8, 0.7, 0.6, 0.5, 0.5];
-        let rate = rateList[RPG.pTeam.heroList.length - 1];
-        for (let j = 0; j < RPG.pTeam.heroList.length; j++) {
-            hero1 = RPG.pTeam.heroList[j];
+        let rate = rateList[Fight.pTeam.heroList.length - 1];
+        for (let j = 0; j < Fight.pTeam.heroList.length; j++) {
+            hero1 = Fight.pTeam.heroList[j];
             a = 0;
-            for (let i = 0; i < RPG.eTeam.heroList.length; i++) {
-                hero2 = RPG.eTeam.heroList[i];
+            for (let i = 0; i < Fight.eTeam.heroList.length; i++) {
+                hero2 = Fight.eTeam.heroList[i];
                 // 基本经验
                 b1 = (hero2.Level - hero1.Level + 3) * 2;
                 if (b1 > 16) {
@@ -514,18 +545,18 @@ let Fight = {
      * 显示战斗结果
      */
     showResult: () => {
-        if (RPG.gameState === RPG.WIN) {
+        if (Fight.state === Fight.WIN) {
             // 胜利，获得经验及奖励物品
             let exp = Fight.calculateExp(),hero1, item1,text,yy, xx;
             // 经验值的计算
             if (!Fight.trophy) {
-                for (let j = 0; j < RPG.pTeam.heroList.length; j++) {
+                for (let j = 0; j < Fight.pTeam.heroList.length; j++) {
                     exp[j] = 1;
                 }
             }
             // 获得经验值
-            for (let j = 0; j < RPG.pTeam.heroList.length; j++) {
-                hero1 = RPG.pTeam.heroList[j];
+            for (let j = 0; j < Fight.pTeam.heroList.length; j++) {
+                hero1 = Fight.pTeam.heroList[j];
                 // 增加经验，及判断升级
                 hero1.addExp(exp[j]);
                 // 人物转正面
@@ -535,21 +566,21 @@ let Fight = {
                     hero1.fighter.visible = true;
                     hero1.fighter.alpha = 0.3;
                 }
-                hero1.fighter.x = RPG.menuWidth / 2 - STEP / 2;
+                hero1.fighter.x = menuWidth / 2 - STEP / 2;
                 // 显示获得的经验值
                 text = UI.text("Exp " + exp[j] + "↑", hero1.fighter.x + 40, hero1.fighter.y + 5);
                 RPG.descLayer.addChild(text);
                 yy = hero1.fighter.y;
             }
             yy = yy + STEP + 20;
-            xx = RPG.menuWidth / 2;
+            xx = menuWidth / 2;
 
             // 获得物品
 			if (Fight.trophy) {
-                for (let j = 0; j < RPG.eTeam.itemList.length; j++) {
-                    item1 = RPG.eTeam.itemList[j];
+                for (let j = 0; j < Fight.eTeam.itemList.length; j++) {
+                    item1 = Fight.eTeam.itemList[j];
                     // 获得敌队的物品
-                    RPG.pTeam.addItem(item1.index, item1.num);
+                    Fight.pTeam.addItem(item1.index, item1.num);
                     // 图片
                     // 物品数量
                     text = UI.text(item1.num, xx, yy + j * 30 + 5);
@@ -559,10 +590,10 @@ let Fight = {
         } else {
             // 敌人占中正面
             let hero1;
-            for (let j = 0; j < RPG.eTeam.heroList.length; j++) {
-                hero1 = RPG.eTeam.heroList[j];
+            for (let j = 0; j < Fight.eTeam.heroList.length; j++) {
+                hero1 = Fight.eTeam.heroList[j];
                 hero1.fighter.changeDir(0);
-                hero1.fighter.x = RPG.menuWidth / 2 - hero1.fighter.getWidth() / 2;
+                hero1.fighter.x = menuWidth / 2 - hero1.fighter.getWidth() / 2;
             }
         }
     },
@@ -583,10 +614,10 @@ let Fight = {
     },
 
     //计算敌人的平均速度
-    getEmyAverageSpeed:()=>{
+    getEmyAverageSpeed:(team)=>{
         let sumSpeed = 0;
-        let len = battle.enemies.length;
-        battle.enemies.forEach(function(o) {
+        let len = team;
+        team.forEach(function(o) {
             sumSpeed += o.speed;
         });
 
@@ -595,8 +626,8 @@ let Fight = {
 
     //是否先制攻击
     isForestall:()=>{
-        let emyAvgSpeed = getEmyAverageSpeed(battle.enemies);
-        let playerSpeed = p1.getSpeed();
+        let emyAvgSpeed = Fight.getEmyAverageSpeed();
+        let playerSpeed = mainTeam.getHero();
 
         if(playerSpeed >= emyAvgSpeed) {
             if(Math.random() >= 0.8) return true;
@@ -608,8 +639,8 @@ let Fight = {
 
     //是否被偷袭
     isSneak:()=>{
-        let emyAvgSpeed = getEmyAverageSpeed(battle.enemies);
-        let playerSpeed = p1.getSpeed();
+        let emyAvgSpeed = Fight.getEmyAverageSpeed();
+        let playerSpeed = player.getSpeed();
 
         if(emyAvgSpeed >= playerSpeed) {
             if(Math.random() >= 0.5) return true;
@@ -638,13 +669,13 @@ let Fight = {
             if (aon) weaponAddOn= aon;
         }
         // 士气加成
-        vaporAtk= (heroAtk.Hp/ heroAtk.MaxHp + 1) / 2 * 100;
+        vaporAtk = (heroAtk.Hp / heroAtk.MaxHp + 1) / 2 * 100;
         // 攻击力
-        atk= (4000/ (140- pAtk.force)+ pAtk.atk* 2+ vaporAtk)* (heroAtk.Level/ 10+ 1)* weaponAddOn;
+        atk = (4000/ (140- pAtk.force)+ pAtk.atk* 2+ vaporAtk)* (heroAtk.Level/ 10+ 1)* weaponAddOn;
         // 防守方护甲加成
-        if (heroDef.armor>= 0) {
-            let aon= heroDef.getArmor().addOn;
-            if (aon) armorAddOn= aon;
+        if (heroDef.armor >= 0) {
+            let aon = heroDef.getArmor().addOn;
+            if (aon) armorAddOn = aon;
         }
         // 士气加成
         vaporDef= (heroDef.Hp/ heroDef.MaxHp+ 1)/ 2* 100;
@@ -657,10 +688,10 @@ let Fight = {
             result= 1;
         }
         //秒杀
-        if (result > heroDef.Hp) {
-            result = heroDef.Hp;
-        }
-        return result;
+        // if (result > heroDef.Hp) {
+        //     result = heroDef.Hp;
+        // }
+        return result>>0;
     }
 };
 
