@@ -13,10 +13,6 @@
  */
 
 
-
-
-// finalButtonSetFunc= null;
-
 // 最大HP，用于对比显示，给一个最小的参考值，一场战斗一旦确定则不再改变
 RPG.maxHpAll= 1000;
 RPG.maxMpAll= 100;
@@ -47,6 +43,7 @@ let Fight = {
     afterStop:null,//动作执行完毕回调函数
     quickFight:false,
     menu:{},
+    queue:[],//行动队列
 
     /**
      * 普通战斗
@@ -133,9 +130,9 @@ let Fight = {
         isKeyDown = false;
 
         //对话背景
-        talkLayer.x = 10;
-        talkLayer.y = 10;
-        UI.drawBorderWindow(talkLayer, 0, 0, menuWidth, menuHeight);
+        // talkLayer.x = 10;
+        // talkLayer.y = 10;
+        UI.drawBorderWindow(talkLayer, 0, 0, WIDTH, HEIGHT);
         // 子菜单层
         if (!RPG.descLayer) RPG.descLayer = new LSprite();
         RPG.descLayer.removeAllChild();
@@ -176,7 +173,7 @@ let Fight = {
             team = j ? Fight.pTeam.heroList : Fight.eTeam.heroList;
             dir = j ? RPG.LEFT : RPG.RIGHT;
             y = gap * 2;
-            x = j ? menuWidth - STEP - gap*2 : gap;
+            x = j ? WIDTH - STEP - gap*2 : gap;
             for (let i = 0; i < team.length; i++) {
                 hero1 = team[i];
                 bitmapData = new LBitmapData(imglist[hero1.img]);
@@ -190,6 +187,7 @@ let Fight = {
                 chara.changeDir(dir);
                 chara.x = x;
                 chara.y = y;
+                chara.name = hero1.nickName;
                 RPG.descLayer.addChild(chara);
 
                 hero1.fighter = chara;
@@ -199,12 +197,14 @@ let Fight = {
                 hpText.text = hero1.Hp;
                 hpText.x = x+gap;
                 hpText.y = y;
+                hpText.name = hero1.nickName+'hp';
                 RPG.descLayer.addChild(hpText);
+                hero1.hpText = hpText;
                 y += 3*gap;
-                Fight.showInfo(hero1.nickName+'进入战场');
+                Lib.showInfo(hero1.nickName+'进入战场');
             }
         }
-
+        Fight.actionQueue();
         Fight.drawActButton();
 
     },
@@ -222,17 +222,17 @@ let Fight = {
         y0 = HEIGHT - 120;
         const list = [
             {label:"攻击",list:[
-                {label:"主炮",click:Fight.menuCmd()},
-                {label:"副炮",click:Fight.menuCmd()},
-                {label:"SE",click:Fight.menuCmd()},
+                {label:"主炮",click:()=>{Fight.menuCmd(1)}},
+                {label:"副炮",click:()=>{Fight.menuCmd(1)}},
+                {label:"SE",click:()=>{Fight.menuCmd(1)}},
             ]},
             {label:"防御",list:[
-                {label:"物品",click:()=>{trace("File");}},
+                {label:"物品",click:()=>{Fight.menuCmd(2)}},
                 {label:"保护",click:()=>{trace("File");}},
                 {label:"防御",click:()=>{trace("Open File")}},
             ]},
             {label:"逃跑",list:[
-                {label:"逃跑",click:()=>{trace("File");}},
+                {label:"逃跑",click:()=>{Fight.menuCmd(4)}},
             ]},
             {label:"乘降",list:[
                 {label:"乘降",click:()=>{trace("File");}},
@@ -253,6 +253,7 @@ let Fight = {
     menuCmd:(type)=>{
         switch(type){
             case 1://攻击
+                Lib.showInfo('攻击');
                 Fight.menu.visible = false;
                 Fight.stopAuto = true;
                 Fight.fightState = 1;
@@ -264,10 +265,11 @@ let Fight = {
                 };
                 break;
             case 2://物品
+                Lib.showInfo('物品');
                 Fight.menu.visible = false;
                 Fight.stopAuto = true;
                 Fight.fightState = 1;
-                Fight.autoFight(0);
+                Menu.menuShowItems(mainTeam);
                 // 行动结束后，再显示菜单
                 Fight.afterStop = ()=>{
                     Fight.menu.visible = true;
@@ -278,7 +280,7 @@ let Fight = {
                 Fight.menu.visible = false;
                 Fight.stopAuto = true;
                 Fight.fightState = 1;
-                Fight.autoFight(0);
+                // Fight.autoFight(0);
                 // 行动结束后，再显示菜单
                 Fight.afterStop = ()=>{
                     Fight.menu.visible = true;
@@ -286,10 +288,25 @@ let Fight = {
                 };
                 break;
             case 4://逃跑
+                //逃跑成功率计算公式：F = (A * 32) / B + 30 * C
+                /*A为逃跑方的当前速度，包含加速buff。
+                 B为对方的当前速度(或取对方的速度平均值)除以4再对256取余。
+                 C为本次战斗中逃跑方已经尝试过的逃跑次数，包括正在进行的这一次逃跑。
+                 若F大于255，则逃跑成功。否则在0到255之间生成一個随机数D。若D小于F则逃跑成功，否则逃跑失败。
+                 若使用道具或某些特性逃跑必定成功*/
                 Menu.closeMenu();
                 break;
         }
 
+    },
+
+    actionAttack:(hero,toHero)=>{
+        Lib.showInfo(hero.getName() + '攻击');
+        effect = ["220Animation",4,5];
+        // 计算攻击效果
+        let ret = Fight.physicalAttack(hero, toHero);
+        toHero.beHit(ret);
+        Lib.showInfo(toHero.getName() + '损伤 ' + ret);
     },
 
     //绘制攻击中的特效动画
@@ -319,12 +336,12 @@ let Fight = {
                     a = rangeRand(0, Fight.eTeam.heroList.length);
                     a = 10;
                     hero2 = Fight.eTeam.getAliveHero(a);
-                    trace(hero1.getName() + '攻击' + hero2.getName());
-                    effect = "pSword";
+                    Lib.showInfo(hero1.getName() + '攻击');
+                    effect = ["220Animation",4,5];
                     // 计算攻击效果
                     let ret = Fight.physicalAttack(hero1, hero2);
                     hero2.beHit(ret);
-                    trace(hero2.getName() + '损伤' + ret);
+                    Lib.showInfo(hero2.getName() + '损伤' + ret);
                     break;
                 case 2:
                     a = rangeRand(0, Fight.eTeam.heroList.length);
@@ -348,12 +365,12 @@ let Fight = {
                 case 1:
                     a = rangeRand(0, Fight.pTeam.heroList.length);
                     hero2 = Fight.pTeam.getAliveHero(a);
-                    trace(hero1.getName() + '攻击' + hero2.getName());
-                    effect = "pAttack";
+                    Lib.showInfo(hero1.getName() + '攻击');
+                    effect = ["220Animation",4,5];
                     if (hero2) {
                         let ret = Fight.physicalAttack(hero1, hero2);
                         hero2.beHit(ret);
-                        trace(hero2.getName() + '损伤' + ret);
+                        Lib.showInfo(hero2.getName() + '损伤' + ret);
                     }
                     break;
                 case 2:
@@ -370,12 +387,10 @@ let Fight = {
         }
         if (hero1) {
             if (Fight.quickFight) {
-                console.log("Do quick attack", heroId);
                 Fight.doQuickFight(hero1, hero2, effect, function () {
                     Fight.autoFight(heroId + 1);
                 });
             } else {
-                console.log("Do normal attack", heroId);
                 // 获得正确的动画显示效果
                 if(hero1.getWeapon){
                     let item1 = hero1.getWeapon();
@@ -402,27 +417,24 @@ let Fight = {
         // let effectName = actEffect[0];
         // let effectRow = actEffect[1];
         // let effectCol = actEffect[2];
-        console.log('actEffect',actEffect);
         if ( (typeof actEffect) === 'object'){
             effect = RPG.loadEffect(actEffect[0],actEffect[1],actEffect[2],1);
         } else {
             effect = RPG.loadEffect(actEffect);
         }
-
-        if (hero.fighter.x > menuWidth / 2) {
+        let P = WIDTH>>1;
+        if (hero.fighter.x > P) {
             x0 = hero.fighter.x;
-            x1 = menuWidth / 2 + gap;
+            x1 = hero.fighter.x - STEP;
         } else {
             x0 = hero.fighter.x;
-            x1 = menuWidth / 2 - gap - RPG.STEP;
+            x1 = hero.fighter.x + STEP;
         }
         // 人物前进
         LTweenLite.to(hero.fighter, 0.3,
             {
                 scaleX: 1, scaleY: 1, alpha: 1, x: x1, ease: Circ.easeOut,
                 onComplete: function () {
-                    //console.log("a");
-                    //hero.fighter.x= x1;
                     if (toHero) {
                         effect.x = toHero.fighter.x + (toHero.fighter.getWidth() - effect.getWidth()) / 2;
                         effect.y = toHero.fighter.y + (toHero.fighter.getHeight() - effect.getHeight()) / 2;
@@ -432,9 +444,10 @@ let Fight = {
                     RPG.descLayer.addChild(effect);
                     effect.play(1, function () {
                         // 刷新数据
-                        //Fight.drawData();
+                        toHero.hpText.text = toHero.Hp;
                         if (toHero && !toHero.alive) {
                             toHero.fighter.visible = false;
+                            toHero.hpText.visible = false;
                         }
                         // 动画效果消失
                         RPG.descLayer.removeChild(effect);
@@ -643,8 +656,8 @@ let Fight = {
 
     //是否先制攻击
     isForestall:()=>{
-        let emyAvgSpeed = Fight.getEmyAverageSpeed();
-        let playerSpeed = mainTeam.getHero();
+        let emyAvgSpeed = Fight.getEmyAverageSpeed(Fight.eTeam.heroList);
+        let playerSpeed = Fight.getEmyAverageSpeed(mainTeam.heroList);
 
         if(playerSpeed >= emyAvgSpeed) {
             if(Math.random() >= 0.8) return true;
@@ -656,8 +669,8 @@ let Fight = {
 
     //是否被偷袭
     isSneak:()=>{
-        let emyAvgSpeed = Fight.getEmyAverageSpeed();
-        let playerSpeed = player.getSpeed();
+        let emyAvgSpeed = Fight.getEmyAverageSpeed(Fight.eTeam.heroList);
+        let playerSpeed = Fight.getEmyAverageSpeed(mainTeam.heroList);
 
         if(emyAvgSpeed >= playerSpeed) {
             if(Math.random() >= 0.5) return true;
@@ -668,6 +681,27 @@ let Fight = {
     },
 
     /**
+     * 计算战场行动队列
+     * */
+    actionQueue:()=>{
+        if(Fight.isForestall()) {
+            //偷袭敌人 我方所有人员先行攻击
+            Fight.queue = mainTeam.heroList.concat(Fight.eTeam.heroList);
+        } else if(Fight.isSneak()) {
+            //被偷袭 敌方所有人员先行攻击
+            Fight.queue = Fight.eTeam.heroList.concat(mainTeam.heroList);
+        }else {
+            //遭遇战 按速度排序
+            Fight.queue = Fight.eTeam.heroList.concat(mainTeam.heroList).sort(function(a,b) {
+                return a.speed < b.speed;
+            });
+        }
+        console.log(Fight.queue);
+
+    },
+
+
+    /**
      * 物理攻击效果的计算
      * @param heroAtk  {object} 攻击方
      * @param heroDef  {object} 防御方
@@ -675,20 +709,18 @@ let Fight = {
      */
     physicalAttack:(heroAtk, heroDef)=>{
         let atk, def;
-        let pAtk= heroAtk.getPerson();
-        let pDef= heroDef.getPerson();
-        let weaponAddOn= 1;
-        let armorAddOn= 1;
+        let weaponAddOn = 1;
+        let armorAddOn = 1;
         let vaporAtk, vaporDef;
         // 有装备，加成
         if (heroAtk.weapon >= 0) {
             let aon = heroAtk.getWeapon().addOn;
-            if (aon) weaponAddOn= aon;
+            if (aon) weaponAddOn = aon;
         }
         // 士气加成
         vaporAtk = (heroAtk.Hp / heroAtk.MaxHp + 1) / 2 * 100;
         // 攻击力
-        atk = (4000/ (140- pAtk.force)+ pAtk.atk* 2+ vaporAtk)* (heroAtk.Level/ 10+ 1)* weaponAddOn;
+        atk = (4000/ (140- heroAtk.force)+ heroAtk.atk* 2+ vaporAtk)* (heroAtk.Level/ 10+ 1)* weaponAddOn;
         // 防守方护甲加成
         if (heroDef.armor >= 0) {
             let aon = heroDef.getArmor().addOn;
@@ -697,7 +729,7 @@ let Fight = {
         // 士气加成
         vaporDef= (heroDef.Hp/ heroDef.MaxHp+ 1)/ 2* 100;
         // 防御力
-        def= (4000/ (140- pDef.force)+ pDef.def* 2+ vaporDef)* (heroDef.Level/ 10+ 1)* armorAddOn;
+        def= (4000/ (140- heroDef.force)+ heroDef.def* 2+ vaporDef)* (heroDef.Level/ 10+ 1)* armorAddOn;
         // 攻击效果随机加成 0.9~1.1
         let ran= (rangeRand(0, 100)+ 1000)/ 1000;
         let result= (atk- def/ 2)* ran;
@@ -711,12 +743,7 @@ let Fight = {
         return result>>0;
     },
 
-    showInfo:(text)=>{
-        if (text) {
-            let content = "<li>" + text + "</li>" + $('.information').html();
-            $('.information').html(content);
-        }
-    },
+
 };
 
 

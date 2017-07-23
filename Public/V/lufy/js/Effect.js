@@ -7,9 +7,11 @@ let Effect= function (data,row,col,type=1){
 	base(this,LSprite,[]);
 	let self = this,list;
 	//设定人物动作速度
-	self.speed = 0;
+	self.speed = 3;
 	self.speedIndex = 0;
 	self.frameId= 0;
+    self.scaleX = 0.6;
+    self.scaleY = 0.6;
 
     //设定帧动画大小
 	if (type){
@@ -32,9 +34,9 @@ let Effect= function (data,row,col,type=1){
 		list2 = list2.concat(list[i]);
 	}
 	list3.push(list2);
-	console.log('list',list);
-	console.log('list2',list2);
-	console.log('list3',list3);
+	// console.log('list',list);
+	// console.log('list2',list2);
+	// console.log('list3',list3);
 	//设定人物动画
 	self.anime = new LAnimation(this,data,list3);
 	self.maxFrame = list3[0].length;
@@ -55,11 +57,9 @@ Effect.prototype.onframe = function (){
 	self.anime.onframe();
 	self.frameId++;
 
-	if (self.frameId>= self.maxFrame) {
+	if (self.frameId >= self.maxFrame) {
 		self.move= false;
-		if (self.func){
-			self.func();
-		}
+		if (self.func) self.func();
 	}
 };
 

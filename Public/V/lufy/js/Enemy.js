@@ -6,7 +6,7 @@ let EnemyList= [
 		col:1,
 		row:1,
         force:160,//力量
-        mind:80,//智慧
+        mind:20,//智慧
         speed:120,//速度
         atk: 50,
         def: 50,
@@ -35,6 +35,11 @@ let Enemy = {
 	nickName:'',
     img:'',
 	// 各种战斗信息
+    force:0,//力量
+    mind:0,//智慧
+    speed:0,//速度
+    atk: 0,
+    def: 0,
 	Hp: 0,
 	MaxHp: 0,
 	Sp: 0,
@@ -58,6 +63,11 @@ let Enemy = {
         this.Level = lv;
         this.nickName = person.img;
         this.img = person.img;
+        this.force = person.force;
+        this.mind = person.mind;
+        this.speed = person.speed;
+        this.atk =  person.atk;
+        this.def =  person.def;
         this.MaxHp = 100 + person.hpAdd * lv;
         this.maxExp= this.MaxHp*2;
     },

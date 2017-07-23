@@ -154,67 +154,6 @@ RPG.menuShowState= function() {
 	}
 };
 
-RPG.menuShowItems = function(team) {
-	RPG.menuPage= 2;
-	ctrlLayer.removeAllChild();
-	let i, cc=0,
-	item1, hero, heroImg,
-	bitmapData, bitmap, text, chara;
-
-	text = UI.text("物品",menuWidth / 2,10,'20');
-	// text.width = 200;
-	text.textAlign = "center";
-	ctrlLayer.addChild(text);
-	// 所有物品画在一张图片上
-	let maskObj = new LSprite();
-	let maskHeight = menuHeight- 144- 40; // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
-    maskObj.graphics.drawRect(0, "#ff0000", [0, 40, menuWidth, maskHeight]);
-    if (!RPG.listLayer) {
-    	RPG.listLayer= new LSprite();
-    	RPG.listLayer.x= 0;
-    	RPG.listLayer.y= 40;
-    } else {
-    	RPG.listLayer.removeAllChild();
-    }
-    RPG.listLayer.mask = maskObj;
-    ctrlLayer.addChild(RPG.listLayer);
-    //ctrlLayer.addChild(maskObj);
-    RPG.maxScrollHeight= team.itemList.length* 30- maskHeight;
-    RPG.descLayer.removeAllChild();
-    RPG.descLayer.x = gap;
-    //RPG.descLayer.y= maskHeight+ gap* 2+ 70;
-    // 保留144的空间即够用
-    RPG.descLayer.y = menuHeight - 144;
-    ctrlLayer.addChild(RPG.descLayer);
-    // 选择高亮条
-	RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, menuWidth - gap* 2, 30);
-    // 物品列表
-	for (i= 0; i< team.itemList.length; i++){
-		// 逐个显示物品
-		item1= team.itemList[i];
-        // 图片
-		// bitmapData = new LBitmapData(imglist["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
-		// bitmap = new LBitmap(bitmapData);
-		// bitmap.x= gap* 2;
-		// bitmap.y= i* 30+ gap;
-		// RPG.listLayer.addChild (bitmap);
-		// 物品名称
-		text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
-		RPG.listLayer.addChild(text);
-
-        // let num = text.clone();
-		// // 物品数量
-		// num.x = 180;
-		// num.text = item1.num;
-		// RPG.listLayer.addChild(num);
-	}
-	if (RPG.chooseItem>= 0) {
-		RPG.menuShowOneItem(RPG.chooseItem);
-	} else {
-		RPG.menuShowOneItem(0);
-	}
-};
-
 RPG.menuShowOneItem= function(id) {
 	 let item1, text;
 	// 详细信息
@@ -233,113 +172,7 @@ RPG.menuShowOneItem= function(id) {
 	}
 };
 
-// 拖动物品栏的物品
-RPG.dragItemBegin= function(ax, ay, itemId){
-	let item1,
-		iconbitmapdata, iconbitmap,
-		text, i;
 
-    // 详细信息
-	RPG.descLayer.removeAllChild();
-	// 显示单一物品详细信息
-	item1 = mainTeam.itemList[itemId].getItem();
-	text = UI.text(''.description,gap* 2,5);
-	switch (item1.kind){
-        case 1:
-            text.text = item1.name+ "装配：";
-            break;
-        case 2:
-            text.text = item1.name+ "使用：";
-            break;
-        case 4:
-        case 3:
-            text.text = item1.name+ "不可使用。";
-            break;
-    }
-	RPG.descLayer.addChild(text);
-	if (item1.kind!==3) {
-		// 显示姓名
-		RPG.nameText = text.clone();
-		RPG.nameText.x = text.x+ text.getWidth()+ gap;
-		RPG.nameText.text = "";
-		RPG.descLayer.addChild(RPG.nameText);
-		RPG.chooseHero= -1;
-		let cc= (menuWidth- gap* 2)/ mainTeam.heroList.length;
-		// Menu.showItemEffectLabel.length= 0;
-		for (i=0; i< mainTeam.heroList.length; i++){
-			let hero= mainTeam.heroList[i];
-			let heroImg= HeroList[hero.index].img;
-			let bitmapData = new LBitmapData(imglist[heroImg]);
-			let chara = new Fighter(bitmapData,4,4);
-			// 测试物品效果的英雄
-			let hero2= RPG.beget(HeroPlayer);
-			RPG.extend(hero2, hero);
-			// 
-			chara.x = cc* i+ cc/ 2- STEP/ 2;
-			chara.y = gap* 2+ 5;
-			// 根据物品的属性，增加相应属性值的显示
-			// 
-			if (item1.kind===1) {
-				// 装备类，显示现有的装配物
-				let tempItem;
-                switch (item1.type){
-                    case 1:
-                        tempItem= hero.weapon;
-                        break;
-                    case 2:
-                        tempItem= hero.armor;
-                        break;
-                    case 3:
-                        tempItem= hero.ornament;
-                        break;
-                }
-
-			} else if (item1.kind=== 2 || item1.kind=== 4) {
-				// 使用类，显示对应的值
-				let text1 = text.clone();
-				text1.x = chara.x+ STEP/ 2;
-				text1.y = chara.y+ STEP+ 5;
-				text1.textAlign= "center";
-				if (item1.type=== 1) {
-					text1.text = "HP="+ hero.Hp;
-				}
-				RPG.descLayer.addChild(text1);
-				// 预计使用效果
-				item1.effect(hero2);
-				let text2 = text1.clone();
-				if (item1.type=== 1) {
-					text2.text = "HP="+ hero2.Hp;
-				}
-				if (text2.text=== text.text) {
-					text2.color = "#FFFFFF";
-				} else {
-					text2.color = "#00FFFF";
-				}
-				text2.visible= false;
-				RPG.descLayer.addChild(text2);
-				Menu.showItemEffectLabel.push(text2);
-				Menu.showItemEffectLabel.push(text);
-			}
-			RPG.descLayer.addChild(chara);
-		}
-		RPG.chooseItem= itemId;
-	} else {
-		RPG.nameText= null;
-		RPG.chooseItem= -1;
-	}
-
-	// 图标作为拖动物
-	// let bitmapData = new LBitmapData(imglist["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
-	// RPG.dragingItem = new LBitmap(bitmapData);
-    RPG.dragingItem = text.clone();
-    RPG.dragingItem.text = item1.name;
-	RPG.dragingItem.x= ax- RPG.descLayer.x;
-	RPG.dragingItem.y= ay- RPG.descLayer.y;
-	RPG.dragingItem.scaleX= 2;
-	RPG.dragingItem.scaleY= 2;
-	RPG.descLayer.addChild(RPG.dragingItem);
-	RPG.isItemDraging= true;
-};
 
 RPG.dropItem= function(){
 	RPG.descLayer.removeAllChild();
@@ -348,7 +181,7 @@ RPG.dropItem= function(){
 		if (RPG.chooseHero>= 0){
 			// 物品装配或使用
 			mainTeam.removeItem(RPG.chooseHero, RPG.chooseItem, 1);
-			RPG.menuShowItems(mainTeam);
+			Menu.menuShowItems(mainTeam);
 		}
 	}
 };
@@ -428,7 +261,7 @@ RPG.menuShowLoad= function() {
 	// 空白按钮图片
    let button01= RPG.newButton(90, 30, gap* 2, menuHeight- 60, "载入进度", function(e){
 		Menu.closeMenu();
-		RPG.loadGame(RPG.saveSlot);
+		loadGame(RPG.saveSlot);
     });
     ctrlLayer.addChild(button01);
 	// 空白按钮图片
@@ -526,7 +359,7 @@ RPG.dealMenu= function(ax, ay){
                 RPG.menuShowState();
                 break;
             case 2:
-                RPG.menuShowItems(mainTeam);
+                Menu.menuShowItems(mainTeam);
                 break;
             case 3:
                 RPG.menuShowTasks();
@@ -569,7 +402,7 @@ RPG.dealMenu= function(ax, ay){
             cc = ((ay- RPG.listLayer.y)/ 30)<<0;
             if (cc>= 0 && cc< mainTeam.itemList.length && ay< RPG.descLayer.y) {
                 RPG.menuShowOneItem(cc);
-                RPG.dragTimer= setTimeout(function(){RPG.dragItemBegin(ax- 20, ay- 20, cc);}, 500);
+                RPG.dragTimer = setTimeout(function(){Menu.dragItemBegin(ax- 20, ay- 20, cc);}, 500);
             }
 			break;
         case 4:
@@ -591,6 +424,7 @@ RPG.dealMenuMove= function(ax, ay){
         if (RPG.menuPage===2){
 			// 物品窗口
 			if (RPG.isItemDraging){
+                // 动态选择人物
                 RPG.dragingItem.x = ax - RPG.descLayer.x;
                 RPG.dragingItem.y = ay - RPG.descLayer.y;
 				// 动态选择人物
@@ -600,13 +434,13 @@ RPG.dealMenuMove= function(ax, ay){
 					if (cc>=0 && cc<mainTeam.heroList.length && ay> RPG.descLayer.y) {
 						RPG.nameText.text= mainTeam.heroList[cc].nickName;
 						RPG.chooseHero = cc;
-                        Menu.showLabel(cc);
+                        // Menu.showLabel(cc);
 						// 同时显示可能会出现的值的变化
 						//console.log(RPG.nameText.text);
 					} else {
 						RPG.nameText.text= "";
 						RPG.chooseHero= -1;	
-						Menu.showLabel(-1);
+						// Menu.showLabel(-1);
 					}
 				}
 			} else {
@@ -655,6 +489,177 @@ RPG.dealMenuMove= function(ax, ay){
 let Menu = {
 	// 用于辅助物品使用的显示
 	showItemEffectLabel:[],
+
+	/**
+	 * 显示背包
+	 *
+	 * */
+    menuShowItems:(team)=>{
+        RPG.menuPage= 2;
+        ctrlLayer.removeAllChild();
+        let i, cc=0,
+            item1, hero, heroImg,
+            bitmapData, bitmap, text, chara;
+
+        text = UI.text("物品",menuWidth / 2,10,'20');
+        // text.width = 200;
+        text.textAlign = "center";
+        ctrlLayer.addChild(text);
+        // 所有物品画在一张图片上
+        let maskObj = new LSprite();
+        let maskHeight = menuHeight- 144- 40; // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
+        maskObj.graphics.drawRect(0, "#ff0000", [0, 40, menuWidth, maskHeight]);
+        if (!RPG.listLayer) {
+            RPG.listLayer= new LSprite();
+            RPG.listLayer.x= 0;
+            RPG.listLayer.y= 40;
+        } else {
+            RPG.listLayer.removeAllChild();
+        }
+        RPG.listLayer.mask = maskObj;
+        ctrlLayer.addChild(RPG.listLayer);
+        //ctrlLayer.addChild(maskObj);
+        RPG.maxScrollHeight= team.itemList.length* 30- maskHeight;
+        RPG.descLayer.removeAllChild();
+        RPG.descLayer.x = gap;
+        //RPG.descLayer.y= maskHeight+ gap* 2+ 70;
+        // 保留144的空间即够用
+        RPG.descLayer.y = menuHeight - 144;
+        ctrlLayer.addChild(RPG.descLayer);
+        // 选择高亮条
+        RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, menuWidth - gap* 2, 30);
+        // 物品列表
+        for (i= 0; i< team.itemList.length; i++){
+            // 逐个显示物品
+            item1= team.itemList[i];
+            // 图片
+            // bitmapData = new LBitmapData(imglist["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+            // bitmap = new LBitmap(bitmapData);
+            // bitmap.x= gap* 2;
+            // bitmap.y= i* 30+ gap;
+            // RPG.listLayer.addChild (bitmap);
+            // 物品名称
+            text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
+            RPG.listLayer.addChild(text);
+
+            // let num = text.clone();
+            // // 物品数量
+            // num.x = 180;
+            // num.text = item1.num;
+            // RPG.listLayer.addChild(num);
+        }
+        if (RPG.chooseItem>= 0) {
+            RPG.menuShowOneItem(RPG.chooseItem);
+        } else {
+            RPG.menuShowOneItem(0);
+        }
+    },
+
+    // 拖动物品栏的物品
+    dragItemBegin:(ax, ay, itemId)=>{
+        let item1,text, i;
+
+        // 详细信息
+        RPG.descLayer.removeAllChild();
+        // 显示单一物品详细信息
+        item1 = mainTeam.itemList[itemId].getItem();
+        text = UI.text(''.description,gap* 2,5);
+        switch (item1.kind){
+            case 1:
+                text.text = item1.name+ "装配：";
+                break;
+            case 2:
+                text.text = item1.name+ "使用：";
+                break;
+            case 4:
+            case 3:
+                text.text = item1.name+ "不可使用。";
+                break;
+        }
+        RPG.descLayer.addChild(text);
+        if ( (item1.kind === 1) || (item1.kind === 2) ) {
+            // 显示姓名
+            RPG.nameText = text.clone();
+            RPG.nameText.x = text.x+ text.getWidth()+ gap;
+            RPG.nameText.text = "";
+            RPG.descLayer.addChild(RPG.nameText);
+            RPG.chooseHero= -1;
+            let cc= (menuWidth- gap* 2)/ mainTeam.heroList.length;
+            for (i=0; i< mainTeam.heroList.length; i++){
+                let hero = mainTeam.heroList[i];
+                let heroImg= hero.img;
+                let bitmapData = new LBitmapData(imglist[heroImg]);
+                let chara = new Fighter(bitmapData,4,4);
+                // 测试物品效果的英雄
+                let hero2= RPG.beget(HeroPlayer);
+                RPG.extend(hero2, hero);
+                //
+                chara.x = cc* i+ cc/ 2- STEP/ 2;
+                chara.y = gap* 2+ 5;
+                // 根据物品的属性，增加相应属性值的显示
+                if (item1.kind===1) {
+                    // 装备类，显示现有的装配物
+                    let tempItem;
+                    switch (item1.type){
+                        case 1:
+                            tempItem= hero.weapon;
+                            break;
+                        case 2:
+                            tempItem= hero.armor;
+                            break;
+                        case 3:
+                            tempItem= hero.ornament;
+                            break;
+                    }
+
+                } else if (item1.kind=== 2) {
+                    // 使用类，显示对应的值
+                    let text1 = text.clone();
+                    text1.x = chara.x+ STEP/ 2;
+                    text1.y = chara.y+ STEP+ 5;
+                    text1.textAlign= "center";
+                    if (item1.type=== 1) {
+                        text1.text = "HP="+ hero.Hp;
+                    }
+                    RPG.descLayer.addChild(text1);
+                    // 预计使用效果
+                    // item1.effect(hero2);
+                    // let text2 = text1.clone();
+                    // if (item1.type=== 1) {
+                    // 	text2.text = "HP="+ hero2.Hp;
+                    // }
+                    // if (text2.text=== text.text) {
+                    // 	text2.color = "#FFFFFF";
+                    // } else {
+                    // 	text2.color = "#00FFFF";
+                    // }
+                    // text2.visible= false;
+                    // RPG.descLayer.addChild(text2);
+                    // Menu.showItemEffectLabel.push(text2);
+                    // Menu.showItemEffectLabel.push(text);
+                }
+                RPG.descLayer.addChild(chara);
+            }
+            RPG.chooseItem= itemId;
+            RPG.dragingItem = text.clone();
+            RPG.dragingItem.text = item1.name;
+            RPG.dragingItem.x= ax- RPG.descLayer.x;
+            RPG.dragingItem.y= ay- RPG.descLayer.y;
+            RPG.dragingItem.scaleX= 2;
+            RPG.dragingItem.scaleY= 2;
+            RPG.descLayer.addChild(RPG.dragingItem);
+            RPG.isItemDraging= true;
+        } else {
+            RPG.nameText= null;
+            RPG.chooseItem= -1;
+            return;
+        }
+
+        // 图标作为拖动物
+        // let bitmapData = new LBitmapData(imglist["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+        // RPG.dragingItem = new LBitmap(bitmapData);
+
+    },
 	// 显示物品使用效果
     showLabel:(itemId)=>{
         for (let i= 0; i< Menu.showItemEffectLabel.length; i++) {

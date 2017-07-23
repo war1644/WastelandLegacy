@@ -120,9 +120,7 @@ function main(){
 
 	//game other img
     // imgData.push({name:"start_png",path:"./image/start.bmp"});
-	imgData.push({name:"button1",path:"./image/button1.png"});
-	imgData.push({name:"button1_down",path:"./image/button1_down.png"});
-	imgData.push({name:"carpet",path:"./image/carpet.png"});
+	imgData.push({name:"button",path:"./image/button.png"});
     imgData.push({name:"iconset",path:"./image/IconSet.png"});
     imgData.push({name: "focus", path: "./image/focus.png" });
     imgData.push({name: "empty", path: "./image/empty.png" });
@@ -156,14 +154,14 @@ function main(){
     imgData.push({name:"hunter_center_1",path:"./assets/hunter_center_1.png"});
 
 	//effect
-	imgData.push({name: "pSword", path: "./image/pSword.png" });
-	imgData.push({name: "pAttack", path: "./image/pAttack.png" });
-	imgData.push({name: "pStick", path: "./image/pStick.png" });
-	imgData.push({name: "pSwipe", path: "./image/pSwipe.png" });
-	imgData.push({name: "mAttack", path: "./image/mAttack.png" });
-	imgData.push({name: "mUse", path: "./image/mUse.png" });
-    imgData.push({name: "heal", path: "./image/heal.png" });
-    imgData.push({name: "220Animation", path: "./image/220Animation.png" });
+	imgData.push({name: "pSword", path: "./image/FightPic/pSword.png" });
+	imgData.push({name: "pAttack", path: "./image/FightPic/pAttack.png" });
+	imgData.push({name: "pStick", path: "./image/FightPic/pStick.png" });
+	imgData.push({name: "pSwipe", path: "./image/FightPic/pSwipe.png" });
+	imgData.push({name: "mAttack", path: "./image/FightPic/mAttack.png" });
+	imgData.push({name: "mUse", path: "./image/FightPic/mUse.png" });
+    imgData.push({name: "heal", path: "./image/FightPic/heal.png" });
+    imgData.push({name: "220Animation", path: "./image/FightPic/220Animation.png" });
 
 
     loadingLayer = new LoadingSample7();
@@ -261,7 +259,7 @@ function setHero(x, y, frame){
     let col = mainTeam.getHero().getPerson().col || 4;
 	heroImg = mainTeam.getHero().getPerson().img;
 	let imgData = new LBitmapData(imglist[heroImg]);
-	hero = new Character(true, 0, imgData, row, col, 1);
+	hero = new Character(true, 0, imgData, row, col);
 	player = hero;
 	//玩家遇敌率
 	player.enemyShow = 10;

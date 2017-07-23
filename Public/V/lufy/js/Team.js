@@ -119,12 +119,15 @@ let PlayerTeam = {
 		}
 	},
     /**
-     * 检查id人物是否存活，返回
+     * 检查id人物是否存活，返回队伍一个存活的玩家
      */
-	getAliveHero: function(aId){
-		if (aId< this.heroList.length && aId>=0 && this.heroList[aId].alive){
-			return this.heroList[aId];
+	getAliveHero: function(heroId){
+		if (heroId < this.heroList.length
+			&& heroId >= 0
+			&& this.heroList[heroId].alive){
+			return this.heroList[heroId];
 		} else {
+            // return false;
 			for (let i= 0; i< this.heroList.length; i++){
 				if (this.heroList[i].alive) {
 					return this.heroList[i];

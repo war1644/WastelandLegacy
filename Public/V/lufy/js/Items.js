@@ -14,7 +14,7 @@ let ItemList= [
 		{pic:{x:10,y:10}, cost:'10G',name:"面包", kind: 2, type:1, description:"面包，适合携带，食用可以补充体力", effect:(hero)=>{hero.addHp(50);}},
         {pic:{x:8,y:10},name:'回复药',cost:'10G', kind: 2, type:1,description:'恢复少量生命值', effect:(hero)=>{hero.addHp(200);}},
         {pic:{x:8,y:10},name:'生命胶囊',cost:'15G', kind: 2, type:1,description:'恢复一定生命值', effect:(hero)=>{hero.addHp(500);}},
-        {pic:{x:8,y:10},name:'再生丸',cost:'20G', kind: 2, type:1,description:'不是复活，是属于修复细胞，额，好像也是复活。。。',effect:function(hero){hero.addHp(1,'再生丸');}},
+        {pic:{x:8,y:10},name:'再生丸',cost:'200000G', kind: 2, type:1,description:'不是复活，是属于修复细胞，额，好像也是复活。。。',effect:function(hero){hero.addHp(1,'再生丸');}},
         {pic:{x:8,y:10},name:'手雷',cost:'20G', kind: 4, type:4,description:'能对软体怪物造成大量伤害',effect:function(enemy){enemy.beHit(50);}},
         {pic:{x:8,y:10},name:'小刀',cost:'10G',kind: 1, type: 1, addOn:1.2,attack:5,description:'切水果用的刀'},
         {pic:{x:8,y:10},name:'匕首',cost:'15G',kind: 1, type: 1, addOn:1.2,attack:7,description:'格斗用的锋利匕首'},

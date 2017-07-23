@@ -93,7 +93,7 @@ RPG.saveGame = function(aSlot){
 	}
 };
 
-RPG.loadGame= function(aSlot){
+let loadGame = function(aSlot){
 	if (aSlot>=0 && aSlot< RPG.MaxSaveSlot){
 		if (window.localStorage){
 			let tempStr= window.localStorage.getItem("WLSaveSlot"+ aSlot);
@@ -104,7 +104,7 @@ RPG.loadGame= function(aSlot){
 					mainTeam.addItem(tempData.items[i].index, tempData.items[i].num);
 				}
 				for(let i= 0; i< tempData.heros.length; i++){
-					mainTeam.addHero(tempData.heros[i].index,tempData.heros[i].lv);
+					mainTeam.addHero(tempData.heros[i].index,tempData.heros[i].Level);
 					RPG.extend(mainTeam.heroList[i], tempData.heros[i]);
 				}
 				RPG.initSwitch();

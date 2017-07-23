@@ -124,7 +124,7 @@ function checkIntoBattle(){
     Fight.simpleFight(1);
     // if(player.tmp >= player.enemyShow){
     //     if (rangeRand(0,9)>2){
-    //         Fight.simpleFight(5);
+    //         Fight.simpleFight(4);
     //     }
     //     player.tmp = 0;
     // }
@@ -153,6 +153,12 @@ let Lib = {
                     y1= y2;
                 }
             }
+        }
+    },
+    showInfo:(text)=>{
+        if (text) {
+            let content = "<li>" + text + "</li>" + $('.information').html();
+            $('.information').html(content);
         }
     },
 };

@@ -42,26 +42,31 @@ let HeroList= [
 ];
 let HeroPlayer = {
 	// 人物列表中人物编号
-	index: 0,
+    index: 0,
     //角色昵称
-	nickName:'',
-	img:'',
-	// 各种战斗信息
-	Hp: 0,
-	MaxHp: 0,
-	Sp: 0,
-	MaxSp: 0,
-	Level: 1,
-	Exp: 0,
+    nickName:'',
+    img:'',
+    force:0,//力量
+    mind:0,//智慧
+    speed:0,//速度
+    atk: 0,
+    def: 0,
+    // 各种战斗信息
+    Hp: 0,
+    MaxHp: 0,
+    Sp: 0,
+    MaxSp: 0,
+    Level: 1,
+    Exp: 0,
     // 升级经验值
     maxExp: 100,
-	alive: true,
-	// 技能列表
-	skillList: [],
-	// 装备：武器、防具、装饰
-	weapon: -1,
-	armor: -1,
-	ornament: -1,
+    alive: true,
+    // 技能列表
+    skillList: [],
+    // 装备：武器、防具、装饰
+    weapon: -1,
+    armor: -1,
+    ornament: -1,
 	getPerson:function(){
 		return HeroList[this.index];
 	},
@@ -77,6 +82,11 @@ let HeroPlayer = {
 		let person = this.getPerson();
 		this.Level = lv;
         this.img = person.img;
+        this.force = person.force;
+		this.mind = person.mind;
+		this.speed = person.speed;
+		this.atk =  person.atk;
+		this.def =  person.def;
 		this.MaxHp = 100 + person.hpAdd * lv;
         this.maxExp= this.MaxHp*2;
 	},
@@ -98,18 +108,18 @@ let HeroPlayer = {
 			this.alive= false;
 		}
 	},
-	addHp:function(hit,name=false){
+	addHp:function(hp,name=false){
         if (!this.alive) {
             if (name==='再生丸'){
             	this.alive= true;
-            }else {
+            } else {
             	Fight.showInfo('再生丸或电击可复活队友');
+                alert('再生丸或电击可复活队友');
             	return;
 			}
-            // 补血后自动复活
         }
-		hit = hit>>0;
-		this.Hp= Number(this.Hp)+ Number(hit);
+		hp = hp>>0;
+		this.Hp= Number(this.Hp)+ Number(hp);
 		if (this.Hp>= this.MaxHp) {
 			this.Hp= this.MaxHp;
 		}
