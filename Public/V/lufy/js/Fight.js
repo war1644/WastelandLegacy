@@ -13,11 +13,9 @@
  */
 
 
-//  战斗过程控制
-RPG.stopAuto= false;
-RPG.afterStop= null;   /// func
-RPG.quickFight= false;
-RPG.finalButtonSetFunc= null;
+
+
+// finalButtonSetFunc= null;
 
 // 最大HP，用于对比显示，给一个最小的参考值，一场战斗一旦确定则不再改变
 RPG.maxHpAll= 1000;
@@ -44,6 +42,11 @@ let Fight = {
     fightState:0,
     //战斗结束回调函数
     endCallback:null,
+    //战斗过程控制
+    stopAuto:false,//动作执行中
+    afterStop:null,//动作执行完毕回调函数
+    quickFight:false,
+    menu:{},
 
     /**
      * 普通战斗
@@ -150,10 +153,9 @@ let Fight = {
         console.log('eTeam',Fight.eTeam);
         console.log('pTeam',Fight.pTeam);
 
-        showFightInfo();
-        let text = UI.text('遭遇战，敌我力量悬殊，敌方士气大减',gap,HEIGHT-100+gap,'10');
-        text.setWordWrap(true);
-        RPG.fightMenuLayer.addChildAt(text,1);
+        // let text = UI.text('遭遇战，敌我力量悬殊，敌方士气大减',gap,HEIGHT-100+gap,'10');
+        // RPG.fightMenuLayer.addChildAt(text,1);
+        // showFightInfo();
         Fight.drawFighters();
     },
 
@@ -199,6 +201,7 @@ let Fight = {
                 hpText.y = y;
                 RPG.descLayer.addChild(hpText);
                 y += 3*gap;
+                Fight.showInfo(hero1.nickName+'进入战场');
             }
         }
 
@@ -219,59 +222,73 @@ let Fight = {
         y0 = HEIGHT - 120;
         const list = [
             {label:"攻击",list:[
-                {label:"主炮",click:()=>{trace("File");}},
-                {label:"副炮",click:()=>{trace("File");}},
-                {label:"SE",click:()=>{trace("Open File")}},
+                {label:"主炮",click:Fight.menuCmd()},
+                {label:"副炮",click:Fight.menuCmd()},
+                {label:"SE",click:Fight.menuCmd()},
             ]},
-            {label:"防御",click:()=>{trace("Test1");}},
-            {label:"逃跑",click:()=>{trace("Test1");}},
-            {label:"乘降",click:()=>{trace("Test1");}},
+            {label:"防御",list:[
+                {label:"物品",click:()=>{trace("File");}},
+                {label:"保护",click:()=>{trace("File");}},
+                {label:"防御",click:()=>{trace("Open File")}},
+            ]},
+            {label:"逃跑",list:[
+                {label:"逃跑",click:()=>{trace("File");}},
+            ]},
+            {label:"乘降",list:[
+                {label:"乘降",click:()=>{trace("File");}},
+            ]},
         ];
-
-        let menu = new LMenubar(list,{textSize:10,textColor:"#000",lineColor:"#000",backgroundColor:"#eee"});
-        menu.x = x0;
-        menu.y = y0;
-        talkLayer.addChild(menu);
-        // attackButton = UI.fightButton(x0, y0, "攻击", function (e) {
-        //     RPG.stopAuto = true;
-        //     exitButton.setState(LButton.STATE_DISABLE);
-        //     Fight.fightState = 1;
-        //     Fight.autoFight(0);
-        //     // 首先等待自动战斗结束后，才能开启其他按钮
-        //     attackButton.setState(LButton.STATE_DISABLE);
-        //     RPG.afterStop = function () {
-        //         attackButton.setState(LButton.STATE_ENABLE);
-        //         exitButton.setState(LButton.STATE_ENABLE);
-        //         Fight.fightState = 0;
-        //     }
-        // });
-        // talkLayer.addChild(attackButton);
-        // x0 = x0 + useWidth / 4;
-        // exitButton = UI.fightButton(x0, y0, "逃跑", function (e) {
-        //     // 直接获胜
-        //     Menu.closeMenu();
-        // });
+        Fight.menu = new LMenubar(list,{textSize:10,textColor:"#000",lineColor:"#000",backgroundColor:"#eee"});
+        Fight.menu.x = x0;
+        Fight.menu.y = y0;
+        Fight.menu.name = 'fightMenu';
+        talkLayer.addChild(Fight.menu);
         Fight.endCallback = ()=>{
-            exitButton.setState(LButton.STATE_ENABLE);
+
         };
-        // talkLayer.addChild(exitButton);
-        /*for (let i = 0; i < fightMenus.length; i++) {
-            let currText = fightMenus[i];
-            attackButton = UI.fightButton(x0, y0, currText, function (e) {
-                RPG.stopAuto = true;
-                exitButton.setState(LButton.STATE_DISABLE);
+
+
+    },
+
+    menuCmd:(type)=>{
+        switch(type){
+            case 1://攻击
+                Fight.menu.visible = false;
+                Fight.stopAuto = true;
                 Fight.fightState = 1;
                 Fight.autoFight(0);
-                // 首先等待自动战斗结束后，才能开启其他按钮
-                attackButton.setState(LButton.STATE_DISABLE);
-                RPG.afterStop = function () {
-                    attackButton.setState(LButton.STATE_ENABLE);
-                    exitButton.setState(LButton.STATE_ENABLE);
+                // 行动结束后，再显示菜单
+                Fight.afterStop = ()=>{
+                    Fight.menu.visible = true;
                     Fight.fightState = 0;
-                }
-            });
-
-        }*/
+                };
+                break;
+            case 2://物品
+                Fight.menu.visible = false;
+                Fight.stopAuto = true;
+                Fight.fightState = 1;
+                Fight.autoFight(0);
+                // 行动结束后，再显示菜单
+                Fight.afterStop = ()=>{
+                    Fight.menu.visible = true;
+                    Fight.fightState = 0;
+                };
+                break;
+            case 3://防御
+                Fight.menu.visible = false;
+                Fight.stopAuto = true;
+                Fight.fightState = 1;
+                Fight.autoFight(0);
+                // 行动结束后，再显示菜单
+                Fight.afterStop = ()=>{
+                    Fight.menu.visible = true;
+                    Fight.fightState = 0;
+                };
+                break;
+            case 4://逃跑
+                Menu.closeMenu();
+                break;
+        }
 
     },
 
@@ -282,8 +299,8 @@ let Fight = {
         let a, b;
         let effect;
         if (heroId >= (Fight.pTeam.heroList.length + Fight.eTeam.heroList.length)) {
-            if (RPG.stopAuto) {
-                if (RPG.afterStop) RPG.afterStop();
+            if (Fight.stopAuto) {
+                if (Fight.afterStop) Fight.afterStop();
                 return;
             } else {
                 heroId = 0;
@@ -352,7 +369,7 @@ let Fight = {
             }
         }
         if (hero1) {
-            if (RPG.quickFight) {
+            if (Fight.quickFight) {
                 console.log("Do quick attack", heroId);
                 Fight.doQuickFight(hero1, hero2, effect, function () {
                     Fight.autoFight(heroId + 1);
@@ -692,7 +709,14 @@ let Fight = {
         //     result = heroDef.Hp;
         // }
         return result>>0;
-    }
+    },
+
+    showInfo:(text)=>{
+        if (text) {
+            let content = "<li>" + text + "</li>" + $('.information').html();
+            $('.information').html(content);
+        }
+    },
 };
 
 

@@ -13,15 +13,15 @@ let Effect= function (data,row,col,type=1){
 
     //设定帧动画大小
 	if (type){
-        data.setProperties(0,0,data.image.width/col,data.image.height/row);
+        data.setProperties(0,0,(data.image.width/col)>>0,(data.image.height/row)>>0);
         //得到帧动画图片拆分数组
         list = LGlobal.divideCoordinate(data.image.width,data.image.height,row,col);
     } else {
         let w = row;
         let h = col;
 		data.setProperties(0,0,w,h);
-        let tmpCol = data.image.width / w;
-        let tmpRow = data.image.height / h;
+        let tmpCol = (data.image.width / w)>>0;
+        let tmpRow = (data.image.height / h)>>0;
         //得到帧动画图片拆分数组
         list = LGlobal.divideCoordinate(data.image.width,data.image.height,tmpRow,tmpCol);
 	}
@@ -32,9 +32,9 @@ let Effect= function (data,row,col,type=1){
 		list2 = list2.concat(list[i]);
 	}
 	list3.push(list2);
-	// console.log('list',list);
-	// console.log('list2',list2);
-	// console.log('list3',list3);
+	console.log('list',list);
+	console.log('list2',list2);
+	console.log('list3',list3);
 	//设定人物动画
 	self.anime = new LAnimation(this,data,list3);
 	self.maxFrame = list3[0].length;

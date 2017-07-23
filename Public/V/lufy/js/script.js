@@ -30,10 +30,7 @@
                     Talk.makeChoice(stage.choice.choice1);
                 });
             }},*/
-            {chara:"npc", img:"",x:5,   y:2, action: function(){
-                // 获得浆果
-                RPG.getBerry(2,1,stage.talk.talk8);
-            }},
+
             {chara:"npc",x:16,y:16,action:()=>{
                 // 进入战车工厂
                 RPG.jumpStage(script.stage01, 5, 8, 3);

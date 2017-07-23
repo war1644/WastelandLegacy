@@ -88,8 +88,7 @@ let loadingLayer,
 	imglist;//读取完的图片数组
 
 function main(){
-    // LGlobal.speed=1000/30;
-
+	LGlobal.preventDefault = false;
     if(LGlobal.canTouch){
 		LGlobal.stageScale = LStageScaleMode.EXACT_FIT;  //指定整个应用程序在指定区域中可见，但不尝试保持原始高宽比。
 		//LGlobal.stageScale = LStageScaleMode.NO_BORDER;  //指定整个应用程序填满指定区域，不会发生扭曲，但有可能会进行一些裁切，同时保持应用程序的原始高宽比。
@@ -117,6 +116,7 @@ function main(){
 	imgData.push({type:"js",path:"./js/FightMenu.js"});
 	imgData.push({type:"js",path:"./js/Fight.js"});
 	imgData.push({type:"js",path:"./js/Fighter.js"});
+    imgData.push({type:"js",path:"./js/GameSocket.js"});
 
 	//game other img
     // imgData.push({name:"start_png",path:"./image/start.bmp"});
@@ -338,7 +338,7 @@ function onUp(event){
 		isKeyDown = false;
 		clearTimeout(timer);
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
-    		RPG.dealMenuUp(event.offsetX, event.offsetY);
+    		Menu.dealMenuUp(event.offsetX, event.offsetY);
     	} else if(RPG.checkState(RPG.MAP_CONTROL)) {
 			Talk.addTalk();
 		}
@@ -438,7 +438,7 @@ function initScript(x,y,frame=0){
  **/
 function gameLayerInit() {
     backLayer = new LSprite();
-    backLayer.graphics.drawRect(0,'#000',[0,0,WIDTH,HEIGHT],true,'#000');
+    backLayer.graphics.drawRect(0,'#384048',[0,0,WIDTH,HEIGHT],true,'#000020');
     addChild(backLayer);
     //地图层
     mapLayer = new LSprite();

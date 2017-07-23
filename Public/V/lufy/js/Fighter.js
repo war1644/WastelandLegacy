@@ -7,7 +7,7 @@ let Fighter = function (data,row,col){
 	self.speed = 3;
 	self.speedIndex = 0;
 	//设定人物大小
-	data.setProperties(0,0,data.image.width/col,data.image.height/row);
+    data.setProperties(0,0,(data.image.width/col)>>0,(data.image.height/row)>>0);
 	//得到人物图片拆分数组
 	let list = LGlobal.divideCoordinate(data.image.width,data.image.height,row,col);
 	//设定人物动画

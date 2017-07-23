@@ -11,7 +11,14 @@
  * Date: 2017/7/16 19:58
  *
  */
-
+//扩展send方法
+WebSocket.prototype.wlSend = function (type,params) {
+    let s = this;
+    params = params || {};
+    params.type = type;
+    params.name = selfName;
+    s.send(JSON.stringify(params));
+};
 
 function MyListChildView(i){
     let self = this;
@@ -157,26 +164,39 @@ let UI = {
     /**
      * 纯色背景
      */
-    drawColorWindow:(layer, x, y, w, h, alpha=0.9,color='#000')=>{
+    drawColorWindow:(layer=false, x, y, w, h, alpha=0.9,color='#000')=>{
         let colorWindow = new LSprite();
         colorWindow.graphics.drawRect(0,'#000',[0,0,w,h],true,color);
         colorWindow.x = x;
         colorWindow.y = y;
         colorWindow.alpha = alpha;
-        layer.addChild(colorWindow);
+        if (layer) layer.addChild(colorWindow);
         return colorWindow;
     },
     /**
      * 纯色背景带边框
      */
-    drawBorderWindow:(layer, x, y, w, h, alpha=0.9)=> {
+    drawBorderWindow:(layer=false, x, y, w, h, alpha=0.9)=> {
         let talkWindow = new LSprite();
-        talkWindow.graphics.drawRect(5, '#ffe', [0, 0, w, h], true, '#009');
+        talkWindow.graphics.drawRect(5, '#384048', [0, 0, w, h], true, '#000020');
         talkWindow.x = x;
         talkWindow.y = y;
         talkWindow.alpha = alpha;
-        layer.addChild(talkWindow);
+        if (layer) layer.addChild(talkWindow);
         return talkWindow;
+    },
+
+    /**
+     * 边框绘制
+     */
+    drawBorder:(layer,color='#ffe',x=0, y=0, w, h,linW=2,alpha=0.9)=>{
+        let rectBorder = new LSprite();
+        rectBorder.graphics.drawRect(linW,color,[0,0,w,h]);
+        rectBorder.x = x;
+        rectBorder.y = y;
+        rectBorder.alpha = alpha;
+        layer.addChild(rectBorder);
+        return rectBorder;
     },
 
     /**
@@ -231,31 +251,69 @@ let UI = {
         textObj.size = size;
         textObj.color = color;
         textObj.text = text;
+        if (text) textObj.setWordWrap(true,18);
         textObj.width = menuWidth-2*gap;
-        // textObj.height = menuHeight;
         return textObj;
     },
 
     /**
      * 文本
      */
-    textScorll:(text,x,y,size='14',color='#fff')=>{
-        let textObj = new LTextFieldType();
-        textObj.x = x;
-        textObj.y = y;
-        textObj.size = size;
-        textObj.color = color;
-        textObj.text = text;
-        textObj.width = menuWidth-2*gap;
-        // textObj.height = menuHeight;
-        return textObj;
+    textScorll:(layer,text,x,y,size='14',color='#fff')=>{
+            let t = document.getElementById("gameInfo"), i;
+            if (text.length > 0 && t === null) {
+                let d = document.createElement("DIV");
+                d.position=0;
+                d.style.position = "absolute";
+                document.body.appendChild(d);
+                t = document.createElement("TEXTAREA");
+                t.id = "gameInfo";
+                t.style.width = (window.innerWidth*0.5) + "px";
+                t.style.height = "200px";
+                let b = document.createElement("BUTTON");
+                b.style.width = (window.innerWidth*0.25) + "px";
+                b.innerHTML="Hide";
+                d.appendChild(b);
+                LEvent.addEventListener(b,LGlobal.mobile ? "touchstart":"click", function(e){
+                    t.style.display = (t.style.display == "none" ? "":"none");
+                });
+                b = document.createElement("BUTTON");
+                b.style.width = (window.innerWidth*0.25) + "px";
+                b.innerHTML="position";
+                d.appendChild(b);
+                let f = function(e){
+                    d.position++;
+                    if(d.position == 0){
+                        d.style.top = "5px";
+                        d.style.left = "5px";
+                    }else if(d.position == 1){
+                        d.style.top = (window.innerHeight - 20 - parseInt(t.style.height)) + "px";
+                        d.style.left = "5px";
+                    }else if(d.position == 2){
+                        d.style.top = "5px";
+                        d.style.left = (window.innerWidth - parseInt(t.style.width)) + "px";
+                    }else{
+                        d.style.top = (window.innerHeight - 20 - parseInt(t.style.height)) + "px";
+                        d.style.left = (window.innerWidth - parseInt(t.style.width)) + "px";
+                        d.position = -1;
+                    }
+                };
+                f();
+                LEvent.addEventListener(b,LGlobal.mobile ? "touchstart":"click", f);
+                d.appendChild(document.createElement("BR"));
+                d.appendChild(t);
+            }
+            for (i = 0; i < text.length; i++) {
+                t.value = t.value + text[i] + "\r\n";
+                t.scrollTop = t.scrollHeight;
+            }
     },
 
     /**
      * 物品icon
      */
     icon:(layer,item,x,y)=>{
-        let bitmapData = new LBitmapData(imglist["iconset"], RPG.ItemList[item.index].pic.x*RPG.iconStep, RPG.ItemList[item.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+        let bitmapData = new LBitmapData(imglist["iconset"], ItemList[item.index].pic.x*RPG.iconStep, ItemList[item.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
         let bitmap = new LBitmap(bitmapData);
         bitmap.x= x;
         bitmap.y= y;
@@ -265,7 +323,7 @@ let UI = {
     // 显示获得物品
     showGetItem:(id, num)=>{
         UI.drawBorderWindow(effectLayer,0,0,WIDTH, 40);
-        let item1 = RPG.ItemList[id];
+        let item1 = ItemList[id];
         // 图片
         // bitmapData = new LBitmapData(imglist["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep),
         // bitmap = new LBitmap(bitmapData);

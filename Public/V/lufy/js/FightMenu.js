@@ -36,6 +36,6 @@ function showFightInfo(){
 	RPG.fightMenuLayer.removeAllChild();
 	let x0 = 0;
 	let y0 = HEIGHT - 100;
-	UI.drawBorderWindow(RPG.fightMenuLayer, x0, y0, menuWidth, 100);
-	talkLayer.addChild(RPG.fightMenuLayer);
+	UI.drawColorWindow(RPG.fightMenuLayer, x0, y0, menuWidth, 100);
+    talkLayer.addChild(RPG.fightMenuLayer);
 }

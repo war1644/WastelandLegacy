@@ -8,12 +8,63 @@
     <meta name="author" content="路漫漫">
     <script type="text/javascript" src="./lufylegend-1.10.1.js"></script>
     <script type="text/javascript" src="./lufylegend.ui-0.14.1.min.js"></script>
+    <script type="text/javascript" src="./jquery.min.js"></script>
     <script type="text/javascript" src="./js/GameLib.js"></script>
     <script type="text/javascript" src="./js/map.js"></script>
     <script type="text/javascript" src="./js/rpg.js"></script>
     <script type="text/javascript" src="./js/Main.js"></script>
 </head>
+<style>
+    #box{
+        width:100px;
+        height:50px;
+        position: absolute;
+        background: #000020;
+        border: 10px solid #384048;
+        border-radius: 10px;
+        box-shadow: 0 0 5px #fff;
+        text-align: center;
+        overflow: hidden;
+        z-index: 9999;
+        font-size: 20px;
+    }
+    .gameMsg{
+        color: #fff;
+        text-align: center;
+        padding: 10px 20px;
+        /*font-size: 14px;*/
+        position: relative;
+    }
+
+    .information{
+        overflow: auto;
+        /*width: 235px;*/
+        height: 200px;
+        background-color: white;
+        border: 1px solid #CCCCEE;
+        text-align: left;
+        padding: 5px;
+        overflow: auto;
+    }
+    .footBtn{
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .footBtn input{
+        height: 30px;
+    }
+</style>
 <body style="margin:0px;padding:0px;">
+<div id="box">
+    <div class="gameMsg" data-num="0">消息</div>
+    <div class="information" style="display: none">
+
+    </div>
+    <div class="footBtn" style="display: none">
+        <input type="text" id="userMsg">
+        <button id="send">确定</button>
+    </div>
+</div>
 <div id="mylegend">loading……</div>
 </body>
 </html>

@@ -42,7 +42,6 @@ let HeroList= [
 ];
 let HeroPlayer = {
 	// 人物列表中人物编号
-	self:this,
 	index: 0,
     //角色昵称
 	nickName:'',
@@ -60,14 +59,14 @@ let HeroPlayer = {
 	// 技能列表
 	skillList: [],
 	// 装备：武器、防具、装饰
-	weapon: 24,
-	armor: 11,
-	ornament: 10,
+	weapon: -1,
+	armor: -1,
+	ornament: -1,
 	getPerson:function(){
 		return HeroList[this.index];
 	},
 	getName:function(){
-		return HeroList[this.index].job;
+		return this.nickName;
 	},
 
 	getFace:function(){
@@ -99,15 +98,20 @@ let HeroPlayer = {
 			this.alive= false;
 		}
 	},
-	addHp:function(hit){
-		hit= Math.ceil(hit);
+	addHp:function(hit,name=false){
+        if (!this.alive) {
+            if (name==='再生丸'){
+            	this.alive= true;
+            }else {
+            	Fight.showInfo('再生丸或电击可复活队友');
+            	return;
+			}
+            // 补血后自动复活
+        }
+		hit = hit>>0;
 		this.Hp= Number(this.Hp)+ Number(hit);
 		if (this.Hp>= this.MaxHp) {
 			this.Hp= this.MaxHp;
-		}
-		if (!this.alive) {
-			// 补血后自动复活
-			this.alive= true;
 		}
 	},
 	addSp: function(hit){
@@ -145,10 +149,10 @@ let HeroPlayer = {
 		return Number(a);
 	},
 	getWeapon:function(){
-		return RPG.ItemList[this.weapon];
+		return ItemList[this.weapon];
 	},
 	getArmor:function(){
-		return RPG.ItemList[this.armor];
+		return ItemList[this.armor];
 	},
 
 };

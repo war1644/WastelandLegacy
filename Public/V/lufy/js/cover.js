@@ -9,10 +9,12 @@
 RPG.newGame = function () {
     //初始化玩家队伍
 	mainTeam = RPG.beget(PlayerTeam);
-    console.log(mainTeam);
     //向玩家队伍增加人物（人物索引，人物等级)
 	mainTeam.addHero(0, 50,'路漫漫');
     mainTeam.addHero(1, 50,'废土04');
+    //添置物品
+    mainTeam.addItem(11, 20);
+    mainTeam.addItem(12, 20);
 
 	RPG.initSwitch();
     //初始化敌人
@@ -102,10 +104,9 @@ RPG.loadGame= function(aSlot){
 					mainTeam.addItem(tempData.items[i].index, tempData.items[i].num);
 				}
 				for(let i= 0; i< tempData.heros.length; i++){
-					mainTeam.addHero(tempData.heros[i].index);
+					mainTeam.addHero(tempData.heros[i].index,tempData.heros[i].lv);
 					RPG.extend(mainTeam.heroList[i], tempData.heros[i]);
 				}
-				//RPG.SWITCH=tempData.swt.slice(0);
 				RPG.initSwitch();
 				RPG.extend(RPG.SWITCH, tempData.swt);
 				RPG.jumpStage(script[tempData.gate],Number(tempData.x), Number(tempData.y));
@@ -147,7 +148,7 @@ RPG.getDateTimeStr= function(){
 	return result;
 };
 RPG.howToUse= function(){
-	Talk.startTalk(talklist1.talk6);
+	Talk.startTalk(talkList.gameExplainTalk);
 };
 RPG.drawCover= function() {
 	// 封面图
@@ -156,7 +157,7 @@ RPG.drawCover= function() {
 	sLayer.removeAllChild();
 
     let title = UI.text('废土战记',0,50,'35');
-    title.x = (WIDTH-title.width)>>1;
+    title.x = (WIDTH-title.getWidth())>>1;
     sLayer.addChild(title);
 
 	// 新的开始

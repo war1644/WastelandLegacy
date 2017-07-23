@@ -36,10 +36,11 @@ let PlayerTeam = {
 			}
 		}
 		if (!found) {
-			let i1= RPG.beget(RPG.Item);
-			i1.index = id;
-			i1.num = num;
-			this.itemList.push(i1);
+			let item = RPG.beget(Item);
+			item.index = id;
+			item.num = num;
+            item.name = ItemList[id].name;
+			this.itemList.push(item);
 		}
 		if (visible) UI.showGetItem(id, num);
 	},
@@ -60,12 +61,12 @@ let PlayerTeam = {
 		} else {
 			this.itemList= this.itemList.slice(0, itemId).concat(this.itemList.slice(itemId+ 1));
 		}
-		if (item1.getItemDesc().kind=== 2){
+		if (item1.getItem().kind=== 2){
 			// 使用类
 			item1.useTo(hero1);
-		} else if (item1.getItemDesc().kind=== 1){
+		} else if (item1.getItem().kind=== 1){
 			// 装配类
-			switch (item1.getItemDesc().type) {
+			switch (item1.getItem().type) {
 				case 1: 
 					this.addItem(hero1.changeWeapon(item1.index), 1);
 					break;
@@ -102,7 +103,6 @@ let PlayerTeam = {
      */
     addEnemy: function (id, lv){
         let e1= RPG.beget(Enemy);
-        console.log('e1',e1);
         e1.index = id;
         e1.setLevel(lv);
         e1.fullHeal();
@@ -146,19 +146,19 @@ let PlayerTeam = {
 		let hero1= this.heroList[0];
 	},
 
-	haveItem: function(aId){
+	haveItem: function(itemId){
 		// 判断是否有某物品，无论是否被装配
 		let item1, hero1;
 		for (let i= 0; i< this.itemList.length; i++) {
 			item1= this.itemList[i];
-			if (item1.index== aId) {
+			if (item1.index== itemId) {
 				return true;
 			}
 		}
 		// 物品表里没有，看装备情况
 		for (let i= 0; i< this.heroList.length; i++){
 			hero1= this.heroList[i];
-			if (hero1.weapon== aId || hero1.armor== aId || hero1.ornament== aId){
+			if (hero1.weapon== itemId || hero1.armor== itemId || hero1.ornament== itemId){
 				return true;
 			}
 		}

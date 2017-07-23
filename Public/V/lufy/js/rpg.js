@@ -133,18 +133,7 @@ RPG.checkSwitch= function(k){
 	}
 };
 
-/**
- * 边框绘制
- */
-RPG.drawBorder= function(layer,color='#ffe',x=0, y=0, w, h,linW=2,alpha=0.9) {
-    let rectBorder = new LSprite();
-    rectBorder.graphics.drawRect(linW,color,[x,y,w,h]);
-    rectBorder.x = x;
-    rectBorder.y = y;
-	rectBorder.alpha = alpha;
-    layer.addChild(rectBorder);
-    return rectBorder;
-};
+
 
 
 

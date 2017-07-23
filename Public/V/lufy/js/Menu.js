@@ -32,8 +32,7 @@
 	RPG.saveSlot= 0;
 	// 当前显示的主队成员
 	RPG.currentHeroShow= 0;
-	// 用于辅助物品使用的显示
-	RPG.showItemEffectLabel= [];
+	
 
 RPG.menuShowState= function() {
 	//对话人物名称
@@ -137,7 +136,7 @@ RPG.menuShowState= function() {
 	// 显示持有物品 武器 防具 饰物
 	let showedItems=["weapon","armor","ornament"];
 	for (let i= 0; i<= 2; i++) {
-		item1= RPG.ItemList[hero1[showedItems[i]]];
+		item1= ItemList[hero1[showedItems[i]]];
 		if (item1) {
 			// 图片
 			let imgData = new LBitmapData(imglist["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
@@ -164,7 +163,7 @@ RPG.menuShowItems = function(team) {
 
 	text = UI.text("物品",menuWidth / 2,10,'20');
 	// text.width = 200;
-	// text.textAlign = "center";
+	text.textAlign = "center";
 	ctrlLayer.addChild(text);
 	// 所有物品画在一张图片上
 	let maskObj = new LSprite();
@@ -194,20 +193,20 @@ RPG.menuShowItems = function(team) {
 		// 逐个显示物品
 		item1= team.itemList[i];
         // 图片
-		// bitmapData = new LBitmapData(imglist["iconset"], RPG.ItemList[item1.index].pic.x*RPG.iconStep, RPG.ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+		// bitmapData = new LBitmapData(imglist["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
 		// bitmap = new LBitmap(bitmapData);
 		// bitmap.x= gap* 2;
 		// bitmap.y= i* 30+ gap;
 		// RPG.listLayer.addChild (bitmap);
 		// 物品名称
-		text = UI.text(RPG.ItemList[item1.index].name,gap* 2+ 30,i* 30+ gap+ 5);
+		text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
 		RPG.listLayer.addChild(text);
 
-        let num = text.clone();
-		// 物品数量
-		num.x = 180;
-		num.text = item1.num;
-		RPG.listLayer.addChild(num);
+        // let num = text.clone();
+		// // 物品数量
+		// num.x = 180;
+		// num.text = item1.num;
+		// RPG.listLayer.addChild(num);
 	}
 	if (RPG.chooseItem>= 0) {
 		RPG.menuShowOneItem(RPG.chooseItem);
@@ -217,7 +216,7 @@ RPG.menuShowItems = function(team) {
 };
 
 RPG.menuShowOneItem= function(id) {
-	 let gap= 10,item1, text;
+	 let item1, text;
 	// 详细信息
 	RPG.descLayer.removeAllChild();
 	// 显示单一物品详细信息
@@ -226,20 +225,16 @@ RPG.menuShowOneItem= function(id) {
 	}
 	item1= mainTeam.itemList[id];
 	if (item1){
-		// 图片
-		// 列表中增加选中背景贴图
 		RPG.listFocus.x = gap;
 		RPG.listFocus.y = id* 30+ 5;
 		// 详细描述
-		text = UI.text(RPG.ItemList[item1.index].description,gap* 2,gap+ 5);
-		// text.width= menuWidth- gap* 8;
-		text.setWordWrap(true, 20);
+		text = UI.text(ItemList[item1.index].description,gap* 2,gap+ 5);
 		RPG.descLayer.addChild(text);
 	}
 };
 
 // 拖动物品栏的物品
-RPG.dragItemBegin= function(ax, ay, aId){
+RPG.dragItemBegin= function(ax, ay, itemId){
 	let item1,
 		iconbitmapdata, iconbitmap,
 		text, i;
@@ -247,20 +242,20 @@ RPG.dragItemBegin= function(ax, ay, aId){
     // 详细信息
 	RPG.descLayer.removeAllChild();
 	// 显示单一物品详细信息
-	item1= mainTeam.itemList[aId].getItemDesc();
-	//
+	item1 = mainTeam.itemList[itemId].getItem();
 	text = UI.text(''.description,gap* 2,5);
 	switch (item1.kind){
-		case 1:
+        case 1:
             text.text = item1.name+ "装配：";
             break;
         case 2:
             text.text = item1.name+ "使用：";
             break;
+        case 4:
         case 3:
             text.text = item1.name+ "不可使用。";
             break;
-	}
+    }
 	RPG.descLayer.addChild(text);
 	if (item1.kind!==3) {
 		// 显示姓名
@@ -270,7 +265,7 @@ RPG.dragItemBegin= function(ax, ay, aId){
 		RPG.descLayer.addChild(RPG.nameText);
 		RPG.chooseHero= -1;
 		let cc= (menuWidth- gap* 2)/ mainTeam.heroList.length;
-		RPG.showItemEffectLabel.length= 0;
+		// Menu.showItemEffectLabel.length= 0;
 		for (i=0; i< mainTeam.heroList.length; i++){
 			let hero= mainTeam.heroList[i];
 			let heroImg= HeroList[hero.index].img;
@@ -307,8 +302,6 @@ RPG.dragItemBegin= function(ax, ay, aId){
 				text1.textAlign= "center";
 				if (item1.type=== 1) {
 					text1.text = "HP="+ hero.Hp;
-				} else if (item1.type=== 2) {
-					text1.text = "MP="+ hero.Mp;
 				}
 				RPG.descLayer.addChild(text1);
 				// 预计使用效果
@@ -316,8 +309,6 @@ RPG.dragItemBegin= function(ax, ay, aId){
 				let text2 = text1.clone();
 				if (item1.type=== 1) {
 					text2.text = "HP="+ hero2.Hp;
-				} else if (item1.type=== 2) {
-					text2.text = "MP="+ hero2.Mp;					
 				}
 				if (text2.text=== text.text) {
 					text2.color = "#FFFFFF";
@@ -326,19 +317,19 @@ RPG.dragItemBegin= function(ax, ay, aId){
 				}
 				text2.visible= false;
 				RPG.descLayer.addChild(text2);
-				RPG.showItemEffectLabel.push(text2);
-				RPG.showItemEffectLabel.push(text);
+				Menu.showItemEffectLabel.push(text2);
+				Menu.showItemEffectLabel.push(text);
 			}
 			RPG.descLayer.addChild(chara);
 		}
-		RPG.chooseItem= aId;
+		RPG.chooseItem= itemId;
 	} else {
 		RPG.nameText= null;
 		RPG.chooseItem= -1;
 	}
 
 	// 图标作为拖动物
-	// let bitmapData = new LBitmapData(imglist["iconset"], RPG.ItemList[item1.index].pic.x*RPG.iconStep, RPG.ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+	// let bitmapData = new LBitmapData(imglist["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
 	// RPG.dragingItem = new LBitmap(bitmapData);
     RPG.dragingItem = text.clone();
     RPG.dragingItem.text = item1.name;
@@ -349,20 +340,7 @@ RPG.dragItemBegin= function(ax, ay, aId){
 	RPG.descLayer.addChild(RPG.dragingItem);
 	RPG.isItemDraging= true;
 };
-// 显示物品使用效果
-RPG.showLabel= function(aId) {
-	for (let i= 0; i< RPG.showItemEffectLabel.length; i++) {
-		if(((i/2)<<0) === i/2){
-			RPG.showItemEffectLabel[i].visible= false;
-		} else {
-			RPG.showItemEffectLabel[i].visible= true;
-		}
-	}
-    if (aId>= 0 && RPG.showItemEffectLabel.length> 0) {
-		RPG.showItemEffectLabel[aId* 2].visible = true;
-		RPG.showItemEffectLabel[aId* 2 + 1].visible = false;
-    }
-};
+
 RPG.dropItem= function(){
 	RPG.descLayer.removeAllChild();
 	RPG.isItemDraging= false;
@@ -487,20 +465,19 @@ RPG.openMenu= function() {
 	talkLayer.x = 10;
 	talkLayer.y = 10;
 	UI.drawBorderWindow(talkLayer, 0, 0, menuWidth, menuHeight);
-
+    let y = (menuHeight - gap - menusDown)<<0;
 	for (let i=0; i< RPG.iconMenu.length; i++) {
 		let obj = RPG.iconMenu[i];
-        let text = new LTextField();
-        obj.x = text.x = (tmpMenuWidth*i + menusDown/2 - gap)<<0 ;
-        obj.y = text.y = (menuHeight - gap - menusDown)<<0;
-        text.text = obj.name;
-        text.color = '#fff';
+        let x = (tmpMenuWidth*i + menusDown/2 - gap)<<0 ;
+        let text = UI.text(obj.name,x,y);
+        obj.x = x;
+        obj.y = y;
         obj.textObj = text;
         talkLayer.addChild(text);
         //默认选中状态页
         if (i===0){
             //绘制选中
-            obj.borderObj = RPG.drawBorder(talkLayer,text.x,text.y,text.getWidth()+5,text.getHeight()+5);
+            obj.borderObj = UI.drawBorder(talkLayer,text.x,text.y,text.getWidth()+5,text.getHeight()+5);
 		}
 	}
 	// 子菜单层
@@ -509,29 +486,6 @@ RPG.openMenu= function() {
 	RPG.currentHeroShow= 0;
 	RPG.menuShowState();
 };
-
-
-let Menu = {
-    waitMenu:(callback)=>{
-        if (RPG.checkState(RPG.UNDER_WINDOWS)) {
-            setTimeout(function(){Menu.waitMenu(callback)}, 500);
-        } else {
-            if (callback)  callback();
-        }
-    },
-
-    closeMenu:()=>{
-        // 切换状态
-        RPG.popState();
-        //将对话层清空
-        talkLayer.removeAllChild();
-        RPG.cmdChoose = -1;
-        // 这个动作，是为了屏蔽鼠标抬起事件
-        isKeyDown= false;
-    },
-};
-
-
 
 RPG.dealMenu= function(ax, ay){
     // 根据点击位置，判断移动方向
@@ -559,7 +513,7 @@ RPG.dealMenu= function(ax, ay){
 			iconMenuItem = RPG.iconMenu[i];
 			if (i===RPG.cmdChoose) {
                 //绘制选中
-                iconMenuItem.borderObj = RPG.drawBorder(talkLayer,index.x,index.y,index.textObj.getWidth()+5,index.textObj.getHeight()+5);
+                iconMenuItem.borderObj = UI.drawBorder(talkLayer,index.x,index.y,index.textObj.getWidth()+5,index.textObj.getHeight()+5);
 			} else {
                 if(iconMenuItem.borderObj) talkLayer.removeChild(iconMenuItem.borderObj);
 			}
@@ -644,15 +598,15 @@ RPG.dealMenuMove= function(ax, ay){
 					// 可以选人的状态
 					let cc= (ax/ (menuWidth/ mainTeam.heroList.length))<<0;
 					if (cc>=0 && cc<mainTeam.heroList.length && ay> RPG.descLayer.y) {
-						RPG.nameText.text= HeroList[mainTeam.heroList[cc].index].name;
-						RPG.chooseHero= cc;
-						RPG.showLabel(cc);
+						RPG.nameText.text= mainTeam.heroList[cc].nickName;
+						RPG.chooseHero = cc;
+                        Menu.showLabel(cc);
 						// 同时显示可能会出现的值的变化
 						//console.log(RPG.nameText.text);
 					} else {
 						RPG.nameText.text= "";
 						RPG.chooseHero= -1;	
-						RPG.showLabel(-1);
+						Menu.showLabel(-1);
 					}
 				}
 			} else {
@@ -696,11 +650,50 @@ RPG.dealMenuMove= function(ax, ay){
 		}
 	}
 };
-RPG.dealMenuUp= function(ax, ay){
-	if (RPG.menuPage===2 || RPG.menuPage===1){
-		clearTimeout(RPG.dragTimer);
-		if (RPG.isItemDraging){
-			RPG.dropItem();
+
+
+let Menu = {
+	// 用于辅助物品使用的显示
+	showItemEffectLabel:[],
+	// 显示物品使用效果
+    showLabel:(itemId)=>{
+        for (let i= 0; i< Menu.showItemEffectLabel.length; i++) {
+            if(((i/2)<<0) === i/2){
+                Menu.showItemEffectLabel[i].visible= false;
+            } else {
+                Menu.showItemEffectLabel[i].visible= true;
+            }
+        }
+        if (itemId>= 0 && Menu.showItemEffectLabel.length) {
+            Menu.showItemEffectLabel[itemId* 2].visible = true;
+            Menu.showItemEffectLabel[itemId* 2 + 1].visible = false;
+        }
+    },
+
+	waitMenu:(callback)=>{
+		if (RPG.checkState(RPG.UNDER_WINDOWS)) {
+			setTimeout(function(){Menu.waitMenu(callback)}, 500);
+		} else {
+			if (callback)  callback();
 		}
-	}
+	},
+
+    dealMenuUp:(x, y)=>{
+        if (RPG.menuPage===2 || RPG.menuPage===1){
+            clearTimeout(RPG.dragTimer);
+            if (RPG.isItemDraging){
+                RPG.dropItem();
+            }
+        }
+    },
+
+	closeMenu:()=>{
+		// 切换状态
+		RPG.popState();
+		//将对话层清空
+		talkLayer.removeAllChild();
+		RPG.cmdChoose = -1;
+		// 这个动作，是为了屏蔽鼠标抬起事件
+		isKeyDown= false;
+	},
 };
