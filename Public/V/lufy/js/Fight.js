@@ -228,24 +228,26 @@ let Fight = {
             ]},
             {label:"防御",list:[
                 {label:"物品",click:()=>{Fight.menuCmd(2)}},
-                {label:"保护",click:()=>{trace("File");}},
-                {label:"防御",click:()=>{trace("Open File")}},
+                {label:"保护",click:()=>{ Lib.showInfo('袒护');}},
+                {label:"防御",click:()=>{ Lib.showInfo('防御');}},
             ]},
             {label:"逃跑",list:[
                 {label:"逃跑",click:()=>{Fight.menuCmd(4)}},
             ]},
             {label:"乘降",list:[
-                {label:"乘降",click:()=>{trace("File");}},
+                {label:"乘降",click:()=>{ Lib.showInfo('乘降');}},
             ]},
         ];
-        Fight.menu = new LMenubar(list,{textSize:10,textColor:"#000",lineColor:"#000",backgroundColor:"#eee"});
+        Fight.menu = new LMenubar(list,{textSize:14,textColor:"#000",lineColor:"#000",backgroundColor:"#eee"});
         Fight.menu.x = x0;
         Fight.menu.y = y0;
         Fight.menu.name = 'fightMenu';
         talkLayer.addChild(Fight.menu);
         Fight.endCallback = ()=>{
-
+                Fight.menu.visible = true;
         };
+        
+        
 
 
     },
