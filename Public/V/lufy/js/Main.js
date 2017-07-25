@@ -131,6 +131,7 @@ function main(){
     imgData.push({name:"猎人",path:"./image/MovePic/猎人.png"});
     imgData.push({name:"机械师",path:"./image/MovePic/机械师.png"});
     imgData.push({name:"雷娜",path:"./image/MovePic/雷娜.png"});
+        imgData.push({name:"白象战车",path:"./image/MovePic/白象战车.png"});
 
     //FightPic
     imgData.push({name:"巨炮",path:"./image/FightPic/巨炮.png"});

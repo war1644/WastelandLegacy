@@ -25,6 +25,7 @@ let Fight = {
     trophy: false,
     // 当前正在动作的对象
     currentFighter:{},
+    currentToFighter:{},
     // 当前战斗状态
     state:-1,
     // 战斗胜负标记
@@ -296,7 +297,8 @@ let Fight = {
                  C为本次战斗中逃跑方已经尝试过的逃跑次数，包括正在进行的这一次逃跑。
                  若F大于255，则逃跑成功。否则在0到255之间生成一個随机数D。若D小于F则逃跑成功，否则逃跑失败。
                  若使用道具或某些特性逃跑必定成功*/
-                Menu.closeMenu();
+          //hero.speed;
+Menu.closeMenu();
                 break;
         }
 
@@ -645,7 +647,7 @@ let Fight = {
         if (afterFunc) afterFunc();
     },
 
-    //计算敌人的平均速度
+    //计算团队的平均速度
     getEmyAverageSpeed:(team)=>{
         let sumSpeed = 0;
         let len = team;

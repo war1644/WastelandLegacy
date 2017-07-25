@@ -62,7 +62,7 @@
     },
     stage02:{
         name: "战车工厂",
-        id: "stage05",
+        id: "stage02",
         map: home1,
         imgName:['home1_0','home1_1'],
         mapData: {},
@@ -96,7 +96,7 @@
                 }
             }},
             // fight test
-            {chara:"touch", img:"npc5", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
+            {chara:"touch", img:"白象战车", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
             {x: 6, y: 13, action:()=>{
                     // 回到大地图
                     RPG.jumpStage(script.stage01, 2, 7, UP);

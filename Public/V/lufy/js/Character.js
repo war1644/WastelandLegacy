@@ -8,7 +8,6 @@
  * @param speed 人物速度
  * @param actEvent 执行事件
  **/
-let moveTime = 0;//NPC自动移动间隔
 function Character(isHero,move=3,data,row=4,col=4,speed=3, actEvent=false){
 	base(this,LSprite,[]);
 	let self = this;
@@ -33,6 +32,7 @@ function Character(isHero,move=3,data,row=4,col=4,speed=3, actEvent=false){
 	self.move = false;
 	//在一个移动步长中的移动次数设定
 	self.moveIndex = 0;
+	self.moveTime = 5;//NPC自动移动间隔
 }
 /**
  * 循环事件 
@@ -62,9 +62,11 @@ Character.prototype.onframe = function (){
 			//npc达到间隔再移动
             if (self.moveMode === 2) {
                 self.easyMove();
-			}else {
-            	moveTime++;
-                if (moveTime>30) self.easyMove();
+			}else  if (self.moveMode === 1){
+            	self.moveTime--;
+                if (self.moveTime) {
+                      self.easyMove();
+                      self.moveTime=5;
             }
 		}
 		// if (stage.hasBig) resetChildIndex(charaLayer);

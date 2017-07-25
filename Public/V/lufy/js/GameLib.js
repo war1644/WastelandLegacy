@@ -121,7 +121,7 @@ function checkAuto(){
  * 检测战斗事件
  */
 function checkIntoBattle(){
-    Fight.simpleFight(1);
+    //Fight.simpleFight(1);
     // if(player.tmp >= player.enemyShow){
     //     if (rangeRand(0,9)>2){
     //         Fight.simpleFight(4);
