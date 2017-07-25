@@ -88,7 +88,7 @@ let loadingLayer,
 	imglist;//读取完的图片数组
 
 function main(){
-	LGlobal.preventDefault = false;
+	//LGlobal.preventDefault = false;
     if(LGlobal.canTouch){
 		LGlobal.stageScale = LStageScaleMode.EXACT_FIT;  //指定整个应用程序在指定区域中可见，但不尝试保持原始高宽比。
 		//LGlobal.stageScale = LStageScaleMode.NO_BORDER;  //指定整个应用程序填满指定区域，不会发生扭曲，但有可能会进行一些裁切，同时保持应用程序的原始高宽比。
@@ -203,8 +203,8 @@ function gameInit(){
 
 function drawImgMap(map) {
     //得到瓦片
-    let bitmapData = new LBitmapData(imglist[CurrentMapImg[0]]);
-    let bitmapDataUp = new LBitmapData(imglist[CurrentMapImg[1]]);
+    let bitmapData = new LBitmapData(imglist[stage.imgName[0]]);
+    let bitmapDataUp = new LBitmapData(imglist[stage.imgName[1]]);
     let bitmap = new LBitmap(bitmapData);
     let bitmapUp = new LBitmap(bitmapDataUp);
     CurrentMapEvents = map.layers.pop();

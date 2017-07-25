@@ -3,7 +3,7 @@
         name: "河畔镇",
         id: "stage01",
         map: laduo,
-        imgName:['laduo_0','laduo_1'],
+        imgName:['town_0','town_1'],
         mapData: {},
         events:[
             // 获胜离开点

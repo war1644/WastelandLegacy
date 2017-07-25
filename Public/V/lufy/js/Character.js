@@ -63,10 +63,11 @@ Character.prototype.onframe = function (){
             if (self.moveMode === 2) {
                 self.easyMove();
 			}else  if (self.moveMode === 1){
-            	self.moveTime--;
-                if (self.moveTime) {
+            	//self.moveTime--;
+                //f (!self.moveTime) {
                       self.easyMove();
-                      self.moveTime=5;
+                      //self.moveTime=5;
+                     // }
             }
 		}
 		// if (stage.hasBig) resetChildIndex(charaLayer);
