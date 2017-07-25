@@ -105,8 +105,8 @@ talklist4= {
 
     talkList = {
     	费雷塔:[
-               {img: "face费雷塔", name: "", msg: "过来一下,"+mainTeam.heroList[0].nickName},
-    ],
+               {img: "face费雷塔", name: "", msg: "过来一下,"},
+    	],
         gameExplainTalk: [
             {img: "face雷娜", name: "游戏美工04", msg: "点击地图移动"},
             {img: "face雷娜", name: "游戏美工04", msg: "点击自己打开菜单"},
