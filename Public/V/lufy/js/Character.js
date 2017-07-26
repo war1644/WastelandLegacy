@@ -41,11 +41,12 @@ Character.prototype.onframe = function (){
 	// 仅在地图状态下动作
 	if (!RPG.checkState(RPG.UNDER_MAP)) return;
 	let self = this;
+	// 不可见的对象不移动
 	if (!self.visible) return;
 	//人物动作速度控制
 	if(self.speedIndex++ < self.speed) return;
 	self.speedIndex = 0;
-	// 不可见的对象不移动
+	
 	// NPC自发移动
 	if (self.moveMode === 1) {
 		// 随机移动型
@@ -151,11 +152,16 @@ Character.prototype.easyMove = function (){
 		} else if  (self.moveMode === 1) {
 			// 对于随机移动的类型，进行预占位
 			self.takePlace();
+			self.moveTime--;
+                if (!self.moveTime) {
+                    
+                      self.moveTime=5;
+                   }
 		}
 	}
 };
 /**
- * 开始移动 
+ * 玩家单位''开始移动 
  **/
 Character.prototype.onmove = function (){
 	let self = this;
