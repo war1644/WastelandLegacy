@@ -132,6 +132,8 @@ function main(){
     imgData.push({name:"机械师",path:"./image/MovePic/机械师.png"});
     imgData.push({name:"雷娜",path:"./image/MovePic/雷娜.png"});
 	imgData.push({name:"白象战车",path:"./image/MovePic/白象战车.png"});
+	imgData.push({name:"黑色梅卡瓦",path:"./image/MovePic/黑色梅卡瓦.png"});
+	imgData.push({name:"姐姐",path:"./image/MovePic/姐姐.png"});
 
     //FightPic
     imgData.push({name:"巨炮",path:"./image/FightPic/巨炮.png"});
@@ -202,7 +204,7 @@ function gameInit(){
 }
 
 function drawImgMap(map) {
-    //得到瓦片
+    //得到地图图层
     let bitmapData = new LBitmapData(imglist[stage.imgName[0]]);
     let bitmapDataUp = new LBitmapData(imglist[stage.imgName[1]]);
     let bitmap = new LBitmap(bitmapData);

@@ -7,7 +7,7 @@
         mapData: {},
         events:[
             // 获胜离开点
-            {chara:"touch", img:"right", x:19,  y:18, row:1, col:3,action: ()=>{}},
+            {chara:"touch", img:"right", x:19,  y:18, row:1, col:3,action: ()=>{trace('touch npc')}},
             {chara:"npc", img:"npc17", x:12,  y:16,col:4, visible: ()=>{return (!RPG.checkSwitch("firstTalk"));},action: (npc)=>{
                 RPG.pushState(RPG.MAP_WAITING);
                 Talk.startTalk(stage.talk.talk1);
@@ -31,7 +31,7 @@
                 });
             }},*/
 
-            {chara:"npc",x:16,y:16,action:()=>{
+            {chara:"npc",x:2,y:16,action:()=>{
                 // 进入战车工厂
                 RPG.jumpStage(script.stage01, 5, 8, 3);
             }}
@@ -67,7 +67,7 @@
         imgName:['home1_0','home1_1'],
         mapData: {},
         events: [
-            {type: "npc", img: "npc1", x: 13, y: 15,
+            {type: "npc", img: "姐姐", x: 10, y: 13,
 				action: function (npc) {
 					if (RPG.checkSwitch("accept")) {
 						Talk.startTalk(stage.talk.talk4);
@@ -76,7 +76,7 @@
 					} else {
 						Talk.startTalk(stage.talk.talk1);
 						RPG.setSwitch("secondTalk", true);
-						RPG.waitTalk(function () {
+						Talk.waitTalk(function () {
 							Talk.makeChoice(stage.choice.choice1);
 						});
 					}
@@ -86,7 +86,7 @@
                 // 隐藏的食物
                 if (!RPG.checkSwitch("breadTake1")){
                     Talk.startTalk(stage.talk.talk7);
-                    RPG.waitTalk(function(){
+                    Talk.waitTalk(function(){
                         npc.anime.setAction(1);
                         mainTeam.addItem(12, 3, true);
                         RPG.setSwitch("breadTake1", true);
@@ -98,8 +98,13 @@
             // fight test
             {chara:"touch", img:"白象战车", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
             {x: 6, y: 13, action:()=>{
-                    // 回到大地图
-                    RPG.jumpStage(script.stage01, 2, 7, UP);
+                    // 二楼
+                    RPG.jumpStage(script.stage03, 7, 15, UP);
+                }
+            },
+            {x: 10, y: 20,img: action:()=>{
+                    // 镇里
+                    RPG.jumpStage(script.stage01, 7, 20, UP);
                 }
             }
 
@@ -129,9 +134,13 @@
         map: home2,
         imgName:['home2_0','home2_1'],
         mapData: {},
+        // 为了表达复杂情节，须预存一些人物
+    charaList: [],
         events: [
+        // 备用地图角色
+         {chara:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, list:"boss"},
             {
-                chara: "npc", img: "npc1", x: 13, y: 15, action: function (npc) {
+                chara: "npc", img: "黑色梅卡瓦'", x: 13, y: 15, action: function (npc) {
 					if (RPG.checkSwitch("accept")) {
 						Talk.startTalk(stage.talk.talk4);
 					} else if (RPG.checkSwitch("secondTalk")) {
@@ -149,7 +158,7 @@
                 // 隐藏的食物
                 if (!RPG.checkSwitch("breadTake1")){
                     Talk.startTalk(stage.talk.talk7);
-                    RPG.waitTalk(function(){
+                    Talk.waitTalk(function(){
                         npc.anime.setAction(1);
                         mainTeam.addItem(12, 3, true);
                         RPG.setSwitch("breadTake1", true);
@@ -158,19 +167,7 @@
                     Talk.startTalk(stage.talk.talk6);
                 }
             }},
-            {chara:"npc", img:"box",col:1,row:2, x:6,  y:12, action: function(npc){
-                // 隐藏的食物
-                if (!RPG.checkSwitch("breadTake2")){
-                    Talk.startTalk(stage.talk.talk7);
-                    RPG.waitTalk(function(){
-                        npc.anime.setAction(1);
-                        mainTeam.addItem(12, 3, true);
-                        RPG.setSwitch("breadTake2", true);
-                    });
-                }else {
-                    Talk.startTalk(stage.talk.talk6);
-                }
-            }},
+            
             {
                 chara: "npc", img: "", x: 6, y: 13, action: function () {
                 // 回到大地图
