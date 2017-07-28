@@ -43,14 +43,14 @@ function rangeRand(min,max) {
     return (Math.random() * (max - min + 1)>>1) + min;
 }
 
-//走到触发型
+//走到触发型 场景跳转
 function checkTrigger(){
-    let events = stage.events;
+    let events = stage.triggerEvents;
     let triggerEvent;
     for(let i=0;i<events.length;i++){
         triggerEvent = events[i];
         if (!triggerEvent.img){
-            if( (player.x/STEP<<0 === triggerEvent.x) && (player.y/STEP<<0 === triggerEvent.y) ){
+            if( (player.px === triggerEvent.x) && (player.py === triggerEvent.y) ){
                 //获取该场景脚本数据
                 if (triggerEvent.action){
                     // 一旦触发事件，按键取消
@@ -100,11 +100,11 @@ function checkTouch(){
  * 检测自动触发型事件
  */
 function checkAuto(){
-    let events = stage.events;
+    let events = stage.autoEvents;
     let autoEvent;
     for(let i=0;i<events.length;i++){
         autoEvent = events[i];
-        if (autoEvent.chara==="auto"){
+        if (autoEvent.type==="auto"){
             if (autoEvent.visible && autoEvent.visible()){
                 if (autoEvent.action){
                     // 一旦触发事件，按键取消

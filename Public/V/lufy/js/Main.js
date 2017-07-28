@@ -285,7 +285,7 @@ function addChara(){
 
 	for(let i=0;i<charaList.length;i++){
 		charaObj = charaList[i];
-		if(charaObj.chara === "player"){
+		if(charaObj.type === "player"){
 			//加入英雄
 			// setHero(charaObj.x, charaObj.y);
 		} else {
@@ -307,7 +307,7 @@ function addChara(){
 					chara.px = charaObj.x;
 					chara.py = charaObj.y;
 					//碰撞型事件
-					if (charaObj.chara === "touch") chara.touch= true;
+					if (charaObj.type === "touch") chara.touch= true;
                     // 预设动作
 					if (charaObj.preSet) charaObj.preSet(chara);
 					// 如果是情节人物，则进入情节列表

@@ -7,8 +7,8 @@
         mapData: {},
         events:[
             // 获胜离开点
-            {chara:"touch", img:"right", x:19,  y:18, row:1, col:3,action: ()=>{trace('touch npc')}},
-            {chara:"npc", img:"npc17", x:12,  y:16,col:4, visible: ()=>{return (!RPG.checkSwitch("firstTalk"));},action: (npc)=>{
+            {type:"npc", img:"right", x:19,  y:18, row:1, col:3,action: ()=>{trace('touch npc')}},
+            {type:"npc", img:"npc17", x:12,  y:16,col:4, visible: ()=>{return (!RPG.checkSwitch("firstTalk"));},action: (npc)=>{
                 RPG.pushState(RPG.MAP_WAITING);
                 Talk.startTalk(stage.talk.talk1);
                 Talk.waitTalk(()=>{
@@ -21,7 +21,7 @@
                     });
                 });
             }},
-            /*{chara:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function() {
+            /*{npc:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function() {
                 // 自动发言
                 RPG.setTalkPos("middle");
                 Talk.startTalk(stage.talk.talk4);
@@ -38,12 +38,12 @@
         ],
         talk: talklist1,
         choice: {
-            choice1:{ img: "face2", msg: "操作教程",
+            choice1:{ img: "face蕾娜", msg: "操作教程",
             choise:[
             {text:"看",action: ()=>{
                 Talk.closeTalk();
                 Talk.startTalk(stage.talk.talk6);
-                RPG.waitTalk(()=>{
+                Talk.waitTalk(()=>{
                     Talk.startTalk(stage.talk.talk7);
                     RPG.waitTalk(()=>{
                         RPG.setTalkPos("bottom");
@@ -53,7 +53,7 @@
             {text:"不看",action: ()=>{
                 Talk.closeTalk();
                 Talk.startTalk(stage.talk.talk7);
-                RPG.waitTalk(()=>{
+                Talk.waitTalk(()=>{
                     RPG.setTalkPos("bottom");
                 });
             }}]
@@ -82,7 +82,7 @@
 					}
 				}
             },
-            {chara:"npc", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
+            {type:"item", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
                 // 隐藏的食物
                 if (!RPG.checkSwitch("breadTake1")){
                     Talk.startTalk(stage.talk.talk7);
@@ -96,13 +96,13 @@
                 }
             }},
             // fight test
-            {chara:"touch", img:"白象战车", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
+            {type:"npc", img:"白象战车", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
             {x: 6, y: 13, action:()=>{
                     // 二楼
                     RPG.jumpStage(script.stage03, 7, 15, UP);
                 }
             },
-            {x: 10, y: 20,img: action:()=>{
+            {type:'jump',x: 10, y: 20,action:()=>{
                     // 镇里
                     RPG.jumpStage(script.stage01, 7, 20, UP);
                 }
