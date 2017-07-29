@@ -1,4 +1,17 @@
-var RPG = {
+/**
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆███▄▄▃▂
+ *  █████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * Talk class 客户端对话类
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2017/07/29 初版
+ */
+let RPG = {
 
 // RPG基本管理参数，根据不同项目，应当调整
     curBGM: {},
@@ -47,9 +60,9 @@ var RPG = {
     UNDER_MENU: 102,       // 菜单下，包括主菜单和载入菜单
     UNDER_WINDOWS: 103,       // 各种窗口下，包括主菜单、载入菜单、战斗系统
     stateList: {
-        101: [RPG.MAP_CONTROL, RPG.MAP_WAITING],
-        102: [RPG.IN_MENU, RPG.COVER_MENU],
-        103: [RPG.IN_MENU, RPG.COVER_MENU, RPG.IN_FIGHTING]
+        101: [2, 3],
+        102: [4, 1],
+        103: [4, 1, 5]
     },
 // 流程控制:=============================================
 // 内置开关量
@@ -221,7 +234,7 @@ var RPG = {
             //获取移动方向
             let ret = RPG.getMoveDir(x, y);
             if (ret.length === 0) {
-                RPG.openMenu();
+                Menu.openMenu();
             } else {
                 player.changeDirAlt(ret);
             }
@@ -285,7 +298,7 @@ var RPG = {
         // 继续
         let button02 = UI.gameTitleButton(120, 30, (WIDTH - 120) >> 1, HEIGHT - 160, "载入进度", function () {
             if (RPG.checkState(RPG.IN_COVER)) {
-                RPG.openLoadMenu();
+                Menu.openLoadMenu();
             }
         });
         button02.setState(LButton.STATE_DISABLE);
@@ -459,6 +472,37 @@ var RPG = {
             }
         }
     },
+
+    loadEffect: function(name,w=48,h=48,type=0){
+        if (!effectList[name]){
+            let bitmapData, chara;
+            bitmapData = new LBitmapData(assets[name]);
+            chara = new Effect(bitmapData, w, h,type);
+            effectList[name]= chara;
+        }
+        return effectList[name];
+    },
+
+// 屏幕从黑切换到白，模拟过去了一天的效果
+nightAndDay: function(callback){
+    let bmp = UI.drawColorWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
+    LTweenLite.to(bmp,2,
+        {alpha:1,ease:Quad.easeOut,
+            onComplete:function(){
+                LTweenLite.to(bmp,2,
+                    {alpha:0,ease:Quad.easeIn,
+                        onComplete:function(){
+                            effectLayer.removeChild(bmp);
+                            if (callback) {
+                                callback();
+                            }
+                        }
+                    }
+                )
+            }
+        }
+    )
+},
 
     /**
      * 普通白底按钮

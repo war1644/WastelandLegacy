@@ -370,7 +370,7 @@ function onDown(event) {
     isKeyDown = true;
 
     if (RPG.checkState(RPG.UNDER_MENU)) {
-    	RPG.dealMenu(event.offsetX<<0, event.offsetY<<0);
+    	Menu.dealMenu(event.offsetX<<0, event.offsetY<<0);
     } else if (RPG.checkState(RPG.MAP_CONTROL)) {
         // 地图状态下可以进行移动和弹出菜单的操作
     	RPG.dealNormal(event.offsetX<<0, event.offsetY<<0);
@@ -393,7 +393,7 @@ function onUp(event){
 function onMove(event){
 	if (isKeyDown) {
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
-    		RPG.dealMenuMove(event.offsetX<<0, event.offsetY<<0);
+    		Menu.dealMenuMove(event.offsetX<<0, event.offsetY<<0);
         }
     }
 }
@@ -482,7 +482,7 @@ function initScript(x,y,frame=0){
     Talk.setTalkPos("bottom");
 
     //先添加人物NPC，为了确定地图的自动移动
-    addChara();
+    // addChara();
 
     setHero(x,y,frame);
     // 绘制地图

@@ -3,7 +3,7 @@
 // 另一类是全局的动态效果，总之都是效果类
 // 效果集合
 let effectList=[];
-let Effect= function (data,row,col,type=1){
+let Effect = function (data,row,col,type=1){
 	base(this,LSprite,[]);
 	let self = this,list;
 	//设定人物动作速度
@@ -76,35 +76,6 @@ Effect.prototype.play = function (aTimes, aFunc){
 	//self.anime.addEventListener(LEvent.COMPLETE, aFunc);
 };
 
-RPG.loadEffect= function(name,w=48,h=48,type=0){
-	if (!effectList[name]){
-		let bitmapData, chara;
-        bitmapData = new LBitmapData(assets[name]);
-		chara = new Effect(bitmapData, w, h,type);
-		effectList[name]= chara;
-	}
-	return effectList[name];
-};
 
-// 屏幕从黑切换到白，模拟过去了一天的效果
-RPG.nightAndDay= function(callback){
-	let bmp = UI.drawColorWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
-	LTweenLite.to(bmp,2,
-		{alpha:1,ease:Quad.easeOut,
-			onComplete:function(){
-				LTweenLite.to(bmp,2,
-					{alpha:0,ease:Quad.easeIn,
-						onComplete:function(){
-							effectLayer.removeChild(bmp);
-							if (callback) {
-								callback();
-							}
-						}
-					}
-				)
-			}
-		}
-	)
-};
 
 
