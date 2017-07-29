@@ -8,7 +8,7 @@
  * @param speed 人物速度
  * @param actEvent 执行事件
  **/
-function Character(isHero,move=3,data,row=4,col=4,speed=3, actEvent=false){
+function Character(isHero=false,move=3,data,row=4,col=4,speed=3, actEvent=false){
 	base(this,LSprite,[]);
 	let self = this;
 	self.isHero = isHero;
@@ -32,7 +32,8 @@ function Character(isHero,move=3,data,row=4,col=4,speed=3, actEvent=false){
 	self.move = false;
 	//在一个移动步长中的移动次数设定
 	self.moveIndex = 0;
-	self.moveTime = 5;//NPC自动移动间隔
+	self.npcMoveTime = 10;//NPC自动移动间隔
+    self.two = true;//NPC自动移动两格为一次
 }
 /**
  * 循环事件 
@@ -40,27 +41,35 @@ function Character(isHero,move=3,data,row=4,col=4,speed=3, actEvent=false){
 Character.prototype.onframe = function (){
 	// 仅在地图状态下动作
 	if (!RPG.checkState(RPG.UNDER_MAP)) return;
-	let self = this;
-	// 不可见的对象不移动
-	if (!self.visible) return;
-	//人物动作速度控制
-	if(self.speedIndex++ < self.speed) return;
-	self.speedIndex = 0;
+    let self = this;
+    // 不可见的对象不移动
+    if (!self.visible) return;
+    //人物动作速度控制
+    if(self.speedIndex++ < self.speed) return;
+    self.speedIndex = 0;
 	
 	// NPC自发移动
 	if (self.moveMode === 1) {
-		// 随机移动型
-		let a = (Math.random()* 14)>>0;
-		if (a<4) {
-			self.changeDir(a);
+        self.npcMoveTime--;
+        //npc达到间隔再移动
+        if (!self.npcMoveTime){
+            self.npcMoveTime=20;
+            self.two = true;
+            // 随机移动型
+            let a = (Math.random()* 14)>>0;
+            if (a<4) {
+                self.changeDir(a);
+            }
 		}
+
 	}
 	//当人物可移动，则开始移动
 	if(self.move){
+        //人物动画播放
+        self.anime.onframe();
 		if (self.isHero){
 			self.playerMove();
 		}else{
-			//npc达到间隔再移动
             if (self.moveMode === 2) {
                 self.npcMove();
 			}else if (self.moveMode === 1){
@@ -69,8 +78,7 @@ Character.prototype.onframe = function (){
 		}
 		// if (stage.hasBig) resetChildIndex(charaLayer);
 	}
-	//人物动画播放
-	self.anime.onframe();
+
 };
 
 /**
@@ -81,14 +89,16 @@ Character.prototype.npcMove = function (){
 	// if (!RPG.checkState(RPG.UNDER_MAP)) {
 	// 	return;
 	// }
-	let self = this;
-	//设定一个移动步长中的移动次数
-	let ml_cnt = 4;
+	let self = this,
+		//设定一个移动步长中的移动次数
+		ml_cnt = 4,
+        //计算一次移动的长度
+		ml;
 	if (self.moveMode === 2) {
 		ml_cnt = 1;
 	}
-	//计算一次移动的长度
-	let ml = STEP/ml_cnt;
+
+	ml = STEP/ml_cnt;
 	//console.log("move: ", self.direction);
 	//根据移动方向，开始移动
 	switch (self.direction){
@@ -127,6 +137,10 @@ Character.prototype.npcMove = function (){
 		// NPC移动后
 		// checkTouch();
 		self.moveIndex = 0;
+		//保证移动后的姿势
+        self.anime.colIndex=0;
+        self.anime.onframe();
+
 		if(self.direction !== self.direction_next){
 			self.direction = self.direction_next;
 			self.anime.setAction(self.direction);
@@ -147,12 +161,12 @@ Character.prototype.npcMove = function (){
 			}
 		} else if  (self.moveMode === 1) {
 			// 对于随机移动的类型，进行预占位
-			self.takePlace();
-			// self.moveTime--;
-			// if (!self.moveTime) {
-			// 	self.moveTime=5;
-			// }
-		}
+            self.takePlace();
+            if(!self.two){
+                self.move = false;
+            }
+            self.two = false;
+        }
 	}
 };
 /**
@@ -220,9 +234,11 @@ Character.prototype.playerMove = function (){
 
 		//一个地图步长移动完成后，判断地图是否跳转
 		checkTrigger();
-		checkTouch();
+		// checkTouch();
 		checkIntoBattle();
 		self.moveIndex = 0;
+        self.anime.colIndex=0;
+        self.anime.onframe();
 		//判断方向是否改变
 		if(self.direction !== self.direction_next){
 			self.direction = self.direction_next;
@@ -318,6 +334,8 @@ Character.prototype.checkRoad = function (dir){
 			toY = myCoordinate.y + 1;
 			break;
 	}
+    console.log('hit',CurrentMapMove.data[toY*CurrentMap.width+ toX]);
+
     if(toY <= -1 || toX <= -1) return false;
 	if(toY >= CurrentMap.height || toX >= CurrentMap.width) return false;
 
@@ -325,13 +343,14 @@ Character.prototype.checkRoad = function (dir){
 	if(CurrentMapMove.data[toY*CurrentMap.width+ toX] > 0) return false;
 
 	//如果前方有NPC，同样不可移动
-	for(let key in charaLayer.childList){
+    for(let key in charaLayer.childList){
+        let npc = charaLayer.childList[key];
         // 不可见的NPC不在考虑内
-		if (!charaLayer.childList[key].visible) continue;
+		if (!npc.visible) continue;
         // NPC本身占位
-		if(charaLayer.childList[key].x/ STEP === toX && charaLayer.childList[key].y/ STEP === toY) return false;
+        // if(npc.x/ STEP === toX && npc.y/ STEP === toY) return false;
         // 运动中NPC，则是它预占位
-		if(charaLayer.childList[key].px === toX && charaLayer.childList[key].py === toY) return false;
+		if(npc.px === toX && npc.py === toY) return false;
 	}
 	return true;
 };
@@ -400,7 +419,8 @@ Character.prototype.changeDirAlt = function (dirs){
 			//设定图片动画
 			self.anime.setAction(dir);
 			//判断是否可移动
-			if(!self.checkRoad(dir))return;
+            console.log('dir',dir);
+            if(!self.checkRoad(dir))return;
 
 		} else {
 			//多方向移动

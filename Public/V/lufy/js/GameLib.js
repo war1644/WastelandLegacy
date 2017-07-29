@@ -71,13 +71,13 @@ function checkTouch(){
     if (!RPG.checkState(RPG.MAP_CONTROL)) return;
     let actionEvent, npc;
     for(let key in charaLayer.childList){
+        npc = charaLayer.childList[key];
+        console.log('npc',npc.px,npc.py);
         //不可见的不处理
-        if (!charaLayer.childList[key].visible) continue;
-        //判断周围有npc
-        actionEvent = charaLayer.childList[key].rpgEvent;
-        if (charaLayer.childList[key].touch){
-            npc = charaLayer.childList[key];
-
+        if (!npc.visible) continue;
+        if (npc.touch){
+            //判断周围有npc
+            actionEvent = npc.rpgEvent;
             if( player.px >= npc.px - 1 &&
                 player.px <= npc.px + 1 &&
                 player.py >= npc.py - 1 &&
@@ -106,14 +106,14 @@ function checkAuto(){
     for(let i=0;i<events.length;i++){
         autoEvent = events[i];
         if (autoEvent.type==="auto"){
-            // if (autoEvent.visible && autoEvent.visible()){
+            if (autoEvent.visible && autoEvent.visible()){
                 if (autoEvent.action){
                     // 一旦触发事件，按键取消
                     isKeyDown= false;
                     autoEvent.action();
                     return;
                 }
-            // }
+            }
         }
     }
 }
@@ -141,6 +141,7 @@ let jumpStage = function(newStage, x, y, dir=0){
     CurrentMapImg = stage.imgName;
     let len = stage.events.length,
         events = stage.events;
+    charaLayer.removeAllChild();
     for(let i=0;i<len;i++){
         switch (events[i].type){
             case 'auto':
@@ -320,31 +321,25 @@ let UI = {
         bitmapUp.scaleX= aw/ bitmapUp.width;
         bitmapUp.scaleY= ah/ bitmapUp.height;
         bitmapUp.alpha= 0.2;
-        let bitmapDataDown = new LBitmapData(assets["focus"]);
-        let bitmapDown = new LBitmap(bitmapDataDown);
-        bitmapDown.scaleX= aw/ bitmapDown.width;
-        bitmapDown.scaleY= ah/ bitmapDown.height;
+        // let bitmapDataDown = new LBitmapData(assets["focus"]);
+        // let bitmapDown = new LBitmap(bitmapDataDown);
+        // bitmapDown.scaleX= aw/ bitmapDown.width;
+        // bitmapDown.scaleY= ah/ bitmapDown.height;
+        let bitmapDown = bitmapUp.clone();
         bitmapDown.alpha= 0.5;
         // 保持进度的按钮
         let button02 = new LButton(bitmapUp,bitmapDown,bitmapDown);
         button02.x= ax;
         button02.y= ay;
-        let text = new LTextField();
-        text.size = "15";
-        text.color = "#FFF";
-        text.text = aText;
+        let text = UI.text(aText,button02.getWidth()/ 2,button02.getHeight()/ 2);
         text.textAlign= "center";
         text.textBaseline= "middle";
-        //text.x = bitmapUp.scaleX* bitmapUp.width/ 2;
-        //text.y = bitmapUp.scaleY* bitmapUp.height/ 2;
-        text.x = button02.getWidth()/ 2;
-        text.y = button02.getHeight()/ 2;
         button02.addChild(text);
         button02.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
             RPG.currentButton= button02;
         });
         button02.addEventListener(LMouseEvent.MOUSE_UP, function () {
-            if (RPG.currentButton== button02) {
+            if (RPG.currentButton=== button02) {
                 if (aFunc) aFunc();
             }
         });
@@ -361,6 +356,8 @@ let UI = {
         textObj.size = size;
         textObj.color = color;
         textObj.text = text;
+        // textObj.textAlign= "center";
+        // textObj.textBaseline= "middle";
         if (text) textObj.setWordWrap(true,18);
         textObj.width = menuWidth-2*gap;
         return textObj;

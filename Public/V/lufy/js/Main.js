@@ -255,6 +255,7 @@ function setHero(x, y, frame){
 	heroImg = mainTeam.getHero().getPerson().img;
 	let imgData = new LBitmapData(assets[heroImg]);
 	hero = new Character(true, 0, imgData, row, col);
+    hero.name = mainTeam.getHero().nickName;
 	player = hero;
 	//玩家遇敌率
 	player.enemyShow = 10;
@@ -268,55 +269,8 @@ function setHero(x, y, frame){
 }
 
 //添加人物
-function addChara(){
-	let charaList = stage.npcEvents,
-		chara,
-		charaObj,
-		valid;
-	charaLayer.removeAllChild();
-
-	for(let i=0;i<charaList.length;i++){
-		charaObj = charaList[i];
-		// if(charaObj.type === "player"){
-			//加入英雄
-			// setHero(charaObj.x, charaObj.y);
-		// } else {
-			//加入npc
-			if (charaObj.img){
-				if (!charaObj.visible){
-					// 未定义必然可见
-					valid= true;
-				} else {
-					valid= charaObj.visible();
-				}
-				if (valid){
-					let row= charaObj.row || 4;
-					let col= charaObj.col || 4;
-                    let imgData = new LBitmapData(assets[charaObj.img]);
-					chara = new Character(false,charaObj.move,imgData, row, col, 3, charaObj.action);
-					chara.x = charaObj.x * STEP- (chara.pw- STEP)/ 2;
-					chara.y = charaObj.y * STEP- (chara.ph- STEP);
-					chara.px = charaObj.x;
-					chara.py = charaObj.y;
-					//碰撞型事件
-					if (charaObj.type === "touch") chara.touch= true;
-                    // 预设动作
-					if (charaObj.preSet) charaObj.preSet(chara);
-					// 如果是情节人物，则进入情节列表
-					if (charaObj.list) {
-						stage.charaList[charaObj.list]= chara;
-					}
-					charaLayer.addChild(chara);
-				}
-			}
-		// }
-	}
-}
-
-//添加人物
 function addNpc(npcObj){
     let npc,valid;
-    charaLayer.removeAllChild();
         //加入npcObj
         if (npcObj.img){
             if (!npcObj.visible){
@@ -330,10 +284,11 @@ function addNpc(npcObj){
                 let col= npcObj.col || 4;
                 let imgData = new LBitmapData(assets[npcObj.img]);
                 npc = new Character(false,npcObj.move,imgData, row, col, 3, npcObj.action);
-                npc.x = npcObj.x * STEP- (npc.pw- STEP)/ 2;
+                npc.x = npcObj.x * STEP- (npc.pw- STEP)/2;
                 npc.y = npcObj.y * STEP- (npc.ph- STEP);
                 npc.px = npcObj.x;
                 npc.py = npcObj.y;
+                npc.name = npcObj.img;
                 //碰撞型事件
                 if (npcObj.type === "touch") npc.touch= true;
                 // 预设动作
@@ -385,7 +340,8 @@ function onUp(event){
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
     		Menu.dealMenuUp(event.offsetX, event.offsetY);
     	} else if(RPG.checkState(RPG.MAP_CONTROL)) {
-			Talk.addTalk();
+            console.log('addTalk');
+            Talk.addTalk();
 		}
 	}
 	RPG.currentButton= null;

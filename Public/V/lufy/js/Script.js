@@ -13,6 +13,8 @@
             {type:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, story:"boss"},
             // 备用地图角色
             {type:"npc", img:"红色梅卡瓦", x:-1,  y:-2, story:"wolf"},
+            // 备用地图角色
+            {type:"npc", img:"猎人A", x:15,  y:16, move:1},
             //剧情NPC
             {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
                 //进入地图等待状态
@@ -28,11 +30,14 @@
                     });
                 });
             }},
-            {type:"auto", x:-1, y:-1,
+            {type:"auto", x:-1, y:-1,visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
                 action: function() {
+                    //进入地图等待状态
+                    RPG.pushState(RPG.MAP_WAITING);
                     // 自动发言
                     Talk.setTalkPos("middle");
-                    Talk.makeChoice(stage.choiceList[1]);
+                    Talk.makeChoice(stage.choiceList[0]);
+                    RPG.setSwitch("gameInitAutoTalk", true);
                 }
             },
 
@@ -67,18 +72,18 @@
 
         ],
         choiceList: {
-            0: {img: "face蕾娜", msg: "新手操作教程",
+            0: {img: "face雷娜", msg: "新手操作教程",
                 option: [
                     {text: "看", action: () => {
-                        Talk.closeTalk();
+                        // Talk.closeTalk();
                         Talk.startTalk(stage.talk.gameExplainTalk);
-                            Talk.waitTalk(() => {
-                                Talk.setTalkPos("bottom");
-                            });
+                        Talk.waitTalk(() => {
+                            Talk.setTalkPos("bottom");
+                        });
                         }
                     },
                     {text: "不看", action: () => {
-                            Talk.closeTalk();
+                            // Talk.closeTalk();
                             Talk.startTalk(stage.talk.gameAbout,1);
                             Talk.waitTalk(() => {
                                 Talk.setTalkPos("bottom");

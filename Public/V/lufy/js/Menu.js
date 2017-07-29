@@ -44,7 +44,6 @@ let Menu = {
     saveSlot: 0,
     // 当前显示的主队成员
     currentHeroShow: 0,
-
     // 用于辅助物品使用的显示
 	showItemEffectLabel:[],
 

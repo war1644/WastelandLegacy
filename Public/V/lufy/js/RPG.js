@@ -230,7 +230,7 @@ let RPG = {
     dealNormal: function (x, y) {
         // 根据点击位置，判断移动方向
         if (player) {
-            console.log('player', player);
+            console.log('player', player.px,player.py);
             //获取移动方向
             let ret = RPG.getMoveDir(x, y);
             if (ret.length === 0) {
@@ -347,7 +347,7 @@ let RPG = {
         //初始化敌人
         RPG.initEnemyTeam();
         //载入场景
-        jumpStage(script.stage01, 8, 20, 3);
+        jumpStage(script.stage01, 15, 22, 3);
 
         //进入地图控制状态
         RPG.setState(RPG.MAP_CONTROL);

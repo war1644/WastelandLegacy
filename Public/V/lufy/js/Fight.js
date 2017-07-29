@@ -12,15 +12,13 @@
  * v2017/07/20 初版
  */
 
+let Fight = {
+    gameMenus : ['背包','乘降','强度','存档','任务','返回'],
+    fightMenus : ['攻击','阵形','道具','防御','逃跑','总攻'],
 
 // 最大HP，用于对比显示，给一个最小的参考值，一场战斗一旦确定则不再改变
-RPG.maxHpAll= 1000;
-RPG.maxMpAll= 100;
-
-let gameMenus = ['背包','乘降','强度','存档','任务','返回'];
-let fightMenus = ['攻击','阵形','道具','防御','逃跑','总攻'];
-
-let Fight = {
+    maxHpAll: 1000,
+    maxMpAll: 100,
     //战利品和经验获得 凌弱战true
     trophy: false,
     // 当前正在动作的对象

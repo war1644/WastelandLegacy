@@ -52,22 +52,25 @@ let Talk = {
             let bitmapData = new LBitmapData(assets[optionScript.img]);
             let bitmap = new LBitmap(bitmapData);
             bitmap.x = optionScript.x || Talk.LEFT;
-            bitmap.y = optionScript.y || Talk.TOP-bitmap.height;
+            bitmap.y = optionScript.y || Talk.TOP-bitmap.height/2;
+            bitmap.scaleX = 0.5;
+            bitmap.scaleY = 0.5;
             talkLayer.addChild(bitmap);
         }
-        //对话人物名称
+        //选项标题
         if (optionScript.msg){
             let name = UI.text(optionScript.msg,Talk.LEFT+ 5,Talk.TOP+ 5);
             talkLayer.addChild(name);
-            // 对话初始行的位置
+            // 选项标题初始行的位置
             Talk.talkLinePos= name.y+ 20;
         } else {
             Talk.talkLinePos= Talk.TOP+ 5;
         }
 
         //分支选项
-        for (let i= 0; i< optionScript.option.length; i++){
-            let button01= UI.optionButton(Talk.WIDTH- 10, 22, Talk.LEFT+ 5, Talk.talkLinePos, optionScript.choise[i].text, optionScript.choise[i].action);
+        let options = optionScript.option;
+        for (let i= 0; i< options.length; i++){
+            let button01= UI.optionButton(Talk.WIDTH- 10, 22, Talk.LEFT+ 5, Talk.talkLinePos, options[i].text, options[i].action);
             talkLayer.addChild(button01);
             Talk.talkLinePos= Talk.talkLinePos+ 25;
         }
@@ -146,6 +149,7 @@ let Talk = {
             Talk.msgCurrent.text = Talk.msgText;
             return;
         }
+
         //当对话开始，且按照顺序进行对话
         if(Talk.talkIndex < Talk.talkScript.length){
             //得到对话内容
@@ -177,7 +181,7 @@ let Talk = {
             //对话内容
             let msg = UI.text(talkObject.msg,Talk.LEFT + border,Talk.talkLinePos);
             msg.width = Talk.WIDTH - border*2;
-            msg.setWordWrap(true, 20);
+            // msg.setWordWrap(true, 20);
             talkLayer.addChild(msg);
             msg.speed = 1;
             //对话内容逐字显示
@@ -216,24 +220,23 @@ let Talk = {
                     break;
             }
             for(let key in charaLayer.childList){
+                let npc = charaLayer.childList[key];
+
                 // 不可见的对象，不触发
-                if (!charaLayer.childList[key].visible) continue;
+                if (!npc.visible) continue;
                 //判断前面有npc，有则开始对话
-                if (charaLayer.childList[key].px === tx && charaLayer.childList[key].py === ty){
-                    if (charaLayer.childList[key].rpgEvent) {
+                if (npc.px === tx && npc.py === ty){
+                    if (npc.rpgEvent) {
                         // 首先转身
-                        charaLayer.childList[key].anime.setAction(3- player.direction);
-                        charaLayer.childList[key].anime.onframe();
+                        npc.anime.setAction(3- player.direction);
+                        npc.anime.onframe();
                         // 然后执行指令
-                        charaLayer.childList[key].rpgEvent(charaLayer.childList[key]);
+                        npc.rpgEvent(npc);
                     }
                 }
             }
             //如果前方没有npc，则检查跳转的可能
-            if(!Talk.talkScript) {
-                checkTrigger();
-                return;
-            }
+            // if(!Talk.talkScript)  checkTrigger();
         } else{
             // 直接继续对话
             Talk.startTalk(Talk.talkScript);
