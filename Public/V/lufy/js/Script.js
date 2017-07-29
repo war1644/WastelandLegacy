@@ -5,59 +5,88 @@
         map: laduo,
         imgName:['town_0','town_1'],
         mapData: {},
-        events:[
-            // 获胜离开点
-            {type:"npc", img:"right", x:19,  y:18, row:1, col:3,action: ()=>{trace('touch npc')}},
-            {type:"npc", img:"npc17", x:12,  y:16,col:4, visible: ()=>{return (!RPG.checkSwitch("firstTalk"));},action: (npc)=>{
+        talk: talkList,
+        // 为了表达复杂情节，须预存一些人物
+        storyList: [],
+        events: [
+            // 备用地图角色
+            {type:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, story:"boss"},
+            // 备用地图角色
+            {type:"npc", img:"红色梅卡瓦", x:-1,  y:-2, story:"wolf"},
+            //剧情NPC
+            {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
+                //进入地图等待状态
                 RPG.pushState(RPG.MAP_WAITING);
-                Talk.startTalk(stage.talk.talk1);
+                Talk.startTalk(stage.talk.雷娜);
                 Talk.waitTalk(()=>{
                     npc.speed = 2;
-                    //移动NPC到指定位置,并触发之后的func
-                    moveNpc(npc,[0,0,2,2,2,2,3,3,3],()=>{
+                    //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
+                    moveNpc(npc,[3,3,3,1,1,1,1,1,3,3],()=>{
                         RPG.popState();
                         RPG.hideChar(npc);
-                        RPG.setSwitch("firstTalk", true);
+                        RPG.setSwitch("雷娜firstTalk", true);
                     });
                 });
             }},
-            /*{npc:"auto", img:"", x:-2, y:-2, visible: function(){return (!RPG.checkSwitch("autoTalk"));}, action: function() {
-                // 自动发言
-                RPG.setTalkPos("middle");
-                Talk.startTalk(stage.talk.talk4);
-                RPG.setSwitch("autoTalk", true);
-                RPG.waitTalk(function () {
-                    Talk.makeChoice(stage.choice.choice1);
-                });
-            }},*/
+            {type:"auto", x:-1, y:-1,
+                action: function() {
+                    // 自动发言
+                    Talk.setTalkPos("middle");
+                    Talk.makeChoice(stage.choiceList[1]);
+                }
+            },
 
-            {chara:"npc",x:2,y:16,action:()=>{
-                // 进入战车工厂
-                RPG.jumpStage(script.stage01, 5, 8, 3);
-            }}
-        ],
-        talk: talklist1,
-        choice: {
-            choice1:{ img: "face蕾娜", msg: "操作教程",
-            choise:[
-            {text:"看",action: ()=>{
-                Talk.closeTalk();
-                Talk.startTalk(stage.talk.talk6);
-                Talk.waitTalk(()=>{
-                    Talk.startTalk(stage.talk.talk7);
-                    RPG.waitTalk(()=>{
-                        RPG.setTalkPos("bottom");
-                    });
-                });
+            {type:"jump",x:11,y:15,action:()=>{
+                // 战车工厂
+                jumpStage(script.stage01, 10, 20, 3);
             }},
-            {text:"不看",action: ()=>{
-                Talk.closeTalk();
-                Talk.startTalk(stage.talk.talk7);
-                Talk.waitTalk(()=>{
-                    RPG.setTalkPos("bottom");
-                });
-            }}]
-        }
+            {type:"jump",x:13,y:14,action:()=>{
+                // 战车工厂
+                jumpStage(script.stage01, 10, 20, 3);
+            }},
+            {type:"jump",x:8,y:14,action:()=>{
+                // 猎人中心
+                jumpStage(script.stage01, 5, 8, 3);
+            }},
+            {type:"jump",x:8,y:10,action:()=>{
+                // 人类装备
+                jumpStage(script.stage01, 5, 8, 3);
+            }},
+            {type:"jump",x:12,y:18,action:()=>{
+                // bar
+                jumpStage(script.stage01, 5, 8, 3);
+            }},
+            // 旅馆
+            {type:"jump",x:17,y:7,action:()=>{jumpStage(script.stage01, 5, 8, 3);}},
+            // 传送
+            {type:"jump",x:20,y:3,action:()=>{jumpStage(script.stage01, 5, 8, 3);}},
+            {type:"jump",x:23,y:6,action:()=>{
+                // 明奇
+                jumpStage(script.stage01, 5, 8, 3);
+            }},
+
+        ],
+        choiceList: {
+            0: {img: "face蕾娜", msg: "新手操作教程",
+                option: [
+                    {text: "看", action: () => {
+                        Talk.closeTalk();
+                        Talk.startTalk(stage.talk.gameExplainTalk);
+                            Talk.waitTalk(() => {
+                                Talk.setTalkPos("bottom");
+                            });
+                        }
+                    },
+                    {text: "不看", action: () => {
+                            Talk.closeTalk();
+                            Talk.startTalk(stage.talk.gameAbout,1);
+                            Talk.waitTalk(() => {
+                                Talk.setTalkPos("bottom");
+                            });
+                        }
+                    }
+                ]
+            }
         }
     },
     stage02:{
@@ -99,12 +128,12 @@
             {type:"npc", img:"白象战车", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
             {x: 6, y: 13, action:()=>{
                     // 二楼
-                    RPG.jumpStage(script.stage03, 7, 15, UP);
+                    jumpStage(script.stage03, 7, 15, UP);
                 }
             },
             {type:'jump',x: 10, y: 20,action:()=>{
                     // 镇里
-                    RPG.jumpStage(script.stage01, 7, 20, UP);
+                    jumpStage(script.stage01, 7, 20, UP);
                 }
             }
 
@@ -135,10 +164,10 @@
         imgName:['home2_0','home2_1'],
         mapData: {},
         // 为了表达复杂情节，须预存一些人物
-    charaList: [],
+        storyList: [],
         events: [
         // 备用地图角色
-         {chara:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, list:"boss"},
+         {type:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, story:"boss"},
             {
                 chara: "npc", img: "黑色梅卡瓦'", x: 13, y: 15, action: function (npc) {
 					if (RPG.checkSwitch("accept")) {
@@ -171,7 +200,7 @@
             {
                 chara: "npc", img: "", x: 6, y: 13, action: function () {
                 // 回到大地图
-                RPG.jumpStage(script.stage02, 16, 17, 0);
+                jumpStage(script.stage02, 16, 17, 0);
             }
             },
             {
@@ -229,11 +258,11 @@ stage02:{
                      });
                  } else {
                      // 未得到宝物直接离洞
-                     RPG.jumpStage(script.stage01, 9, 14, 0);
+                     jumpStage(script.stage01, 9, 14, 0);
                  }
              } else {
                  // 胜利后直接离洞
-                 RPG.jumpStage(script.stage01, 9, 14, 0);
+                 jumpStage(script.stage01, 9, 14, 0);
              }
          }},
          // 备用地图角色
@@ -270,19 +299,19 @@ stage02:{
          }},
          {chara:"npc", img:"",     x:17,   y:6, action: function(){
              // 回到大地图：进入谷底
-             RPG.jumpStage(script.stage01, 8, 4, 1);
+             jumpStage(script.stage01, 8, 4, 1);
          }},
          {chara:"npc", img:"",     x:12,   y:15, action: function(){
              // 回到大地图：上山
-             RPG.jumpStage(script.stage01, 1, 5, 0);
+             jumpStage(script.stage01, 1, 5, 0);
          }},
          {chara:"npc", img:"",     x:19,   y:17, action: function(){
              // 进入深洞
-             RPG.jumpStage(script.stage04, 1, 5, RIGHT);
+             jumpStage(script.stage04, 1, 5, RIGHT);
          }},
          {chara:"npc", img:"",     x:19,   y:18, action: function(){
              // 进入深洞
-             RPG.jumpStage(script.stage04, 1, 6, RIGHT);
+             jumpStage(script.stage04, 1, 6, RIGHT);
          }}
          ],
     talk: talklist2,
@@ -347,7 +376,7 @@ stage03:{
          }},
          {chara:"npc", img:"", x:5,  y:9, action: function(){
              // 回到大地图
-             RPG.jumpStage(script.stage01, 16, 17, 0);
+             jumpStage(script.stage01, 16, 17, 0);
          }},
          {chara:"npc", img:"empty", x:9,  y:5, row:1, col:1, action: function(){
              // 休息一夜
@@ -423,7 +452,7 @@ stage04:{
          // 地图跳转
          {chara:"npc", img:"",     x:0,   y:5, action: function(){
              // 回到大洞
-             RPG.jumpStage(script.stage02, 18, 17, RPG.LEFT);
+             jumpStage(script.stage02, 18, 17, RPG.LEFT);
              if (!RPG.checkSwitch("firstSigh")){
                  if (mainTeam.haveItem(0)){
                      RPG.setSwitch("firstSigh");
@@ -433,7 +462,7 @@ stage04:{
          }},
          {chara:"npc", img:"",     x:0,   y:6, action: function(){
              // 回到大洞
-             RPG.jumpStage(script.stage02, 18, 18, RPG.LEFT);
+             jumpStage(script.stage02, 18, 18, RPG.LEFT);
              if (!RPG.checkSwitch("firstSigh")){
                  if (mainTeam.haveItem(0)){
                      RPG.setSwitch("firstSigh");

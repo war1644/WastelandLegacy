@@ -80,7 +80,8 @@ let Fight = {
                                 // npc.visible= false;
                                 RPG.popState();
                             } else if (Fight.state === Fight.LOST) {
-                                RPG.drawGameOver();
+                                //战败
+
                             } else {
                                 // 不胜不败
                                 // npc.visible= false;
@@ -106,7 +107,7 @@ let Fight = {
                     // npc.visible= false;
                     RPG.popState();
                 } else if (Fight.state === Fight.LOST) {
-                    RPG.drawGameOver();
+                    // 败
                 } else {
                     // 不胜不败
                     RPG.popState();
@@ -177,7 +178,7 @@ let Fight = {
             x = j ? WIDTH - STEP - gap*2 : gap;
             for (let i = 0; i < team.length; i++) {
                 hero1 = team[i];
-                bitmapData = new LBitmapData(imglist[hero1.img]);
+                bitmapData = new LBitmapData(assets[hero1.img]);
                 col = hero1.getPerson().col || 4;
                 row = hero1.getPerson().row || 4;
                 chara = new Fighter(bitmapData, row, col);
@@ -519,8 +520,8 @@ Menu.closeMenu();
                 let char1 = stage.charaList["boss"];
                 char1.visible = false;
             } else if (Fight.state === Fight.LOST) {
-                // 结束游戏
-                RPG.drawGameOver();
+                // 战败
+                // RPG.drawGameOver();
             } else {
                 // 不胜不败，并不可能
                 RPG.popState();

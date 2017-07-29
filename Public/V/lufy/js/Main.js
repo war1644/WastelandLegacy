@@ -15,12 +15,22 @@ window._requestAF = (function() {
         };
 })();
 
-// 图区大小
-let STEP = 24;
-let WIDTH= 256;
-//间隙
-let gap = 10;
-let tempLength= 0;
+
+const
+    // 瓦片大小
+	STEP = 24,
+    //方向变量
+    DOWN = 0,
+    LEFT = 1,
+    RIGHT = 2,
+    UP = 3,
+    //间隙
+    gap = 10;
+
+let
+    //游戏初始宽
+	WIDTH= 256,
+	tempLength= 0;
 if (window.innerHeight>=window.innerWidth){
 	tempLength= window.innerHeight* WIDTH/window.innerWidth;
 } else{
@@ -59,11 +69,7 @@ let loadingLayer,
  	talkLayer,
 //控制层
  	ctrlLayer,
-//方向变量
- 	DOWN = 0,
- 	LEFT = 1,
- 	RIGHT = 2,
- 	UP = 3,
+
 //点击状态
  	isKeyDown = false,
  	timer,
@@ -85,7 +91,7 @@ let loadingLayer,
 //图片path数组
  	imgData = [],
  	stage,//当前场景
-	imglist;//读取完的图片数组
+	assets;//读取完的图片数组
 
 function main(){
 	//LGlobal.preventDefault = false;
@@ -105,13 +111,14 @@ function main(){
     imgData.push({type:"js",path:"./js/TalkList.js"});
 	imgData.push({type:"js",path:"./js/Talk.js"});
 	imgData.push({type:"js",path:"./js/Character.js"});
-	imgData.push({type:"js",path:"./js/script.js"});
+	imgData.push({type:"js",path:"./js/Script.js"});
 	imgData.push({type:"js",path:"./js/Items.js"});
 	imgData.push({type:"js",path:"./js/Hero.js"});
     imgData.push({type:"js",path:"./js/Enemy.js"});
+    imgData.push({type:"js",path:"./js/RPG.js"});
 	imgData.push({type:"js",path:"./js/Menu.js"});
 	imgData.push({type:"js",path:"./js/Team.js"});
-	imgData.push({type:"js",path:"./js/cover.js"});
+	// imgData.push({type:"js",path:"./js/cover.js"});
 	imgData.push({type:"js",path:"./js/Effect.js"});
 	imgData.push({type:"js",path:"./js/FightMenu.js"});
 	imgData.push({type:"js",path:"./js/Fight.js"});
@@ -133,7 +140,11 @@ function main(){
     imgData.push({name:"雷娜",path:"./image/MovePic/雷娜.png"});
 	imgData.push({name:"白象战车",path:"./image/MovePic/白象战车.png"});
 	imgData.push({name:"黑色梅卡瓦",path:"./image/MovePic/黑色梅卡瓦.png"});
+    imgData.push({name:"红色梅卡瓦",path:"./image/MovePic/红色梅卡瓦.png"});
 	imgData.push({name:"姐姐",path:"./image/MovePic/姐姐.png"});
+    imgData.push({name:"老爹",path:"./image/MovePic/老爹.png"});
+    imgData.push({name:"猎人A",path:"./image/MovePic/猎人A.png"});
+    imgData.push({name:"商人妹子",path:"./image/MovePic/商人妹子.png"});
 
     //FightPic
     imgData.push({name:"巨炮",path:"./image/FightPic/巨炮.png"});
@@ -175,38 +186,19 @@ function main(){
 			loadingLayer.setProgress(progress);
 		},
 		function(result){
-			imglist = result;
+			assets = result;
             removeChild(loadingLayer);
 			loadingLayer = null;
 			gameInit();
 		}
 	);
 }
-function gameInit(){
-	LGlobal.setDebug(true);
-	//数据初始化优先于显示部分的初始化
-	LGlobal.aspectRatio = PORTRAIT;
-	//游戏层显示初始化
-    gameLayerInit();
 
-	//添加帧事件，开始游戏循环
-	backLayer.addEventListener(LEvent.ENTER_FRAME,onFrame);
-	//添加点击控制事件
-	LMouseEventContainer.set(LMouseEvent.MOUSE_DOWN,true);
-	LMouseEventContainer.set(LMouseEvent.MOUSE_UP,true);
-	LMouseEventContainer.set(LMouseEvent.MOUSE_MOVE,true);
-	backLayer.addEventListener(LMouseEvent.MOUSE_DOWN,onDown);
-	backLayer.addEventListener(LMouseEvent.MOUSE_UP,onUp);
-	talkLayer.addEventListener(LMouseEvent.MOUSE_MOVE,onMove);
-
-    // 第一关的直接设置
-    RPG.drawCover();
-}
 
 function drawImgMap(map) {
     //得到地图图层
-    let bitmapData = new LBitmapData(imglist[stage.imgName[0]]);
-    let bitmapDataUp = new LBitmapData(imglist[stage.imgName[1]]);
+    let bitmapData = new LBitmapData(assets[CurrentMapImg[0]]);
+    let bitmapDataUp = new LBitmapData(assets[CurrentMapImg[1]]);
     let bitmap = new LBitmap(bitmapData);
     let bitmapUp = new LBitmap(bitmapDataUp);
     CurrentMapEvents = map.layers.pop();
@@ -261,7 +253,7 @@ function setHero(x, y, frame){
     let row = mainTeam.getHero().getPerson().row || 4;
     let col = mainTeam.getHero().getPerson().col || 4;
 	heroImg = mainTeam.getHero().getPerson().img;
-	let imgData = new LBitmapData(imglist[heroImg]);
+	let imgData = new LBitmapData(assets[heroImg]);
 	hero = new Character(true, 0, imgData, row, col);
 	player = hero;
 	//玩家遇敌率
@@ -277,7 +269,7 @@ function setHero(x, y, frame){
 
 //添加人物
 function addChara(){
-	let charaList = stage.events,
+	let charaList = stage.npcEvents,
 		chara,
 		charaObj,
 		valid;
@@ -285,10 +277,10 @@ function addChara(){
 
 	for(let i=0;i<charaList.length;i++){
 		charaObj = charaList[i];
-		if(charaObj.type === "player"){
+		// if(charaObj.type === "player"){
 			//加入英雄
 			// setHero(charaObj.x, charaObj.y);
-		} else {
+		// } else {
 			//加入npc
 			if (charaObj.img){
 				if (!charaObj.visible){
@@ -300,7 +292,7 @@ function addChara(){
 				if (valid){
 					let row= charaObj.row || 4;
 					let col= charaObj.col || 4;
-                    let imgData = new LBitmapData(imglist[charaObj.img]);
+                    let imgData = new LBitmapData(assets[charaObj.img]);
 					chara = new Character(false,charaObj.move,imgData, row, col, 3, charaObj.action);
 					chara.x = charaObj.x * STEP- (chara.pw- STEP)/ 2;
 					chara.y = charaObj.y * STEP- (chara.ph- STEP);
@@ -317,9 +309,62 @@ function addChara(){
 					charaLayer.addChild(chara);
 				}
 			}
-		}
+		// }
 	}
 }
+
+//添加人物
+function addNpc(npcObj){
+    let npc,valid;
+    charaLayer.removeAllChild();
+        //加入npcObj
+        if (npcObj.img){
+            if (!npcObj.visible){
+                // 未定义必然可见
+                valid= true;
+            } else {
+                valid= npcObj.visible();
+            }
+            if (valid){
+                let row= npcObj.row || 4;
+                let col= npcObj.col || 4;
+                let imgData = new LBitmapData(assets[npcObj.img]);
+                npc = new Character(false,npcObj.move,imgData, row, col, 3, npcObj.action);
+                npc.x = npcObj.x * STEP- (npc.pw- STEP)/ 2;
+                npc.y = npcObj.y * STEP- (npc.ph- STEP);
+                npc.px = npcObj.x;
+                npc.py = npcObj.y;
+                //碰撞型事件
+                if (npcObj.type === "touch") npc.touch= true;
+                // 预设动作
+                if (npcObj.preSet) npcObj.preSet(npc);
+                // 如果是情节人物，则进入情节列表
+                if (npcObj.story) stage.storyList[npcObj.story] = npc;
+                charaLayer.addChild(npc);
+            }
+        }
+        // }
+    // }
+}
+
+//移动NPC
+let moveNpc = function(npc, stepArr ,callback){
+    npc.moveMode = 2;
+    npc.stepArray = stepArr;
+    if (npc.stepArray.length> 0){
+        npc.callback = callback;
+        npc.changeDir(npc.stepArray[0]);
+    }
+};
+let waitCharPos = function (npc, x, y, callback){
+    if (npc.px !== x || npc.py !== y) {
+        setTimeout(function(){waitCharPos(npc, x, y, callback);}, 500);
+    } else {
+        if (callback) callback();
+    }
+};
+
+
 function onDown(event) {
     // 如果点击位置有NPC事件，优先触发talk事件
     isKeyDown = true;
@@ -333,7 +378,6 @@ function onDown(event) {
     	Talk.startTalk();
     }
 }
-
 function onUp(event){
 	if (isKeyDown) {
 		isKeyDown = false;
@@ -362,17 +406,9 @@ function onFrame(){
 			charaLayer.childList[i].onframe();
 		}
 	}
-	if (isKeyDown){
-		//console.log(event.offsetX, event.offsetY);
-		//charaLayer.childList[1].x=LGlobal.offsetX- charaLayer.x;
-		//charaLayer.childList[1].y=LGlobal.offsetY- charaLayer.y;
-		//upLayer.childList[1].x=LGlobal.offsetX- charaLayer.x;
-		//upLayer.childList[1].y=LGlobal.offsetY- charaLayer.y;
-	}
 	if (RPG.descLayer && RPG.descLayer.childList){
 		for(let i=0;i<RPG.descLayer.childList.length;i++){
 			if (RPG.descLayer.childList[i].onframe){
-				//console.log(ctrlLayer.childList[i]);
 				RPG.descLayer.childList[i].onframe();
 			}
 		}
@@ -390,9 +426,9 @@ class SoundManage{
     constructor(sound=false,loop=false,volume=0.6){
         this.soundName = sound;
         if (sound) {
-            this.bgm = imglist[sound];
+            this.bgm = assets[sound];
         } else {
-            this.bgm = imglist[RPG.curBGM];
+            this.bgm = assets[RPG.curBGM];
         }
         this.bgm = new LSound(this.bgm);
         this.play(loop,volume);
@@ -411,6 +447,29 @@ class SoundManage{
 }
 
 /**
+ * 初始化
+ **/
+function gameInit(){
+    LGlobal.setDebug(true);
+    //数据初始化优先于显示部分的初始化
+    LGlobal.aspectRatio = PORTRAIT;
+    //游戏层显示初始化
+    gameLayerInit();
+
+    //添加帧事件，开始游戏循环
+    backLayer.addEventListener(LEvent.ENTER_FRAME,onFrame);
+    //添加点击控制事件
+    LMouseEventContainer.set(LMouseEvent.MOUSE_DOWN,true);
+    LMouseEventContainer.set(LMouseEvent.MOUSE_UP,true);
+    LMouseEventContainer.set(LMouseEvent.MOUSE_MOVE,true);
+    backLayer.addEventListener(LMouseEvent.MOUSE_DOWN,onDown);
+    backLayer.addEventListener(LMouseEvent.MOUSE_UP,onUp);
+    talkLayer.addEventListener(LMouseEvent.MOUSE_MOVE,onMove);
+
+    // 第一关的直接设置
+    RPG.drawCover();
+}
+/**
  * 根据脚本，初始化游戏画面
  * x,y 玩家进入场景的x,y坐标
  **/
@@ -421,9 +480,7 @@ function initScript(x,y,frame=0){
     talkLayer.removeAllChild();
     //默认对话位置居中
     Talk.setTalkPos("bottom");
-    //当前场景地图
-    CurrentMap= stage.map;
-    CurrentMapImg = stage.imgName;
+
     //先添加人物NPC，为了确定地图的自动移动
     addChara();
 

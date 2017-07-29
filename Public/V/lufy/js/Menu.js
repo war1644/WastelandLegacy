@@ -69,7 +69,7 @@ RPG.menuShowState= function() {
                 break;
 			case 'FACE':
                 // 头像
-                let imgData = new LBitmapData(imglist[hero1.getFace()]);
+                let imgData = new LBitmapData(assets[hero1.getFace()]);
                 let bitmap = new LBitmap(imgData);
                 bitmap.x = leftPos;
                 bitmap.y = topPos;
@@ -139,7 +139,7 @@ RPG.menuShowState= function() {
 		item1= ItemList[hero1[showedItems[i]]];
 		if (item1) {
 			// 图片
-			let imgData = new LBitmapData(imglist["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+			let imgData = new LBitmapData(assets["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
             let bitmap = new LBitmap(imgData);
 			bitmap.x= leftPos;
 			bitmap.y= 160+ i* 30;
@@ -210,10 +210,10 @@ RPG.menuShowSave= function(aResetFocus) {
     RPG.listLayer.mask = null;
     // 选择高亮条
     if (aResetFocus) {
-		RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, menuWidth- gap* 2, 30);
+		RPG.listFocus= UI.drawImgColor(RPG.listLayer, gap, 0, menuWidth- gap* 2, 30);
 		RPG.saveSlot= 0;
 	} else {
-		RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, RPG.listFocus.y, menuWidth- gap* 2, 30);
+		RPG.listFocus= UI.drawImgColor(RPG.listLayer, gap, RPG.listFocus.y, menuWidth- gap* 2, 30);
 	}
 
 	for (let i= 0; i< RPG.MaxSaveSlot; i++){
@@ -221,12 +221,12 @@ RPG.menuShowSave= function(aResetFocus) {
 		text = UI.text(RPG.showSaveSlot(i),gap* 2,i* 30+ 5);
 		RPG.listLayer.addChild(text);
 	}
-    let button01= RPG.newButton(90, 30, gap* 2, menuHeight- 85, "回到标题", function(e){
+    let button01= UI.gameTitleButton(90, 30, gap* 2, menuHeight- 85, "回到标题", function(e){
 		Menu.closeMenu();
     	RPG.drawCover();
     });
     ctrlLayer.addChild(button01);
-    ctrlLayer.addChild(RPG.newButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 85, "保存进度", function(e){
+    ctrlLayer.addChild(UI.gameTitleButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 85, "保存进度", function(e){
 		RPG.saveGame(RPG.saveSlot);
 		RPG.menuShowSave(false);
     }));
@@ -250,7 +250,7 @@ RPG.menuShowLoad= function() {
     ctrlLayer.addChild(RPG.listLayer);
     RPG.listLayer.mask = null;
     // 选择高亮条
-	RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, menuWidth- gap* 2, 30);
+	RPG.listFocus= UI.drawImgColor(RPG.listLayer, gap, 0, menuWidth- gap* 2, 30);
 	RPG.saveSlot= 0;
     // 
 	for (let i= 0; i< RPG.MaxSaveSlot; i++){
@@ -259,13 +259,13 @@ RPG.menuShowLoad= function() {
 		RPG.listLayer.addChild(text);
 	}
 	// 空白按钮图片
-   let button01= RPG.newButton(90, 30, gap* 2, menuHeight- 60, "载入进度", function(e){
+   let button01= UI.gameTitleButton(90, 30, gap* 2, menuHeight- 60, "载入进度", function(e){
 		Menu.closeMenu();
-		loadGame(RPG.saveSlot);
+		RPG.loadGame(RPG.saveSlot);
     });
     ctrlLayer.addChild(button01);
 	// 空白按钮图片
-    ctrlLayer.addChild(RPG.newButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 60, "返回", function(e){
+    ctrlLayer.addChild(UI.gameTitleButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 60, "返回", function(e){
 		Menu.closeMenu();
     }));
 };
@@ -527,13 +527,13 @@ let Menu = {
         RPG.descLayer.y = menuHeight - 144;
         ctrlLayer.addChild(RPG.descLayer);
         // 选择高亮条
-        RPG.listFocus= RPG.drawFocus(RPG.listLayer, gap, 0, menuWidth - gap* 2, 30);
+        RPG.listFocus= UI.drawImgColor(RPG.listLayer, gap, 0, menuWidth - gap* 2, 30);
         // 物品列表
         for (i= 0; i< team.itemList.length; i++){
             // 逐个显示物品
             item1= team.itemList[i];
             // 图片
-            // bitmapData = new LBitmapData(imglist["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+            // bitmapData = new LBitmapData(assets["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
             // bitmap = new LBitmap(bitmapData);
             // bitmap.x= gap* 2;
             // bitmap.y= i* 30+ gap;
@@ -588,7 +588,7 @@ let Menu = {
             for (i=0; i< mainTeam.heroList.length; i++){
                 let hero = mainTeam.heroList[i];
                 let heroImg= hero.img;
-                let bitmapData = new LBitmapData(imglist[heroImg]);
+                let bitmapData = new LBitmapData(assets[heroImg]);
                 let chara = new Fighter(bitmapData,4,4);
                 // 测试物品效果的英雄
                 let hero2= RPG.beget(HeroPlayer);
@@ -656,7 +656,7 @@ let Menu = {
         }
 
         // 图标作为拖动物
-        // let bitmapData = new LBitmapData(imglist["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+        // let bitmapData = new LBitmapData(assets["iconset"], ItemList[item1.index].pic.x*RPG.iconStep, ItemList[item1.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
         // RPG.dragingItem = new LBitmap(bitmapData);
 
     },

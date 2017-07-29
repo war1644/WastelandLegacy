@@ -5,10 +5,11 @@
  *  ▄▅████☆RED█WOLF☆███▄▄▃▂
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
- *
- * Created by 路漫漫.
- * Link: ahmerry@qq.com
- * Date: 2017/7/16 19:58
+ * 客户端基础类
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2016/12/9 初版
  *
  */
 //扩展send方法
@@ -105,14 +106,14 @@ function checkAuto(){
     for(let i=0;i<events.length;i++){
         autoEvent = events[i];
         if (autoEvent.type==="auto"){
-            if (autoEvent.visible && autoEvent.visible()){
+            // if (autoEvent.visible && autoEvent.visible()){
                 if (autoEvent.action){
                     // 一旦触发事件，按键取消
                     isKeyDown= false;
                     autoEvent.action();
                     return;
                 }
-            }
+            // }
         }
     }
 }
@@ -129,6 +130,39 @@ function checkIntoBattle(){
     //     player.tmp = 0;
     // }
 }
+
+let jumpStage = function(newStage, x, y, dir=0){
+    stage = newStage;
+    stage.autoEvents = [];
+    stage.triggerEvents = [];
+    stage.npcEvents = [];
+    //当前场景地图
+    CurrentMap = stage.map;
+    CurrentMapImg = stage.imgName;
+    let len = stage.events.length,
+        events = stage.events;
+    for(let i=0;i<len;i++){
+        switch (events[i].type){
+            case 'auto':
+                stage.autoEvents.push(events[i]);
+                break;
+            case 'jump':
+                stage.triggerEvents.push(events[i]);
+                break;
+            case 'touch':
+            case 'item':
+            case 'box':
+            case 'npc':
+                // stage.npcEvents.push(events[i]);
+                addNpc(events[i]);
+                break;
+        }
+    }
+
+    //初始化一些设置
+    initScript(x, y, dir);
+};
+
 let Lib = {
     /**
      * 重排角色，以便正确遮盖
@@ -167,6 +201,7 @@ let Lib = {
 
 
 let UI = {
+
     /**
      * 纯色背景
      */
@@ -178,6 +213,20 @@ let UI = {
         colorWindow.alpha = alpha;
         if (layer) layer.addChild(colorWindow);
         return colorWindow;
+    },
+    /**
+     * 纯色图片背景
+     */
+    drawImgColor: function(layer, x, y, w, h) {
+        let bitmapData = new LBitmapData(assets["focus"]);
+        let bitmap = new LBitmap(bitmapData);
+        bitmap.scaleX = w/ bitmap.width;
+        bitmap.scaleY = h/ bitmap.height;
+        bitmap.x = x;
+        bitmap.y = y;
+        bitmap.alpha = 0.5;
+        layer.addChild(bitmap);
+        return bitmap;
     },
     /**
      * 纯色背景带边框
@@ -203,6 +252,21 @@ let UI = {
         rectBorder.alpha = alpha;
         layer.addChild(rectBorder);
         return rectBorder;
+    },
+    /**
+     * 图片背景按钮
+     */
+    imgButton : ()=>{
+        let bitmapDataUp = new LBitmapData(assets["ok_button"],0,0,98,48);
+        let bitmapUp = new LBitmap(bitmapDataUp);
+        let bitmapDataOver = new LBitmapData(assets["ok_button"],0,48,98,48);
+        let bitmapOver = new LBitmap(bitmapDataOver);
+        bitmapUp.scaleX = 0.5;
+        bitmapOver.scaleX = 0.5;
+        let button = new LButton(bitmapUp,bitmapOver);
+        button.x = 50;
+        button.y = 150;
+        return button;
     },
 
     /**
@@ -245,6 +309,46 @@ let UI = {
             }
         });
         return button01;
+    },
+
+    /**
+     * option白底按钮
+     **/
+    optionButton: function(aw, ah, ax, ay, aText, aFunc) {
+        let bitmapDataUp = new LBitmapData(assets["focus"]);
+        let bitmapUp = new LBitmap(bitmapDataUp);
+        bitmapUp.scaleX= aw/ bitmapUp.width;
+        bitmapUp.scaleY= ah/ bitmapUp.height;
+        bitmapUp.alpha= 0.2;
+        let bitmapDataDown = new LBitmapData(assets["focus"]);
+        let bitmapDown = new LBitmap(bitmapDataDown);
+        bitmapDown.scaleX= aw/ bitmapDown.width;
+        bitmapDown.scaleY= ah/ bitmapDown.height;
+        bitmapDown.alpha= 0.5;
+        // 保持进度的按钮
+        let button02 = new LButton(bitmapUp,bitmapDown,bitmapDown);
+        button02.x= ax;
+        button02.y= ay;
+        let text = new LTextField();
+        text.size = "15";
+        text.color = "#FFF";
+        text.text = aText;
+        text.textAlign= "center";
+        text.textBaseline= "middle";
+        //text.x = bitmapUp.scaleX* bitmapUp.width/ 2;
+        //text.y = bitmapUp.scaleY* bitmapUp.height/ 2;
+        text.x = button02.getWidth()/ 2;
+        text.y = button02.getHeight()/ 2;
+        button02.addChild(text);
+        button02.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+            RPG.currentButton= button02;
+        });
+        button02.addEventListener(LMouseEvent.MOUSE_UP, function () {
+            if (RPG.currentButton== button02) {
+                if (aFunc) aFunc();
+            }
+        });
+        return button02;
     },
 
     /**
@@ -319,7 +423,7 @@ let UI = {
      * 物品icon
      */
     icon:(layer,item,x,y)=>{
-        let bitmapData = new LBitmapData(imglist["iconset"], ItemList[item.index].pic.x*RPG.iconStep, ItemList[item.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
+        let bitmapData = new LBitmapData(assets["iconset"], ItemList[item.index].pic.x*RPG.iconStep, ItemList[item.index].pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep);
         let bitmap = new LBitmap(bitmapData);
         bitmap.x= x;
         bitmap.y= y;
@@ -331,7 +435,7 @@ let UI = {
         UI.drawBorderWindow(effectLayer,0,0,WIDTH, 40);
         let item1 = ItemList[id];
         // 图片
-        // bitmapData = new LBitmapData(imglist["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep),
+        // bitmapData = new LBitmapData(assets["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep),
         // bitmap = new LBitmap(bitmapData);
         // bitmap.x= gap* 2;
         // bitmap.y= gap;
@@ -348,7 +452,40 @@ let UI = {
             effectLayer.removeAllChild();
         }, 1000);
     },
+    /**
+     * diy按钮
+     **/
+    diyButton : (x, y, text, callback,scale=1.5)=>{
+        let title;
+        let upState = new LPanel("#ccc");
+        title = new LTextField();
+        title.text = text;
+        title.size = 20;
+        text.textAlign= "center";
+        text.textBaseline= "middle";
+        title.x = (upState.getWidth() - title.getWidth())*0.5;
+        title.y = (upState.getHeight() - title.getHeight())*0.5;
+        upState.addChild(title);
+        let downState = new LPanel("#eee");
+        downState.addChild(title);
+        // downState.scaleX=scale;
+        // downState.scaleY=scale;
+        // upState.scaleX=scale;
+        // upState.scaleY=scale;
 
+        let button01 = new LButton(upState,null,downState);
+        button01.x = x;
+        button01.y = y;
+        button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+            RPG.currentButton = button01;
+        });
+        button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
+            if (RPG.currentButton === button01) {
+                if (callback) callback();
+            }
+        });
+        return button01;
+    },
 
 };
 

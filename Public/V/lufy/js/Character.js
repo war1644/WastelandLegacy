@@ -58,17 +58,13 @@ Character.prototype.onframe = function (){
 	//当人物可移动，则开始移动
 	if(self.move){
 		if (self.isHero){
-			self.onmove();
+			self.playerMove();
 		}else{
 			//npc达到间隔再移动
             if (self.moveMode === 2) {
-                self.easyMove();
-			}else  if (self.moveMode === 1){
-            	//self.moveTime--;
-                //f (!self.moveTime) {
-                      self.easyMove();
-                      //self.moveTime=5;
-                     // }
+                self.npcMove();
+			}else if (self.moveMode === 1){
+				self.npcMove();
             }
 		}
 		// if (stage.hasBig) resetChildIndex(charaLayer);
@@ -80,7 +76,7 @@ Character.prototype.onframe = function (){
 /**
  * NPC移动处理类
  **/
-Character.prototype.easyMove = function (){
+Character.prototype.npcMove = function (){
 	// NPC移动，仅在地图控制或无控等待下可行
 	// if (!RPG.checkState(RPG.UNDER_MAP)) {
 	// 	return;
@@ -129,7 +125,7 @@ Character.prototype.easyMove = function (){
 		}
 		//console.log(self.px, self.py);
 		// NPC移动后
-		checkTouch();
+		// checkTouch();
 		self.moveIndex = 0;
 		if(self.direction !== self.direction_next){
 			self.direction = self.direction_next;
@@ -152,18 +148,17 @@ Character.prototype.easyMove = function (){
 		} else if  (self.moveMode === 1) {
 			// 对于随机移动的类型，进行预占位
 			self.takePlace();
-			self.moveTime--;
-                if (!self.moveTime) {
-                    
-                      self.moveTime=5;
-                   }
+			// self.moveTime--;
+			// if (!self.moveTime) {
+			// 	self.moveTime=5;
+			// }
 		}
 	}
 };
 /**
- * 玩家单位''开始移动 
+ * 玩家单位移动
  **/
-Character.prototype.onmove = function (){
+Character.prototype.playerMove = function (){
 	let self = this;
 	//设定一个移动步长中的移动次数
 	let ml_cnt = 2;
@@ -292,7 +287,7 @@ Character.prototype.takePlace = function (){
 };
 /**
  * 障碍物判断
- * @param 判断方向 
+ * @param dir 判断方向
  **/
 Character.prototype.checkRoad = function (dir){
 	let self = this;
@@ -388,7 +383,9 @@ Character.prototype.changeDir = function (dir){
 		self.direction_next = dir;
 	}
 };
-// 两个方向选一
+/**
+ * 两个方向选一
+ **/
 Character.prototype.changeDirAlt = function (dirs){
 	let self = this,
 		dir = -1;//默认方向

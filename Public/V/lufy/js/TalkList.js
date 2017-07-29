@@ -105,8 +105,17 @@ talklist4= {
 
     talkList = {
     	费雷塔:[
-               {img: "face费雷塔", name: "", msg: "过来一下,"},
+			{img: "face费雷塔", name: "", msg: "过来一下,"},
     	],
+        雷娜:[
+            {index:0,img: "face雷娜", name: "", msg: "咦，你是赏金猎人么？"},
+            {index:1,img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
+            {index:2,img: "face雷娜", name: "", msg: "哎，来了一个废物"},
+        ],
+		gameAbout:[
+            {index:0,img: "face雷娜", name: "游戏美工04", msg: "是否进入新手教程?"},
+            {index:1,img: "face雷娜", name: "游戏美工04", msg: "那么，开始废土捡破烂生活吧"},
+        ],
         gameExplainTalk: [
             {img: "face雷娜", name: "游戏美工04", msg: "点击地图移动"},
             {img: "face雷娜", name: "游戏美工04", msg: "点击自己打开菜单"},

@@ -79,7 +79,7 @@ Effect.prototype.play = function (aTimes, aFunc){
 RPG.loadEffect= function(name,w=48,h=48,type=0){
 	if (!effectList[name]){
 		let bitmapData, chara;
-        bitmapData = new LBitmapData(imglist[name]);
+        bitmapData = new LBitmapData(assets[name]);
 		chara = new Effect(bitmapData, w, h,type);
 		effectList[name]= chara;
 	}

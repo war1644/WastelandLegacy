@@ -49,7 +49,7 @@ let Talk = {
         UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
         //对话头像
         if (optionScript.img) {
-            let bitmapData = new LBitmapData(imglist[optionScript.img]);
+            let bitmapData = new LBitmapData(assets[optionScript.img]);
             let bitmap = new LBitmap(bitmapData);
             bitmap.x = optionScript.x || Talk.LEFT;
             bitmap.y = optionScript.y || Talk.TOP-bitmap.height;
@@ -66,8 +66,8 @@ let Talk = {
         }
 
         //分支选项
-        for (let i= 0; i< optionScript.choise.length; i++){
-            let button01= RPG.newSimpleButton(Talk.WIDTH- 10, 22, Talk.LEFT+ 5, Talk.talkLinePos, optionScript.choise[i].text, optionScript.choise[i].action);
+        for (let i= 0; i< optionScript.option.length; i++){
+            let button01= UI.optionButton(Talk.WIDTH- 10, 22, Talk.LEFT+ 5, Talk.talkLinePos, optionScript.choise[i].text, optionScript.choise[i].action);
             talkLayer.addChild(button01);
             Talk.talkLinePos= Talk.talkLinePos+ 25;
         }
@@ -96,7 +96,6 @@ let Talk = {
         //对话结束
         Talk.talkScript = null;
         Talk.choiceScript = null;
-        // RPG.ScriptIndex++;
         isKeyDown= false;
     },
 
@@ -129,13 +128,13 @@ let Talk = {
      * @param talkList 攻击方
      * @returns
      */
-    startTalk:(talkList=false)=>{
+    startTalk:(talkList=false,index=0)=>{
         let border = 10;
         //如果对话内容为空，则开始判断是否可以对话
         if (!Talk.talkScript){
-            Talk.talkScript = talkList;
-            Talk.talkIndex = 0;
             if(!talkList) return;
+            Talk.talkScript = talkList;
+            Talk.talkIndex = index;
         }
         // 游戏状态切换----对话中
         if (!RPG.checkState(RPG.IN_TALKING))  RPG.pushState(RPG.IN_TALKING);
@@ -158,7 +157,7 @@ let Talk = {
             UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
             //对话头像
             if (talkObject.img) {
-                let imgData = new LBitmapData(imglist[talkObject.img]);
+                let imgData = new LBitmapData(assets[talkObject.img]);
                 let bitmap = new LBitmap(imgData);
                 bitmap.scaleX = 0.5;
                 bitmap.scaleY = 0.5;
