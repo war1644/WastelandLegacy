@@ -5,7 +5,7 @@
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * Talk class 客户端对话类
+ * RPG class 客户端核心主类，游戏控制参数，方法
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version

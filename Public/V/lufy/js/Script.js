@@ -19,8 +19,7 @@
             {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
                 //进入地图等待状态
                 RPG.pushState(RPG.MAP_WAITING);
-                Talk.startTalk(stage.talk.雷娜);
-                Talk.waitTalk(()=>{
+                Talk.startTalk(stage.talk.雷娜,()=>{
                     npc.speed = 2;
                     //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
                     moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
@@ -29,12 +28,16 @@
                         RPG.setSwitch("雷娜firstTalk", true);
                     });
                 });
+                // Talk.waitTalk(()=>{
+                //
+                // });
             }},
             {type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
                 action: function() {
                     // 自动发言位置居中
-                    Talk.setTalkPos("middle");
-                    Talk.makeChoice(stage.choiceList[0]);
+                    // Talk.setTalkPos("middle");
+                    // Talk.makeChoice(stage.choiceList[0]);
+                    Talk.startTalk(talkList.gameExplainTalk);
                     RPG.setSwitch("gameInitAutoTalk", true);
                 }
             },
@@ -82,21 +85,20 @@
 
         ],
         choiceList: {
-            0: {img: "face雷娜", msg: "新手操作教程",
+            0: {img: "face雷娜", msg: "新手操作教程\n新手操作教程\n新手操作教程",
                 option: [
                     {text: "看", action: () => {
-                        // Talk.closeTalk();
-                        Talk.startTalk(talkList.gameExplainTalk);
-                        Talk.waitTalk(() => {
-                            Talk.setTalkPos("bottom");
-                        });
-                        }
+                        Talk.startTalk(talkList.gameExplainTalk, () => {
+                            // Talk.setTalkPos("bottom")
+                        })}
+                        // Talk.waitTalk(() => {
+                        //
+                        // });}
                     },
                     {text: "不看", action: () => {
-                            // Talk.closeTalk();
                             Talk.startTalk(stage.talk.gameAbout,1);
                             Talk.waitTalk(() => {
-                                Talk.setTalkPos("bottom");
+                                // Talk.setTalkPos("bottom");
                             });
                         }
                     }

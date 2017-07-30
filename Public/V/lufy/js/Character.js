@@ -137,9 +137,12 @@ Character.prototype.npcMove = function (){
 		// NPC移动后
 		// checkTouch();
 		self.moveIndex = 0;
-		//保证移动后的姿势
-        self.anime.colIndex=0;
-        self.anime.onframe();
+        if (self.moveMode !== 2) {
+            //保证移动后的姿势
+            self.anime.colIndex=0;
+            self.anime.onframe();
+        }
+
 
 		if(self.direction !== self.direction_next){
 			self.direction = self.direction_next;
@@ -418,7 +421,6 @@ Character.prototype.changeDirAlt = function (dirs){
 			//设定图片动画
 			self.anime.setAction(dir);
 			//判断是否可移动
-            console.log('dir',dir);
             if(!self.checkRoad(dir))return;
 
 		} else {

@@ -325,10 +325,10 @@ function onDown(event) {
 
     if (RPG.checkState(RPG.UNDER_MENU)) {
     	Menu.dealMenu(event.offsetX<<0, event.offsetY<<0);
-    } else if (RPG.checkState(RPG.MAP_CONTROL)) {
+    } else if(RPG.checkState(RPG.MAP_CONTROL)) {
         // 地图状态下可以进行移动和弹出菜单的操作
     	RPG.dealNormal(event.offsetX<<0, event.offsetY<<0);
-    } else if (RPG.checkState(RPG.IN_TALKING)) {
+    } else if(RPG.checkState(RPG.IN_TALKING)) {
     	Talk.startTalk();
     }
 }

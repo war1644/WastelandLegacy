@@ -114,21 +114,45 @@ talklist4= {
     	],
         雷娜:[
             {index:0,img: "face雷娜", name: "", msg: "咦，你是赏金猎人么？"},
-            {index:1,img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
-            {index:2,img: "face雷娜", name: "", msg: "哎，来了一个废物"},
+			{option:[
+                {text: "是", action:()=>{
+                    Talk.startTalk([
+                        {index:1,img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
+                        {index:2,img: "face雷娜", name: "", msg: "赶紧来猎人中心吧，再见啦"},
+                    ])
+                }},
+                {text: "否",action:()=>{
+                    Talk.startTalk([
+                        {index:1,img: "face雷娜", name: "", msg: "哎，来了一个废物"},
+                    ]);
+                }}
+            ]},
         ],
 		gameAbout:[
             {index:0,img: "face雷娜", name: "游戏美工04", msg: "是否进入新手教程?"},
             {index:1,img: "face雷娜", name: "游戏美工04", msg: "那么，开始废土捡破烂生活吧"},
         ],
         gameExplainTalk: [
-            {img: "face雷娜", name: "游戏美工04", msg: "点击地图移动"},
-            {img: "face雷娜", name: "游戏美工04", msg: "点击自己打开菜单"},
-            {img: "face雷娜", name: "游戏美工04", msg: "物品列表页长按物品使用或装备"},
-            {img: "face雷娜", name: "游戏美工04", msg: "状态显示页长按装备可卸下"},
-            {img: "face雷娜", name: "游戏美工04", msg: "多名队员，状态显示页，左右滑动可切换"},
-            {img: "face雷娜", name: "游戏美工04", msg: "走路碰到NPC自动对话"},
-            {img: "face雷娜", name: "游戏美工04", msg: "WARNING：遇到凶残的敌人就跑吧，不然没人救你哦"},
+            {img: "face雷娜", msg: "看不看新手操作教程？看不看新手操作教程？看不看新手操作教程？"},
+            {option:[
+                {text: "是", action:()=>{
+                    Talk.startTalk([
+                        {img: "face雷娜", name: "游戏美工04", msg: "点击地图移动"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "点击自己打开菜单"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "物品列表页长按物品使用或装备"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "状态显示页长按装备可卸下"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "多名队员，状态显示页，左右滑动可切换"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "走路碰到NPC自动对话"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "WARNING：遇到凶残的敌人就跑吧，不然没人救你哦"},
+                    ])
+                }},
+                {text: "否",action:()=>{
+                    Talk.startTalk([
+                        {index:1,img: "face雷娜", name: "", msg: "哎，来了一个废物"},
+                    ]);
+                }}
+            ]},
+
         ],
         npc1: [
             {img: "", name: "", msg: "赏金猎人们通过击杀赏金首领取悬赏金以获取金钱。"},

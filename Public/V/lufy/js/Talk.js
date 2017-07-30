@@ -25,14 +25,16 @@ let Talk = {
     choiceScript:false,
     //对话序号
     talkIndex : 0,
+    //对话结尾
+    talkEnd : -1,
     // 对话换行位置记录
     talkLinePos : 550,
-
     // 对话窗口大小
     LEFT:10,
     WIDTH: WIDTH-gap*2,
     HEIGHT:100,
     TOP:HEIGHT-100-gap,
+    callback:null,
 
     makeChoice:(optionScript)=>{
         //如果对话内容为空，则开始判断是否可以对话
@@ -82,11 +84,12 @@ let Talk = {
      * 对话完成后回调方法
      */
     waitTalk:(callback)=>{
-        if (Talk.talkScript) {
-            setTimeout(function(){Talk.waitTalk(callback)}, 500);
-        } else {
-            if (callback) callback();
-        }
+        Talk.callback = callback;
+        // if (Talk.talkScript) {
+        //     setTimeout(function(){Talk.waitTalk(callback)}, 1000);
+        // } else {
+        //     if (callback) callback();
+        // }
     },
 
     /**
@@ -99,14 +102,17 @@ let Talk = {
         //对话结束
         Talk.talkScript = null;
         Talk.choiceScript = null;
+        Talk.talkIndex = 0;
+        Talk.talkEnd = -1;
         isKeyDown= false;
     },
 
 	/**
-	 * 关闭对话
+	 * 逐字显示完成回调
 	 */
     closeSentence:()=>{
         Talk.sentenceFinish = true;
+        console.log('逐字显示完成回调',Talk.sentenceFinish);
     },
 
     /**
@@ -131,17 +137,20 @@ let Talk = {
      * @param talkList 攻击方
      * @returns
      */
-    startTalk:(talkList=false,index=0,end=-1)=>{
+    startTalk:(talkList=false,callback=null,index=0,end=-1)=>{
         let border = 10;
         //如果对话内容为空，则开始判断是否可以对话
         if (!Talk.talkScript){
             if(!talkList) return;
             Talk.talkScript = talkList;
             Talk.talkIndex = index;
+            Talk.talkEnd = end;
+            Talk.callback = callback;
         }
         // 游戏状态切换----对话中
-        if (!RPG.checkState(RPG.IN_TALKING))  RPG.pushState(RPG.IN_TALKING);
-        
+        if (!RPG.checkState(RPG.IN_TALKING)) RPG.pushState(RPG.IN_TALKING);
+
+        console.log('talkScript',Talk.talkScript,RPG.checkState(RPG.IN_TALKING));
         // 前半句话没说完的情况下，先说完
         if (!Talk.sentenceFinish) {
             Talk.sentenceFinish = true;
@@ -151,12 +160,25 @@ let Talk = {
         }
 
         //当对话开始，且按照顺序进行对话
-
         if(Talk.talkIndex < Talk.talkScript.length){
-
             //得到对话内容
             let talkObject = Talk.talkScript[Talk.talkIndex];
 
+            if ('option' in talkObject){
+                console.log('in option');
+
+                //分支选项
+                Talk.closeTalk();
+                //对话背景
+                UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
+                let options = talkObject.option;
+                for (let i= 0; i< options.length; i++){
+                    let button01= UI.optionButton(Talk.WIDTH- 10, 22, Talk.LEFT+ 5, Talk.talkLinePos, options[i].text, options[i].action);
+                    talkLayer.addChild(button01);
+                    Talk.talkLinePos = Talk.talkLinePos+ 25;
+                }
+                return;
+            }
             //将对话层清空
             talkLayer.removeAllChild();
             //对话背景
@@ -195,7 +217,11 @@ let Talk = {
             talkLayer.y = 0;
             Talk.talkIndex++;
             Talk.talkLinePos = Talk.talkLinePos + 20;
+            // if (Talk.talkIndex === end){
+            //     Talk.talkIndex =  Talk.talkScript.length;
+            // }
         }else{
+            if(Talk.callback) Talk.callback();
             Talk.closeTalk();
         }
     },
@@ -223,7 +249,6 @@ let Talk = {
             }
             for(let key in charaLayer.childList){
                 let npc = charaLayer.childList[key];
-
                 // 不可见的对象，不触发
                 if (!npc.visible) continue;
                 //判断前面有npc，有则开始对话
@@ -241,7 +266,7 @@ let Talk = {
             // if(!Talk.talkScript)  checkTrigger();
         } else{
             // 直接继续对话
-            Talk.startTalk(Talk.talkScript);
+            // Talk.startTalk(Talk.talkScript);
         }
     }
 };
