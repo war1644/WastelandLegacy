@@ -118,7 +118,6 @@ function main(){
     imgData.push({type:"js",path:"./js/RPG.js"});
 	imgData.push({type:"js",path:"./js/Menu.js"});
 	imgData.push({type:"js",path:"./js/Team.js"});
-	// imgData.push({type:"js",path:"./js/cover.js"});
 	imgData.push({type:"js",path:"./js/Effect.js"});
 	imgData.push({type:"js",path:"./js/FightMenu.js"});
 	imgData.push({type:"js",path:"./js/Fight.js"});

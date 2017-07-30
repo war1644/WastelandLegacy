@@ -20,9 +20,9 @@ let Talk = {
     //一句话说完标记
     sentenceFinish:true,
     //普通对话脚本
-    talkScript:[],
+    talkScript:false,
     //选择对话脚本
-    choiceScript:{},
+    choiceScript:false,
     //对话序号
     talkIndex : 0,
     // 对话换行位置记录
@@ -103,7 +103,7 @@ let Talk = {
     },
 
 	/**
-	 * 对话内容逐字显示
+	 * 关闭对话
 	 */
     closeSentence:()=>{
         Talk.sentenceFinish = true;
@@ -131,7 +131,7 @@ let Talk = {
      * @param talkList 攻击方
      * @returns
      */
-    startTalk:(talkList=false,index=0)=>{
+    startTalk:(talkList=false,index=0,end=-1)=>{
         let border = 10;
         //如果对话内容为空，则开始判断是否可以对话
         if (!Talk.talkScript){
@@ -151,7 +151,9 @@ let Talk = {
         }
 
         //当对话开始，且按照顺序进行对话
+
         if(Talk.talkIndex < Talk.talkScript.length){
+
             //得到对话内容
             let talkObject = Talk.talkScript[Talk.talkIndex];
 

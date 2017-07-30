@@ -23,18 +23,16 @@
                 Talk.waitTalk(()=>{
                     npc.speed = 2;
                     //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
-                    moveNpc(npc,[3,3,3,1,1,1,1,1,3,3],()=>{
+                    moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
                         RPG.popState();
                         RPG.hideChar(npc);
                         RPG.setSwitch("雷娜firstTalk", true);
                     });
                 });
             }},
-            {type:"auto", x:-1, y:-1,visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
+            {type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
                 action: function() {
-                    //进入地图等待状态
-                    RPG.pushState(RPG.MAP_WAITING);
-                    // 自动发言
+                    // 自动发言位置居中
                     Talk.setTalkPos("middle");
                     Talk.makeChoice(stage.choiceList[0]);
                     RPG.setSwitch("gameInitAutoTalk", true);
@@ -43,30 +41,42 @@
 
             {type:"jump",x:11,y:15,action:()=>{
                 // 战车工厂
-                jumpStage(script.stage01, 10, 20, 3);
+                console.log('jump战车工厂');
+                jumpStage(script.stage02, 19, 12, LEFT);
             }},
             {type:"jump",x:13,y:14,action:()=>{
                 // 战车工厂
-                jumpStage(script.stage01, 10, 20, 3);
+                console.log('jump战车工厂');
+                jumpStage(script.stage02, 10, 19, UP);
             }},
             {type:"jump",x:8,y:14,action:()=>{
                 // 猎人中心
-                jumpStage(script.stage01, 5, 8, 3);
+                console.log('jump猎人中心');
+                jumpStage(script.stage04, 11, 13, UP);
             }},
             {type:"jump",x:8,y:10,action:()=>{
                 // 人类装备
+                console.log('jump人类装备');
                 jumpStage(script.stage01, 5, 8, 3);
             }},
-            {type:"jump",x:12,y:18,action:()=>{
+            {type:"jump",x:12,y:8,action:()=>{
                 // bar
+                console.log('jump bar');
                 jumpStage(script.stage01, 5, 8, 3);
             }},
             // 旅馆
-            {type:"jump",x:17,y:7,action:()=>{jumpStage(script.stage01, 5, 8, 3);}},
+            {type:"jump",x:17,y:7,action:()=>{
+                console.log('jump 旅馆');
+                jumpStage(script.stage01, 5, 8, 3);}
+            },
             // 传送
-            {type:"jump",x:20,y:3,action:()=>{jumpStage(script.stage01, 5, 8, 3);}},
+            {type:"jump",x:20,y:3,action:()=>{
+                console.log('jump 传送');
+                jumpStage(script.stage01, 5, 8, 3);}
+            },
             {type:"jump",x:23,y:6,action:()=>{
                 // 明奇
+                console.log('jump 明奇');
                 jumpStage(script.stage01, 5, 8, 3);
             }},
 
@@ -76,7 +86,7 @@
                 option: [
                     {text: "看", action: () => {
                         // Talk.closeTalk();
-                        Talk.startTalk(stage.talk.gameExplainTalk);
+                        Talk.startTalk(talkList.gameExplainTalk);
                         Talk.waitTalk(() => {
                             Talk.setTalkPos("bottom");
                         });
@@ -102,44 +112,38 @@
         mapData: {},
         events: [
             {type: "npc", img: "姐姐", x: 10, y: 13,
-				action: function (npc) {
-					if (RPG.checkSwitch("accept")) {
-						Talk.startTalk(stage.talk.talk4);
-					} else if (RPG.checkSwitch("secondTalk")) {
-						Talk.makeChoice(stage.choice.choice1);
-					} else {
-						Talk.startTalk(stage.talk.talk1);
-						RPG.setSwitch("secondTalk", true);
-						Talk.waitTalk(function () {
-							Talk.makeChoice(stage.choice.choice1);
-						});
-					}
-				}
+
             },
             {type:"item", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
-                // 隐藏的食物
-                if (!RPG.checkSwitch("breadTake1")){
-                    Talk.startTalk(stage.talk.talk7);
+                // box
+                if (!RPG.checkSwitch("战车工厂_boxTalk1")){
+                    Talk.startTalk(talkList.box);
                     Talk.waitTalk(function(){
+                        //更改箱子为打开画面
                         npc.anime.setAction(1);
                         mainTeam.addItem(12, 3, true);
-                        RPG.setSwitch("breadTake1", true);
+                        RPG.setSwitch("战车工厂_boxTalk1", true);
                     });
                 }else {
-                    Talk.startTalk(stage.talk.talk6);
+                    Talk.startTalk(talkList.box,2);
                 }
             }},
             // fight test
             {type:"npc", img:"白象战车", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
-            {x: 6, y: 13, action:()=>{
+            {type:"jump",x: 6, y: 13, action:()=>{
                     // 二楼
-                    jumpStage(script.stage03, 7, 15, UP);
+                    jumpStage(script.stage03, 2, 8, RIGHT);
                 }
             },
             {type:'jump',x: 10, y: 20,action:()=>{
                     // 镇里
                     jumpStage(script.stage01, 7, 20, UP);
                 }
+            },
+            {type:'jump',x: 10, y: 20,action:()=>{
+                // 镇里
+                jumpStage(script.stage01, 7, 20, UP);
+            }
             }
 
         ],
@@ -171,10 +175,24 @@
         // 为了表达复杂情节，须预存一些人物
         storyList: [],
         events: [
+            {type:"item", img:"box",col:1,row:2, x:1,  y:4, action: function(npc){
+                // box
+                if (!RPG.checkSwitch("猎人家_boxTalk1")){
+                    Talk.startTalk(talkList.box);
+                    Talk.waitTalk(function(){
+                        //更改箱子为打开画面
+                        npc.anime.setAction(1);
+                        mainTeam.addItem(12, 3, true);
+                        RPG.setSwitch("猎人家_boxTalk1", true);
+                    });
+                }else {
+                    Talk.startTalk(talkList.box,2);
+                }
+            }},
         // 备用地图角色
          {type:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, story:"boss"},
             {
-                chara: "npc", img: "黑色梅卡瓦'", x: 13, y: 15, action: function (npc) {
+                type: "npc", img: "黑色梅卡瓦'", x: 13, y: 15, action: function (npc) {
 					if (RPG.checkSwitch("accept")) {
 						Talk.startTalk(stage.talk.talk4);
 					} else if (RPG.checkSwitch("secondTalk")) {
@@ -188,8 +206,8 @@
 					}
             	}
             },
-            {chara:"npc", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
-                // 隐藏的食物
+            {type:"npc", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
+                // 隐藏的item
                 if (!RPG.checkSwitch("breadTake1")){
                     Talk.startTalk(stage.talk.talk7);
                     Talk.waitTalk(function(){
@@ -202,36 +220,133 @@
                 }
             }},
             
-            {
-                chara: "npc", img: "", x: 6, y: 13, action: function () {
-                // 回到大地图
-                jumpStage(script.stage02, 16, 17, 0);
-            }
-            },
-            {
-                chara: "npc", img: "empty", x: 12, y: 9, row: 1, col: 1, action: function () {
+            {type: "jump",x: 1, y: 7, action: function () {
+                // 1楼
+                jumpStage(script.stage02, 6, 14, 0);
+            }},
+            {type: "npc", img: "empty", x: 6, y: 2, row: 1, col: 1, action: function () {
                 // 休息一夜
-                if(!RPG.setSwitch("accept")){
-                    Talk.startTalk(stage.talk.talk8);
-                }else {
-                    RPG.pushState(RPG.MAP_WAITING);
-                    Talk.startTalk(stage.talk.talk5);
-                    Talk.waitTalk(function () {
-                        player.setCoordinate(9, 5, 0);
-                        Lib.resetChildIndex(charaLayer);
-                        RPG.nightAndDay(function () {
-                            player.setCoordinate(8, 5, 0);
-                            mainTeam.fullHeal();
-                            RPG.popState();
-                        });
+                RPG.pushState(RPG.MAP_WAITING);
+                Talk.startTalk(stage.talk.talk5);
+                Talk.waitTalk(function () {
+                    player.setCoordinate(6, 2, 0);
+                    // Lib.resetChildIndex(charaLayer);
+                    RPG.nightAndDay(function () {
+                        player.setCoordinate(5, 2, 0);
+                        mainTeam.fullHeal();
+                        RPG.popState();
                     });
-                }
-
-            }
-            }
+                });
+            }},
         ],
         talk: talklist3,
-        choice: {}
+    },
+    stage04:{
+        name: "猎人中心",
+        id: "stage04",
+        map: hunter_center,
+        imgName:['hunter_center_0','hunter_center_1'],
+        mapData: {},
+        talk: talkList,
+        // 为了表达复杂情节，须预存一些人物
+        storyList: [],
+        events: [
+            // 备用地图角色
+            {type:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, story:"boss"},
+            // 备用地图角色
+            {type:"npc", img:"红色梅卡瓦", x:-1,  y:-2, story:"wolf"},
+            // 备用地图角色
+            {type:"npc", img:"猎人A", x:15,  y:16, move:1},
+            //剧情NPC
+            {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
+                //进入地图等待状态
+                RPG.pushState(RPG.MAP_WAITING);
+                Talk.startTalk(stage.talk.雷娜);
+                Talk.waitTalk(()=>{
+                    npc.speed = 2;
+                    //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
+                    moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
+                        RPG.popState();
+                        RPG.hideChar(npc);
+                        RPG.setSwitch("雷娜firstTalk", true);
+                    });
+                });
+            }},
+            {type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
+                action: function() {
+                    //进入地图等待状态
+                    RPG.pushState(RPG.MAP_WAITING);
+                    // 自动发言
+                    Talk.setTalkPos("middle");
+                    Talk.makeChoice(stage.choiceList[0]);
+                    RPG.setSwitch("gameInitAutoTalk", true);
+                }
+            },
+
+            {type:"jump",x:11,y:15,action:()=>{
+                // 战车工厂
+                console.log('jump战车工厂');
+                jumpStage(script.stage01, 10, 20, 3);
+            }},
+            {type:"jump",x:13,y:14,action:()=>{
+                // 战车工厂
+                console.log('jump战车工厂');
+                jumpStage(script.stage01, 10, 20, 3);
+            }},
+            {type:"jump",x:8,y:14,action:()=>{
+                // 猎人中心
+                console.log('jump猎人中心');
+                jumpStage(script.stage01, 5, 8, 3);
+            }},
+            {type:"jump",x:8,y:10,action:()=>{
+                // 人类装备
+                console.log('jump人类装备');
+                jumpStage(script.stage01, 5, 8, 3);
+            }},
+            {type:"jump",x:12,y:8,action:()=>{
+                // bar
+                console.log('jump bar');
+                jumpStage(script.stage01, 5, 8, 3);
+            }},
+            // 旅馆
+            {type:"jump",x:17,y:7,action:()=>{
+                console.log('jump 旅馆');
+                jumpStage(script.stage01, 5, 8, 3);}
+            },
+            // 传送
+            {type:"jump",x:20,y:3,action:()=>{
+                console.log('jump 传送');
+                jumpStage(script.stage01, 5, 8, 3);}
+            },
+            {type:"jump",x:23,y:6,action:()=>{
+                // 明奇
+                console.log('jump 明奇');
+                jumpStage(script.stage01, 5, 8, 3);
+            }},
+
+        ],
+        choiceList: {
+            0: {img: "face雷娜", msg: "新手操作教程",
+                option: [
+                    {text: "看", action: () => {
+                        // Talk.closeTalk();
+                        Talk.startTalk(stage.talk.gameExplainTalk);
+                        Talk.waitTalk(() => {
+                            Talk.setTalkPos("bottom");
+                        });
+                    }
+                    },
+                    {text: "不看", action: () => {
+                        // Talk.closeTalk();
+                        Talk.startTalk(stage.talk.gameAbout,1);
+                        Talk.waitTalk(() => {
+                            Talk.setTalkPos("bottom");
+                        });
+                    }
+                    }
+                ]
+            }
+        }
     },
 };
 

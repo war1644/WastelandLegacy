@@ -334,7 +334,6 @@ Character.prototype.checkRoad = function (dir){
 			toY = myCoordinate.y + 1;
 			break;
 	}
-    console.log('hit',CurrentMapMove.data[toY*CurrentMap.width+ toX]);
 
     if(toY <= -1 || toX <= -1) return false;
 	if(toY >= CurrentMap.height || toX >= CurrentMap.width) return false;

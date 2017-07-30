@@ -87,7 +87,7 @@ talklist3= {
 		{img: "face4", name: "路漫漫", msg: "不可乱翻别人的箱子。" },
 	],
 	talk7: [
-		{img: "face4", name: "路漫漫", msg: "让我看看这里有什么。" },
+		{img: "face4", name: "路漫漫", msg: "让我看看这里有什么" },
 		{img: "face4", name: "路漫漫", msg: "呵呵，收获不小啊。" },
 	],
 	talk8: [
@@ -104,6 +104,11 @@ talklist4= {
 },
 
     talkList = {
+        box: [
+            {img: "", name: "", msg: "让我看看这里有什么" },
+            {img: "", name: "", msg: "呵呵，收获不小啊" },
+            {img: "", name: "", msg: "不要乱翻别人东西哦，小心被暴揍哦^_^" },
+        ],
     	费雷塔:[
 			{img: "face费雷塔", name: "", msg: "过来一下,"},
     	],
