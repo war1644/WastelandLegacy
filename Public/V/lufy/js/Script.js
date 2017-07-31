@@ -222,16 +222,15 @@
         map: hunter_center,
         imgName:['hunter_center_0','hunter_center_1'],
         mapData: {},
-        talk: talkList,
         // 为了表达复杂情节，须预存一些人物
         storyList: [],
         events: [
             // 备用地图角色
-            {type:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, story:"boss"},
-            // 备用地图角色
-            {type:"npc", img:"红色梅卡瓦", x:-1,  y:-2, story:"wolf"},
-            // 备用地图角色
-            {type:"npc", img:"猎人A", x:15,  y:16, move:1},
+            {type:"npc", img:"猎人A", x:8,  y:10, move:1},
+            // 赏金猎人办事处
+            {type:"npc", img:"赏金猎人办事处", x:7,  y:7, action:()=>{
+                Talk.makeChoice(stage.talk.赏金猎人办事处);
+            }},
             //剧情NPC
             {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
                 //进入地图等待状态
@@ -240,63 +239,61 @@
                     npc.speed = 2;
                     //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
                     moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
-                        RPG.popState();
                         RPG.hideChar(npc);
                         RPG.setSwitch("雷娜firstTalk", true);
                     });
                 });
             }},
-            {type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
+            {type:"auto",visible: ()=>{return (!RPG.checkSwitch("费雷塔task"));},
                 action: function() {
                     // 自动发言
-                    Talk.makeChoice(stage.choiceList[0]);
-                    RPG.setSwitch("gameInitAutoTalk", true);
+                    Talk.startTalk(talkList.费雷塔);
+                    RPG.setSwitch("费雷塔task", true);
                 }
             },
-
             {type:"jump",x:11,y:15,action:()=>{
-                // 战车工厂
-                console.log('jump战车工厂');
-                jumpStage(script.stage01, 10, 20, 3);
+                console.log('jump TOWN');
+                jumpStage(script.stage01, 8, 15, DOWN);
             }},
-            {type:"jump",x:13,y:14,action:()=>{
-                // 战车工厂
-                console.log('jump战车工厂');
-                jumpStage(script.stage01, 10, 20, 3);
-            }},
-            {type:"jump",x:8,y:14,action:()=>{
-                // 猎人中心
-                console.log('jump猎人中心');
-                jumpStage(script.stage01, 5, 8, 3);
-            }},
-            {type:"jump",x:8,y:10,action:()=>{
-                // 人类装备
-                console.log('jump人类装备');
-                jumpStage(script.stage01, 5, 8, 3);
-            }},
-            {type:"jump",x:12,y:8,action:()=>{
-                // bar
-                console.log('jump bar');
-                jumpStage(script.stage01, 5, 8, 3);
-            }},
-            // 旅馆
-            {type:"jump",x:17,y:7,action:()=>{
-                console.log('jump 旅馆');
-                jumpStage(script.stage01, 5, 8, 3);}
-            },
-            // 传送
-            {type:"jump",x:20,y:3,action:()=>{
-                console.log('jump 传送');
-                jumpStage(script.stage01, 5, 8, 3);}
-            },
-            {type:"jump",x:23,y:6,action:()=>{
-                // 明奇
-                console.log('jump 明奇');
-                jumpStage(script.stage01, 5, 8, 3);
+            {type:"jump",x:12,y:15,action:()=>{
+                console.log('jump TOWN');
+                jumpStage(script.stage01, 8, 15, DOWN);
             }},
 
         ],
+        talk: {
+            费雷塔: [
+                {name: "费雷塔", msg: "新来的，过来一下吧"},
+                {name: "费雷塔", msg: "看看这个吧"},
+                {name: "费雷塔", msg: "如何？不错吧？打败他就有50000G的赏金，这些钱可够花好几个月的。"},
+                {name: "费雷塔", msg: "我们明天讨伐的讨伐目标就是他了。你先去镇子里的旅馆休息一下吧。"},
+            ],
+            猎人: [
+                {name: "猎人", msg: "这附近没有什么赏金首可以猎取啊。"},
+            ],
+            赏金猎人办事处:[
+                {name: "赏金猎人办事处", msg: "有事吗？"},
+                {name: "赏金猎人办事处", msg: "这附近很太平，没有什么赏金首"},
+                {name: "赏金猎人办事处", msg: "最近一到夜晚，镇子周围就会冒出许多杀人虫，严重威胁到了大家的安全，你有兴趣活动活动么？"},
+                {name: "赏金猎人办事处", msg: "哈哈，就算打倒了赏金首也要有些证据吧？"},
+                {msg: "有事吗？",option:[
+                        {text:"听情报",action: function(){
+
+                        }},
+                        {text:"本周委托任务",action: function(){
+
+                        }},
+                        {text:"领赏金",action: function(){
+
+                        }},
+                        {text:"离开",action: function(){
+
+                        }},
+                ]},
+            ],
+        },
     },
+
 };
 
 

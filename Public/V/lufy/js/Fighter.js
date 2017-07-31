@@ -4,7 +4,7 @@ let Fighter = function (data,row,col){
 	base(this,LSprite,[]);
 	let self = this;
 	//设定人物动作速度
-	self.speed = 3;
+	self.speed = 2;
 	self.speedIndex = 0;
 	//设定人物大小
     data.setProperties(0,0,(data.image.width/col)>>0,(data.image.height/row)>>0);

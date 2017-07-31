@@ -132,6 +132,7 @@ function main(){
     imgData.push({name: "empty", path: "./image/empty.png" });
     imgData.push({name: "box", path: "./image/box.png" });
     imgData.push({name: "right", path: "./image/right.png" });
+    imgData.push({name: "通缉令_戈麦斯", path: "./image/Other/通缉令_戈麦斯.png" });
 
 	//movePic
     imgData.push({name:"猎人",path:"./image/MovePic/猎人.png"});
