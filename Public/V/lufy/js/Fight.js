@@ -43,6 +43,8 @@ let Fight = {
     quickFight:false,
     menu:{},
     queue:[],//行动队列
+    queueIndex:0,//行动索引
+    option:-1,
 
     /**
      * 普通战斗
@@ -65,38 +67,31 @@ let Fight = {
         if (r2 > 1) r2 = 1;
         if ((playerHero.Level - enemyHero.Level) >= 3 && r2 / r1 > 3) {
             // 级别差三级以上，同时首击效果相差太大，则开始逃散
-            let choice1 = {
-                img: "", msg: "敌人四散奔逃，是否追击？",
-                choise: [
-                    {
-                        text: "追击（经验少且无战利品）", action: function () {
-                        Talk.closeTalk();
+            Talk.startTalk(talkList.fight);
+            Talk.waitTalk(()=>{
+                Talk.closeTalk();
+                console.log('Fight.option',Fight.option);
+                switch (Fight.option) {
+                    case 0 :
                         RPG.pushState(RPG.FIGHT_RESULT);
                         Fight.startFight(RPG.enemyTeam[teamId], mainTeam, true, true);
                         Menu.waitMenu(()=>{
+                            console.log('Fight.state ',Fight.state);
                             if (Fight.state === Fight.WIN) {
-                                // npc.visible= false;
                                 RPG.popState();
                             } else if (Fight.state === Fight.LOST) {
                                 //战败
 
                             } else {
                                 // 不胜不败
-                                // npc.visible= false;
                                 RPG.popState();
                             }
-
                         });
-                    }
-                    },
-                    {
-                        text: "不追击", action: function () {
-                        Talk.closeTalk();
-                        // npc.visible= false;
-                    }
-                    }]
-            };
-            Talk.makeChoice(choice1);
+                        break;
+                    case 1 :
+                        break;
+                }
+            });
         } else {
             RPG.pushState(RPG.FIGHT_RESULT);
             Fight.startFight(RPG.enemyTeam[teamId], mainTeam);
@@ -154,6 +149,34 @@ let Fight = {
         // RPG.fightMenuLayer.addChildAt(text,1);
         // showFightInfo();
         Fight.drawFighters();
+
+        Fight.actionQueue();
+
+        Fight.starQueue();
+
+    },
+    /**
+     * 开始队列处理
+     *
+     * */
+    starQueue:()=>{
+        Fight.currentFighter = Fight.queue[Fight.queueIndex];
+        // if(!Fight.currentFighter && Fight.queueIndex){
+        //     Fight.queueIndex++;
+        //     if(Fight.queueIndex>=Fight.queue.length){
+        //         Fight.queueIndex = 0;
+        //     }
+        //     Fight.starQueue();
+        // } else {
+            if(Fight.currentFighter.isHero) {
+                Fight.drawActButton();
+            } else {
+                let randIndex = rand(mainTeam.heroList.length-1);
+                Fight.currentToFighter = mainTeam.heroList[randIndex];
+                setTimeout(Fight.actionAttack,2000);
+            }
+        // }
+
     },
 
     /**
@@ -204,8 +227,7 @@ let Fight = {
                 Lib.showInfo(hero1.nickName+'进入战场');
             }
         }
-        Fight.actionQueue();
-        Fight.drawActButton();
+
 
     },
 
@@ -214,8 +236,6 @@ let Fight = {
      */
     drawActButton: () => {
         // 控制按钮
-        let attackButton = null;
-        let exitButton = null;
         let x0, y0;
         let useWidth = menuWidth - gap * 2;
         x0 = useWidth / 8 - RPG.iconStep * 1.5 / 2 + gap;
@@ -244,12 +264,9 @@ let Fight = {
         Fight.menu.name = 'fightMenu';
         talkLayer.addChild(Fight.menu);
         Fight.endCallback = ()=>{
-                Fight.menu.visible = true;
+            Fight.menu.visible = true;
+            console.log(Fight.menu);
         };
-        
-        
-
-
     },
 
     menuCmd:(type)=>{
@@ -258,12 +275,16 @@ let Fight = {
                 Lib.showInfo('攻击');
                 Fight.menu.visible = false;
                 Fight.stopAuto = true;
-                Fight.fightState = 1;
-                Fight.autoFight(0);
+                Fight.showEnemyList();
+                // Fight.fightState = 1;
+                // Fight.autoFight(0);
+                // Fight.actionAttack();
+
                 // 行动结束后，再显示菜单
                 Fight.afterStop = ()=>{
                     Fight.menu.visible = true;
                     Fight.fightState = 0;
+                    Fight.menu.useCursor = null;
                 };
                 break;
             case 2://物品
@@ -276,6 +297,7 @@ let Fight = {
                 Fight.afterStop = ()=>{
                     Fight.menu.visible = true;
                     Fight.fightState = 0;
+                    Fight.menu.useCursor = null;
                 };
                 break;
             case 3://防御
@@ -287,6 +309,7 @@ let Fight = {
                 Fight.afterStop = ()=>{
                     Fight.menu.visible = true;
                     Fight.fightState = 0;
+                    Fight.menu.useCursor = null;
                 };
                 break;
             case 4://逃跑
@@ -297,18 +320,57 @@ let Fight = {
                  若F大于255，则逃跑成功。否则在0到255之间生成一個随机数D。若D小于F则逃跑成功，否则逃跑失败。
                  若使用道具或某些特性逃跑必定成功*/
           //hero.speed;
-Menu.closeMenu();
+          //       Fight.fightState = 1;
+          //       Fight.state = 1;
+                Menu.closeMenu();
                 break;
         }
 
     },
+    /**
+     * 显示敌人列表
+     * */
+    showEnemyList:()=>{
+        let list = Fight.eTeam.heroList,optionList=[];
+        for (let i = 0; i < list.length; i++) {
+            let enemy = list[i];
+            if(!enemy.alive) continue;
+            optionList.push({text:enemy.nickName,action:()=>{
+                Fight.currentToFighter = enemy;
+                RPG.ctrlLayer.removeAllChild();
+                RPG.popState();
+                Fight.actionAttack();
+            }});
+        }
+        let select = {msg: Fight.currentFighter.nickName+" 攻击谁？",option:optionList};
+        Talk.makeChoice(select,RPG.ctrlLayer);
+    },
 
-    actionAttack:(hero,toHero)=>{
+    actionAttack:(hero=false,toHero)=>{
+        if(!hero){
+            hero = Fight.currentFighter;
+            toHero = Fight.currentToFighter;
+        }
         Lib.showInfo(hero.getName() + '攻击');
-        effect = ["220Animation",4,5];
+        let effect = ["220Animation",4,5];
         // 计算攻击效果
         let ret = Fight.physicalAttack(hero, toHero);
         toHero.beHit(ret);
+
+        // 有装备的战斗效果
+        if(hero.getWeapon){
+            let item1 = hero.getWeapon();
+            if (item1) effect = item1.atkEff;
+        }
+
+        Fight.doNormalFight(hero, toHero, effect, function () {
+            Fight.queueIndex++;
+            if(Fight.queueIndex>=Fight.queue.length){
+                Fight.queueIndex = 0;
+            }
+            Fight.starQueue();
+        });
+
         Lib.showInfo(toHero.getName() + '损伤 ' + ret);
     },
 
@@ -451,6 +513,8 @@ Menu.closeMenu();
                         if (toHero && !toHero.alive) {
                             toHero.fighter.visible = false;
                             toHero.hpText.visible = false;
+                            let index = Fight.queue.indexOf(Fight.currentToFighter);
+                            Fight.queue.splice(index,1);
                         }
                         // 动画效果消失
                         RPG.descLayer.removeChild(effect);
@@ -663,9 +727,9 @@ Menu.closeMenu();
         let playerSpeed = Fight.getEmyAverageSpeed(mainTeam.heroList);
 
         if(playerSpeed >= emyAvgSpeed) {
-            if(Math.random() >= 0.8) return true;
+            if(Math.random() > 0.6) return true;
         } else {
-            if(Math.random() >= 0.9) return true;
+            if(Math.random() > 0.9) return true;
         }
         return false;
     },
@@ -688,9 +752,11 @@ Menu.closeMenu();
      * */
     actionQueue:()=>{
         if(Fight.isForestall()) {
+            console.log('偷袭敌人');
             //偷袭敌人 我方所有人员先行攻击
             Fight.queue = mainTeam.heroList.concat(Fight.eTeam.heroList);
         } else if(Fight.isSneak()) {
+            console.log('被偷袭');
             //被偷袭 敌方所有人员先行攻击
             Fight.queue = Fight.eTeam.heroList.concat(mainTeam.heroList);
         }else {
@@ -699,8 +765,6 @@ Menu.closeMenu();
                 return a.speed < b.speed;
             });
         }
-        console.log(Fight.queue);
-
     },
 
 
@@ -745,6 +809,59 @@ Menu.closeMenu();
         // }
         return result>>0;
     },
+
+    //敌人分组
+    processEnemyGroup:()=> {
+        let enemyList = Fight.eTeam.heroList;
+        let list = [];
+        let enemyNumber = enemyList.length;
+        let groupNumber;    //分若干组
+        let group_1 = [];
+        let group_2 = [];
+        let group_3 = [];
+
+        enemyList.forEach(function (o) {
+            let enemy = new Enemy(enemyConfig[o]);
+            list.push(enemy);
+        });
+
+        //将敌人分组
+        if (enemyNumber === 1) {//当敌人列表中只有一个敌人
+            group_1.push(list);
+            return group_1;
+        } else if (enemyNumber === 2) {//当敌人列表中有两个敌人
+            groupNumber = rangeRand(1, 2);   //随机分为一组或两组
+            if (groupNumber === 2) {
+                group_1.push(list[0]);
+                group_2.push(list[1]);
+                return [group_1, group_2];
+            } else {
+                group_1.push(list);
+                return group_1;
+            }
+        } else {//敌人列表中有三个或三个以上敌人
+            groupNumber = rangeRand(1, 3);   //随机分为一、二或三组
+            if (groupNumber === 3) {//三组
+                list.forEach(function (o, i) {
+                    if (i === 0) group_1.push(list[i]);
+                    else if (i === 1) group_2.push(list[i]);
+                    else group_3.push(list[i]);
+                });
+                return [group_1, group_2, group_3];
+            } else if (groupNumber === 2) {//两组
+                list.forEach(function (o, i) {
+                    if (i === 0) group_1.push(list[i]);
+                    else group_2.push(list[i]);
+                });
+                return [group_1, group_2];
+            } else {
+                list.forEach(function (o, i) {
+                    group_1.push(list[i]);
+                });
+                return [group_1];
+            }
+        }
+    }
 
 
 };

@@ -436,9 +436,6 @@ function initScript(x,y,frame=0){
     //默认对话位置居中
     Talk.setTalkPos("bottom");
 
-    //先添加人物NPC，为了确定地图的自动移动
-    // addChara();
-
     setHero(x,y,frame);
     // 绘制地图
     drawImgMap(CurrentMap);

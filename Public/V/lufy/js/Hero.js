@@ -43,6 +43,7 @@ let HeroList= [
 let HeroPlayer = {
 	// 人物列表中人物编号
     index: 0,
+    isHero: true,
     //角色昵称
     nickName:'',
     img:'',

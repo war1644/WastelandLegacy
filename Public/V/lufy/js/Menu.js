@@ -32,11 +32,10 @@ let Menu = {
         {cmd: 4,name:'存档'},
         {cmd: 0,name:'退出'}
     ],
-    iconStep: 24,
     largeIconScale: 1.3,
     // 物品菜单的拖拽控制
     dragTimer:0,
-    dragingItem: {},
+    dragingItem: null,
     nameText: null,
     chooseItem: -1,
     chooseHero: -1,
@@ -45,7 +44,9 @@ let Menu = {
     // 当前显示的主队成员
     currentHeroShow: 0,
     // 用于辅助物品使用的显示
-	showItemEffectLabel:[],
+	showItemEffectLabel:null,
+    //回调方法
+    callback:null,
 
 	/**
 	 * 显示背包
@@ -233,11 +234,12 @@ let Menu = {
     },
 
 	waitMenu:(callback)=>{
-		if (RPG.checkState(RPG.UNDER_WINDOWS)) {
-			setTimeout(function(){Menu.waitMenu(callback)}, 500);
-		} else {
-			if (callback)  callback();
-		}
+        Menu.callback = callback;
+        // if (RPG.checkState(RPG.UNDER_WINDOWS)) {
+		// 	setTimeout(function(){Menu.waitMenu(callback)}, 1000);
+		// } else {
+		// 	if (callback)  callback();
+		// }
 	},
 
     dealMenuUp:(x, y)=>{
@@ -250,13 +252,17 @@ let Menu = {
     },
 
 	closeMenu:()=>{
-		// 切换状态
-		RPG.popState();
+        // 切换状态
+        RPG.popState();
 		//将对话层清空
 		talkLayer.removeAllChild();
 		Menu.cmdChoose = -1;
 		// 这个动作，是为了屏蔽鼠标抬起事件
 		isKeyDown= false;
+		if(Menu.callback){
+		    Menu.callback();
+            Menu.callback=null;
+        }
 	},
 //菜单显示状态
     menuShowState: function() {
@@ -361,18 +367,18 @@ let Menu = {
         // 显示持有物品 武器 防具 饰物
         let showedItems=["weapon","armor","ornament"];
         for (let i= 0; i<= 2; i++) {
-            item1= ItemList[hero1[showedItems[i]]];
+            item1 = ItemList[hero1[showedItems[i]]];
             if (item1) {
                 // 图片
-                let imgData = new LBitmapData(assets["iconset"], item1.pic.x*Menu.iconStep, item1.pic.y*Menu.iconStep, Menu.iconStep, Menu.iconStep);
-                let bitmap = new LBitmap(imgData);
-                bitmap.x= leftPos;
-                bitmap.y= 160+ i* 30;
-                ctrlLayer.addChild (bitmap);
+                // let imgData = new LBitmapData(assets["iconset"], item1.pic.x*Menu.iconStep, item1.pic.y*Menu.iconStep, Menu.iconStep, Menu.iconStep);
+                // let bitmap = new LBitmap(imgData);
+                // bitmap.x= leftPos;
+                // bitmap.y= 160+ i* 30;
+                // ctrlLayer.addChild (bitmap);
                 // 物品名称
                 let text = textObj.clone();
-                text.x = bitmap.x + bitmap.width + 10;
-                text.y = 160+ i* 30+ 5;
+                text.x = leftPos + gap;
+                text.y = 160+ i* 30 + 5;
                 text.text = item1.name;
                 ctrlLayer.addChild(text);
             }
@@ -417,7 +423,7 @@ let Menu = {
     menuShowSave: function(aResetFocus) {
         Menu.menuPage= 4;
         ctrlLayer.removeAllChild();
-        let text = UI.text("保存进度",menuWidth/ 2,10,'20');
+        let text = UI.text("保存进度",menuWidth/2,10,'20');
         // text.width= 200;
         // text.textAlign= "center";
         ctrlLayer.addChild(text);
@@ -444,15 +450,16 @@ let Menu = {
             text = UI.text(RPG.showSaveSlot(i),gap* 2,i* 30+ 5);
             Menu.listLayer.addChild(text);
         }
-        let button01= UI.gameTitleButton(90, 30, gap* 2, menuHeight- 85, "回到标题", function(e){
-            Menu.closeMenu();
-            RPG.drawCover();
-        });
-        ctrlLayer.addChild(button01);
-        ctrlLayer.addChild(UI.gameTitleButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 85, "保存进度", function(e){
+        // let button01= UI.gameTitleButton(60, 20, gap* 2, menuHeight- 85, "回到标题", function(e){
+        //     Menu.closeMenu();
+        //     RPG.drawCover();
+        // });
+        // ctrlLayer.addChild(button01);
+        let saveButton = UI.gameTitleButton(30, 5, menuWidth- gap* 2- 90, menuHeight- 85, "保存", function(){
             RPG.saveGame(Menu.saveSlot);
             Menu.menuShowSave(false);
-        }));
+        });
+        ctrlLayer.addChild(saveButton);
     },
 
     menuShowLoad: function() {

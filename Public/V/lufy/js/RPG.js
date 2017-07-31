@@ -22,6 +22,7 @@ let RPG = {
     UP: 3,
 // 地图单位
     STEP: 24,
+    iconStep: 24,
     ctrState: 0,
 //显示进度条所用层
     loadingLayer: {},
@@ -161,7 +162,7 @@ let RPG = {
     },
 
     setState: function (state) {
-        RPG.stateStack.length = 0;
+        RPG.stateStack = [];
         RPG.pushState(state);
     },
     pushState: function (state) {
@@ -346,11 +347,10 @@ let RPG = {
         RPG.initSwitch();
         //初始化敌人
         RPG.initEnemyTeam();
-        //载入场景
-        jumpStage(script.stage01, 15, 22, 3);
-
         //进入地图控制状态
         RPG.setState(RPG.MAP_CONTROL);
+        //载入场景
+        jumpStage(script.stage01, 15, 22, 3);
     },
 
 // 初始化敌人战斗队的数据

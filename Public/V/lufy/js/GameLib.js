@@ -122,7 +122,7 @@ function checkAuto(){
  * 检测战斗事件
  */
 function checkIntoBattle(){
-    //Fight.simpleFight(1);
+    Fight.simpleFight(1);
     // if(player.tmp >= player.enemyShow){
     //     if (rangeRand(0,9)>2){
     //         Fight.simpleFight(4);
@@ -274,7 +274,7 @@ let UI = {
      * 游戏标题按钮
      */
     gameTitleButton:(w,h,x,y,text,callback)=>{
-        let button01 = new LButtonSample1(text,null,null,'#000');
+        let button01 = new LButtonSample1(text,14,null,'#000');
         button01.backgroundColor = '#eee';
         button01.x = x;
         button01.y = y;

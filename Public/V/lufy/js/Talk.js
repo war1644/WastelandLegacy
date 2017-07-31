@@ -36,7 +36,7 @@ let Talk = {
     TOP:HEIGHT-100-gap,
     callback:null,
 
-    makeChoice:(optionScript)=>{
+    makeChoice:(optionScript,layer)=>{
         //如果对话内容为空，则开始判断是否可以对话
         if (!Talk.choiceScript){
             Talk.choiceScript = optionScript;
@@ -45,10 +45,13 @@ let Talk = {
         // 状态切换
         RPG.pushState(RPG.IN_CHOOSING);
         //得到对话内容
-        //将对话层清空
-        talkLayer.removeAllChild();
+        if(!layer){
+            layer = talkLayer;
+            //将对话层清空
+            layer.removeAllChild();
+        }
         //对话背景
-        UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
+        UI.drawBorderWindow(layer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
         //对话头像
         if (optionScript.img) {
             let bitmapData = new LBitmapData(assets[optionScript.img]);
@@ -57,12 +60,12 @@ let Talk = {
             bitmap.y = optionScript.y || Talk.TOP-bitmap.height/2;
             bitmap.scaleX = 0.5;
             bitmap.scaleY = 0.5;
-            talkLayer.addChild(bitmap);
+            layer.addChild(bitmap);
         }
         //选项标题
         if (optionScript.msg){
             let name = UI.text(optionScript.msg,Talk.LEFT+ 5,Talk.TOP+ 5);
-            talkLayer.addChild(name);
+            layer.addChild(name);
             // 选项标题初始行的位置
             Talk.talkLinePos= name.y+ 20;
         } else {
@@ -73,11 +76,11 @@ let Talk = {
         let options = optionScript.option;
         for (let i= 0; i< options.length; i++){
             let button01= UI.optionButton(Talk.WIDTH- 10, 22, Talk.LEFT+ 5, Talk.talkLinePos, options[i].text, options[i].action);
-            talkLayer.addChild(button01);
+            layer.addChild(button01);
             Talk.talkLinePos= Talk.talkLinePos+ 25;
         }
-        talkLayer.x = 0;
-        talkLayer.y = 0;
+        layer.x = 0;
+        layer.y = 0;
     },
     
     /**
@@ -95,8 +98,7 @@ let Talk = {
     /**
      * 关闭对话框
      */
-    closeTalk:()=>{
-        RPG.popState();
+    closeTalk:(del=0)=>{
         //将对话层清空
         talkLayer.removeAllChild();
         //对话结束
@@ -104,6 +106,11 @@ let Talk = {
         Talk.choiceScript = null;
         Talk.talkIndex = 0;
         Talk.talkEnd = -1;
+        if(!del){
+            RPG.popState();
+            RPG.popState();
+            Talk.callback = null;
+        }
         isKeyDown= false;
     },
 
@@ -112,7 +119,6 @@ let Talk = {
 	 */
     closeSentence:()=>{
         Talk.sentenceFinish = true;
-        console.log('逐字显示完成回调',Talk.sentenceFinish);
     },
 
     /**
@@ -139,18 +145,23 @@ let Talk = {
      */
     startTalk:(talkList=false,callback=null,index=0,end=-1)=>{
         let border = 10;
+
         //如果对话内容为空，则开始判断是否可以对话
         if (!Talk.talkScript){
             if(!talkList) return;
             Talk.talkScript = talkList;
             Talk.talkIndex = index;
             Talk.talkEnd = end;
-            Talk.callback = callback;
+            if(!Talk.callback) Talk.callback = callback;
         }
         // 游戏状态切换----对话中
-        if (!RPG.checkState(RPG.IN_TALKING)) RPG.pushState(RPG.IN_TALKING);
 
-        console.log('talkScript',Talk.talkScript,RPG.checkState(RPG.IN_TALKING));
+        if (!RPG.checkState(RPG.IN_TALKING)){
+            //进入地图等待状态
+            RPG.pushState(RPG.MAP_WAITING);
+            RPG.pushState(RPG.IN_TALKING);
+        }
+
         // 前半句话没说完的情况下，先说完
         if (!Talk.sentenceFinish) {
             Talk.sentenceFinish = true;
@@ -166,9 +177,9 @@ let Talk = {
 
             if ('option' in talkObject){
                 console.log('in option');
-
                 //分支选项
-                Talk.closeTalk();
+                // if (Talk.callback) let callback = Talk.callback;
+                Talk.closeTalk(1);
                 //对话背景
                 UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
                 let options = talkObject.option;
@@ -221,7 +232,7 @@ let Talk = {
             //     Talk.talkIndex =  Talk.talkScript.length;
             // }
         }else{
-            if(Talk.callback) Talk.callback();
+            // if(Talk.callback) Talk.callback();
             Talk.closeTalk();
         }
     },

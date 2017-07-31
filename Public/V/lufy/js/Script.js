@@ -17,30 +17,24 @@
             {type:"npc", img:"猎人A", x:15,  y:16, move:1},
             //剧情NPC
             {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
-                //进入地图等待状态
-                RPG.pushState(RPG.MAP_WAITING);
-                Talk.startTalk(stage.talk.雷娜,()=>{
+                Talk.waitTalk(()=>{
                     npc.speed = 2;
                     //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
                     moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
-                        RPG.popState();
+                        // RPG.popState();
                         RPG.hideChar(npc);
                         RPG.setSwitch("雷娜firstTalk", true);
                     });
                 });
-                // Talk.waitTalk(()=>{
-                //
-                // });
+                Talk.startTalk(stage.talk.雷娜);
             }},
-            {type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
+            /*{type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
                 action: function() {
                     // 自动发言位置居中
-                    // Talk.setTalkPos("middle");
-                    // Talk.makeChoice(stage.choiceList[0]);
                     Talk.startTalk(talkList.gameExplainTalk);
                     RPG.setSwitch("gameInitAutoTalk", true);
                 }
-            },
+            },*/
 
             {type:"jump",x:11,y:15,action:()=>{
                 // 战车工厂
@@ -84,27 +78,6 @@
             }},
 
         ],
-        choiceList: {
-            0: {img: "face雷娜", msg: "新手操作教程\n新手操作教程\n新手操作教程",
-                option: [
-                    {text: "看", action: () => {
-                        Talk.startTalk(talkList.gameExplainTalk, () => {
-                            // Talk.setTalkPos("bottom")
-                        })}
-                        // Talk.waitTalk(() => {
-                        //
-                        // });}
-                    },
-                    {text: "不看", action: () => {
-                            Talk.startTalk(stage.talk.gameAbout,1);
-                            Talk.waitTalk(() => {
-                                // Talk.setTalkPos("bottom");
-                            });
-                        }
-                    }
-                ]
-            }
-        }
     },
     stage02:{
         name: "战车工厂",
@@ -263,8 +236,7 @@
             {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
                 //进入地图等待状态
                 RPG.pushState(RPG.MAP_WAITING);
-                Talk.startTalk(stage.talk.雷娜);
-                Talk.waitTalk(()=>{
+                Talk.startTalk(stage.talk.雷娜,()=>{
                     npc.speed = 2;
                     //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
                     moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
@@ -276,10 +248,7 @@
             }},
             {type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
                 action: function() {
-                    //进入地图等待状态
-                    RPG.pushState(RPG.MAP_WAITING);
                     // 自动发言
-                    Talk.setTalkPos("middle");
                     Talk.makeChoice(stage.choiceList[0]);
                     RPG.setSwitch("gameInitAutoTalk", true);
                 }
@@ -327,28 +296,6 @@
             }},
 
         ],
-        choiceList: {
-            0: {img: "face雷娜", msg: "新手操作教程",
-                option: [
-                    {text: "看", action: () => {
-                        // Talk.closeTalk();
-                        Talk.startTalk(stage.talk.gameExplainTalk);
-                        Talk.waitTalk(() => {
-                            Talk.setTalkPos("bottom");
-                        });
-                    }
-                    },
-                    {text: "不看", action: () => {
-                        // Talk.closeTalk();
-                        Talk.startTalk(stage.talk.gameAbout,1);
-                        Talk.waitTalk(() => {
-                            Talk.setTalkPos("bottom");
-                        });
-                    }
-                    }
-                ]
-            }
-        }
     },
 };
 

@@ -119,7 +119,9 @@ talklist4= {
                     Talk.startTalk([
                         {index:1,img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
                         {index:2,img: "face雷娜", name: "", msg: "赶紧来猎人中心吧，再见啦"},
-                    ])
+                    ]);
+                    Talk.callback();
+
                 }},
                 {text: "否",action:()=>{
                     Talk.startTalk([
@@ -129,11 +131,11 @@ talklist4= {
             ]},
         ],
 		gameAbout:[
-            {index:0,img: "face雷娜", name: "游戏美工04", msg: "是否进入新手教程?"},
-            {index:1,img: "face雷娜", name: "游戏美工04", msg: "那么，开始废土捡破烂生活吧"},
+            {index:0,img: "face雷娜", name: "游戏美工04", msg: ""},
+            {index:1,img: "face雷娜", name: "游戏美工04", msg: ""},
         ],
         gameExplainTalk: [
-            {img: "face雷娜", msg: "看不看新手操作教程？看不看新手操作教程？看不看新手操作教程？"},
+            {img: "face雷娜", msg: "是否进入新手教程？"},
             {option:[
                 {text: "是", action:()=>{
                     Talk.startTalk([
@@ -142,16 +144,32 @@ talklist4= {
                         {img: "face雷娜", name: "游戏美工04", msg: "物品列表页长按物品使用或装备"},
                         {img: "face雷娜", name: "游戏美工04", msg: "状态显示页长按装备可卸下"},
                         {img: "face雷娜", name: "游戏美工04", msg: "多名队员，状态显示页，左右滑动可切换"},
-                        {img: "face雷娜", name: "游戏美工04", msg: "走路碰到NPC自动对话"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "走到NPC旁点击NPC对话"},
                         {img: "face雷娜", name: "游戏美工04", msg: "WARNING：遇到凶残的敌人就跑吧，不然没人救你哦"},
                     ])
                 }},
                 {text: "否",action:()=>{
                     Talk.startTalk([
-                        {index:1,img: "face雷娜", name: "", msg: "哎，来了一个废物"},
+                        {index:1,img: "face雷娜", name: "", msg: "那么，开始你的废土捡破烂生活吧"},
                     ]);
                 }}
             ]},
+
+        ],
+        fight:[
+            {msg: "实力悬殊，敌人四散奔逃，是否追击？"},
+            {option: [
+                    {text: "追击", action: function () {
+                        Fight.option = 0;
+                        Talk.callback();
+                    }},
+                    {text: "不追击", action: function(){
+                        Fight.option = 1;
+                        Talk.closeTalk()
+                        // Talk.callback();
+                    }},
+                ]
+            },
 
         ],
         npc1: [
