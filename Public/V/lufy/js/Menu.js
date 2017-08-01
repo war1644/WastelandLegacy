@@ -36,6 +36,7 @@ let Menu = {
     // 物品菜单的拖拽控制
     dragTimer:0,
     dragingItem: null,
+    isItemDraging:false,
     nameText: null,
     chooseItem: -1,
     chooseHero: -1,
@@ -47,25 +48,48 @@ let Menu = {
 	showItemEffectLabel:null,
     //回调方法
     callback:null,
+    //当前商品列表
+    currentItemList:false,
+    //是否是买卖行为
+    trade:false,
 
 	/**
 	 * 显示背包
 	 *
 	 * */
-    menuShowItems:(team)=>{
+    menuShowItems:(sys=0)=>{
         Menu.menuPage= 2;
-        ctrlLayer.removeAllChild();
-        let i, cc=0,
-            item1, hero, heroImg,
-            bitmapData, bitmap, text, chara;
+        if(sys){
+            Menu.currentItemList = ItemList;
+            //对话背景
+            talkLayer.x = 10;
+            talkLayer.y = 10;
+            UI.drawBorderWindow(talkLayer, 0, 0, menuWidth, menuHeight);
+            ctrlLayer = new LSprite();
+            talkLayer.addChild(ctrlLayer);
+        } else {
+            Menu.currentItemList = mainTeam.itemList;
+        }
+        if(!RPG.checkState(RPG.IN_MENU)) RPG.pushState(RPG.IN_MENU);
+
+        // if(!ctrlLayer){
+        //
+        // }else {
+            ctrlLayer.removeAllChild();
+        // }
+        let i,item1,text;
 
         text = UI.text("物品",menuWidth / 2,10,'20');
         // text.width = 200;
         text.textAlign = "center";
         ctrlLayer.addChild(text);
+        //按钮
+        let btn = UI.gameTitleButton(0,0,menuWidth-50,gap,'退出',()=>{Menu.trade = false;Menu.closeMenu()});
+        ctrlLayer.addChild(btn);
         // 所有物品画在一张图片上
         let maskObj = new LSprite();
-        let maskHeight = menuHeight- 144- 40; // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
+        // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
+        let maskHeight = menuHeight- 144- 40;
         maskObj.graphics.drawRect(0, "#ff0000", [0, 40, menuWidth, maskHeight]);
         if (!Menu.listLayer) {
             Menu.listLayer= new LSprite();
@@ -76,28 +100,24 @@ let Menu = {
         }
         Menu.listLayer.mask = maskObj;
         ctrlLayer.addChild(Menu.listLayer);
-        //ctrlLayer.addChild(maskObj);
-        Menu.maxScrollHeight= team.itemList.length* 30- maskHeight;
+        Menu.maxScrollHeight= Menu.currentItemList.length* 30- maskHeight;
         RPG.descLayer.removeAllChild();
         RPG.descLayer.x = gap;
-        //RPG.descLayer.y= maskHeight+ gap* 2+ 70;
         // 保留144的空间即够用
         RPG.descLayer.y = menuHeight - 144;
         ctrlLayer.addChild(RPG.descLayer);
         // 选择高亮条
         Menu.listFocus= UI.drawImgColor(Menu.listLayer, gap, 0, menuWidth - gap* 2, 30);
         // 物品列表
-        for (i= 0; i< team.itemList.length; i++){
+        for (i= 0; i< Menu.currentItemList.length; i++){
             // 逐个显示物品
-            item1= team.itemList[i];
-            // 图片
-            // bitmapData = new LBitmapData(assets["iconset"], ItemList[item1.index].pic.x*Menu.iconStep, ItemList[item1.index].pic.y*Menu.iconStep, Menu.iconStep, Menu.iconStep);
-            // bitmap = new LBitmap(bitmapData);
-            // bitmap.x= gap* 2;
-            // bitmap.y= i* 30+ gap;
-            // Menu.listLayer.addChild (bitmap);
+            item1 = Menu.currentItemList[i];
             // 物品名称
-            text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
+            if(sys){
+                text = UI.text(item1.name+'    '+item1.cost,gap* 2+ 30,i* 30+ gap+ 5);
+            }else {
+                text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
+            }
             Menu.listLayer.addChild(text);
 
             // let num = text.clone();
@@ -106,6 +126,7 @@ let Menu = {
             // num.text = item1.num;
             // Menu.listLayer.addChild(num);
         }
+
         if (Menu.chooseItem>= 0) {
             Menu.menuShowOneItem(Menu.chooseItem);
         } else {
@@ -116,12 +137,13 @@ let Menu = {
     // 拖动物品栏的物品
     dragItemBegin:(ax, ay, itemId)=>{
         let item1,text, i;
-
         // 详细信息
         RPG.descLayer.removeAllChild();
         // 显示单一物品详细信息
-        item1 = mainTeam.itemList[itemId].getItem();
-        text = UI.text(''.description,gap* 2,5);
+        // item1 = mainTeam.itemList[itemId].getItem();
+        item1 = Menu.currentItemList[Menu.chooseItem];
+        text = UI.text('',gap* 2,5);
+        console.log('item1',item1);
         switch (item1.kind){
             case 1:
                 text.text = item1.name+ "装配：";
@@ -206,7 +228,7 @@ let Menu = {
             Menu.dragingItem.scaleX= 2;
             Menu.dragingItem.scaleY= 2;
             RPG.descLayer.addChild(Menu.dragingItem);
-            RPG.isItemDraging= true;
+            Menu.isItemDraging= true;
         } else {
             Menu.nameText= null;
             Menu.chooseItem= -1;
@@ -245,7 +267,7 @@ let Menu = {
     dealMenuUp:(x, y)=>{
         if (Menu.menuPage===2 || Menu.menuPage===1){
             clearTimeout(Menu.dragTimer);
-            if (RPG.isItemDraging){
+            if (Menu.isItemDraging){
                 Menu.dropItem();
             }
         }
@@ -264,7 +286,7 @@ let Menu = {
             Menu.callback=null;
         }
 	},
-//菜单显示状态
+    //菜单显示状态
     menuShowState: function() {
         //对话人物名称
         let valueLength,
@@ -384,33 +406,39 @@ let Menu = {
             }
         }
     },
-//显示物品详情
+    //显示物品详情
     menuShowOneItem: function(id) {
         let item1, text;
         // 详细信息
         RPG.descLayer.removeAllChild();
         // 显示单一物品详细信息
-        if (id>=mainTeam.itemList.length) {
-            id= mainTeam.itemList.length- 1;
+        if (id>=Menu.currentItemList.length) {
+            id= Menu.currentItemList.length- 1;
         }
-        item1= mainTeam.itemList[id];
+        item1= Menu.currentItemList[id];
         if (item1){
+            Menu.chooseItem = id;
             Menu.listFocus.x = gap;
-            Menu.listFocus.y = id* 30+ 5;
+            Menu.listFocus.y = id*30+ 5;
             // 详细描述
-            text = UI.text(ItemList[item1.index].description,gap* 2,gap+ 5);
+            text = UI.text(item1.description,gap,2*gap);
             RPG.descLayer.addChild(text);
         }
     },
     //使用、装备物品
     dropItem: function(){
         RPG.descLayer.removeAllChild();
-        RPG.isItemDraging= false;
+        Menu.isItemDraging= false;
         if (Menu.chooseItem>= 0){
             if (Menu.chooseHero>= 0){
-                // 物品装配或使用
-                mainTeam.removeItem(Menu.chooseHero, Menu.chooseItem, 1);
-                Menu.menuShowItems(mainTeam);
+                if (Menu.trade){
+                    mainTeam.addItem(Menu.chooseItem, 1);
+                    Menu.menuShowItems(Menu.trade);
+                }else {
+                    // 物品装配或使用
+                    mainTeam.removeItem(Menu.chooseHero, Menu.chooseItem, 1);
+                    Menu.menuShowItems();
+                }
             }
         }
     },
@@ -589,7 +617,7 @@ let Menu = {
                     Menu.menuShowState();
                     break;
                 case 2:
-                    Menu.menuShowItems(mainTeam);
+                    Menu.menuShowItems();
                     break;
                 case 3:
                     Menu.menuShowTasks();
@@ -627,12 +655,17 @@ let Menu = {
                 }, 500);
                 break;
             case 2:
+                console.log('listLayerY',Menu.listLayer.y);
                 // 拉动物品条，以及长按使用物品
                 Menu.listLayer_Y= Menu.listLayer.y;
                 cc = ((ay- Menu.listLayer.y)/ 30)<<0;
-                if (cc>= 0 && cc< mainTeam.itemList.length && ay< RPG.descLayer.y) {
+                if (cc>= 0 && cc< Menu.currentItemList.length && ay< RPG.descLayer.y) {
                     Menu.menuShowOneItem(cc);
-                    Menu.dragTimer = setTimeout(function(){Menu.dragItemBegin(ax- 20, ay- 20, cc);}, 500);
+                    if(Menu.trade){
+                        Menu.dragTimer = setTimeout(function(){Menu.buy(ax- 20, ay- 20, cc);}, 1000);
+                    }else {
+                        Menu.dragTimer = setTimeout(function(){Menu.dragItemBegin(ax- 20, ay- 20, cc);}, 1000);
+                    }
                 }
                 break;
             case 4:
@@ -640,7 +673,7 @@ let Menu = {
                 // 选择存档槽
                 cc = ((ay- Menu.listLayer.y)/30)<<0;
                 //console.log(cc);
-                if (cc>= 0 && cc< 8) {
+                if (cc>= 0 && cc< 5) {
                     Menu.listFocus.y= cc* 30;
                     Menu.saveSlot= cc;
                 }
@@ -653,7 +686,7 @@ let Menu = {
             ay= ay- talkLayer.y-20;
             if (Menu.menuPage===2){
                 // 物品窗口
-                if (RPG.isItemDraging){
+                if (Menu.isItemDraging){
                     // 动态选择人物
                     Menu.dragingItem.x = ax - RPG.descLayer.x;
                     Menu.dragingItem.y = ay - RPG.descLayer.y;
@@ -663,7 +696,9 @@ let Menu = {
                         let cc= (ax/ (menuWidth/ mainTeam.heroList.length))<<0;
                         if (cc>=0 && cc<mainTeam.heroList.length && ay> RPG.descLayer.y) {
                             Menu.nameText.text= mainTeam.heroList[cc].nickName;
+
                             Menu.chooseHero = cc;
+                            console.log('cc',cc, Menu.nameText.text);
                             // Menu.showLabel(cc);
                             // 同时显示可能会出现的值的变化
                             //console.log(Menu.nameText.text);
@@ -713,6 +748,47 @@ let Menu = {
                 }
             }
         }
+    },
+    
+    showItemList:function () {
+        
+    },
+
+    // 拖动物品栏的物品
+    buy:(ax, ay, itemId)=>{
+        let item1,text, i;
+        // 详细信息
+        RPG.descLayer.removeAllChild();
+        // 显示单一物品详细信息
+        item1 = Menu.currentItemList[Menu.chooseItem];
+        text = UI.text('给谁：',gap* 2,5);
+        RPG.descLayer.addChild(text);
+        // 显示姓名
+        Menu.nameText = text.clone();
+        Menu.nameText.x = text.x+ text.getWidth()+ gap;
+        Menu.nameText.text = "";
+        RPG.descLayer.addChild(Menu.nameText);
+        Menu.chooseHero= -1;
+        let cc= (menuWidth- gap* 2)/ mainTeam.heroList.length;
+        for (i=0; i< mainTeam.heroList.length; i++){
+            let hero = mainTeam.heroList[i];
+            let heroImg = hero.img;
+            let bitmapData = new LBitmapData(assets[heroImg]);
+            let chara = new Fighter(bitmapData,4,4);
+            chara.x = cc* i+ cc/ 2- STEP/ 2;
+            chara.y = gap* 2+ 5;
+            RPG.descLayer.addChild(chara);
+        }
+        Menu.chooseItem = itemId;
+        Menu.dragingItem = text.clone();
+        Menu.dragingItem.text = item1.name;
+        Menu.dragingItem.x= ax- RPG.descLayer.x;
+        Menu.dragingItem.y= ay- RPG.descLayer.y;
+        Menu.dragingItem.scaleX= 2;
+        Menu.dragingItem.scaleY= 2;
+        RPG.descLayer.addChild(Menu.dragingItem);
+        Menu.isItemDraging= true;
+
     },
 
 };

@@ -68,6 +68,8 @@ let HeroPlayer = {
     weapon: -1,
     armor: -1,
     ornament: -1,
+	//是否在战车内
+	inTank: false,
 	getPerson:function(){
 		return HeroList[this.index];
 	},

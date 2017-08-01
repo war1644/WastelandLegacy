@@ -106,6 +106,7 @@ let Talk = {
         Talk.choiceScript = null;
         Talk.talkIndex = 0;
         Talk.talkEnd = -1;
+        if(Talk.callback) Talk.callback();
         if(!del){
             RPG.popState();
             RPG.popState();
@@ -143,7 +144,7 @@ let Talk = {
      * @param talkList 攻击方
      * @returns
      */
-    startTalk:(talkList=false,callback=null,index=0,end=-1)=>{
+    startTalk:(talkList=false,index=0,end=-1)=>{
         let border = 10;
 
         //如果对话内容为空，则开始判断是否可以对话
@@ -152,7 +153,6 @@ let Talk = {
             Talk.talkScript = talkList;
             Talk.talkIndex = index;
             Talk.talkEnd = end;
-            if(!Talk.callback) Talk.callback = callback;
         }
         // 游戏状态切换----对话中
 
@@ -178,7 +178,6 @@ let Talk = {
             if ('option' in talkObject){
                 console.log('in option');
                 //分支选项
-                // if (Talk.callback) let callback = Talk.callback;
                 Talk.closeTalk(1);
                 //对话背景
                 UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
@@ -232,7 +231,6 @@ let Talk = {
             //     Talk.talkIndex =  Talk.talkScript.length;
             // }
         }else{
-            // if(Talk.callback) Talk.callback();
             Talk.closeTalk();
         }
     },

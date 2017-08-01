@@ -292,7 +292,7 @@ let Fight = {
                 Fight.menu.visible = false;
                 Fight.stopAuto = true;
                 Fight.fightState = 1;
-                Menu.menuShowItems(mainTeam);
+                Menu.menuShowItems();
                 // 行动结束后，再显示菜单
                 Fight.afterStop = ()=>{
                     Fight.menu.visible = true;
@@ -572,9 +572,12 @@ let Fight = {
         return false;
     },
 
-    bossFight: () => {
+    bossFight: (enemyId) => {
         RPG.pushState(RPG.FIGHT_RESULT);
-        Fight.startFight(RPG.enemyTeam[5], mainTeam, false);
+        let enemyTeam = RPG.beget(PlayerTeam);
+        enemyTeam.clear();
+        enemyTeam.addEnemy(enemyId, 80);
+        Fight.startFight(enemyTeam, mainTeam, false);
         Menu.waitMenu(function () {
             if (Fight.state === Fight.WIN) {
                 RPG.popState();

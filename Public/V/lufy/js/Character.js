@@ -19,10 +19,10 @@ function Character(isHero=false,move=3,data,row=4,col=4,speed=3, actEvent=false)
 	//设定人物动作速度
 	self.speed = speed;
 	self.speedIndex = 0;
-	self.pw= data.image.width/col;
-	self.ph= data.image.height/row;
+	self.pw= (data.image.width/col)>>0;
+	self.ph= (data.image.height/row)>>0;
 	//设定人物大小
-	data.setProperties(0,0,data.image.width/col,data.image.height/row);
+	data.setProperties(0,0,self.pw,self.ph);
 	//得到人物图片拆分数组
 	let list = LGlobal.divideCoordinate(data.image.width,data.image.height,row,col);
 	//设定人物动画
@@ -32,8 +32,8 @@ function Character(isHero=false,move=3,data,row=4,col=4,speed=3, actEvent=false)
 	self.move = false;
 	//在一个移动步长中的移动次数设定
 	self.moveIndex = 0;
-	self.npcMoveTime = 10;//NPC自动移动间隔
-    self.two = true;//NPC自动移动两格为一次
+	self.npcMoveTime = 20;//NPC自动移动间隔
+    self.autoMoveNum = 2;//NPC一次自动移动格数
 }
 /**
  * 循环事件 
@@ -54,7 +54,7 @@ Character.prototype.onframe = function (){
         //npc达到间隔再移动
         if (!self.npcMoveTime){
             self.npcMoveTime=20;
-            self.two = true;
+            self.autoMoveNum = 2;
             // 随机移动型
             let a = (Math.random()* 14)>>0;
             if (a<4) {
@@ -165,10 +165,10 @@ Character.prototype.npcMove = function (){
 		} else if  (self.moveMode === 1) {
 			// 对于随机移动的类型，进行预占位
             self.takePlace();
-            if(!self.two){
+            if(!self.autoMoveNum){
                 self.move = false;
             }
-            self.two = false;
+            self.autoMoveNum--;
         }
 	}
 };

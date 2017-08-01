@@ -26,6 +26,19 @@ let EnemyList= [
         hpAdd: 100,//等级血量增益
         description:["移动碉堡，强悍的防御和攻击让人生畏，但速度和智商感人"]
     },
+    {
+        index:2,
+        col:4,
+        row:4,
+        img:"红色梅卡瓦",//movePic
+        force:245,//力量
+        mind:180,//智慧
+        speed:245,//速度
+        atk: 200,
+        def: 200,
+        hpAdd: 240,//等级血量增益
+        description:["初代最强NPC，有异意么？"]
+    },
 ];
 
 let Enemy = {

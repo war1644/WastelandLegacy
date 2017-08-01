@@ -104,6 +104,22 @@ talklist4= {
 },
 
     talkList = {
+        售卖员:[
+            {msg: "欢迎来到废土商店！贵干？"},
+            {option:[
+                {text: "买", action:()=>{
+                    Talk.closeTalk();
+                    Menu.trade = true;
+                    Menu.menuShowItems(1);
+                    // Talk.callback();
+                }},
+                {text: "卖",action:()=>{
+                    Talk.closeTalk();
+                    Menu.trade = true;
+                    Menu.menuShowItems();
+                }}
+            ]},
+        ],
         box: [
             {img: "", name: "", msg: "让我看看这里有什么" },
             {img: "", name: "", msg: "呵呵，收获不小啊" },
@@ -161,7 +177,7 @@ talklist4= {
         ],
         fight:[
             {msg: "实力悬殊，敌人四散奔逃，是否追击？"},
-            {option: [
+            {msg: "是否追击？",option: [
                     {text: "追击", action: function () {
                         Fight.option = 0;
                         Talk.callback();
@@ -169,7 +185,6 @@ talklist4= {
                     {text: "不追击", action: function(){
                         Fight.option = 1;
                         Talk.closeTalk()
-                        // Talk.callback();
                     }},
                 ]
             },
@@ -212,7 +227,7 @@ talklist4= {
 
 
     },
-    hunter_center={
+    hunter_center_talkList={
 
     };
 let choiceList = {

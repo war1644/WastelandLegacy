@@ -9,12 +9,32 @@
         // 为了表达复杂情节，须预存一些人物
         storyList: [],
         events: [
-            // 备用地图角色
-            {type:"npc", img:"黑色梅卡瓦", x:-2,  y:-2, story:"boss"},
+            //
+            {type:"npc", img:"黑色梅卡瓦", x:11,  y:19,action:()=>{
+                // 情节开始
+                if (stage.storyList["wolf"] && !RPG.checkSwitch('wolf已战斗')) {
+                    let char1 = stage.storyList["wolf"];
+                    char1.setCoordinate(9, 10, DOWN);
+                    char1.visible = true;
+
+                    moveNpc(char1,[0,0,0,0,0,0,2,2],()=>{
+                        // RPG.hideChar(char1);
+                        Talk.startTalk([
+                            {name:'狼',msg:'臭小子，敢动我战车？'}
+                        ]);
+                        Talk.waitTalk(()=>{Fight.bossFight(2)});
+                        RPG.checkSwitch('wolf已战斗')
+                    });
+                }
+            }},
             // 备用地图角色
             {type:"npc", img:"红色梅卡瓦", x:-1,  y:-2, story:"wolf"},
             // 备用地图角色
             {type:"npc", img:"猎人A", x:15,  y:16, move:1},
+            // 售卖员
+            {type:"npc", img:"售卖员", x:17,  y:19, action:()=>{
+                Talk.startTalk(talkList.售卖员);
+            }},
             //剧情NPC
             {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
                 Talk.waitTalk(()=>{
@@ -235,7 +255,7 @@
             {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
                 //进入地图等待状态
                 RPG.pushState(RPG.MAP_WAITING);
-                Talk.startTalk(stage.talk.雷娜,()=>{
+                Talk.waitTalk(()=>{
                     npc.speed = 2;
                     //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
                     moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
@@ -243,6 +263,7 @@
                         RPG.setSwitch("雷娜firstTalk", true);
                     });
                 });
+                Talk.startTalk(stage.talk.雷娜);
             }},
             {type:"auto",visible: ()=>{return (!RPG.checkSwitch("费雷塔task"));},
                 action: function() {
@@ -273,21 +294,18 @@
             ],
             赏金猎人办事处:[
                 {name: "赏金猎人办事处", msg: "有事吗？"},
-                {name: "赏金猎人办事处", msg: "这附近很太平，没有什么赏金首"},
-                {name: "赏金猎人办事处", msg: "最近一到夜晚，镇子周围就会冒出许多杀人虫，严重威胁到了大家的安全，你有兴趣活动活动么？"},
-                {name: "赏金猎人办事处", msg: "哈哈，就算打倒了赏金首也要有些证据吧？"},
-                {msg: "有事吗？",option:[
+                {msg: "赏金猎人办事处",option:[
                         {text:"听情报",action: function(){
-
+                            Talk.startTalk([{name: "赏金猎人办事处", msg: "这附近很太平，没有什么赏金首"},])
                         }},
                         {text:"本周委托任务",action: function(){
-
+                            Talk.startTalk({name: "赏金猎人办事处", msg: "最近一到夜晚，镇子周围就会冒出许多杀人虫，严重威胁到了大家的安全，你有兴趣活动活动么？"},)
                         }},
                         {text:"领赏金",action: function(){
-
+                            Talk.startTalk({name: "赏金猎人办事处", msg: "哈哈，就算打倒了赏金首也要有些证据吧？"},)
                         }},
                         {text:"离开",action: function(){
-
+                            Talk.closeTalk();
                         }},
                 ]},
             ],

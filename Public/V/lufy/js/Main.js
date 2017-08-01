@@ -145,10 +145,12 @@ function main(){
     imgData.push({name:"老爹",path:"./image/MovePic/老爹.png"});
     imgData.push({name:"猎人A",path:"./image/MovePic/猎人A.png"});
     imgData.push({name:"商人妹子",path:"./image/MovePic/商人妹子.png"});
+    imgData.push({name:"售卖员",path:"./image/MovePic/售卖员.png"});
 
     //FightPic
     imgData.push({name:"巨炮",path:"./image/FightPic/巨炮.png"});
     imgData.push({name:"沙漠之舟",path:"./image/FightPic/沙漠之舟.png"});
+    imgData.push({name:"戈斯战车.png",path:"./image/FightPic/戈斯战车.png"});
 
     //face
     imgData.push({name:"face女猎人",path:"./image/face/女猎人.png"});
@@ -271,33 +273,36 @@ function setHero(x, y, frame){
 //添加人物
 function addNpc(npcObj){
     let npc,valid;
-        //加入npcObj
-        if (npcObj.img){
-            if (!npcObj.visible){
-                // 未定义必然可见
-                valid= true;
-            } else {
-                valid= npcObj.visible();
-            }
-            if (valid){
-                let row= npcObj.row || 4;
-                let col= npcObj.col || 4;
-                let imgData = new LBitmapData(assets[npcObj.img]);
-                npc = new Character(false,npcObj.move,imgData, row, col, 3, npcObj.action);
-                npc.x = npcObj.x * STEP- (npc.pw- STEP)/2;
-                npc.y = npcObj.y * STEP- (npc.ph- STEP);
-                npc.px = npcObj.x;
-                npc.py = npcObj.y;
-                npc.name = npcObj.img;
-                //碰撞型事件
-                if (npcObj.type === "touch") npc.touch= true;
-                // 预设动作
-                if (npcObj.preSet) npcObj.preSet(npc);
-                // 如果是情节人物，则进入情节列表
-                if (npcObj.story) stage.storyList[npcObj.story] = npc;
-                charaLayer.addChild(npc);
-            }
+    //加入npcObj
+    if (npcObj.img){
+        if (!npcObj.visible){
+            // 未定义必然可见
+            valid= true;
+        } else {
+            valid= npcObj.visible();
         }
+        if (valid){
+            let row= npcObj.row || 4;
+            let col= npcObj.col || 4;
+            let imgData = new LBitmapData(assets[npcObj.img]);
+            npc = new Character(false,npcObj.move,imgData, row, col, 3, npcObj.action);
+            npc.x = npcObj.x * STEP- (npc.pw- STEP)/2;
+            npc.y = npcObj.y * STEP- (npc.ph- STEP);
+            npc.px = npcObj.x;
+            npc.py = npcObj.y;
+            npc.name = npcObj.img;
+            //碰撞型事件
+            if (npcObj.type === "touch") npc.touch= true;
+            // 预设动作
+            if (npcObj.preSet) npcObj.preSet(npc);
+            // 如果是情节人物，则进入情节列表
+            if (npcObj.story){
+                stage.storyList[npcObj.story] = npc;
+                npc.visible = false;
+            }
+            charaLayer.addChild(npc);
+        }
+    }
         // }
     // }
 }
@@ -323,7 +328,6 @@ let waitCharPos = function (npc, x, y, callback){
 function onDown(event) {
     // 如果点击位置有NPC事件，优先触发talk事件
     isKeyDown = true;
-
     if (RPG.checkState(RPG.UNDER_MENU)) {
     	Menu.dealMenu(event.offsetX<<0, event.offsetY<<0);
     } else if(RPG.checkState(RPG.MAP_CONTROL)) {
@@ -338,9 +342,8 @@ function onUp(event){
 		isKeyDown = false;
 		clearTimeout(timer);
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
-    		Menu.dealMenuUp(event.offsetX, event.offsetY);
+    		Menu.dealMenuUp(event.offsetX>>0, event.offsetY>>0);
     	} else if(RPG.checkState(RPG.MAP_CONTROL)) {
-            console.log('addTalk');
             Talk.addTalk();
 		}
 	}

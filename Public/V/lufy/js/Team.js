@@ -10,6 +10,8 @@ let PlayerTeam = {
 	itemList: [],
     //单位列表
 	heroList: [],
+    //钱钱
+    money: 100,
 	init: function (){
 		this.itemList=[];
 		this.heroList=[];
@@ -40,6 +42,10 @@ let PlayerTeam = {
 			item.index = id;
 			item.num = num;
             item.name = ItemList[id].name;
+            item.description = ItemList[id].description;
+            item.kind = ItemList[id].kind;
+            item.type = ItemList[id].type;
+            item.addOn = ItemList[id].addOn;
 			this.itemList.push(item);
 		}
 		if (visible) UI.showGetItem(id, num);
