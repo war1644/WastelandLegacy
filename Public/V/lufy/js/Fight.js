@@ -69,7 +69,6 @@ let Fight = {
             // 级别差三级以上，同时首击效果相差太大，则开始逃散
             Talk.startTalk(talkList.fight);
             Talk.waitTalk(()=>{
-                Talk.closeTalk();
                 console.log('Fight.option',Fight.option);
                 switch (Fight.option) {
                     case 0 :
@@ -173,7 +172,7 @@ let Fight = {
             } else {
                 let randIndex = rand(mainTeam.heroList.length-1);
                 Fight.currentToFighter = mainTeam.heroList[randIndex];
-                setTimeout(Fight.actionAttack,2000);
+                setTimeout(Fight.actionAttack,1000);
             }
         // }
 
@@ -186,17 +185,18 @@ let Fight = {
         // 战斗窗口基本站位
         let hero1, chara, bitmapData, col,row, x, y, team, hpText, dir;
         RPG.descLayer.removeAllChild();
-        let text = new LTextField();
-        text.size = '10';
-        text.color = '#fff';
-        text.textAlign = 'center';
-        text.width = 40;
+        // let text = new LTextField();
+        // text.size = '10';
+        // text.color = '#fff';
+        // text.textAlign = 'center';
+        // text.width = 40;
+        // let text = UI.simpleText('',10);
         //绘制敌我两队到战场
         for (let j = 0; j < 2; j++) {
             team = j ? Fight.pTeam.heroList : Fight.eTeam.heroList;
             dir = j ? RPG.LEFT : RPG.RIGHT;
             y = gap * 2;
-            x = j ? WIDTH - STEP - gap*2 : gap;
+            x = j ? WIDTH-gap*3 : gap;
             for (let i = 0; i < team.length; i++) {
                 hero1 = team[i];
                 bitmapData = new LBitmapData(assets[hero1.img]);
@@ -210,17 +210,18 @@ let Fight = {
                 chara.changeDir(dir);
                 chara.x = x;
                 chara.y = y;
-                chara.name = hero1.nickName;
                 RPG.descLayer.addChild(chara);
 
                 hero1.fighter = chara;
                 y = y + chara.getHeight() + 5;
 
-                hpText = text.clone();
-                hpText.text = hero1.Hp;
-                hpText.x = x+gap;
+                hpText = UI.simpleText(hero1.Hp,10);
+                if(j){
+                    hpText.x = x-gap;
+                } else {
+                    hpText.x = x+gap;
+                }
                 hpText.y = y;
-                hpText.name = hero1.nickName+'hp';
                 RPG.descLayer.addChild(hpText);
                 hero1.hpText = hpText;
                 y += 3*gap;
@@ -343,7 +344,9 @@ let Fight = {
             }});
         }
         let select = {msg: Fight.currentFighter.nickName+" 攻击谁？",option:optionList};
+        Talk.setTalkPos('middle');
         Talk.makeChoice(select,RPG.ctrlLayer);
+        Talk.setTalkPos('bottom');
     },
 
     actionAttack:(hero=false,toHero)=>{
@@ -495,7 +498,7 @@ let Fight = {
             x0 = hero.fighter.x;
             x1 = hero.fighter.x + STEP;
         }
-        // 人物前进
+        // 人物前进到攻击位置
         LTweenLite.to(hero.fighter, 0.3,
             {
                 scaleX: 1, scaleY: 1, alpha: 1, x: x1, ease: Circ.easeOut,
@@ -518,6 +521,7 @@ let Fight = {
                         }
                         // 动画效果消失
                         RPG.descLayer.removeChild(effect);
+                        //人物退回站位
                         LTweenLite.to(hero.fighter, 0.5,
                             {
                                 scaleX: 1, scaleY: 1, alpha: 1, x: x0, ease: Circ.easeOut,

@@ -122,7 +122,7 @@ function checkAuto(){
  * 检测战斗事件
  */
 function checkIntoBattle(){
-    // Fight.simpleFight(1);
+    Fight.simpleFight(4);
     // if(player.tmp >= player.enemyShow){
     //     if (rangeRand(0,9)>2){
     //         Fight.simpleFight(4);
@@ -234,7 +234,7 @@ let UI = {
      */
     drawBorderWindow:(layer=false, x, y, w, h, alpha=0.9)=> {
         let talkWindow = new LSprite();
-        talkWindow.graphics.drawRect(5, '#384048', [0, 0, w, h], true, '#000020');
+        talkWindow.graphics.drawRect(4, '#384048', [0, 0, w, h], true, '#000020');
         talkWindow.x = x;
         talkWindow.y = y;
         talkWindow.alpha = alpha;
@@ -245,121 +245,43 @@ let UI = {
     /**
      * 边框绘制
      */
-    drawBorder:(layer,color='#ffe',x=0, y=0, w, h,linW=2,alpha=0.9)=>{
+    drawBorder:(layer=false,color='#ffe',x=0, y=0, w=1, h=1,linW=2,alpha=0.9)=>{
         let rectBorder = new LSprite();
         rectBorder.graphics.drawRect(linW,color,[0,0,w,h]);
         rectBorder.x = x;
         rectBorder.y = y;
         rectBorder.alpha = alpha;
-        layer.addChild(rectBorder);
+        if(layer) layer.addChild(rectBorder);
         return rectBorder;
     },
-    /**
-     * 图片背景按钮
-     */
-    imgButton : ()=>{
-        let bitmapDataUp = new LBitmapData(assets["ok_button"],0,0,98,48);
-        let bitmapUp = new LBitmap(bitmapDataUp);
-        let bitmapDataOver = new LBitmapData(assets["ok_button"],0,48,98,48);
-        let bitmapOver = new LBitmap(bitmapDataOver);
-        bitmapUp.scaleX = 0.5;
-        bitmapOver.scaleX = 0.5;
-        let button = new LButton(bitmapUp,bitmapOver);
-        button.x = 50;
-        button.y = 150;
-        return button;
-    },
+
 
     /**
-     * 游戏标题按钮
+     * 对话文本，会自动折行
      */
-    gameTitleButton:(w,h,x,y,text,callback)=>{
-        let button01 = new LButtonSample1(text,14,null,'#000');
-        button01.backgroundColor = '#eee';
-        button01.x = x;
-        button01.y = y;
-        button01.width = w;
-        button01.height = h;
-
-        button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
-            RPG.currentButton = button01;
-        });
-        button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
-            if (RPG.currentButton === button01) {
-                if (callback) callback();
-            }
-        });
-        return button01;
-    },
-    /**
-     * 战斗按钮
-     */
-    fightButton:(x,y,text,callback)=>{
-        let button01 = new LButtonSample1(text,null,null,'#000');
-        button01.backgroundColor = '#eee';
-        button01.scaleX = 0.8;
-        button01.scaleY = 0.8;
-        button01.x = x;
-        button01.y = y;
-        button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
-            RPG.currentButton = button01;
-        });
-        button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
-            if (RPG.currentButton === button01) {
-                if (callback) callback();
-            }
-        });
-        return button01;
-    },
-
-    /**
-     * option白底按钮
-     **/
-    optionButton: function(aw, ah, ax, ay, aText, aFunc) {
-        let bitmapDataUp = new LBitmapData(assets["focus"]);
-        let bitmapUp = new LBitmap(bitmapDataUp);
-        bitmapUp.scaleX= aw/ bitmapUp.width;
-        bitmapUp.scaleY= ah/ bitmapUp.height;
-        bitmapUp.alpha= 0.2;
-        // let bitmapDataDown = new LBitmapData(assets["focus"]);
-        // let bitmapDown = new LBitmap(bitmapDataDown);
-        // bitmapDown.scaleX= aw/ bitmapDown.width;
-        // bitmapDown.scaleY= ah/ bitmapDown.height;
-        let bitmapDown = bitmapUp.clone();
-        bitmapDown.alpha= 0.5;
-        // 保持进度的按钮
-        let button02 = new LButton(bitmapUp,bitmapDown,bitmapDown);
-        button02.x= ax;
-        button02.y= ay;
-        let text = UI.text(aText,button02.getWidth()/ 2,button02.getHeight()/ 2);
-        text.textAlign= "center";
-        text.textBaseline= "middle";
-        button02.addChild(text);
-        button02.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
-            RPG.currentButton= button02;
-        });
-        button02.addEventListener(LMouseEvent.MOUSE_UP, function () {
-            if (RPG.currentButton=== button02) {
-                if (aFunc) aFunc();
-            }
-        });
-        return button02;
-    },
-
-    /**
-     * 文本
-     */
-    text:(text,x,y,size='14',color='#fff')=>{
+    text:(text,x,y,size=14,color='#fff')=>{
         let textObj = new LTextField();
         textObj.x = x;
         textObj.y = y;
         textObj.size = size;
         textObj.color = color;
         textObj.text = text;
-        // textObj.textAlign= "center";
-        // textObj.textBaseline= "middle";
         if (text) textObj.setWordWrap(true,18);
         textObj.width = menuWidth-2*gap;
+        return textObj;
+    },
+    /**
+     * 普通文本
+     */
+    simpleText:(text,size=14,color='#eee',x=0,y=0)=>{
+        let textObj = new LTextField();
+        textObj.text = text;
+        textObj.size = size;
+        textObj.color = color;
+        if(x){
+            textObj.x = x;
+            textObj.y = y;
+        }
         return textObj;
     },
 
@@ -450,27 +372,110 @@ let UI = {
         }, 1000);
     },
     /**
-     * diy按钮
+     * diy按钮 简单的边框+文字组成
      **/
-    diyButton : (x, y, text, callback,scale=1.5)=>{
-        let title;
-        let upState = new LPanel("#ccc");
-        title = new LTextField();
-        title.text = text;
-        title.size = 20;
-        text.textAlign= "center";
-        text.textBaseline= "middle";
-        title.x = (upState.getWidth() - title.getWidth())*0.5;
-        title.y = (upState.getHeight() - title.getHeight())*0.5;
+    diyButton : (w,h,x,y,text,callback=false,size=12)=>{
+        //绘制文本
+        let title = UI.simpleText(text,size);
+        //绘制边框
+        if(!w){
+            w = title.getWidth()+gap;
+            h = title.getHeight()+gap;
+        }
+        let upState = UI.drawBorder(false,'#384048',x,y,w,h);
+        title.x = ((upState.getWidth() - title.getWidth())>>1);
+        title.y = ((upState.getHeight() - title.getHeight())>>1);
         upState.addChild(title);
-        let downState = new LPanel("#eee");
-        downState.addChild(title);
-        // downState.scaleX=scale;
-        // downState.scaleY=scale;
-        // upState.scaleX=scale;
-        // upState.scaleY=scale;
+
+        let downState = upState.clone();
+        downState.scaleX = 0.8;
+        downState.scaleY = 0.8;
 
         let button01 = new LButton(upState,null,downState);
+        button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+            RPG.currentButton = button01;
+        });
+        button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
+            if (RPG.currentButton === button01) {
+                if (callback) callback();
+            }
+        });
+        return button01;
+    },
+
+    /**
+     * diy按钮 简单的边框+文字组成
+     **/
+    simpleButton : (x,y,w,h,text,callback=false,size=14)=>{
+        //绘制文本
+        let title = UI.simpleText(text);
+        //绘制边框
+        let upState = UI.drawBorder(false,'#384048',x,y,w,h);
+        title.x = ((upState.getWidth() - title.getWidth())>>1);
+        title.y = ((upState.getHeight() - title.getHeight())>>1);
+        upState.addChild(title);
+
+        let downState = upState.clone();
+        downState.scaleX = 0.8;
+        downState.scaleY = 0.8;
+
+        let button01 = new LButton(upState,null,downState);
+        button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+            RPG.currentButton = button01;
+        });
+        button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
+            if (RPG.currentButton === button01) {
+                if (callback) callback();
+            }
+        });
+        return button01;
+    },
+
+    /**
+     * 图片背景按钮
+     */
+    imgButton : ()=>{
+        let bitmapDataUp = new LBitmapData(assets["ok_button"],0,0,98,48);
+        let bitmapUp = new LBitmap(bitmapDataUp);
+        let bitmapDataOver = new LBitmapData(assets["ok_button"],0,48,98,48);
+        let bitmapOver = new LBitmap(bitmapDataOver);
+        bitmapUp.scaleX = 0.5;
+        bitmapOver.scaleX = 0.5;
+        let button = new LButton(bitmapUp,bitmapOver);
+        button.x = 50;
+        button.y = 150;
+        return button;
+    },
+
+    /**
+     * 游戏标题按钮
+     */
+    gameTitleButton:(w,h,x,y,text,callback)=>{
+        let button01 = new LButtonSample1(text,14,null,'#000');
+        button01.backgroundColor = '#eee';
+        button01.x = x;
+        button01.y = y;
+        button01.width = w;
+        button01.height = h;
+
+        button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+            RPG.currentButton = button01;
+        });
+        button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
+            if (RPG.currentButton === button01) {
+                if (callback) callback();
+            }
+        });
+        return button01;
+    },
+    /**
+     * 战斗按钮
+     */
+    fightButton:(x,y,text,callback)=>{
+        let button01 = new LButtonSample1(text,null,null,'#000');
+        button01.backgroundColor = '#eee';
+        button01.scaleX = 0.8;
+        button01.scaleY = 0.8;
         button01.x = x;
         button01.y = y;
         button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
@@ -482,6 +487,40 @@ let UI = {
             }
         });
         return button01;
+    },
+
+    /**
+     * option白底按钮
+     **/
+    optionButton: function(aw, ah, ax, ay, aText, aFunc) {
+        let bitmapDataUp = new LBitmapData(assets["focus"]);
+        let bitmapUp = new LBitmap(bitmapDataUp);
+        bitmapUp.scaleX= aw/ bitmapUp.width;
+        bitmapUp.scaleY= ah/ bitmapUp.height;
+        bitmapUp.alpha= 0.2;
+        // let bitmapDataDown = new LBitmapData(assets["focus"]);
+        // let bitmapDown = new LBitmap(bitmapDataDown);
+        // bitmapDown.scaleX= aw/ bitmapDown.width;
+        // bitmapDown.scaleY= ah/ bitmapDown.height;
+        let bitmapDown = bitmapUp.clone();
+        bitmapDown.alpha= 0.5;
+        // 保持进度的按钮
+        let button02 = new LButton(bitmapUp,bitmapDown,bitmapDown);
+        button02.x= ax;
+        button02.y= ay;
+        let text = UI.text(aText,button02.getWidth()/ 2,button02.getHeight()/ 2);
+        text.textAlign= "center";
+        text.textBaseline= "middle";
+        button02.addChild(text);
+        button02.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+            RPG.currentButton= button02;
+        });
+        button02.addEventListener(LMouseEvent.MOUSE_UP, function () {
+            if (RPG.currentButton=== button02) {
+                if (aFunc) aFunc();
+            }
+        });
+        return button02;
     },
 
 };

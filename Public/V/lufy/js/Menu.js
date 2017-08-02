@@ -86,21 +86,24 @@ let Menu = {
 
         let i,item1,text,money;
 
-        text = UI.text("物品",menuWidth / 2,10,'20');
-        // text.width = 200;
-        text.textAlign = "center";
+        text = UI.simpleText("物品",18);
+        text.x = menuWidth-text.getWidth()>>1;
+        text.y = 2*gap;
         ctrlLayer.addChild(text);
         //绘制钱钱
-        money = UI.text('G:'+mainTeam.money,gap,gap);
+        money = UI.diyButton(0,0,gap,gap,'G:'+mainTeam.money);
+        money.setState(LButton.STATE_DISABLE);
         ctrlLayer.addChild(money);
         //按钮
-        let btn = UI.gameTitleButton(0,0,menuWidth-50,gap,'退出',()=>{Menu.trade = false;Menu.closeMenu()});
+        let btn = UI.diyButton(0,0,menuWidth-50,gap,'退出',()=>{
+            Menu.trade = false;Menu.closeMenu()
+        });
         ctrlLayer.addChild(btn);
         // 所有物品画在一张图片上
         let maskObj = new LSprite();
         // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
         let maskHeight = menuHeight- 144- 40;
-        maskObj.graphics.drawRect(0, "#ff0000", [0, 40, menuWidth, maskHeight]);
+        maskObj.graphics.drawRect(0, "#000", [0, 40, menuWidth, maskHeight]);
         if (!Menu.listLayer) {
             Menu.listLayer= new LSprite();
             Menu.listLayer.x= 0;
@@ -116,8 +119,7 @@ let Menu = {
         // 保留144的空间即够用
         RPG.descLayer.y = menuHeight - 144;
         ctrlLayer.addChild(RPG.descLayer);
-        // 选择高亮条
-        Menu.listFocus= UI.drawImgColor(Menu.listLayer, gap, 0, menuWidth - gap* 2, 30);
+
         // 物品列表
         for (i= 0; i< Menu.currentItemList.length; i++){
             // 逐个显示物品
@@ -142,6 +144,8 @@ let Menu = {
             // num.text = item1.num;
             // Menu.listLayer.addChild(num);
         }
+        // 选择高亮条
+        Menu.listFocus= UI.drawColorWindow(Menu.listLayer, 0, 0, menuWidth-gap*2, 25,0.5,'#eee');
 
         if (Menu.chooseItem>= 0) {
             Menu.menuShowOneItem(Menu.chooseItem);
@@ -437,7 +441,7 @@ let Menu = {
         if (item1){
             Menu.chooseItem = id;
             Menu.listFocus.x = gap;
-            Menu.listFocus.y = id*30+ 5;
+            Menu.listFocus.y = id*30+ gap;
             // 详细描述
             text = UI.text(item1.description,gap,2*gap);
             RPG.descLayer.addChild(text);
@@ -473,12 +477,12 @@ let Menu = {
         ctrlLayer.removeAllChild();
     },
 
-    menuShowSave: function(aResetFocus) {
+    menuShowSave: function(isSelect) {
         Menu.menuPage= 4;
         ctrlLayer.removeAllChild();
-        let text = UI.text("保存进度",menuWidth/2,10,'20');
-        // text.width= 200;
-        // text.textAlign= "center";
+        let text = UI.simpleText("保存进度",18);
+        text.x = menuWidth-text.getWidth()>>1;
+        text.y = 2*gap;
         ctrlLayer.addChild(text);
         // 可用存档槽
         if (!Menu.listLayer) {
@@ -487,28 +491,30 @@ let Menu = {
             Menu.listLayer.removeAllChild();
         }
         Menu.listLayer.x= 0;
-        Menu.listLayer.y= 40;
+        Menu.listLayer.y= 60;
         ctrlLayer.addChild(Menu.listLayer);
         Menu.listLayer.mask = null;
         // 选择高亮条
-        if (aResetFocus) {
-            Menu.listFocus= UI.drawImgColor(Menu.listLayer, gap, 0, menuWidth- gap* 2, 30);
+        if (isSelect) {
+            // 选择高亮条
+            Menu.listFocus= UI.drawColorWindow(Menu.listLayer, gap, 0, menuWidth- gap* 2, 25,0.5,'#eee');
             Menu.saveSlot= 0;
         } else {
-            Menu.listFocus= UI.drawImgColor(Menu.listLayer, gap, Menu.listFocus.y, menuWidth- gap* 2, 30);
+            Menu.listFocus= UI.drawImgColor(Menu.listLayer, gap, Menu.listFocus.y, menuWidth- gap* 2, 25,0.5,'#eee');
         }
 
         for (let i= 0; i< RPG.MaxSaveSlot; i++){
-            // 物品名称
-            text = UI.text(RPG.showSaveSlot(i),gap* 2,i* 30+ 5);
+            // 存档名称
+            text = UI.simpleText(RPG.showSaveSlot(i));
+            text.x = menuWidth>>3;
+            text.y = i* 30+ 5;
             Menu.listLayer.addChild(text);
         }
-        // let button01= UI.gameTitleButton(60, 20, gap* 2, menuHeight- 85, "回到标题", function(e){
-        //     Menu.closeMenu();
-        //     RPG.drawCover();
-        // });
-        // ctrlLayer.addChild(button01);
-        let saveButton = UI.gameTitleButton(30, 5, menuWidth- gap* 2- 90, menuHeight- 85, "保存", function(){
+        /*let exitButton = UI.diyButton(0, 0, gap* 2, menuHeight- 85, "回到标题", function(){
+            Menu.closeMenu();
+            RPG.drawCover();
+        });*/
+        let saveButton = UI.diyButton(0, 0, menuWidth- gap* 2- 90, menuHeight- 85, "保存", function(){
             RPG.saveGame(Menu.saveSlot);
             Menu.menuShowSave(false);
         });
@@ -542,17 +548,17 @@ let Menu = {
             Menu.listLayer.addChild(text);
         }
         // 空白按钮图片
-        let button01= UI.gameTitleButton(90, 30, gap* 2, menuHeight- 60, "载入进度", function(e){
+        let button01= UI.diyButton(90, 30, gap* 2, menuHeight- 60, "载入进度", function(e){
             Menu.closeMenu();
             RPG.loadGame(Menu.saveSlot);
         });
         ctrlLayer.addChild(button01);
         // 空白按钮图片
-        ctrlLayer.addChild(UI.gameTitleButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 60, "返回", function(e){
+        ctrlLayer.addChild(UI.diyButton(90, 30, menuWidth- gap* 2- 90, menuHeight- 60, "返回", function(e){
             Menu.closeMenu();
         }));
     },
-// 从标题画面，打开载入进度菜单
+    // 从标题画面，打开载入进度菜单
     openLoadMenu: function() {
         // 切换状态
         RPG.pushState(RPG.COVER_MENU);
@@ -569,7 +575,7 @@ let Menu = {
         Menu.menuShowLoad();
     },
 
-// 游戏进行中，打开主菜单
+    // 游戏进行中，打开主菜单
     openMenu: function() {
         //切换状态
         RPG.pushState(RPG.IN_MENU);
@@ -585,16 +591,10 @@ let Menu = {
         for (let i=0; i< Menu.iconMenu.length; i++) {
             let obj = Menu.iconMenu[i];
             let x = (tmpMenuWidth*i + menusDown/2 - gap)<<0 ;
-            let text = UI.text(obj.name,x,y);
+            let menuItem = UI.diyButton(0,0,x,y,obj.name);
             obj.x = x;
             obj.y = y;
-            obj.textObj = text;
-            talkLayer.addChild(text);
-            //默认选中状态页
-            if (i===0){
-                //绘制选中
-                obj.borderObj = UI.drawBorder(talkLayer,text.x,text.y,text.getWidth()+5,text.getHeight()+5);
-            }
+            talkLayer.addChild(menuItem);
         }
         // 子菜单层
         ctrlLayer = new LSprite();
@@ -625,15 +625,6 @@ let Menu = {
 
         if (Menu.cmdChoose >= 0){
             let index = Menu.iconMenu[Menu.cmdChoose];
-            for (let i=0; i < len; i++){
-                iconMenuItem = Menu.iconMenu[i];
-                if (i===Menu.cmdChoose) {
-                    //绘制选中
-                    iconMenuItem.borderObj = UI.drawBorder(talkLayer,index.x,index.y,index.textObj.getWidth()+5,index.textObj.getHeight()+5);
-                } else {
-                    if(iconMenuItem.borderObj) talkLayer.removeChild(iconMenuItem.borderObj);
-                }
-            }
             switch (index.cmd){
                 case 0:
                     Menu.closeMenu();
@@ -680,7 +671,6 @@ let Menu = {
                 }, 500);
                 break;
             case 2:
-                console.log('listLayerY',Menu.listLayer.y);
                 // 拉动物品条，以及长按使用物品
                 Menu.listLayer_Y= Menu.listLayer.y;
                 cc = ((ay- Menu.listLayer.y)/ 30)<<0;
@@ -703,7 +693,6 @@ let Menu = {
             case 5:
                 // 选择存档槽
                 cc = ((ay- Menu.listLayer.y)/30)<<0;
-                //console.log(cc);
                 if (cc>= 0 && cc< 5) {
                     Menu.listFocus.y= cc* 30;
                     Menu.saveSlot= cc;

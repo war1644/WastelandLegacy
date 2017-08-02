@@ -4,7 +4,7 @@
 // 对于装备类：type=1=武器，type=2=防具；type=3=装饰物
 // 对于使用类：type=1=加HP，type=2=加SP,type=4 战场攻击
 let ItemList= [
-		{cost:10,name:"GPS", kind: 1, type: 1, addOn:1.5, atkEff:"pSwipe", description:"", effect:(hero)=>{hero.changeWeapon(0);}},
+		{cost:10,name:"GPS", kind: 1, type: 1, addOn:1.5, atkEff:"pSwipe", description:"定位自己的位置，以及呼叫卫星攻击", effect:(hero)=>{hero.changeWeapon(0);}},
 		{cost:10,name:"军用肉干", kind: 2, type:1, description:"肉干，食用可以补充少量体力", effect:function(hero){hero.addHp(200);}},
 		{cost:10,name:"自动步枪", kind: 1, type: 1, addOn:1.1, description:"初等的武器"},
 		{cost:10,name:"狙击步枪", kind: 1, type: 1, addOn:1.2, description:"中级的武器"},

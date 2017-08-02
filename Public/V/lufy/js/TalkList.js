@@ -153,8 +153,7 @@ talklist4= {
             {index:1,img: "face雷娜", name: "游戏美工04", msg: ""},
         ],
         gameExplainTalk: [
-            {img: "face雷娜", msg: "是否进入新手教程？"},
-            {option:[
+            {img: "face雷娜", msg: "是否进入新手教程？",option:[
                 {text: "是", action:()=>{
                     Talk.startTalk([
                         {img: "face雷娜", name: "游戏美工04", msg: "点击地图移动"},
@@ -168,7 +167,7 @@ talklist4= {
                 }},
                 {text: "否",action:()=>{
                     Talk.startTalk([
-                        {index:1,img: "face雷娜", name: "", msg: "那么，开始你的废土捡破烂生活吧"},
+                        {img: "face雷娜", name: "", msg: "那么，开始你的废土捡破烂生活吧"},
                     ]);
                 }}
             ]},
@@ -179,7 +178,7 @@ talklist4= {
             {msg: "是否追击？",option: [
                     {text: "追击", action: function () {
                         Fight.option = 0;
-                        Talk.callback();
+                        Talk.closeTalk(1);
                     }},
                     {text: "不追击", action: function(){
                         Fight.option = 1;

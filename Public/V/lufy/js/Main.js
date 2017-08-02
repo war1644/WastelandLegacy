@@ -1,9 +1,17 @@
 ﻿/**
- * Main类
- * @author lufy(lufy_legend)
- * @blog http://blog.csdn.net/lufy_Legend
- * @email lufy.legend@gmail.com
- **/
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆███▄▄▃▂
+ *  █████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * 客户端入口，初始参数，方法，主循环等
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2017/07/29 初版
+ */
+
 window._requestAF = (function() {
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -15,6 +23,10 @@ window._requestAF = (function() {
         };
 })();
 
+// LGlobal.aspectRatio = LANDSCAPE;提示只支持横屏
+window.onload = function(){
+    LInit(window._requestAF,"mylegend",WIDTH,HEIGHT,main);
+};
 
 const
     // 瓦片大小
@@ -29,28 +41,28 @@ const
 
 let
     //游戏初始宽
-	WIDTH= 256,
+	WIDTH= 320,
 	tempLength= 0;
 if (window.innerHeight>=window.innerWidth){
 	tempLength= window.innerHeight* WIDTH/window.innerWidth;
 } else{
 	tempLength= window.innerWidth* WIDTH/window.innerHeight;	
 }
-let tempCells= Math.floor(tempLength/ STEP);
+let tempCells= (tempLength/ STEP)>>0;
 let HEIGHT= tempCells* STEP;
 // 高度太低没法玩
-if (HEIGHT< 384) {
-	HEIGHT= 384;
+if (HEIGHT < 480) {
+	HEIGHT= 480;
 	tempLength= HEIGHT/ window.innerHeight* window.innerWidth;
-	tempCells= Math.floor(tempLength/ STEP);
-	WIDTH= tempCells* STEP;
+	tempCells= (tempLength/ STEP)>>0;
+	WIDTH = tempCells* STEP;
 }
 
 let menuWidth = WIDTH - gap * 2,
 menuHeight = HEIGHT - gap * 2;
 
 // window.innerWidth, window.innerHeight
-init(1000/30,"mylegend",WIDTH,HEIGHT,main);
+// init(1000/30,"mylegend",WIDTH,HEIGHT,main);
 
 /**层变量*/
 //显示进度条所用层
@@ -95,14 +107,25 @@ let loadingLayer,
 
 function main(){
 	//LGlobal.preventDefault = false;
-    if(LGlobal.canTouch){
+    /*if(LGlobal.canTouch){
 		LGlobal.stageScale = LStageScaleMode.EXACT_FIT;  //指定整个应用程序在指定区域中可见，但不尝试保持原始高宽比。
 		//LGlobal.stageScale = LStageScaleMode.NO_BORDER;  //指定整个应用程序填满指定区域，不会发生扭曲，但有可能会进行一些裁切，同时保持应用程序的原始高宽比。
 		//LGlobal.stageScale = LStageScaleMode.NO_SCALE;  //指定应用程序的大小是固定的，因此，即使在更改播放器窗口大小时，它仍然保持不变。
 		//LGlobal.stageScale = LStageScaleMode.SHOW_ALL;  //指定整个应用程序在指定区域中可见，且不会发生扭曲，同时保持应用程序的原始高宽比。
 		LSystem.screen(LStage.FULL_SCREEN);
-	}
-	//准备读取图片
+	}*/
+
+    if(LGlobal.mobile){
+        // LGlobal.height = LGlobal.width*window.innerHeight/window.innerWidth;
+        // LGlobal.canvasObj.width  = LGlobal.width;
+        // LGlobal.canvasObj.height  = LGlobal.height;
+        LGlobal.align = LStageAlign.TOP_LEFT;
+        //指定整个应用程序在指定区域中可见，且不会发生扭曲，同时保持应用程序的原始高宽比。
+        LGlobal.stageScale = LStageScaleMode.EXACT_FIT;
+        LSystem.screen(LStage.FULL_SCREEN);
+    }
+    LGlobal.speed = 1000/30;
+	//准备读取资源
 	//BGM SFX
     // imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
     // imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});

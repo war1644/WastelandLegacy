@@ -46,7 +46,7 @@ let RPG = {
     stateStack: [],
 // 单值状态值
     IN_COVER: 0,           // 封面
-    COVER_MENU: 1,         // 封面载入菜单
+    COVER_MENU: 1,         // 游戏开始菜单
     MAP_CONTROL: 2,        // 正常控制
     MAP_WAITING: 3,        // 等待NPC移动，不可控制
     IN_MENU: 4,            // 菜单中
@@ -55,7 +55,7 @@ let RPG = {
     IN_CHOOSING: 7,        // 选择状态中
     IN_HELP: 8,            // 在帮助窗口下
     IN_OVER: 9,            // 在结束状态下
-    FIGHT_RESULT: 10,      // 检查战斗结果（防止战斗异常重入）
+    FIGHT_RESULT: 10,      // 检查战斗结果状态（防止战斗异常重入）
 // 组合状态，100以上
     UNDER_MAP: 101,        // 地图下，包括地图控制和地图等待
     UNDER_MENU: 102,       // 菜单下，包括主菜单和载入菜单
@@ -63,7 +63,7 @@ let RPG = {
     stateList: {
         101: [2, 3],
         102: [4, 1],
-        103: [4, 1, 5]
+        103: [4, 1, 5,6]
     },
 // 流程控制:=============================================
 // 内置开关量
@@ -275,7 +275,7 @@ let RPG = {
         return result;
     },
     howToUse: function () {
-        Talk.startTalk(talkList.gameExplainTalk);
+        Talk.makeChoice(talkList.gameExplainTalk);
     },
     drawCover: function () {
         // 封面图
@@ -283,34 +283,35 @@ let RPG = {
         let sLayer = effectLayer;
         sLayer.removeAllChild();
 
-        let title = UI.text('废土战记', 0, 50, '35');
-        title.x = (WIDTH - title.getWidth()) >> 1;
+        let title = UI.simpleText('废土战记',30);
+        title.x = WIDTH-title.getWidth()>>1;
+        title.y = HEIGHT>>3;
         sLayer.addChild(title);
 
         // 新的开始
-        let button01 = UI.gameTitleButton(120, 30, (WIDTH - 120) >> 1, HEIGHT - 200, "新游戏", function () {
+        let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "新游戏", function () {
             // 按钮被透过窗口点击
             if (RPG.checkState(RPG.IN_COVER)) {
                 RPG.newGame();
             }
-        });
+        },18);
         sLayer.addChild(button01);
 
         // 继续
-        let button02 = UI.gameTitleButton(120, 30, (WIDTH - 120) >> 1, HEIGHT - 160, "载入进度", function () {
+        let button02 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)+60, "载入进度", function () {
             if (RPG.checkState(RPG.IN_COVER)) {
                 Menu.openLoadMenu();
             }
-        });
+        },18);
         button02.setState(LButton.STATE_DISABLE);
         sLayer.addChild(button02);
 
         // 关于
-        let button03 = UI.gameTitleButton(120, 30, (WIDTH - 120) >> 1, HEIGHT - 120, "关于", function () {
+        let button03 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)+120, "关于", function () {
             if (RPG.checkState(RPG.IN_COVER)) {
                 RPG.howToUse();
             }
-        });
+        },18);
         sLayer.addChild(button03);
 
         if (window.localStorage) {
@@ -359,39 +360,39 @@ let RPG = {
         // A队=0
         team1 = RPG.beget(PlayerTeam);
         team1.clear();
-        team1.addEnemy(0, 10);
-        team1.addEnemy(1, 10);
+        team1.addEnemy(0, 50);
+        team1.addEnemy(1, 50);
         team1.addItem(1, 2);
         RPG.enemyTeam.push(team1);
 
         // B队=1
         team1 = RPG.beget(PlayerTeam);
         team1.clear();
-        team1.addEnemy(0, 20);
-        team1.addEnemy(1, 20);
+        team1.addEnemy(0, 50);
+        team1.addEnemy(1, 50);
         team1.addItem(1, 2);
         RPG.enemyTeam.push(team1);
 
         // C队=2
         team1 = RPG.beget(PlayerTeam);
         team1.clear();
-        team1.addEnemy(0, 50);
+        team1.addEnemy(0, 60);
         team1.addItem(1, 2);
         RPG.enemyTeam.push(team1);
 
         // D队=3
         team1 = RPG.beget(PlayerTeam);
         team1.clear();
-        team1.addEnemy(1, 50);
+        team1.addEnemy(1, 60);
         RPG.enemyTeam.push(team1);
 
         // E队=4
         team1 = RPG.beget(PlayerTeam);
         team1.clear();
-        team1.addEnemy(0, 20);
-        team1.addEnemy(1, 20);
-        team1.addEnemy(0, 20);
-        team1.addEnemy(1, 20);
+        team1.addEnemy(0, 50);
+        team1.addEnemy(1, 50);
+        team1.addEnemy(0, 50);
+        team1.addEnemy(1, 50);
         team1.addItem(1, 2);
         RPG.enemyTeam.push(team1);
     },
@@ -483,8 +484,8 @@ let RPG = {
         return effectList[name];
     },
 
-// 屏幕从黑切换到白，模拟过去了一天的效果
-nightAndDay: function(callback){
+    // 屏幕从黑切换到白，模拟过去了一天的效果
+    nightAndDay: function(callback){
     let bmp = UI.drawColorWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
     LTweenLite.to(bmp,2,
         {alpha:1,ease:Quad.easeOut,
