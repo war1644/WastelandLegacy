@@ -52,37 +52,47 @@ let Menu = {
     currentItemList:false,
     //是否是买卖行为
     trade:false,
+    //买卖物品价格
+    itemCost:0,
 
 	/**
 	 * 显示背包
 	 *
 	 * */
-    menuShowItems:(sys=0)=>{
+    menuShowItems:()=>{
         Menu.menuPage= 2;
-        if(sys){
-            Menu.currentItemList = ItemList;
+        switch (Menu.trade){
+            case 'sell':
+                Menu.currentItemList = mainTeam.itemList;
+                break;
+            case 'buy':
+                Menu.currentItemList = ItemList;
+                break;
+            default:
+                Menu.currentItemList = mainTeam.itemList;
+                break;
+        }
+        if(Menu.trade){
             //对话背景
             talkLayer.x = 10;
             talkLayer.y = 10;
             UI.drawBorderWindow(talkLayer, 0, 0, menuWidth, menuHeight);
             ctrlLayer = new LSprite();
             talkLayer.addChild(ctrlLayer);
-        } else {
-            Menu.currentItemList = mainTeam.itemList;
         }
+        ctrlLayer.removeAllChild();
+
         if(!RPG.checkState(RPG.IN_MENU)) RPG.pushState(RPG.IN_MENU);
 
-        // if(!ctrlLayer){
-        //
-        // }else {
-            ctrlLayer.removeAllChild();
-        // }
-        let i,item1,text;
+        let i,item1,text,money;
 
         text = UI.text("物品",menuWidth / 2,10,'20');
         // text.width = 200;
         text.textAlign = "center";
         ctrlLayer.addChild(text);
+        //绘制钱钱
+        money = UI.text('G:'+mainTeam.money,gap,gap);
+        ctrlLayer.addChild(money);
         //按钮
         let btn = UI.gameTitleButton(0,0,menuWidth-50,gap,'退出',()=>{Menu.trade = false;Menu.closeMenu()});
         ctrlLayer.addChild(btn);
@@ -113,10 +123,16 @@ let Menu = {
             // 逐个显示物品
             item1 = Menu.currentItemList[i];
             // 物品名称
-            if(sys){
-                text = UI.text(item1.name+'    '+item1.cost,gap* 2+ 30,i* 30+ gap+ 5);
-            }else {
-                text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
+            switch (Menu.trade){
+                case 'sell':
+                    text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
+                    break;
+                case 'buy':
+                    text = UI.text(item1.name+'    '+item1.cost+'G',gap* 2+ 30,i* 30+ gap+ 5);
+                    break;
+                default:
+                    text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
+                    break;
             }
             Menu.listLayer.addChild(text);
 
@@ -279,6 +295,8 @@ let Menu = {
 		//将对话层清空
 		talkLayer.removeAllChild();
 		Menu.cmdChoose = -1;
+        Menu.trade = false;
+        Menu.itemCost = 0;
 		// 这个动作，是为了屏蔽鼠标抬起事件
 		isKeyDown= false;
 		if(Menu.callback){
@@ -431,14 +449,21 @@ let Menu = {
         Menu.isItemDraging= false;
         if (Menu.chooseItem>= 0){
             if (Menu.chooseHero>= 0){
-                if (Menu.trade){
-                    mainTeam.addItem(Menu.chooseItem, 1);
-                    Menu.menuShowItems(Menu.trade);
-                }else {
-                    // 物品装配或使用
-                    mainTeam.removeItem(Menu.chooseHero, Menu.chooseItem, 1);
-                    Menu.menuShowItems();
+                switch (Menu.trade){
+                    case 'sell':
+                        mainTeam.delItem(Menu.chooseItem);
+                        mainTeam.addMoney(Menu.itemCost);
+                        break;
+                    case 'buy':
+                        mainTeam.addItem(Menu.chooseItem, 1);
+                        mainTeam.reduceMoney(Menu.itemCost);
+                        break;
+                    default:
+                        // 物品装配或使用
+                        mainTeam.useItem(Menu.chooseHero, Menu.chooseItem, 1);
+                        break;
                 }
+                Menu.menuShowItems();
             }
         }
     },
@@ -661,10 +686,16 @@ let Menu = {
                 cc = ((ay- Menu.listLayer.y)/ 30)<<0;
                 if (cc>= 0 && cc< Menu.currentItemList.length && ay< RPG.descLayer.y) {
                     Menu.menuShowOneItem(cc);
-                    if(Menu.trade){
-                        Menu.dragTimer = setTimeout(function(){Menu.buy(ax- 20, ay- 20, cc);}, 1000);
-                    }else {
-                        Menu.dragTimer = setTimeout(function(){Menu.dragItemBegin(ax- 20, ay- 20, cc);}, 1000);
+                    switch (Menu.trade){
+                        case 'sell':
+                            Menu.dragTimer = setTimeout(function(){Menu.sell(ax- 20, ay- 20, cc);}, 1000);
+                            break;
+                        case 'buy':
+                            Menu.dragTimer = setTimeout(function(){Menu.buy(ax- 20, ay- 20, cc);}, 1000);
+                            break;
+                        default:
+                            Menu.dragTimer = setTimeout(function(){Menu.dragItemBegin(ax- 20, ay- 20, cc);}, 1000);
+                            break;
                     }
                 }
                 break;
@@ -695,9 +726,18 @@ let Menu = {
                         // 可以选人的状态
                         let cc= (ax/ (menuWidth/ mainTeam.heroList.length))<<0;
                         if (cc>=0 && cc<mainTeam.heroList.length && ay> RPG.descLayer.y) {
-                            Menu.nameText.text= mainTeam.heroList[cc].nickName;
-
                             Menu.chooseHero = cc;
+                            switch (Menu.trade){
+                                case 'sell':
+                                    Menu.nameText.text= '售卖员';
+                                    break;
+                                case 'buy':
+                                default:
+                                    // 物品装配或使用
+                                    Menu.nameText.text= mainTeam.heroList[cc].nickName;
+                                    break;
+                            }
+
                             console.log('cc',cc, Menu.nameText.text);
                             // Menu.showLabel(cc);
                             // 同时显示可能会出现的值的变化
@@ -762,6 +802,7 @@ let Menu = {
         // 显示单一物品详细信息
         item1 = Menu.currentItemList[Menu.chooseItem];
         text = UI.text('给谁：',gap* 2,5);
+        Menu.itemCost = item1.cost;
         RPG.descLayer.addChild(text);
         // 显示姓名
         Menu.nameText = text.clone();
@@ -789,6 +830,39 @@ let Menu = {
         RPG.descLayer.addChild(Menu.dragingItem);
         Menu.isItemDraging= true;
 
+    },
+    // 拖动物品栏的物品
+    sell:(ax, ay, itemId)=>{
+        let item1,text;
+        // 详细信息
+        RPG.descLayer.removeAllChild();
+        // 显示单一物品详细信息
+        item1 = Menu.currentItemList[Menu.chooseItem];
+        text = UI.text(item1.name+'呀，好像很破的样子。'+item1.cost+'吧，卖么？',gap,gap);
+        Menu.itemCost = item1.cost;
+        RPG.descLayer.addChild(text);
+        // 显示姓名
+        Menu.nameText = text.clone();
+        Menu.nameText.x = text.x+ text.getWidth()+ gap;
+        Menu.nameText.text = "";
+        RPG.descLayer.addChild(Menu.nameText);
+        Menu.chooseHero= -1;
+        let cc = (menuWidth- gap* 2);
+
+        let bitmapData = new LBitmapData(assets['售卖员']);
+        let chara = new Fighter(bitmapData,4,4);
+        chara.x = cc/ 2- STEP/ 2;
+        chara.y = gap*4;
+        RPG.descLayer.addChild(chara);
+        Menu.chooseItem = itemId;
+        Menu.dragingItem = text.clone();
+        Menu.dragingItem.text = item1.name;
+        Menu.dragingItem.x= ax- RPG.descLayer.x;
+        Menu.dragingItem.y= ay- RPG.descLayer.y;
+        Menu.dragingItem.scaleX= 2;
+        Menu.dragingItem.scaleY= 2;
+        RPG.descLayer.addChild(Menu.dragingItem);
+        Menu.isItemDraging= true;
     },
 
 };

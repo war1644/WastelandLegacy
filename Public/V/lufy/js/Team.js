@@ -46,6 +46,7 @@ let PlayerTeam = {
             item.kind = ItemList[id].kind;
             item.type = ItemList[id].type;
             item.addOn = ItemList[id].addOn;
+            item.cost = ItemList[id].cost;
 			this.itemList.push(item);
 		}
 		if (visible) UI.showGetItem(id, num);
@@ -57,7 +58,7 @@ let PlayerTeam = {
 	 * @param num  {int} 使用数量
      * @returns
      */
-	removeItem: function(heroId, itemId, num){
+	useItem: function(heroId, itemId, num){
 		if (heroId<0 || itemId< 0 || heroId>= this.heroList.length || itemId>= this.itemList.length)  return;
 		let item1;
 		let hero1= this.heroList[heroId];
@@ -85,6 +86,21 @@ let PlayerTeam = {
 			}
 		}
 	},
+
+    /**
+     * 取走某物品
+     */
+    delItem: function(index) {
+        // 取走某物品
+        let item1 = this.itemList[index];
+        if (item1) {
+            if (item1.num > 1) {
+                item1.num = item1.num - 1;
+            } else {
+                this.itemList = this.itemList.slice(0, index).concat(this.itemList.slice(index + 1));
+            }
+        }
+    },
 
     /**
      * 向队伍增加人物
@@ -177,29 +193,40 @@ let PlayerTeam = {
     /**
      * 取走某物品，即使已经装配，一样取走，只取一个
      */
-	takeItem: function(aId){
+	takeItem: function(index){
 		// 取走某物品，即使已经装配，一样取走，只取一个
 		let item1, hero1;
-		for (let i= 0; i< this.itemList.length; i++) {
-			item1= this.itemList[i];
-			if (item1.index== aId) {
-				this.itemList= this.itemList.slice(0, i).concat(this.itemList.slice(i+ 1));
+        console.log('index',index);
+        for (let i= 0; i< this.itemList.length; i++) {
+			item1 = this.itemList[i];
+			if (item1.index === index) {
+                if (item1.num > 1){
+                    this.itemList[i].num= item1.num- 1;
+                } else {
+                    this.itemList = this.itemList.slice(0, i).concat(this.itemList.slice(i+ 1));
+                }
 				return;
 			}
 		}
 		// 物品表里没有，看装备情况
 		for (let i= 0; i< this.heroList.length; i++){
 			hero1= this.heroList[i];
-			if (hero1.weapon== aId) {
+			if (hero1.weapon=== index) {
 				hero1.weapon= -1;
 				return;
-			} else if (hero1.armor== aId) {
+			} else if (hero1.armor=== index) {
 				hero1.armor= -1;
 				return;
-			} else if (hero1.ornament== aId){
+			} else if (hero1.ornament=== index){
 				hero1.ornament= -1;
 				return;
 			}
 		}
-	}
+	},
+	addMoney:function (num) {
+		this.money += num;
+    },
+    reduceMoney:function (num) {
+		this.money -= num;
+    },
 };

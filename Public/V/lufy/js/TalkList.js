@@ -109,13 +109,12 @@ talklist4= {
             {option:[
                 {text: "买", action:()=>{
                     Talk.closeTalk();
-                    Menu.trade = true;
-                    Menu.menuShowItems(1);
-                    // Talk.callback();
+                    Menu.trade = 'buy';
+                    Menu.menuShowItems();
                 }},
                 {text: "卖",action:()=>{
                     Talk.closeTalk();
-                    Menu.trade = true;
+                    Menu.trade = 'sell';
                     Menu.menuShowItems();
                 }}
             ]},
