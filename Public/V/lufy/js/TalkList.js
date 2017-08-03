@@ -106,7 +106,7 @@ talklist4= {
     talkList = {
         售卖员:[
             {msg: "欢迎来到废土商店！贵干？"},
-            {option:[
+            {msg: "欢迎来到废土商店！贵干？",option:[
                 {text: "买", action:()=>{
                     Talk.closeTalk();
                     Menu.trade = 'buy';
@@ -130,9 +130,7 @@ talklist4= {
             {name: "费雷塔", msg: "如何？不错吧？打败他就有50000G的赏金，这些钱可够花好几个月的。"},
             {name: "费雷塔", msg: "我们明天讨伐的讨伐目标就是他了。你先去镇子里的旅馆休息一下吧。"},
     	],
-        雷娜:[
-            {index:0,img: "face雷娜", name: "", msg: "咦，你是赏金猎人么？"},
-			{option:[
+        雷娜:[{img: "face雷娜", name: "", msg: "咦，你是赏金猎人么？",option:[
                 {text: "是", action:()=>{
                     Talk.startTalk([
                         {index:1,img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
@@ -152,8 +150,7 @@ talklist4= {
             {index:0,img: "face雷娜", name: "游戏美工04", msg: ""},
             {index:1,img: "face雷娜", name: "游戏美工04", msg: ""},
         ],
-        gameExplainTalk: [
-            {img: "face雷娜", msg: "是否进入新手教程？",option:[
+        gameExplainTalk: {img: "face雷娜", msg: "是否进入新手教程？",option:[
                 {text: "是", action:()=>{
                     Talk.startTalk([
                         {img: "face雷娜", name: "游戏美工04", msg: "点击地图移动"},
@@ -163,16 +160,16 @@ talklist4= {
                         {img: "face雷娜", name: "游戏美工04", msg: "多名队员，状态显示页，左右滑动可切换"},
                         {img: "face雷娜", name: "游戏美工04", msg: "走到NPC旁点击NPC对话"},
                         {img: "face雷娜", name: "游戏美工04", msg: "WARNING：遇到凶残的敌人就跑吧，不然没人救你哦"},
-                    ])
+                    ]);
+                    infoLayer.removeAllChild();
                 }},
                 {text: "否",action:()=>{
                     Talk.startTalk([
-                        {img: "face雷娜", name: "", msg: "那么，开始你的废土捡破烂生活吧"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "那么，开始你的废土捡破烂生活吧"},
                     ]);
+                    infoLayer.removeAllChild();
                 }}
             ]},
-
-        ],
         fight:[
             {msg: "实力悬殊，敌人四散奔逃，是否追击？"},
             {msg: "是否追击？",option: [

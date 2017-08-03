@@ -79,6 +79,8 @@ let loadingLayer,
  	effectLayer,
 //对话层
  	talkLayer,
+    //信息层
+    infoLayer,
 //控制层
  	ctrlLayer,
 
@@ -358,12 +360,15 @@ function onDown(event) {
     	RPG.dealNormal(event.offsetX<<0, event.offsetY<<0);
     } else if(RPG.checkState(RPG.IN_TALKING)) {
     	Talk.startTalk();
+    } else if(RPG.checkState(RPG.IN_FIGHTMENU)){
+        Menu.clickList(event.offsetX<<0, event.offsetY<<0);
     }
 }
 function onUp(event){
 	if (isKeyDown) {
 		isKeyDown = false;
 		clearTimeout(timer);
+        clearTimeout(Menu.dragTimer);
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
     		Menu.dealMenuUp(event.offsetX>>0, event.offsetY>>0);
     	} else if(RPG.checkState(RPG.MAP_CONTROL)) {
@@ -388,13 +393,21 @@ function onFrame(){
 			charaLayer.childList[i].onframe();
 		}
 	}
-	if (RPG.descLayer && RPG.descLayer.childList){
-		for(let i=0;i<RPG.descLayer.childList.length;i++){
-			if (RPG.descLayer.childList[i].onframe){
-				RPG.descLayer.childList[i].onframe();
-			}
-		}
-	}
+    if (Fight.layer && Fight.layer.childList) {
+        let obj = Fight.layer.childList,len = obj.length;
+        for (let i = 0; i < len; i++) {
+            if (obj[i].onframe) {
+                obj[i].onframe();
+            }
+        }
+    }
+	// if (RPG.descLayer && RPG.descLayer.childList){
+	// 	for(let i=0;i<RPG.descLayer.childList.length;i++){
+	// 		if (RPG.descLayer.childList[i].onframe){
+	// 			RPG.descLayer.childList[i].onframe();
+	// 		}
+	// 	}
+	// }
 }
 
 /**
@@ -486,11 +499,13 @@ function gameLayerInit() {
     //上地图层
     upLayer = new LSprite();
     backLayer.addChild(upLayer);
-
     //效果层
     effectLayer = new LSprite();
     backLayer.addChild(effectLayer);
     //菜单层
     talkLayer = new LSprite();
     backLayer.addChild(talkLayer);
+    //信息层
+    infoLayer = new LSprite();
+    backLayer.addChild(infoLayer);
 }

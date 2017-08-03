@@ -50,12 +50,13 @@ let RPG = {
     MAP_CONTROL: 2,        // 正常控制
     MAP_WAITING: 3,        // 等待NPC移动，不可控制
     IN_MENU: 4,            // 菜单中
-    IN_FIGHTING: 5,        // 在战斗菜单中
+    IN_FIGHTING: 5,        // 在战斗中
     IN_TALKING: 6,         // 对话状态中
     IN_CHOOSING: 7,        // 选择状态中
     IN_HELP: 8,            // 在帮助窗口下
     IN_OVER: 9,            // 在结束状态下
     FIGHT_RESULT: 10,      // 检查战斗结果状态（防止战斗异常重入）
+    IN_FIGHTMENU:11,        //战斗菜单中
 // 组合状态，100以上
     UNDER_MAP: 101,        // 地图下，包括地图控制和地图等待
     UNDER_MENU: 102,       // 菜单下，包括主菜单和载入菜单
@@ -287,6 +288,14 @@ let RPG = {
         title.x = WIDTH-title.getWidth()>>1;
         title.y = HEIGHT>>3;
         sLayer.addChild(title);
+        // 新的开始
+        let test = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1-60, "test", function () {
+            // 按钮被透过窗口点击
+            if (RPG.checkState(RPG.IN_COVER)) {
+                // RPG.newGame();
+            }
+        },18);
+        sLayer.addChild(test);
 
         // 新的开始
         let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "新游戏", function () {
@@ -474,6 +483,10 @@ let RPG = {
         }
     },
 
+    /**
+     * 载入特效
+     *
+     * */
     loadEffect: function(name,w=48,h=48,type=0){
         if (!effectList[name]){
             let bitmapData, chara;
@@ -485,64 +498,40 @@ let RPG = {
     },
 
     // 屏幕从黑切换到白，模拟过去了一天的效果
-    nightAndDay: function(callback){
-    let bmp = UI.drawColorWindow(effectLayer,0,0,WIDTH,HEIGHT,0);
-    LTweenLite.to(bmp,2,
-        {alpha:1,ease:Quad.easeOut,
-            onComplete:function(){
-                LTweenLite.to(bmp,2,
-                    {alpha:0,ease:Quad.easeIn,
-                        onComplete:function(){
-                            effectLayer.removeChild(bmp);
-                            if (callback) {
-                                callback();
-                            }
-                        }
-                    }
-                )
+    nightAndDay: function(callback) {
+        effectLayer.removeAllChild();
+        let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1);
+        LTweenLite.to(bmp, 2,
+            {alpha: 0, ease: Quad.easeOut,
+                onComplete: function () {
+                    effectLayer.removeChild(bmp);
+                    if (callback) callback();
+                }
+                //     LTweenLite.to(bmp, 2,
+                //         {
+                //             alpha: 0, ease: Quad.easeIn,
+                //             onComplete: function () {
+                //                 effectLayer.removeChild(bmp);
+                //                 if (callback) callback();
+                //             }
+                //         }
+                //     )
+                // }
             }
-        }
-    )
-},
-
-    /**
-     * 普通白底按钮
-     **/
-    newButton: function (aw, ah, ax, ay, aText, callback) {
-        // 这个是普通的按钮
-        let bitmapDataUp = new LBitmapData(assets["button1"]);
-        let bitmapUp = new LBitmap(bitmapDataUp);
-        bitmapUp.scaleX = aw / 30;
-        bitmapUp.scaleY = ah / 30;
-        let bitmapDataDown = new LBitmapData(assets["button1_down"]);
-        let bitmapDown = new LBitmap(bitmapDataDown);
-        bitmapDown.scaleX = aw / 30;
-        bitmapDown.scaleY = ah / 30;
-        // 保持进度的按钮
-        let button02 = new LButton(bitmapUp, null, bitmapDown);
-        button02.x = ax;
-        button02.y = ay;
-        let text = new LTextField();
-        text.size = "15";
-        text.color = "#FFF";
-        text.text = aText;
-        text.textAlign = "center";
-        text.textBaseline = "middle";
-        //text.x = bitmapUp.scaleX* bitmapUp.width/ 2;
-        //text.y = bitmapUp.scaleY* bitmapUp.height/ 2;
-        text.x = button02.getWidth() / 2;
-        text.y = button02.getHeight() / 2;
-        button02.addChild(text);
-        button02.addEventListener(LMouseEvent.MOUSE_DOWN, function () {
-            RPG.currentButton = button02;
-        });
-        button02.addEventListener(LMouseEvent.MOUSE_UP, function () {
-            if (RPG.currentButton === button02) {
-                if (callback) callback();
-            }
-        });
-        return button02;
+        )
     },
+    // 屏幕黑白闪速
+    flickerAnimation: function(callback,teamId) {
+        effectLayer.removeAllChild();
+        let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1,'#fff');
+        let flicker = LTweenLite.to(bmp,0.1,{alpha:0,loop:true}).to(bmp,0.1,{alpha:1});
+        setTimeout(function () {
+            console.log('LTweenLite.remove',LTweenLite.remove(flicker));
+            effectLayer.removeAllChild();
+            if(callback) callback(teamId);
+        },1000)
+    },
+
 };
 
 

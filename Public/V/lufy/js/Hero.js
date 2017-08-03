@@ -70,6 +70,8 @@ let HeroPlayer = {
     ornament: -1,
 	//是否在战车内
 	inTank: false,
+    //是否在战场
+    inFight: false,
 	getPerson:function(){
 		return HeroList[this.index];
 	},

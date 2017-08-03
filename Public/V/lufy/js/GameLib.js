@@ -122,7 +122,11 @@ function checkAuto(){
  * 检测战斗事件
  */
 function checkIntoBattle(){
-    Fight.simpleFight(4);
+    // if(RPG.checkState(RPG.FIGHT_RESULT)) return;
+    // RPG.pushState(RPG.FIGHT_RESULT);
+    // RPG.flickerAnimation(Fight.simpleFight,4);
+
+
     // if(player.tmp >= player.enemyShow){
     //     if (rangeRand(0,9)>2){
     //         Fight.simpleFight(4);

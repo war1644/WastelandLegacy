@@ -43,11 +43,11 @@ let Talk = {
             if(Talk.choiceScript === null) return;
         }
         // 游戏状态切换----对话中
-        if (!RPG.checkState(RPG.IN_TALKING)){
-            //进入地图等待状态
-            RPG.pushState(RPG.MAP_WAITING);
-            RPG.pushState(RPG.IN_TALKING);
-        }
+        // if (!RPG.checkState(RPG.IN_TALKING)){
+        //     //进入地图等待状态
+        //     RPG.pushState(RPG.MAP_WAITING);
+        //     RPG.pushState(RPG.IN_TALKING);
+        // }
         //得到对话内容
         if(!layer){
             layer = talkLayer;
@@ -57,13 +57,13 @@ let Talk = {
         //对话背景
         //分支选项
         let options = optionScript.option;
-        let len = options.length,height;
+        let len = options.length,height,width=Talk.WIDTH-2*gap;
         if(len>2){
-            height = 50+25*len
+            height = 50+25*len;
         }else {
-            height = 80;
+            height = 90;
         }
-        UI.drawBorderWindow(layer, Talk.LEFT, Talk.TOP, Talk.WIDTH, height);
+        UI.drawBorderWindow(layer, Talk.LEFT, Talk.TOP, width, height);
         //对话头像
         if (optionScript.img) {
             let bitmapData = new LBitmapData(assets[optionScript.img]);
@@ -76,16 +76,16 @@ let Talk = {
         }
         //选项标题
         if (optionScript.msg){
-            let name = UI.text(optionScript.msg,Talk.LEFT+ 5,Talk.TOP+ 5);
+            let name = UI.simpleText(optionScript.msg,undefined,undefined,Talk.LEFT+ 5,Talk.TOP+ 5);
             layer.addChild(name);
             // 选项标题初始行的位置
-            Talk.talkLinePos= name.y+ 20;
+            Talk.talkLinePos= name.y+ 25;
         } else {
             Talk.talkLinePos= Talk.TOP+ 5;
         }
 
         for (let i= 0; i< len; i++){
-            let button01= UI.diyButton(Talk.WIDTH- 10, 22, Talk.LEFT+ 5, Talk.talkLinePos, options[i].text, options[i].action);
+            let button01= UI.diyButton(width-2*gap, 22, Talk.LEFT+ gap, Talk.talkLinePos, options[i].text, options[i].action);
             layer.addChild(button01);
             Talk.talkLinePos= Talk.talkLinePos+ 25;
         }
@@ -118,7 +118,9 @@ let Talk = {
         Talk.talkIndex = 0;
         Talk.talkEnd = -1;
         RPG.popState();
-        RPG.popState();
+        if(RPG.checkState(RPG.MAP_WAITING)){
+            RPG.popState();
+        }
         if(del && Talk.callback) Talk.callback();
         Talk.callback = null;
         isKeyDown= false;
@@ -169,6 +171,7 @@ let Talk = {
         }
         // 游戏状态切换----对话中
         if (!RPG.checkState(RPG.IN_TALKING)){
+            console.log('checkState');
             //进入地图等待状态
             RPG.pushState(RPG.MAP_WAITING);
             RPG.pushState(RPG.IN_TALKING);
@@ -190,7 +193,8 @@ let Talk = {
             if ('option' in talkObject){
                 console.log('in option');
                 //分支选项
-                // RPG.popState();
+                RPG.popState();
+                Talk.talkScript=false;
                 Talk.makeChoice(talkObject);
                 return;
             }
