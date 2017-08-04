@@ -136,6 +136,7 @@ function checkIntoBattle(){
 }
 
 let jumpStage = function(newStage, x, y, dir=0){
+    new SoundManage('JumpStage');
     stage = newStage;
     stage.autoEvents = [];
     stage.triggerEvents = [];
@@ -163,7 +164,6 @@ let jumpStage = function(newStage, x, y, dir=0){
                 break;
         }
     }
-
     //初始化一些设置
     initScript(x, y, dir);
 };

@@ -133,15 +133,14 @@ talklist4= {
         雷娜:[{img: "face雷娜", name: "", msg: "咦，你是赏金猎人么？",option:[
                 {text: "是", action:()=>{
                     Talk.startTalk([
-                        {index:1,img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
-                        {index:2,img: "face雷娜", name: "", msg: "赶紧来猎人中心吧，再见啦"},
+                        {img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
+                        {img: "face雷娜", name: "", msg: "赶紧来猎人中心吧，再见啦"},
                     ]);
-                    Talk.callback();
-
                 }},
                 {text: "否",action:()=>{
+                    Talk.callback = null;
                     Talk.startTalk([
-                        {index:1,img: "face雷娜", name: "", msg: "哎，来了一个废物"},
+                        {img: "face雷娜", name: "", msg: "哎，来了一个废物"},
                     ]);
                 }}
             ]},

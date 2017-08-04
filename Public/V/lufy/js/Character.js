@@ -241,12 +241,12 @@ Character.prototype.playerMove = function (){
 		checkIntoBattle();
 		self.moveIndex = 0;
         self.anime.colIndex=0;
-        self.anime.onframe();
 		//判断方向是否改变
 		if(self.direction !== self.direction_next){
 			self.direction = self.direction_next;
 			self.anime.setAction(self.direction);
 		}
+        self.anime.onframe();
 
 		// 继续移动情况下，重新计算移动方向
 		if (isKeyDown){

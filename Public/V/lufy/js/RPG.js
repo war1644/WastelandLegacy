@@ -14,7 +14,8 @@
 let RPG = {
 
 // RPG基本管理参数，根据不同项目，应当调整
-    curBGM: {},
+    curBGM: '',
+    curBGMObj:null,
 //方向常量
     DOWN: 0,
     LEFT: 1,
@@ -77,6 +78,7 @@ let RPG = {
     // 存档信息
     saveList: [],
     MaxSaveSlot: 3,
+    WebAudioSound:null,
 // ==========================================================
 
     /**

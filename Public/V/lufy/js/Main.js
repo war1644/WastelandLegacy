@@ -42,6 +42,9 @@ const
 let
     //游戏初始宽
 	WIDTH= 320,
+    sound={},
+    sound2={},
+audioContext,
 	tempLength= 0;
 if (window.innerHeight>=window.innerWidth){
 	tempLength= window.innerHeight* WIDTH/window.innerWidth;
@@ -129,8 +132,34 @@ function main(){
     LGlobal.speed = 1000/30;
 	//准备读取资源
 	//BGM SFX
-    // imgData.push({name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"});
-    // imgData.push({name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"});
+    imgData = [
+        {name:'music01',path:'../RPG/bgm/map.mp3'},
+        {name:'music02',path:'../RPG/bgm/shop.mp3'},
+        {name:'music04',path:'../RPG/bgm/boss.mp3'},
+        {name:'music05',path:'../RPG/bgm/Walk Down.mp3'},
+        {name:'music06',path:'../RPG/bgm/town.mp3'},
+        {name:'music07',path:'../RPG/bgm/enemy.mp3'},
+        {name:'music08',path:'../RPG/bgm/town2.mp3'},
+        {name:'music09',path:'../RPG/bgm/battle.mp3'},
+        {name:'music10',path:'../RPG/bgm/shop2.mp3'},
+        {name:'music11',path:'../RPG/bgm/appear.mp3'},
+        {name:'music12',path:'../RPG/bgm/sound_wp01.mp3'},
+        {name:'music13',path:'../RPG/bgm/explosion.mp3'},
+        {name:'music14',path:'../RPG/bgm/escape.mp3'},
+        {name:'music15',path:'../RPG/bgm/collapse.mp3'},
+        {name:'music16',path:'../RPG/bgm/cut.mp3'},
+        {name:'music17',path:'../RPG/bgm/break.mp3'},
+        {name:'NameSetting_mp3',path:'../RPG/Sound/Bgm/NameSetting.mp3'},
+        {name:'lose',path:'../RPG/bgm/lose.mp3'},
+        {name:'message',path:'../RPG/bgm/message.wav'},
+        {name:'buy',path:'../RPG/bgm/buy.mp3'},
+        {name:'start_mp3',path:"../RPG/Sound/Bgm/Startup.mp3"},
+        {name:'town_mp3',path:"../RPG/Sound/Bgm/TownTheme.mp3"},
+        {name:'town2_mp3',path:"../RPG/Sound/Bgm/Town.mp3"},
+        {name:'Select_wav',path:"../RPG/Sound/Sfx/Select.wav"},
+        {name:'JumpStage',path:"../RPG/Sound/Sfx/JumpStage.wav"},
+
+    ];
 
 	//js
     imgData.push({type:"js",path:"./js/TalkList.js"});
@@ -171,6 +200,8 @@ function main(){
     imgData.push({name:"猎人A",path:"./image/MovePic/猎人A.png"});
     imgData.push({name:"商人妹子",path:"./image/MovePic/商人妹子.png"});
     imgData.push({name:"售卖员",path:"./image/MovePic/售卖员.png"});
+    imgData.push({name:"办事员",path:"./image/MovePic/办事员.png"});
+
 
     //FightPic
     imgData.push({name:"巨炮",path:"./image/FightPic/巨炮.png"});
@@ -228,16 +259,17 @@ function drawImgMap(map) {
     let bitmapDataUp = new LBitmapData(assets[CurrentMapImg[1]]);
     let bitmap = new LBitmap(bitmapData);
     let bitmapUp = new LBitmap(bitmapDataUp);
-    CurrentMapEvents = map.layers.pop();
+    let len = map.layers.length;
+    CurrentMapEvents = map.layers[len-1];
     // 行动控制层
-    CurrentMapMove = map.layers.pop();
+    CurrentMapMove = map.layers[len-2];
     mapLayer.removeAllChild();
     upLayer.removeAllChild();
 	upLayer.addChild(bitmapUp);
 	mapLayer.addChild(bitmap);
 }
 
-function setHero(x, y, frame){
+function setHero(x, y, dir){
 	if (x === null) return;
 	let w1= (WIDTH/STEP)>>1,
 		h1= (HEIGHT/STEP)>>1,
@@ -292,7 +324,8 @@ function setHero(x, y, frame){
 	hero.px = x;
 	hero.py = y;
 	charaLayer.addChild(hero);
-    hero.anime.setAction(frame);
+    hero.anime.setAction(dir);
+    hero.anime.onframe();
 }
 
 //添加人物
@@ -325,6 +358,11 @@ function addNpc(npcObj){
                 stage.storyList[npcObj.story] = npc;
                 npc.visible = false;
             }
+            if('dir' in npcObj){
+                npc.anime.setAction(npcObj.dir);
+                npc.anime.onframe();
+            }
+
             charaLayer.addChild(npc);
         }
     }
@@ -431,13 +469,20 @@ class SoundManage{
 
     play(loop,volume) {
         this.bgm.setVolume(volume);
-        this.bgm.play();
         if (loop) {
-            this.bgm.data.loop = true;
+            if(RPG.curBGMObj) RPG.curBGMObj.stop();
+            setTimeout(function () {
+                RPG.curBGMObj.play(0,99);
+            },1000);
+            // this.bgm.data.loop = true;
             if (this.soundName) {
                 RPG.curBGM = this.soundName;
+                RPG.curBGMObj = this.bgm;
             }
+        }else {
+            this.bgm.play();
         }
+
     }
 }
 
@@ -448,6 +493,7 @@ function gameInit(){
     LGlobal.setDebug(true);
     //数据初始化优先于显示部分的初始化
     LGlobal.aspectRatio = PORTRAIT;
+    new SoundManage('start_mp3',true);
     //游戏层显示初始化
     gameLayerInit();
 
@@ -479,6 +525,7 @@ function initScript(x,y,frame=0){
     setHero(x,y,frame);
     // 绘制地图
     drawImgMap(CurrentMap);
+    new SoundManage(stage.bgm,true);
     // 立即检测自动动作
     checkAuto();
 }

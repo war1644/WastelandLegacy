@@ -8,6 +8,7 @@
         talk: talkList,
         // 为了表达复杂情节，须预存一些人物
         storyList: [],
+        bgm:'town_mp3',
         events: [
             //
             {type:"npc", img:"黑色梅卡瓦", x:11,  y:19,action:()=>{
@@ -17,20 +18,21 @@
                     char1.setCoordinate(9, 10, DOWN);
                     char1.visible = true;
 
-                    moveNpc(char1,[0,0,0,0,0,0,2,2],()=>{
-                        // RPG.hideChar(char1);
+                    moveNpc(char1,[0,0,0,0,0,0,0,2,2],()=>{
                         Talk.startTalk([
                             {name:'狼',msg:'臭小子，敢动我战车？'}
                         ]);
                         Talk.waitTalk(()=>{Fight.bossFight(2)});
-                        RPG.checkSwitch('wolf已战斗')
+                        RPG.setSwitch('wolf已战斗')
                     });
                 }
             }},
             // 备用地图角色
             {type:"npc", img:"红色梅卡瓦", x:-1,  y:-2, story:"wolf"},
             // 备用地图角色
-            {type:"npc", img:"猎人A", x:15,  y:16, move:1},
+            {type:"npc", img:"猎人A", x:15,  y:16, move:1,action:()=>{
+                Talk.startTalk([{name:'路人',msg:'欢迎来到河畔镇'}]);
+            }},
             // 售卖员
             {type:"npc", img:"售卖员", x:17,  y:19, action:()=>{
                 Talk.startTalk(talkList.售卖员);
@@ -39,14 +41,13 @@
             {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
                 Talk.waitTalk(()=>{
                     npc.speed = 2;
-                    //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
+                    //移动NPC到指定位置,并触发之后的func
                     moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
-                        // RPG.popState();
                         RPG.hideChar(npc);
                         RPG.setSwitch("雷娜firstTalk", true);
                     });
                 });
-                Talk.startTalk(stage.talk.雷娜);
+                Talk.startTalk(talkList.雷娜);
             }},
             /*{type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
                 action: function() {
@@ -69,7 +70,7 @@
             {type:"jump",x:8,y:14,action:()=>{
                 // 猎人中心
                 console.log('jump猎人中心');
-                jumpStage(script.stage04, 11, 13, UP);
+                jumpStage(script.stage04, 11, 12, UP);
             }},
             {type:"jump",x:8,y:10,action:()=>{
                 // 人类装备
@@ -105,6 +106,7 @@
         map: home1,
         imgName:['home1_0','home1_1'],
         mapData: {},
+        bgm:'town2_mp3',
         events: [
             {type: "npc", img: "姐姐", x: 10, y: 13,
 
@@ -169,6 +171,7 @@
         mapData: {},
         // 为了表达复杂情节，须预存一些人物
         storyList: [],
+        bgm:'town2_mp3',
         events: [
             {type:"item", img:"box",col:1,row:2, x:1,  y:4, action: function(npc){
                 // box
@@ -244,31 +247,26 @@
         mapData: {},
         // 为了表达复杂情节，须预存一些人物
         storyList: [],
+        bgm:'town_mp3',
         events: [
             // 备用地图角色
-            {type:"npc", img:"猎人A", x:8,  y:10, move:1},
+            {type:"npc", img:"猎人A", x:8,  y:10,dir:UP, move:1,action:()=>{
+                Talk.startTalk(stage.talk.猎人);
+            }},
             // 赏金猎人办事处
-            {type:"npc", img:"赏金猎人办事处", x:7,  y:7, action:()=>{
-                Talk.makeChoice(stage.talk.赏金猎人办事处);
+            {type:"npc", img:"办事员", x:7,  y:7,dir:RIGHT, action:()=>{
+                Talk.makeChoice(stage.talk.赏金猎人办事处[1]);
             }},
             //剧情NPC
-            {type:"npc", img:"雷娜", x:13,  y:19, visible: ()=>{return (!RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
-                //进入地图等待状态
-                RPG.pushState(RPG.MAP_WAITING);
-                Talk.waitTalk(()=>{
-                    npc.speed = 2;
-                    //移动NPC到指定位置,并触发之后的func[0,0,2,2,2,2,3,3,3]
-                    moveNpc(npc,[3,3,1,1,1,1,1,3,3],()=>{
-                        RPG.hideChar(npc);
-                        RPG.setSwitch("雷娜firstTalk", true);
-                    });
-                });
-                Talk.startTalk(stage.talk.雷娜);
+            {type:"npc", img:"雷娜", x:10,  y:7,dir:UP, visible: ()=>{return (RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
+                if(RPG.checkSwitch("费雷塔task")){
+                    Talk.startTalk(stage.talk.雷娜,undefined,4);
+                }
             }},
-            {type:"auto",visible: ()=>{return (!RPG.checkSwitch("费雷塔task"));},
+            {type:"auto",visible: ()=>{return (RPG.checkSwitch("雷娜firstTalk"));},
                 action: function() {
                     // 自动发言
-                    Talk.startTalk(talkList.费雷塔);
+                    Talk.startTalk(stage.talk.雷娜,undefined,0,3);
                     RPG.setSwitch("费雷塔task", true);
                 }
             },
@@ -283,11 +281,12 @@
 
         ],
         talk: {
-            费雷塔: [
-                {name: "费雷塔", msg: "新来的，过来一下吧"},
-                {name: "费雷塔", msg: "看看这个吧"},
-                {name: "费雷塔", msg: "如何？不错吧？打败他就有50000G的赏金，这些钱可够花好几个月的。"},
-                {name: "费雷塔", msg: "我们明天讨伐的讨伐目标就是他了。你先去镇子里的旅馆休息一下吧。"},
+            雷娜: [
+                {name: "雷娜", msg: "新来的，过来一下吧"},
+                {name: "雷娜", msg: "看看这个吧"},
+                {name: "雷娜", msg: "如何？不错吧？打败他就有50000G的赏金，这些钱可够花好几个月的。"},
+                {name: "雷娜", msg: "我们明天讨伐的讨伐目标就是他了。你先去镇子里的旅馆休息一下吧。"},
+                {name: "雷娜", msg: "不想休息呀？那你到处逛逛吧"},
             ],
             猎人: [
                 {name: "猎人", msg: "这附近没有什么赏金首可以猎取啊。"},

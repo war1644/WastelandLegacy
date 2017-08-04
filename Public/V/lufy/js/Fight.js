@@ -338,14 +338,11 @@ let Fight = {
                 Fight.currentToFighter = enemy;
                 Fight.touchLayer.removeAllChild();
                 RPG.popState();
-                RPG.popState();
                 Fight.actionAttack();
             }});
         }
         let select = {msg: Fight.currentFighter.nickName+" 攻击谁？",option:optionList};
-        Talk.setTalkPos('middle');
         Talk.makeChoice(select,Fight.touchLayer);
-        Talk.setTalkPos('bottom');
     },
 
     actionAttack:(hero=false,toHero)=>{

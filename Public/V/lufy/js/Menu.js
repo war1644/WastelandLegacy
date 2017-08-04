@@ -109,16 +109,17 @@ let Menu = {
         if (!Menu.listLayer) {
             Menu.listLayer= new LSprite();
             Menu.listLayer.x= 0;
-            Menu.listLayer.y= 40;
+            Menu.listLayer.y= 60;
         } else {
             Menu.listLayer.removeAllChild();
+            Menu.listLayer.y= 60;
         }
         Menu.listLayer.mask = maskObj;
         ctrlLayer.addChild(Menu.listLayer);
         Menu.maxScrollHeight= Menu.currentItemList.length* 30- maskHeight;
         RPG.descLayer.removeAllChild();
         RPG.descLayer.x = gap;
-        // 保留144的空间即够用
+        // 保留144的物品描述即够用
         RPG.descLayer.y = menuHeight - 144;
         ctrlLayer.addChild(RPG.descLayer);
 
@@ -143,11 +144,11 @@ let Menu = {
         // 选择高亮条
         Menu.listFocus= UI.drawColorWindow(Menu.listLayer, 0, 0, menuWidth-gap*2, 25,0.5,'#eee');
 
-        if (Menu.chooseItem>= 0) {
-            Menu.menuShowOneItem(Menu.chooseItem);
-        } else {
+        // if (Menu.chooseItem>= 0) {
+        //     Menu.menuShowOneItem(Menu.chooseItem);
+        // } else {
             Menu.menuShowOneItem(0);
-        }
+        // }
     },
 
     /**
@@ -679,6 +680,7 @@ let Menu = {
         // 根据点击位置，判断移动方向
         ax = ax- talkLayer.x;
         ay = ay- talkLayer.y;
+
 
         let	iconMenuItem;
         Menu.cmdChoose= -1;
