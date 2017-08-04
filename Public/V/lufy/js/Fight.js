@@ -116,14 +116,13 @@ let Fight = {
      * 战斗初始化
      */
     startFight: (enemyTeam, playerTeam) => {
+        Lib.bgm('BossFight',true);
         //设置控制状态
         RPG.pushState(RPG.IN_FIGHTING);
         // 设置战斗状态
         Fight.state = Fight.FIGHTING;
         //将对话层清空
         talkLayer.removeAllChild();
-        // 进入即不可再开菜单了
-        clearTimeout(timer);
         //当对话开始，且按照顺序进行对话
         isKeyDown = false;
         //对话背景
@@ -408,6 +407,10 @@ let Fight = {
             {x: x1, ease: Circ.easeOut,onComplete: function () {
                 LTweenLite.to(effect,1,{x:end.x,y:end.y,onStart:function(){
                     Fight.layer.addChild(effect);
+                    Lib.bgm('GunAct');
+                    setTimeout(function () {
+                        Lib.bgm('boom',false,1)
+                    },500);
                     effect.play(1, function () {
                         console.log('effect');
                         // 刷新数据
@@ -581,6 +584,7 @@ let Fight = {
      */
     showResult: () => {
         if (Fight.state === Fight.WIN) {
+            Lib.bgm('Winning');
             // 胜利，获得经验及奖励物品
             let exp = Fight.calculateExp(),hero1, item1,text,yy, xx;
             // 经验值的计算
@@ -624,6 +628,7 @@ let Fight = {
             }
         } else {
             // 敌人占中正面
+            Lib.bgm('Fail');
             let hero1;
             for (let j = 0; j < Fight.eTeam.heroList.length; j++) {
                 hero1 = Fight.eTeam.heroList[j];

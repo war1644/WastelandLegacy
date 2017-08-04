@@ -122,21 +122,19 @@ function checkAuto(){
  * 检测战斗事件
  */
 function checkIntoBattle(){
-    // if(RPG.checkState(RPG.FIGHT_RESULT)) return;
-    // RPG.pushState(RPG.FIGHT_RESULT);
-    // RPG.flickerAnimation(Fight.simpleFight,4);
-
-
-    // if(player.tmp >= player.enemyShow){
-    //     if (rangeRand(0,9)>2){
-    //         Fight.simpleFight(4);
-    //     }
-    //     player.tmp = 0;
-    // }
+    if(RPG.checkState(RPG.FIGHT_RESULT)) return;
+    if(RPG.fight && player.tmp >= player.enemyShow){
+        if (rangeRand(0,9)>2){
+            RPG.pushState(RPG.FIGHT_RESULT);
+            Lib.bgm('StartBattle');
+            RPG.flickerAnimation(Fight.simpleFight,4);
+        }
+        player.tmp = 0;
+    }
 }
 
 let jumpStage = function(newStage, x, y, dir=0){
-    new SoundManage('JumpStage');
+    Lib.bgm('JumpStage');
     stage = newStage;
     stage.autoEvents = [];
     stage.triggerEvents = [];
@@ -200,6 +198,29 @@ let Lib = {
             $('.information').html(content);
         }
     },
+
+    bgm:function(sound=false,loop=false,volume=0.6){
+        if (sound) {
+            sound = assets[sound];
+        } else {
+            sound = assets[RPG.curBGM];
+        }
+        let obj = new LSound(sound);
+        obj.setVolume(volume);
+        if (loop) {
+            if(RPG.curBGMObj){
+                RPG.curBGMObj.close();
+                clearTimeout(timer);
+            }
+            timer = setTimeout(function () {
+                obj.play(0,99);
+            },2000);
+            RPG.curBGM = sound;
+            RPG.curBGMObj = obj;
+        }else {
+            obj.play();
+        }
+    }
 };
 
 

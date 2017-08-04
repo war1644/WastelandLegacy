@@ -133,22 +133,6 @@ function main(){
 	//准备读取资源
 	//BGM SFX
     imgData = [
-        {name:'music01',path:'../RPG/bgm/map.mp3'},
-        {name:'music02',path:'../RPG/bgm/shop.mp3'},
-        {name:'music04',path:'../RPG/bgm/boss.mp3'},
-        {name:'music05',path:'../RPG/bgm/Walk Down.mp3'},
-        {name:'music06',path:'../RPG/bgm/town.mp3'},
-        {name:'music07',path:'../RPG/bgm/enemy.mp3'},
-        {name:'music08',path:'../RPG/bgm/town2.mp3'},
-        {name:'music09',path:'../RPG/bgm/battle.mp3'},
-        {name:'music10',path:'../RPG/bgm/shop2.mp3'},
-        {name:'music11',path:'../RPG/bgm/appear.mp3'},
-        {name:'music12',path:'../RPG/bgm/sound_wp01.mp3'},
-        {name:'music13',path:'../RPG/bgm/explosion.mp3'},
-        {name:'music14',path:'../RPG/bgm/escape.mp3'},
-        {name:'music15',path:'../RPG/bgm/collapse.mp3'},
-        {name:'music16',path:'../RPG/bgm/cut.mp3'},
-        {name:'music17',path:'../RPG/bgm/break.mp3'},
         {name:'NameSetting_mp3',path:'../RPG/Sound/Bgm/NameSetting.mp3'},
         {name:'lose',path:'../RPG/bgm/lose.mp3'},
         {name:'message',path:'../RPG/bgm/message.wav'},
@@ -158,14 +142,19 @@ function main(){
         {name:'town2_mp3',path:"../RPG/Sound/Bgm/Town.mp3"},
         {name:'Select_wav',path:"../RPG/Sound/Sfx/Select.wav"},
         {name:'JumpStage',path:"../RPG/Sound/Sfx/JumpStage.wav"},
+        {name:'StartBattle',path:"../RPG/Sound/Bgm/enemy.mp3"},
+        {name:'BossFight',path:"../RPG/Sound/Bgm/BossFight.mp3"},
+        {name:'BattleTheme',path:"../RPG/Sound/Bgm/BattleTheme.mp3"},
+        {name:'GunAct',path:"../RPG/Sound/Sfx/GunAct.mp3"},
+        {name:'boom',path:"../RPG/Sound/Sfx/boom.mp3"},
+        {name:'Fail',path:"../RPG/Sound/Sfx/Fail.mp3"},
+        {name:'Winning',path:"../RPG/Sound/Sfx/Winning.mp3"},
 
     ];
 
 	//js
-    imgData.push({type:"js",path:"./js/TalkList.js"});
 	imgData.push({type:"js",path:"./js/Talk.js"});
 	imgData.push({type:"js",path:"./js/Character.js"});
-	imgData.push({type:"js",path:"./js/Script.js"});
 	imgData.push({type:"js",path:"./js/Items.js"});
 	imgData.push({type:"js",path:"./js/Hero.js"});
     imgData.push({type:"js",path:"./js/Enemy.js"});
@@ -177,8 +166,12 @@ function main(){
 	imgData.push({type:"js",path:"./js/Fight.js"});
 	imgData.push({type:"js",path:"./js/Fighter.js"});
     imgData.push({type:"js",path:"./js/GameSocket.js"});
+    imgData.push({type:"js",path:"./js/TalkList.js"});
+    imgData.push({type:"js",path:"./js/Script.js"});
 
-	//game other img
+
+
+    //game other img
     // imgData.push({name:"start_png",path:"./image/start.bmp"});
 	imgData.push({name:"button",path:"./image/button.png"});
     imgData.push({name:"iconset",path:"./image/IconSet.png"});
@@ -405,7 +398,7 @@ function onDown(event) {
 function onUp(event){
 	if (isKeyDown) {
 		isKeyDown = false;
-		clearTimeout(timer);
+		// clearTimeout(timer);
         clearTimeout(Menu.dragTimer);
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
     		Menu.dealMenuUp(event.offsetX>>0, event.offsetY>>0);
@@ -455,36 +448,39 @@ function onFrame(){
  * @param volume  {number} 音量0~1
  * @returns
  */
-class SoundManage{
-    constructor(sound=false,loop=false,volume=0.6){
-        this.soundName = sound;
-        if (sound) {
-            this.bgm = assets[sound];
-        } else {
-            this.bgm = assets[RPG.curBGM];
-        }
-        this.bgm = new LSound(this.bgm);
-        this.play(loop,volume);
-    }
-
-    play(loop,volume) {
-        this.bgm.setVolume(volume);
-        if (loop) {
-            if(RPG.curBGMObj) RPG.curBGMObj.stop();
-            setTimeout(function () {
-                RPG.curBGMObj.play(0,99);
-            },1000);
-            // this.bgm.data.loop = true;
-            if (this.soundName) {
-                RPG.curBGM = this.soundName;
-                RPG.curBGMObj = this.bgm;
-            }
-        }else {
-            this.bgm.play();
-        }
-
-    }
-}
+// class SoundManage{
+//     constructor(sound=false,loop=false,volume=0.6){
+//         this.soundName = sound;
+//         if (sound) {
+//             this.bgm = assets[sound];
+//         } else {
+//             this.bgm = assets[RPG.curBGM];
+//         }
+//         this.bgm = new LSound(this.bgm);
+//         this.bgm.setVolume(volume);
+//         if (loop) {
+//             if(RPG.curBGMObj) RPG.curBGMObj.close();
+//             clearTimeout(timer);
+//             timer = setTimeout(function () {
+//                 this.bgm.play(0,99);
+//             },2000);
+//             // this.bgm.data.loop = true;
+//             if (this.soundName) {
+//                 RPG.curBGM = this.soundName;
+//                 RPG.curBGMObj = this.bgm;
+//             }
+//         }else {
+//             this.bgm.play();
+//         }
+//
+//         this.play(loop,volume);
+//     }
+//
+//     // play(loop,volume) {
+//     //
+//     //
+//     // }
+// }
 
 /**
  * 初始化
@@ -493,7 +489,7 @@ function gameInit(){
     LGlobal.setDebug(true);
     //数据初始化优先于显示部分的初始化
     LGlobal.aspectRatio = PORTRAIT;
-    new SoundManage('start_mp3',true);
+    Lib.bgm('start_mp3',true);
     //游戏层显示初始化
     gameLayerInit();
 
@@ -525,7 +521,7 @@ function initScript(x,y,frame=0){
     setHero(x,y,frame);
     // 绘制地图
     drawImgMap(CurrentMap);
-    new SoundManage(stage.bgm,true);
+    Lib.bgm(stage.bgm,true);
     // 立即检测自动动作
     checkAuto();
 }

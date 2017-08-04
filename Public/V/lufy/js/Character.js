@@ -420,8 +420,9 @@ Character.prototype.changeDirAlt = function (dirs){
 			self.direction_next = dir;
 			//设定图片动画
 			self.anime.setAction(dir);
+            self.anime.onframe();
 			//判断是否可移动
-            if(!self.checkRoad(dir))return;
+            if(!self.checkRoad(dir)) return;
 
 		} else {
 			//多方向移动
@@ -438,6 +439,7 @@ Character.prototype.changeDirAlt = function (dirs){
 				self.direction_next = dir;
 				//设定图片动画
 				self.anime.setAction(dir);
+                self.anime.onframe();
 			} else {
 				return;
 			}

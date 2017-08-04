@@ -120,6 +120,7 @@ let Talk = {
         if(RPG.checkState(RPG.IN_CHOOSING)) RPG.popState();
         RPG.popState();
         if(RPG.checkState(RPG.MAP_WAITING)) RPG.popState();
+        if(RPG.checkState(RPG.IN_CHOOSING)) RPG.popState();
         if(del && Talk.callback){
             Talk.callback();
             Talk.callback = null;
@@ -255,7 +256,7 @@ let Talk = {
     addTalk:()=>{
         // 仅在地图控制状态可以启动新对话
         if (RPG.checkState(RPG.MAP_CONTROL) && player){
-            let tx = player.px,ty = player.py,x,y;
+            let tx = player.px,ty = player.py,x=player.px,y=player.py;
             switch (player.direction){
                 case UP:
                     ty -= 1;
@@ -283,7 +284,6 @@ let Talk = {
                     if (npc.rpgEvent) {
                         // 首先转身
                         npc.anime.setAction(3- player.direction);
-                        player.anime.onframe();
                         npc.anime.onframe();
                         // 然后执行指令
                         npc.rpgEvent(npc);

@@ -16,6 +16,8 @@ let RPG = {
 // RPG基本管理参数，根据不同项目，应当调整
     curBGM: '',
     curBGMObj:null,
+    //遇敌开关
+    fight:false,
 //方向常量
     DOWN: 0,
     LEFT: 1,
@@ -291,15 +293,6 @@ let RPG = {
         title.y = HEIGHT>>3;
         sLayer.addChild(title);
         // 新的开始
-        let test = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1-60, "test", function () {
-            // 按钮被透过窗口点击
-            if (RPG.checkState(RPG.IN_COVER)) {
-                // RPG.newGame();
-            }
-        },18);
-        sLayer.addChild(test);
-
-        // 新的开始
         let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "新游戏", function () {
             // 按钮被透过窗口点击
             if (RPG.checkState(RPG.IN_COVER)) {
@@ -503,7 +496,7 @@ let RPG = {
     nightAndDay: function(callback) {
         effectLayer.removeAllChild();
         let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1);
-        LTweenLite.to(bmp, 2,
+        LTweenLite.to(bmp, 5,
             {alpha: 0, ease: Quad.easeOut,
                 onComplete: function () {
                     effectLayer.removeChild(bmp);
@@ -524,6 +517,7 @@ let RPG = {
     },
     // 屏幕黑白闪速
     flickerAnimation: function(callback,teamId) {
+        Lib.bgm('StartBattle');
         effectLayer.removeAllChild();
         let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1,'#fff');
         let flicker = LTweenLite.to(bmp,0.1,{alpha:0,loop:true}).to(bmp,0.1,{alpha:1});

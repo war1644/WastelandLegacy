@@ -22,8 +22,11 @@
                         Talk.startTalk([
                             {name:'狼',msg:'臭小子，敢动我战车？'}
                         ]);
-                        Talk.waitTalk(()=>{Fight.bossFight(2)});
-                        RPG.setSwitch('wolf已战斗')
+                        Talk.waitTalk(()=>{
+                            RPG.pushState(RPG.FIGHT_RESULT);
+                            RPG.flickerAnimation(Fight.bossFight,2);
+                        });
+                        RPG.setSwitch('wolf已战斗');
                     });
                 }
             }},
@@ -108,9 +111,9 @@
         mapData: {},
         bgm:'town2_mp3',
         events: [
-            {type: "npc", img: "姐姐", x: 10, y: 13,
-
-            },
+            {type: "npc", img: "姐姐", x: 10, y: 13,action:function () {
+                Talk.startTalk([{msg:'测试玩玩'}]);
+            }},
             {type:"item", img:"box",col:1,row:2, x:6,  y:11, action: function(npc){
                 // box
                 if (!RPG.checkSwitch("战车工厂_boxTalk1")){
@@ -126,7 +129,10 @@
                 }
             }},
             // fight test
-            {type:"npc", img:"白象战车", x:5,  y:2, move:1, action: function(){Fight.simpleFight(1)}},
+            {type:"npc", img:"白象战车", x:5,  y:2, move:1, action: function(){
+                RPG.pushState(RPG.FIGHT_RESULT);
+                RPG.flickerAnimation(Fight.simpleFight,1);
+            }},
             {type:"jump",x: 6, y: 13, action:()=>{
                     // 二楼
                     jumpStage(script.stage03, 2, 8, RIGHT);
@@ -255,7 +261,7 @@
             }},
             // 赏金猎人办事处
             {type:"npc", img:"办事员", x:7,  y:7,dir:RIGHT, action:()=>{
-                Talk.makeChoice(stage.talk.赏金猎人办事处[1]);
+                Talk.startTalk(stage.talk.赏金猎人办事处);
             }},
             //剧情NPC
             {type:"npc", img:"雷娜", x:10,  y:7,dir:UP, visible: ()=>{return (RPG.checkSwitch("雷娜firstTalk"));},action:(npc)=>{
@@ -298,10 +304,10 @@
                             Talk.startTalk([{name: "赏金猎人办事处", msg: "这附近很太平，没有什么赏金首"},])
                         }},
                         {text:"本周委托任务",action: function(){
-                            Talk.startTalk({name: "赏金猎人办事处", msg: "最近一到夜晚，镇子周围就会冒出许多杀人虫，严重威胁到了大家的安全，你有兴趣活动活动么？"},)
+                            Talk.startTalk([{name: "赏金猎人办事处", msg: "最近一到夜晚，镇子周围就会冒出许多杀人虫，严重威胁到了大家的安全，你有兴趣活动活动么？"},])
                         }},
                         {text:"领赏金",action: function(){
-                            Talk.startTalk({name: "赏金猎人办事处", msg: "哈哈，就算打倒了赏金首也要有些证据吧？"},)
+                            Talk.startTalk([{name: "赏金猎人办事处", msg: "哈哈，就算打倒了赏金首也要有些证据吧？"},])
                         }},
                         {text:"离开",action: function(){
                             Talk.closeTalk();
