@@ -2471,7 +2471,7 @@ var LDisplayObjectContainer = (function () {
         s.mouseChildren = true;
     }
     var p = {
-        addChild : function (d) {
+        addChild : function (d,diy) {
             var s  = this,t;
             if (d.parent) {
                 t = LGlobal.destroy;
@@ -2480,9 +2480,10 @@ var LDisplayObjectContainer = (function () {
                 LGlobal.destroy = t;
             }
             d.parent = s;
-            s.childList.push(d);
+            let i = s.childList.push(d);
             s.numChildren = s.childList.length;
             s._ll_removeFromSelf = false;
+            if(diy) return i;
             return d;
         },
         addChildAt : function (d, i) {
@@ -2502,14 +2503,18 @@ var LDisplayObjectContainer = (function () {
             s._ll_removeFromSelf = false;
             return d;
         },
-        removeChild : function (d) {
+        removeChild : function (d,diy) {
             var s  = this, c = s.childList, i, l;
             for (i = 0, l = c.length; i < l; i++) {
                 if (d.objectIndex == c[i].objectIndex) {
                     if (LGlobal.destroy && d.die) {
                         d.die();
                     }
-                    s.childList.splice(i, 1);
+                    if(diy){
+                        delete s.childList[i];
+                    } else {
+                        s.childList.splice(i, 1);
+                    }
                     break;
                 }
             }
@@ -2535,7 +2540,7 @@ var LDisplayObjectContainer = (function () {
             }
             return null;
         },
-        removeChildAt : function (i) {
+        removeChildAt : function (i,diy) {
             var s  = this, c = s.childList;
             if (c.length <= i) {
                 return;
@@ -2543,7 +2548,12 @@ var LDisplayObjectContainer = (function () {
             if (LGlobal.destroy && c[i].die) {
                 c[i].die();
             }
-            var d = s.childList.splice(i, 1);
+            if(diy){
+                var d = s.childList[i];
+                delete s.childList[i];
+            } else {
+                var d = s.childList.splice(i, 1);
+            }
             d = d[0];
             delete d.parent;
             s.numChildren = s.childList.length;

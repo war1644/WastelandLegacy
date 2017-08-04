@@ -293,6 +293,15 @@ let RPG = {
         title.y = HEIGHT>>3;
         sLayer.addChild(title);
         // 新的开始
+        let test = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)-60, "联网测试", function () {
+            // 按钮被透过窗口点击
+            if (RPG.checkState(RPG.IN_COVER)) {
+                UI.window();
+            }
+        },18);
+        sLayer.addChild(test);
+
+        // 新的开始
         let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "新游戏", function () {
             // 按钮被透过窗口点击
             if (RPG.checkState(RPG.IN_COVER)) {

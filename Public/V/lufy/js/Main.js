@@ -96,6 +96,7 @@ let loadingLayer,
  	loadIndex = 0,
 //玩家
  	player,
+    netPlayer,
 //玩家团队数据
  	mainTeam,
 // 当前地图
@@ -111,7 +112,7 @@ let loadingLayer,
 	assets;//读取完的图片数组
 
 function main(){
-	//LGlobal.preventDefault = false;
+	// LGlobal.preventDefault = false;
     /*if(LGlobal.canTouch){
 		LGlobal.stageScale = LStageScaleMode.EXACT_FIT;  //指定整个应用程序在指定区域中可见，但不尝试保持原始高宽比。
 		//LGlobal.stageScale = LStageScaleMode.NO_BORDER;  //指定整个应用程序填满指定区域，不会发生扭曲，但有可能会进行一些裁切，同时保持应用程序的原始高宽比。
@@ -355,8 +356,12 @@ function addNpc(npcObj){
                 npc.anime.setAction(npcObj.dir);
                 npc.anime.onframe();
             }
+            let i = charaLayer.addChild(npc,1);
+            if(npcObj.type === 'player'){
+                netPlayer[npcObj['name']] = i;
+            }
 
-            charaLayer.addChild(npc);
+
         }
     }
         // }
@@ -372,13 +377,25 @@ let moveNpc = function(npc, stepArr ,callback){
         npc.changeDir(npc.stepArray[0]);
     }
 };
-let waitCharPos = function (npc, x, y, callback){
-    if (npc.px !== x || npc.py !== y) {
-        setTimeout(function(){waitCharPos(npc, x, y, callback);}, 500);
-    } else {
-        if (callback) callback();
+
+let moveNetNpc = function(name, stepArr ,callback){
+    let index = netPlayer[name];
+    let npc = charaLayer.childList[index];
+    npc.moveMode = 2;
+    npc.stepArray = stepArr;
+    if (npc.stepArray.length> 0){
+        npc.callback = callback;
+        npc.changeDir(npc.stepArray[0]);
     }
 };
+
+// let waitCharPos = function (npc, x, y, callback){
+//     if (npc.px !== x || npc.py !== y) {
+//         setTimeout(function(){waitCharPos(npc, x, y, callback);}, 500);
+//     } else {
+//         if (callback) callback();
+//     }
+// };
 
 
 function onDown(event) {

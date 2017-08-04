@@ -583,6 +583,7 @@ let Fight = {
      * 显示战斗结果
      */
     showResult: () => {
+        RPG.curBGMObj.close();
         if (Fight.state === Fight.WIN) {
             Lib.bgm('Winning');
             // 胜利，获得经验及奖励物品

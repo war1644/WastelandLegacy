@@ -12,49 +12,36 @@ let GameSocket = {
             let value = $('#userMsg').val();
             if (value) {
                 $('#userMsg').val('');
-                let text = "<li>" + value + "</li>" + $('.information').html();
-                $('.information').html(text);
+                Lib.showInfo(value);
             }
             let to = document.getElementById("to").value;
-            let msg = document.getElementById("message").value;
-            socket.wlSend('talk', {target: to, msg: msg});
-            document.getElementById("message").value = "";
+            socket.wlSend('talk', {target: to, msg: value});
         } else {
             alert('连接服务器失败。');
         }
     },
 
-    doOpen:()=> {
-        if (document.querySelector('#name').value == "") {
-            alert('请输入用户姓名。');
-            return;
-        }
-        socket = new WebSocket("ws://127.0.0.1:2416");
+    onLink:()=> {
+        socket = new WebSocket("ws://127.0.0.1:8886");
         socket.onopen = function () {
             console.log("握手成功");
             if (socket.readyState == 1) {
-                selfName = document.getElementById("name").value;
-                socket.wlSend('login');
+                // socket.wlSend('login');
             }
         };
         socket.onmessage = function (e) {
             let data = JSON.parse(e.data);
             console.log(data);
-            haveMsg(data);
+            GameSocket.haveMsg(data);
         };
         socket.onerror = function (e) {
             console.log('err', e);
         };
         socket.onclose = function (e) {
-            msg.innerHTML = "<li>服务器断开</li>" + msg.innerHTML;
-            document.getElementById("name").disabled = false;
-            document.getElementById("openbtn").disabled = false;
-            document.getElementById("closebtn").disabled = true;
+            Lib.showInfo('服务器断开');
+
         };
-//            msg.innerHTML = "<li>连接服务器成功</li>" + msg.innerHTML;
-        document.getElementById("name").disabled = true;
-        document.getElementById("openbtn").disabled = true;
-        document.getElementById("closebtn").disabled = false;
+        Lib.showInfo('连接服务器成功');
         //addTank("vvv",100,200,"left","#000000");
     },
 
@@ -62,40 +49,37 @@ let GameSocket = {
         let text;
         switch (value["type"]) {
             case "error":
-                text = "<li>" + value["error"] + "</li>" + msg.innerHTML;
+                Lib.showInfo(value["error"]);
                 break;
             case "login":
-                document.getElementById("name").value = value["name"];
-                text = "<li>" + "登录成功" + "</li>" + msg.innerHTML;
+                Lib.showInfo(value["登录成功"]);
                 socket.wlSend(
                     'addUser',
-                    {x:1, y:1, direction:1}
+                    {type:'player',img:'',x:player.px, y:player.py, dir:UP}
                 );
                 break;
             case "talk":
-                text = "<li>" + value["msg"] + "</li>" + msg.innerHTML;
+                Lib.showInfo(value["msg"]);
                 break;
             case "removeUser":
-                removeUser(value["name"]);
+                let index = charaLayer.getChildByName(value["name"]);
+                charaLayer.removeChildAt(index);
                 break;
             case "setUserList":
-                removeAllUser();
                 let list = value["list"];
                 for (let i in list) {
-                    addUser(list[i]);
+                    addNpc(list[i]);
                 }
                 break;
-            case "addTank":
-                addTank(value["name"], value["x"], value["y"], value["direction"], value["color"]);
+            case "addUser":
+                addNpc(value);
                 break;
             case "move":
-                move(value["name"], value["x"], value["y"]);
+                moveNetNpc(value["name"], value["steps"]);
                 break;
-            case "shoot":
-                shoot(value["name"], value["direction"]);
+            case "action":
                 break;
             case "kill":
-                kill(value["killName"]);
                 break;
 
         }
@@ -106,7 +90,7 @@ let GameSocket = {
 $(".gameMsg").click(function(){
     if($(this).data("num")){
         $(this).data("num" , 0);
-        $("#box").css({"width":"100px","height":"50px"});
+        $("#box").css({"width":"50px","height":"25px"});
         $(".information").hide();
         $(".footBtn").hide();
     }else {

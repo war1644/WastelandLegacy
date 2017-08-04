@@ -13,11 +13,12 @@
  *
  */
 //扩展send方法
-WebSocket.prototype.wlSend = function (type,params) {
+WebSocket.prototype.wlSend = function (type,content) {
     let s = this;
-    params = params || {};
+    let params = {};
     params.type = type;
-    params.name = selfName;
+    params.name = '路漫漫';
+    params.content = content;
     s.send(JSON.stringify(params));
 };
 
@@ -227,6 +228,207 @@ let Lib = {
 
 
 let UI = {
+
+    msgBox :function (obj) {
+        let titleBar = UI.drawColorWindow(false,0,0,HEIGHT-2*gap,30,0.8,'#384048');
+        titleBar.addEventListener(LMouseEvent.MOUSE_DOWN, onBarDown);
+        let onBarDown = function (event) {
+            var s = event.clickTarget.parent;
+            s.bar.addEventListener(LMouseEvent.MOUSE_UP, s._onBarUp);
+            s.startDrag(event.touchPointID);
+        };
+        UI.diyButton(0,0,HEIGHT-2*gap,30,'exit',function () {
+
+        });
+
+            //遮罩
+            let translucent = UI.drawColorWindow(LGlobal.stage,0,0,LGlobal.width, LGlobal.height,0.8,'#002');
+            //拦截所有事件
+            translucent.addEventListener(LMouseEvent.MOUSE_UP, function (e) {
+            });
+            translucent.addEventListener(LMouseEvent.MOUSE_DOWN, function (e) {
+            });
+            translucent.addEventListener(LMouseEvent.MOUSE_MOVE, function (e) {
+            });
+            translucent.addEventListener(LMouseEvent.MOUSE_OVER, function (e) {
+            });
+            translucent.addEventListener(LMouseEvent.MOUSE_OUT, function (e) {
+            });
+
+
+            // let myWindow = new LWindow(obj.width, obj.height, obj.title);
+            // myWindow.x = (LGlobal.width - myWindow.getWidth())>>1;
+            // myWindow.y = (LGlobal.height - myWindow.getHeight())>>1;
+            // LGlobal.stage.addChild(myWindow);
+            // myWindow.addEventListener(LWindow.CLOSE, function (e) {
+            //     translucent.die();
+            //     translucent.remove();
+            // });
+            // if (obj.displayObject) {
+            //     myWindow.layer.addChild(obj.displayObject);
+            //     return;
+            // }
+            let msgLabel = UI.simpleText(obj.message,obj.size);
+            msgLabel.width = obj.width - 100;
+            msgLabel.setWordWrap(true, obj.textHeight);
+            msgLabel.x = (obj.width - msgLabel.getWidth())>>1;
+            msgLabel.y = (obj.height - myWindow.bar.getHeight() - msgLabel.getHeight())>>1;
+            myWindow.layer.addChild(msgLabel);
+
+    },
+
+window:function() {
+        function MyWindow() {
+            let s = this;
+            LExtends(s, LSprite, []);
+            s.type = "MyWindow";
+            var style;
+            if (typeof arguments[0] == "object") {
+                style = arguments[0];
+            } else {
+                style = {width: arguments[0], height: arguments[1], title: arguments[2]};
+            }
+            s.style = style;
+            s.w = style.width;
+            s.h = style.height;
+            s.bar = new LSprite();
+            style.header = s.bar;
+            s.bar.alpha = 0.7;
+            s.barColor = "#384048";
+            s.bar.w = s.w;
+            s.bar.h = 30;
+            //画关闭按钮
+            var barGrd = LGlobal.canvas.createLinearGradient(0, -s.bar.h * 0.5, 0, s.bar.h * 2);
+            barGrd.addColorStop(0, "#FFFFFF");
+            barGrd.addColorStop(1, s.barColor);
+            s.bar.graphics.drawRoundRect(1, s.barColor, [0, 0, s.bar.w, s.bar.h, s.bar.h * 0.1], true, barGrd);
+
+            s.addChild(s.bar);
+            s.bar.addEventListener(LMouseEvent.MOUSE_DOWN, s._onBarDown);
+            if (style.title && typeof style.title == "object" && style.title.type == "LTextField") {
+                s.title = style.title;
+            } else {
+                s.title = new LTextField();
+                if (style.font) {
+                    s.title.font = style.font;
+                }
+                s.title.size = style.size ? style.size : 16;
+                s.title.color = style.color ? style.color : "#eee";
+                s.title.text = style.title ? style.title : "";
+            }
+            s.title.x = s.title.getHeight() * 0.5;
+            s.title.y = (s.bar.h - s.title.getHeight()) * 0.5;
+            s.bar.addChild(s.title);
+            if (style.closeButton) {
+                if (style.closeButton.type == "LBitmapData") {
+                    var bitmapClose = new LBitmap(style.closeButton);
+                    var closeButton = new LSprite();
+                    closeButton.addChild(bitmapClose);
+                    s.closeObj = closeButton;
+                } else {
+                    s.closeObj = style.closeButton;
+                }
+                s.closeObj.x = s.w - s.closeObj.getWidth();
+            } else {
+                s.closeObj = new LSprite();
+                style.closeButton = s.closeObj;
+                s.closeObj.w = 50;
+                s.closeObj.h = 25;
+                s.closeObj.x = s.w - s.closeObj.w;
+                var closeGrd = LGlobal.canvas.createLinearGradient(0, -s.closeObj.h * 0.5, 0, s.closeObj.h * 2);
+                closeGrd.addColorStop(0, "#FFFFFF");
+                closeGrd.addColorStop(1, "#800000");
+                s.closeObj.graphics.drawRoundRect(1, "#800000", [0, 0, s.closeObj.w, s.closeObj.h, s.closeObj.h * 0.1], true, '#000020');
+                s.closeObj.graphics.drawLine(4, "#FFFFFF", [15, 5, s.closeObj.w - 15, s.closeObj.h - 5]);
+                s.closeObj.graphics.drawLine(4, "#FFFFFF", [15, s.closeObj.h - 5, s.closeObj.w - 15, 5]);
+            }
+            s.addChild(s.closeObj);
+            s.closeObj.addEventListener(LMouseEvent.MOUSE_UP, s._onClose);
+            s.layer = new LSprite();
+            s.layer.y = s.bar.h;
+
+            s.layerColor = "#002";
+            s.layer.h = s.h - s.bar.h;
+            style.background = UI.drawColorWindow(s,0,s.bar.h,s.w, s.layer.h,0.9,'#002');
+            s.addChild(s.layer);
+            let g = new LGraphics();
+            g.rect(0, 0, s.w, s.layer.h);
+            s.layer.mask = g;
+            s.addEventListener(LMouseEvent.MOUSE_UP, function (e) {
+            });
+            s.addEventListener(LMouseEvent.MOUSE_DOWN, function (e) {
+            });
+            s.addEventListener(LMouseEvent.MOUSE_MOVE, function (e) {
+            });
+            s.addEventListener(LMouseEvent.MOUSE_OVER, function (e) {
+            });
+            s.addEventListener(LMouseEvent.MOUSE_OUT, function (e) {
+            });
+        }
+
+        MyWindow.CLOSE = "close";
+        MyWindow.prototype._onClose = function (event) {
+            event.clickTarget.parent.close();
+        };
+        MyWindow.prototype.close = function () {
+            var s = this;
+            s.dispatchEvent(MyWindow.CLOSE);
+            s.parent.removeChild(s);
+        };
+        MyWindow.prototype._onBarDown = function (event) {
+            var s = event.clickTarget.parent;
+            s.bar.addEventListener(LMouseEvent.MOUSE_UP, s._onBarUp);
+            s.startDrag(event.touchPointID);
+        };
+        MyWindow.prototype._onBarUp = function (event) {
+            var s = event.clickTarget.parent;
+            s.stopDrag();
+            s.bar.removeEventListener(LMouseEvent.MOUSE_UP, s._onBarUp);
+        };
+        return MyWindow;
+
+},
+    contentWindow:function () {
+        let myWindow = new LWindow({width: WIDTH, height: HEIGHT, title: "登录注册"});
+        myWindow.x = 0;
+        myWindow.y = 0;
+        infoLayer.addChild(myWindow);
+
+        let nameLabel = UI.simpleText("用户名：");
+        nameLabel.x = 80;
+        nameLabel.y = 70;
+        myWindow.layer.addChild(nameLabel);
+        let name = new LTextField();
+        name.x = 150;
+        name.y = 70;
+        name.setWordWrap(true);
+        name.setType(LTextFieldType.INPUT);
+        myWindow.layer.addChild(name);
+        name.focus();
+        let passLabel = UI.simpleText("密码：");
+        passLabel.x = 80;
+        passLabel.y = 110;
+        myWindow.layer.addChild(passLabel);
+        let pass = new LTextField();
+        pass.x = 150;
+        pass.y = 110;
+        pass.displayAsPassword = true;
+        pass.setType(LTextFieldType.INPUT);
+        myWindow.layer.addChild(pass);
+
+        let button01 = UI.diyButton(0,0,100,150,"登录",function () {
+            UI.msgBox({
+                title: "消息",
+                message: "点击了登陆按钮"
+            });
+            GameSocket.onLink();
+
+        },20);
+        myWindow.layer.addChild(button01);
+        // button01.addEventListener(LMouseEvent.MOUSE_UP, );
+        let button02 = UI.diyButton(0,0,200,150,"注册",false,20);
+        myWindow.layer.addChild(button02);
+    },
 
     /**
      * 纯色背景

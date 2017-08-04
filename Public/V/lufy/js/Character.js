@@ -448,6 +448,7 @@ Character.prototype.changeDirAlt = function (dirs){
 		if(self.isHero) {
 			self.checkMap(dir);
 		}
+        socket.wlSend('move',{steps:dir});
 		//如果可以移动，则开始移动
 		self.move = true;
 		player.tmp ++;
