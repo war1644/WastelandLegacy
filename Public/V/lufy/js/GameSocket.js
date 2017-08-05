@@ -22,7 +22,7 @@ let GameSocket = {
     },
 
     onLink:()=> {
-        socket = new WebSocket("ws://118.198.150.9:8886");
+        socket = new WebSocket("ws://192.168.2.208:8886");
         socket.onopen = function () {
             RPG.newGame();
             Lib.showInfo('握手成功');
@@ -104,8 +104,8 @@ $('#send').click(function () {
     GameSocket.sendMsg();
 });
 
-$('#link').click(function () {
-
+$('#clear').click(function () {
+    $(".information").html('');
 });
 
 $("#box").on("mousedown touchstart" , function (ev) {

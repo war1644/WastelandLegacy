@@ -507,6 +507,7 @@ function onFrame(){
  **/
 function gameInit(){
     LGlobal.setDebug(true);
+    trace(1,LGlobal.preventDefault);
     //数据初始化优先于显示部分的初始化
     LGlobal.aspectRatio = PORTRAIT;
     Lib.bgm('start_mp3',true);

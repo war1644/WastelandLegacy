@@ -28,7 +28,7 @@ let Menu = {
     iconMenu: [
         {cmd: 1,name:'状态'},
         {cmd: 2,name:'物品'},
-        {cmd: 3,name:'任务'},
+        {cmd: 3,name:'战车'},
         {cmd: 4,name:'存档'},
         {cmd: 0,name:'退出'}
     ],
@@ -468,6 +468,10 @@ let Menu = {
 
         // 显示持有物品 武器 防具 饰物
         let showedItems=["weapon","armor","ornament"];
+        let text = UI.simpleText('装备：');
+        text.x = 2*gap;
+        text.y = 150;
+        ctrlLayer.addChild(text);
         for (let i= 0; i<= 2; i++) {
             item1 = ItemList[hero1[showedItems[i]]];
             if (item1) {
@@ -478,10 +482,9 @@ let Menu = {
                 // bitmap.y= 160+ i* 30;
                 // ctrlLayer.addChild (bitmap);
                 // 物品名称
-                let text = textObj.clone();
+                let text = UI.simpleText(item1.name);
                 text.x = leftPos + gap;
-                text.y = 160+ i* 30 + 5;
-                text.text = item1.name;
+                text.y = 180+ i* 30 + gap;
                 ctrlLayer.addChild(text);
             }
         }
@@ -533,6 +536,10 @@ let Menu = {
     menuShowTasks: function() {
         Menu.menuPage= 3;
         ctrlLayer.removeAllChild();
+        let text = UI.simpleText("你的战车呢？",18);
+        text.x = menuWidth-text.getWidth()>>1;
+        text.y = HEIGHT-text.getHeight()>>1;
+        ctrlLayer.addChild(text);
     },
 
     menuShowSave: function(isSelect) {

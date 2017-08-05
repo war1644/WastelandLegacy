@@ -142,14 +142,14 @@ let Fight = {
             Fight.textObj = UI.simpleText('',10);
             Fight.textObj.x = gap;
             Fight.textObj.y = HEIGHT-Fight.infoHeight + gap;
-            Fight.textObj.setWordWrap(true,20);
+            // Fight.textObj.setWordWrap(true,20);
             FightMenu.showFightInfo();
             FightMenu.layer.addChildAt(Fight.textObj,1);
         }
         Fight.infoCommand('遭遇战，敌我力量悬殊，敌方士气大减');
         Fight.drawFighters();
-
         Fight.actionQueue();
+        // socket.wlSend('fight',{});
 
         Fight.starQueue();
 
@@ -636,7 +636,7 @@ let Fight = {
                 hero1.fighter.changeDir(0);
                 hero1.fighter.x = menuWidth / 2 - hero1.fighter.getWidth() / 2;
             }
-            FightMenu.setFormation('我方团灭');
+            FightMenu.setFormation('我方团灭，别说忘了存档');
         }
     },
 

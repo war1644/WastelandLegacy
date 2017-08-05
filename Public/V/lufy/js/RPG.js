@@ -302,7 +302,6 @@ let RPG = {
                 }else {
                     GameSocket.onLink();
                 }
-
             }
         },18);
         sLayer.addChild(button01);
