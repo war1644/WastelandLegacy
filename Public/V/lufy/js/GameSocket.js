@@ -12,21 +12,22 @@ let GameSocket = {
             let value = $('#userMsg').val();
             if (value) {
                 $('#userMsg').val('');
-                Lib.showInfo(value);
+                // Lib.showInfo(value);
             }
-            let to = document.getElementById("to").value;
-            socket.wlSend('talk', {target: to, msg: value});
+            // let to = document.getElementById("to").value;
+            socket.wlSend('talk', {target: 'all', msg: value});
         } else {
             alert('连接服务器失败。');
         }
     },
 
     onLink:()=> {
-        socket = new WebSocket("ws://127.0.0.1:8886");
+        socket = new WebSocket("ws://118.198.150.9:8886");
         socket.onopen = function () {
-            console.log("握手成功");
-            if (socket.readyState == 1) {
-                // socket.wlSend('login');
+            RPG.newGame();
+            Lib.showInfo('握手成功');
+            if (socket.readyState === 1) {
+                socket.wlSend('login');
             }
         };
         socket.onmessage = function (e) {
@@ -35,47 +36,46 @@ let GameSocket = {
             GameSocket.haveMsg(data);
         };
         socket.onerror = function (e) {
-            console.log('err', e);
+            Lib.showInfo('err',JSON.stringify(e));
         };
         socket.onclose = function (e) {
             Lib.showInfo('服务器断开');
-
         };
         Lib.showInfo('连接服务器成功');
-        //addTank("vvv",100,200,"left","#000000");
     },
 
     haveMsg:(value)=> {
-        let text;
         switch (value["type"]) {
             case "error":
                 Lib.showInfo(value["error"]);
                 break;
             case "login":
-                Lib.showInfo(value["登录成功"]);
-                socket.wlSend(
-                    'addUser',
-                    {type:'player',img:'',x:player.px, y:player.py, dir:UP}
-                );
+                Lib.showInfo(value.msg);
                 break;
             case "talk":
-                Lib.showInfo(value["msg"]);
+                Lib.showInfo(value.content.msg);
                 break;
             case "removeUser":
-                let index = charaLayer.getChildByName(value["name"]);
-                charaLayer.removeChildAt(index);
+                if(value.content.stageId !== stage.id) return;
+                let npc = netPlayer[value.name];
+                charaLayer.removeChild(npc);
+                delete netPlayer[value.name];
                 break;
             case "setUserList":
-                let list = value["list"];
-                for (let i in list) {
-                    addNpc(list[i]);
-                }
+                // let list = value["list"];
+                // for (let i in list) {
+                //     addNpc(list[i]);
+                // }
                 break;
             case "addUser":
-                addNpc(value);
+                if(value.content.stageId !== stage.id) return;
+                if(value.name === playerName) return;
+                value.content.name = value.name;
+                addNpc(value.content);
                 break;
             case "move":
-                moveNetNpc(value["name"], value["steps"]);
+                if(value.content.stageId !== stage.id) return;
+                moveNetNpc(value["name"], value.content);
                 break;
             case "action":
                 break;
@@ -83,7 +83,6 @@ let GameSocket = {
                 break;
 
         }
-        if (text) msg.innerHTML = text;
     }
 
 };
@@ -105,6 +104,9 @@ $('#send').click(function () {
     GameSocket.sendMsg();
 });
 
+$('#link').click(function () {
+
+});
 
 $("#box").on("mousedown touchstart" , function (ev) {
     let box,leftMouse,topMouse;

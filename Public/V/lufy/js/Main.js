@@ -96,7 +96,8 @@ let loadingLayer,
  	loadIndex = 0,
 //玩家
  	player,
-    netPlayer,
+    playerName,
+    netPlayer={},
 //玩家团队数据
  	mainTeam,
 // 当前地图
@@ -112,7 +113,9 @@ let loadingLayer,
 	assets;//读取完的图片数组
 
 function main(){
-	// LGlobal.preventDefault = false;
+	LGlobal.preventDefault = false;
+    LGlobal.speed = 1000/30;
+
     /*if(LGlobal.canTouch){
 		LGlobal.stageScale = LStageScaleMode.EXACT_FIT;  //指定整个应用程序在指定区域中可见，但不尝试保持原始高宽比。
 		//LGlobal.stageScale = LStageScaleMode.NO_BORDER;  //指定整个应用程序填满指定区域，不会发生扭曲，但有可能会进行一些裁切，同时保持应用程序的原始高宽比。
@@ -130,7 +133,6 @@ function main(){
         LGlobal.stageScale = LStageScaleMode.EXACT_FIT;
         LSystem.screen(LStage.FULL_SCREEN);
     }
-    LGlobal.speed = 1000/30;
 	//准备读取资源
 	//BGM SFX
     imgData = [
@@ -162,15 +164,13 @@ function main(){
     imgData.push({type:"js",path:"./js/RPG.js"});
 	imgData.push({type:"js",path:"./js/Menu.js"});
 	imgData.push({type:"js",path:"./js/Team.js"});
-	imgData.push({type:"js",path:"./js/Effect.js"});
-	imgData.push({type:"js",path:"./js/FightMenu.js"});
-	imgData.push({type:"js",path:"./js/Fight.js"});
-	imgData.push({type:"js",path:"./js/Fighter.js"});
-    imgData.push({type:"js",path:"./js/GameSocket.js"});
     imgData.push({type:"js",path:"./js/TalkList.js"});
+    imgData.push({type:"js",path:"./js/Effect.js"});
+    imgData.push({type:"js",path:"./js/FightMenu.js"});
+    imgData.push({type:"js",path:"./js/Fight.js"});
+    imgData.push({type:"js",path:"./js/Fighter.js"});
+    imgData.push({type:"js",path:"./js/GameSocket.js"});
     imgData.push({type:"js",path:"./js/Script.js"});
-
-
 
     //game other img
     // imgData.push({name:"start_png",path:"./image/start.bmp"});
@@ -310,6 +310,7 @@ function setHero(x, y, dir){
 	hero = new Character(true, 0, imgData, row, col);
     hero.name = mainTeam.getHero().nickName;
 	player = hero;
+    player.img = heroImg;
 	//玩家遇敌率
 	player.enemyShow = 10;
     player.tmp = 0;
@@ -318,8 +319,10 @@ function setHero(x, y, dir){
 	hero.px = x;
 	hero.py = y;
 	charaLayer.addChild(hero);
+    player.direction = dir;
     hero.anime.setAction(dir);
     hero.anime.onframe();
+    netPlayer[hero.name] = player;
 }
 
 //添加人物
@@ -334,6 +337,7 @@ function addNpc(npcObj){
             valid= npcObj.visible();
         }
         if (valid){
+
             let row= npcObj.row || 4;
             let col= npcObj.col || 4;
             let imgData = new LBitmapData(assets[npcObj.img]);
@@ -342,7 +346,12 @@ function addNpc(npcObj){
             npc.y = npcObj.y * STEP- (npc.ph- STEP);
             npc.px = npcObj.x;
             npc.py = npcObj.y;
-            npc.name = npcObj.img;
+            if(npcObj.type === 'player'){
+                netPlayer[npcObj['name']] = npc;
+                npc.name = npcObj.name;
+            }else{
+                npc.name = npcObj.img;
+            }
             //碰撞型事件
             if (npcObj.type === "touch") npc.touch= true;
             // 预设动作
@@ -356,16 +365,9 @@ function addNpc(npcObj){
                 npc.anime.setAction(npcObj.dir);
                 npc.anime.onframe();
             }
-            let i = charaLayer.addChild(npc,1);
-            if(npcObj.type === 'player'){
-                netPlayer[npcObj['name']] = i;
-            }
-
-
+            charaLayer.addChild(npc);
         }
     }
-        // }
-    // }
 }
 
 //移动NPC
@@ -378,15 +380,16 @@ let moveNpc = function(npc, stepArr ,callback){
     }
 };
 
-let moveNetNpc = function(name, stepArr ,callback){
-    let index = netPlayer[name];
-    let npc = charaLayer.childList[index];
-    npc.moveMode = 2;
-    npc.stepArray = stepArr;
-    if (npc.stepArray.length> 0){
-        npc.callback = callback;
-        npc.changeDir(npc.stepArray[0]);
+let moveNetNpc = function(name, content ,callback){
+    if(name===playerName) return;
+    let npc = netPlayer[name];
+    if(npc.px !== content.x || npc.px !== content.y){
+        npc.setCoordinate(content.x,content.y,content.dir);
     }
+    npc.moveMode = 3;
+    npc.changeDir(content.dir);
+
+
 };
 
 // let waitCharPos = function (npc, x, y, callback){
@@ -539,8 +542,13 @@ function initScript(x,y,frame=0){
     // 绘制地图
     drawImgMap(CurrentMap);
     Lib.bgm(stage.bgm,true);
+    socket.wlSend(
+        'addUser',
+        {stageId:stage.id,type:'player',img:player.img,x:player.px, y:player.py, dir:player.direction}
+    );
     // 立即检测自动动作
     checkAuto();
+
 }
 
 /**

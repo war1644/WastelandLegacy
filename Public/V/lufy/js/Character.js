@@ -74,7 +74,9 @@ Character.prototype.onframe = function (){
                 self.npcMove();
 			}else if (self.moveMode === 1){
 				self.npcMove();
-            }
+            }else {
+                self.npcMove();
+			}
 		}
 		// if (stage.hasBig) resetChildIndex(charaLayer);
 	}
@@ -133,9 +135,6 @@ Character.prototype.npcMove = function (){
 				self.py++;
 				break;
 		}
-		//console.log(self.px, self.py);
-		// NPC移动后
-		// checkTouch();
 		self.moveIndex = 0;
         if (self.moveMode !== 2) {
             //保证移动后的姿势
@@ -169,7 +168,11 @@ Character.prototype.npcMove = function (){
                 self.move = false;
             }
             self.autoMoveNum--;
-        }
+        }else {
+            //移动完成后触发回调
+            self.move= false;
+            // self.takePlace();
+		}
 	}
 };
 /**
@@ -391,6 +394,7 @@ Character.prototype.changeDir = function (dir){
 		self.direction_next = dir;
 		//设定图片动画
 		self.anime.setAction(dir);
+		self.anime.onframe();
 		//判断是否可移动
 		if(!self.checkRoad(dir))return;
 		//地图是否滚动
@@ -448,7 +452,22 @@ Character.prototype.changeDirAlt = function (dirs){
 		if(self.isHero) {
 			self.checkMap(dir);
 		}
-        socket.wlSend('move',{steps:dir});
+		let x = player.px,y=player.py;
+        // switch (dir){
+		// 	case DOWN:
+		// 		y+=1;
+		// 		break;
+         //    case LEFT:
+         //    	x-=1;
+         //        break;
+         //    case RIGHT:
+         //        x+=1;
+         //        break;
+         //    case UP:
+         //        y-=1;
+         //        break;
+		// }
+        socket.wlSend('move',{type:'player',img:player.img,stageId:stage.id,x:player.px,y:player.py,dir:dir});
 		//如果可以移动，则开始移动
 		self.move = true;
 		player.tmp ++;

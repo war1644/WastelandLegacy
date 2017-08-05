@@ -207,7 +207,7 @@ let RPG = {
     },
 
 
-// 获得移动方向，返回为一个数组，可以二选一
+    // 获得移动方向，返回为一个数组，可以二选一
     getMoveDir: function (ax, ay) {
         let a = ax - player.x - charaLayer.x - STEP / 2;
         let b = ay - player.y - charaLayer.y - STEP / 2;
@@ -292,20 +292,17 @@ let RPG = {
         title.x = WIDTH-title.getWidth()>>1;
         title.y = HEIGHT>>3;
         sLayer.addChild(title);
-        // 新的开始
-        let test = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)-60, "联网测试", function () {
-            // 按钮被透过窗口点击
-            if (RPG.checkState(RPG.IN_COVER)) {
-                UI.window();
-            }
-        },18);
-        sLayer.addChild(test);
 
         // 新的开始
         let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "新游戏", function () {
             // 按钮被透过窗口点击
             if (RPG.checkState(RPG.IN_COVER)) {
-                RPG.newGame();
+                if(!playerName){
+                    playerName = prompt('来个名字吧：');
+                }else {
+                    GameSocket.onLink();
+                }
+
             }
         },18);
         sLayer.addChild(button01);
@@ -352,8 +349,8 @@ let RPG = {
         //初始化玩家队伍
         mainTeam = RPG.beget(PlayerTeam);
         //向玩家队伍增加人物（人物索引，人物等级)
-        mainTeam.addHero(0, 50, '路漫漫');
-        mainTeam.addHero(1, 50, '废土04');
+        mainTeam.addHero(0, 50, playerName);
+        mainTeam.addHero(1, 50, '废土小伙伴');
         //添置物品
         mainTeam.addItem(11, 20);
         mainTeam.addItem(12, 20);

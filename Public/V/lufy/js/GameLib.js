@@ -17,7 +17,7 @@ WebSocket.prototype.wlSend = function (type,content) {
     let s = this;
     let params = {};
     params.type = type;
-    params.name = '路漫漫';
+    params.name = playerName;
     params.content = content;
     s.send(JSON.stringify(params));
 };
@@ -135,6 +135,9 @@ function checkIntoBattle(){
 }
 
 let jumpStage = function(newStage, x, y, dir=0){
+    if(stage){
+        socket.wlSend('removeUser',{stageId:stage.id});
+    }
     Lib.bgm('JumpStage');
     stage = newStage;
     stage.autoEvents = [];
@@ -277,7 +280,7 @@ let UI = {
 
     },
 
-window:function() {
+    window:function() {
         function MyWindow() {
             let s = this;
             LExtends(s, LSprite, []);

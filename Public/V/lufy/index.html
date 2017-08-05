@@ -15,6 +15,22 @@
     <script type="text/javascript" src="./js/Main.js"></script>
 </head>
 <style>
+    *{
+        -webkit-touch-callout:none;  /*系统默认菜单被禁用*/
+        -webkit-user-select:none; /*webkit浏览器*/
+        -khtml-user-select:none; /*早期浏览器*/
+        -moz-user-select:none;/*火狐*/
+        -ms-user-select:none; /*IE10*/
+        user-select:none;
+        /*pointer-events:none;*/
+        touch-callout:none;
+    }
+    input,textarea {
+        -webkit-user-select:auto; /*webkit浏览器*/
+        margin: 0;
+        padding: 0;
+        outline: none;
+    }
     #box{
         width:50px;
         height:25px;
@@ -62,7 +78,8 @@
     </div>
     <div class="footBtn" style="display: none">
         <input type="text" id="userMsg">
-        <button id="send">确定</button>
+        <button id="send">发送</button>
+        <!--<select id="link">连线测试</select>-->
     </div>
 </div>
 <div id="mylegend">loading……</div>
