@@ -170,6 +170,151 @@ let jumpStage = function(newStage, x, y, dir=0){
     initScript(x, y, dir);
 };
 
+function drawImgMap(map) {
+    //得到地图图层
+    let bitmapData = new LBitmapData(assets[CurrentMapImg[0]]);
+    let bitmapDataUp = new LBitmapData(assets[CurrentMapImg[1]]);
+    let bitmap = new LBitmap(bitmapData);
+    let bitmapUp = new LBitmap(bitmapDataUp);
+    let len = map.layers.length;
+    CurrentMapEvents = map.layers[len-1];
+    // 行动控制层
+    CurrentMapMove = map.layers[len-2];
+    mapLayer.removeAllChild();
+    upLayer.removeAllChild();
+    upLayer.addChild(bitmapUp);
+    mapLayer.addChild(bitmap);
+}
+
+function setHero(x, y, dir){
+    if (x === null) return;
+    let w1= (WIDTH/STEP)>>1,
+        h1= (HEIGHT/STEP)>>1,
+        w2= Math.ceil(WIDTH/ STEP/ 2),
+        h2= Math.ceil(HEIGHT/ STEP/ 2),
+        moveX=0,
+        moveY=0,
+        hero,
+        heroImg;
+    // 把玩家置于屏幕的正中
+    if (CurrentMap.width< w1+ w2) {
+        moveX= (CurrentMap.width- w2- w1)>>1;
+    } else {
+        if (x< w1){
+            moveX= 0;
+        } else if (x>= CurrentMap.width- w1) {
+            moveX= CurrentMap.width- w2- w1;
+        } else {
+            moveX= x- w1;
+        }
+    }
+    if (CurrentMap.height< h1+ h2) {
+        moveY= (CurrentMap.height- h2- h1)>>1;
+    } else {
+        if (y< h1){
+            moveY= 0;
+        } else if (y>= CurrentMap.height- h1){
+            moveY= CurrentMap.height- h2- h1;
+        } else {
+            moveY= y- h1;
+        }
+    }
+    mapLayer.x= -moveX* STEP;
+    mapLayer.y= -moveY* STEP;
+    upLayer.x= -moveX* STEP;
+    upLayer.y= -moveY* STEP;
+    charaLayer.x= -moveX* STEP;
+    charaLayer.y= -moveY* STEP;
+
+    let row = mainTeam.getHero().row || 4;
+    let col = mainTeam.getHero().col || 4;
+    heroImg = mainTeam.getHero().img;
+    let imgData = new LBitmapData(assets[heroImg]);
+    hero = new Character(true, 0, imgData, row, col);
+    hero.name = mainTeam.getHero().nickName;
+    player = hero;
+    player.img = heroImg;
+    //玩家遇敌率
+    player.enemyShow = 10;
+    player.tmp = 0;
+    hero.x = x * STEP- ((hero.pw- STEP)>>1);
+    hero.y = y * STEP- (hero.ph- STEP);
+    hero.px = x;
+    hero.py = y;
+    charaLayer.addChild(hero);
+    player.direction = dir;
+    hero.anime.setAction(dir);
+    hero.anime.onframe();
+    netPlayer[hero.name] = player;
+}
+
+//添加人物
+function addNpc(npcObj){
+    let npc,valid;
+    //加入npcObj
+    if (npcObj.img){
+        if (!npcObj.visible){
+            // 未定义必然可见
+            valid= true;
+        } else {
+            valid= npcObj.visible();
+        }
+        if (valid){
+
+            let row= npcObj.row || 4;
+            let col= npcObj.col || 4;
+            let imgData = new LBitmapData(assets[npcObj.img]);
+            npc = new Character(false,npcObj.move,imgData, row, col, 3, npcObj.action);
+            npc.x = npcObj.x * STEP- (npc.pw- STEP)/2;
+            npc.y = npcObj.y * STEP- (npc.ph- STEP);
+            npc.px = npcObj.x;
+            npc.py = npcObj.y;
+            if(npcObj.type === 'player'){
+                netPlayer[npcObj['name']] = npc;
+                npc.name = npcObj.name;
+            }else{
+                npc.name = npcObj.img;
+            }
+            //碰撞型事件
+            if (npcObj.type === "touch") npc.touch= true;
+            // 预设动作
+            if (npcObj.preSet) npcObj.preSet(npc);
+            // 如果是情节人物，则进入情节列表
+            if (npcObj.story){
+                stage.storyList[npcObj.story] = npc;
+                npc.visible = false;
+            }
+            if('dir' in npcObj){
+                npc.anime.setAction(npcObj.dir);
+                npc.anime.onframe();
+            }
+            charaLayer.addChild(npc);
+        }
+    }
+}
+
+//移动NPC
+let moveNpc = function(npc, stepArr ,callback){
+    npc.moveMode = 2;
+    npc.stepArray = stepArr;
+    if (npc.stepArray.length> 0){
+        npc.callback = callback;
+        npc.changeDir(npc.stepArray[0]);
+    }
+};
+
+let moveNetNpc = function(name, content ,callback){
+    if(name===playerName) return;
+    let npc = netPlayer[name];
+    if(npc.px !== content.x || npc.px !== content.y){
+        npc.setCoordinate(content.x,content.y,content.dir);
+    }
+    npc.moveMode = 3;
+    npc.changeDir(content.dir);
+
+
+};
+
 let Lib = {
     /**
      * 重排角色，以便正确遮盖
@@ -226,9 +371,6 @@ let Lib = {
         }
     }
 };
-
-
-
 
 let UI = {
 

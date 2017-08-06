@@ -58,8 +58,8 @@ let Fight = {
     simpleFight: (teamId, npc = {}) => {
         let enemyHero = RPG.beget(HeroPlayer);
         let playerHero = RPG.beget(HeroPlayer);
-        RPG.extend(enemyHero, RPG.enemyTeam[teamId].getHero(0));
-        RPG.extend(playerHero, mainTeam.getHero(0));
+        RPG.extend(enemyHero, RPG.enemyTeam[teamId].getHero());
+        RPG.extend(playerHero, mainTeam.getHero());
 
         // 敌方满血
         enemyHero.fullHeal();
@@ -142,7 +142,7 @@ let Fight = {
             Fight.textObj = UI.simpleText('',10);
             Fight.textObj.x = gap;
             Fight.textObj.y = HEIGHT-Fight.infoHeight + gap;
-            // Fight.textObj.setWordWrap(true,20);
+            Fight.textObj.setWordWrap(true,20);
             FightMenu.showFightInfo();
             FightMenu.layer.addChildAt(Fight.textObj,1);
         }
@@ -170,8 +170,8 @@ let Fight = {
             for (let i = 0; i < team.length; i++) {
                 hero1 = team[i];
                 bitmapData = new LBitmapData(assets[hero1.img]);
-                col = hero1.getPerson().col || 4;
-                row = hero1.getPerson().row || 4;
+                col = hero1.col || 4;
+                row = hero1.row || 4;
                 chara = new Fighter(bitmapData, row, col);
                 if (!hero1.alive) {
                     y = y + chara.getHeight() + 30;
@@ -349,7 +349,7 @@ let Fight = {
             hero = Fight.currentFighter;
             toHero = Fight.currentToFighter;
         }
-        Fight.infoCommand(hero.getName() + '攻击');
+        Fight.infoCommand(hero.nickName + '攻击');
         let effect = ["220Animation",4,5];
 
         // 有装备的战斗效果
@@ -412,9 +412,8 @@ let Fight = {
                         Lib.bgm('boom',false,1)
                     },500);
                     effect.play(1, function () {
-                        console.log('effect');
                         // 刷新数据
-                        Fight.infoCommand(toHero.getName() + '损伤 ' + ret);
+                        Fight.infoCommand(toHero.nickName + '损伤 ' + ret);
                         toHero.hpText.text = toHero.Hp;
                         if (toHero && !toHero.alive) {
                             toHero.fighter.visible = false;
@@ -715,18 +714,18 @@ let Fight = {
             if (aon) weaponAddOn = aon;
         }
         // 士气加成
-        vaporAtk = (heroAtk.Hp / heroAtk.MaxHp + 1) / 2 * 100;
+        vaporAtk = (heroAtk.Hp / heroAtk.maxHp + 1) / 2 * 100;
         // 攻击力
-        atk = (4000/ (140- heroAtk.force)+ heroAtk.atk* 2+ vaporAtk)* (heroAtk.Level/ 10+ 1)* weaponAddOn;
+        atk = (heroAtk.attack+vaporAtk)* weaponAddOn;
         // 防守方护甲加成
         if (heroDef.armor >= 0) {
             let aon = heroDef.getArmor().addOn;
             if (aon) armorAddOn = aon;
         }
         // 士气加成
-        vaporDef= (heroDef.Hp/ heroDef.MaxHp+ 1)/ 2* 100;
+        vaporDef= (heroDef.Hp/ heroDef.maxHp+ 1)/ 2* 100;
         // 防御力
-        def= (4000/ (140- heroDef.force)+ heroDef.def* 2+ vaporDef)* (heroDef.Level/ 10+ 1)* armorAddOn;
+        def= (heroDef.defend+vaporDef)*armorAddOn;
         // 攻击效果随机加成 0.9~1.1
         let ran= (rangeRand(0, 100)+ 1000)/ 1000;
         let result= (atk- def/ 2)* ran;

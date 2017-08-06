@@ -111,11 +111,12 @@ let PlayerTeam = {
      */
 	addHero: function (id, lv, nick='路漫漫'){
 		let h1 = RPG.beget(HeroPlayer);
-        h1.index = id;
+        RPG.extend(h1, HeroList[id]);
         h1.nickName = nick;
-		h1.setLevel(lv);
+        h1.setLevel(lv);
 		h1.fullHeal();
-		this.heroList.push(h1);
+        console.log('h1',h1);
+        this.heroList.push(h1);
 	},
     /**
      * 向队伍增加怪物
@@ -124,9 +125,11 @@ let PlayerTeam = {
      * @returns
      */
     addEnemy: function (id, lv){
-        let e1= RPG.beget(Enemy);
-        e1.index = id;
+        let e1 = RPG.beget(HeroPlayer);
+        RPG.extend(e1, EnemyList[id]);
         e1.setLevel(lv);
+        e1.nickName = e1.img;
+        e1.isHero = false;
         e1.fullHeal();
         this.heroList.push(e1);
     },
@@ -168,7 +171,6 @@ let PlayerTeam = {
 	},
 
 	keepHp: function(){
-		let hero1= this.heroList[0];
 	},
 
 	haveItem: function(itemId){
@@ -223,9 +225,15 @@ let PlayerTeam = {
 			}
 		}
 	},
+	/**
+	 * 加钱
+	 * */
 	addMoney:function (num) {
 		this.money += num;
     },
+	/**
+	 * 减钱
+	 * */
     reduceMoney:function (num) {
 		this.money -= num;
     },

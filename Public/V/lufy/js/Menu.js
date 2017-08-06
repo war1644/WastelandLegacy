@@ -402,7 +402,7 @@ let Menu = {
                     break;
                 case 'FACE':
                     // 头像
-                    let imgData = new LBitmapData(assets[hero1.getFace()]);
+                    let imgData = new LBitmapData(assets[hero1.face]);
                     let bitmap = new LBitmap(imgData);
                     bitmap.x = leftPos;
                     bitmap.y = topPos;
@@ -416,7 +416,7 @@ let Menu = {
                     topPos+= 20;
                     obj.obj.x = rightPos;
                     obj.obj.y = topPos;
-                    obj.obj.text = obj.text+' : '+hero1.Hp+ " / "+ hero1.MaxHp;
+                    obj.obj.text = obj.text+' : '+hero1.Hp+ " / "+ hero1.maxHp;
                     // numObj = textObj.clone();
                     // numObj.x = rightPos;
                     // numObj.y = topPos+20;
@@ -430,7 +430,7 @@ let Menu = {
                     // RPG.drawScale(ctrlLayer, "#2b92ff", rightPos, 92, valueLength* hero1.getMpRate(), 12);
                     obj.obj.x = rightPos;
                     obj.obj.y = 70;
-                    obj.obj.text = obj.text+' : '+hero1.Sp+ " / "+ hero1.MaxSp;
+                    obj.obj.text = obj.text+' : '+hero1.Sp+ " / "+ hero1.maxSp;
                     // numObj = textObj.clone();
                     // numObj.x = rightPos;
                     // numObj.y = 90;

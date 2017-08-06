@@ -299,6 +299,7 @@ let RPG = {
             if (RPG.checkState(RPG.IN_COVER)) {
                 if(!playerName){
                     playerName = prompt('来个名字吧：');
+                    if(playerName) GameSocket.onLink();
                 }else {
                     GameSocket.onLink();
                 }

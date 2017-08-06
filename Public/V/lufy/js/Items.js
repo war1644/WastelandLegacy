@@ -3,6 +3,9 @@
 // 类型：kind=1装备类；kind=2使用类；kind=3不可用类；kind=4战场可用物品
 // 对于装备类：type=1=武器，type=2=防具；type=3=装饰物
 // 对于使用类：type=1=加HP，type=2=加SP,type=4 战场攻击
+// job：job=1 加HP，type=2=加SP,type=4 战场攻击
+// attackRange：0，单体，1：群组，2：全部
+
 let ItemList= [
 		{cost:10,name:"GPS", kind: 1, type: 1, addOn:1.5, atkEff:"pSwipe", description:"定位自己的位置，以及呼叫卫星攻击", effect:(hero)=>{hero.changeWeapon(0);}},
 		{cost:10,name:"军用肉干", kind: 2, type:1, description:"肉干，食用可以补充少量体力", effect:function(hero){hero.addHp(200);}},
@@ -14,7 +17,7 @@ let ItemList= [
 		{cost:10,name:"面包", kind: 2, type:1, description:"面包，适合携带，食用可以补充体力", effect:(hero)=>{hero.addHp(50);}},
         {name:'回复药',cost:10, kind: 2, type:1,description:'恢复少量生命值', effect:(hero)=>{hero.addHp(200);}},
         {name:'生命胶囊',cost:15, kind: 2, type:1,description:'恢复一定生命值', effect:(hero)=>{hero.addHp(500);}},
-        {name:'再生丸',cost:200000, kind: 2, type:1,description:'不是复活，是属于修复细胞，额，好像也是复活。。。',effect:function(hero){hero.addHp(1,'再生丸');}},
+        {name:'再生丸',cost:20000, kind: 2, type:1,description:'不是复活，是属于修复细胞，额，好像也是复活。。。',effect:function(hero){hero.addHp(1,'再生丸');}},
         {name:'手雷',cost:20, kind: 4, type:4,description:'能对软体怪物造成大量伤害',effect:function(enemy){enemy.beHit(50);}},
         {name:'小刀',cost:10,kind: 1, type: 1, addOn:1.2,attack:5,description:'切水果用的刀'},
         {name:'匕首',cost:15,kind: 1, type: 1, addOn:1.2,attack:7,description:'格斗用的锋利匕首'},
@@ -31,7 +34,10 @@ let ItemList= [
 // 全部技能
 let SkillList= [
 	{name:"不知道1", desc:["xxxxxxx","xxxxxxx","具有强大的威力"], effect:{}},
-	{name:"不知道2", desc:["xxxxxxx","xxxxxxx","少量体力"]}
+	{name:"不知道2", desc:["xxxxxxx","xxxxxxx","少量体力"]},
+    {name:'大炮齐射',attack:20},
+    {name:'双副炮攻击',attack:15},
+    {name:'225mm主炮攻击',attack:100}
 ];
 
 let Item= {

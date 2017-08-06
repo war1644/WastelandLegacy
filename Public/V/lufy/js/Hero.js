@@ -8,10 +8,11 @@ let HeroList= [
 		force:100,//力量
 		mind:80,//智慧
 		speed:80,//速度
-        atk: 30,
-        def: 30,
-		hpAdd: 60,//等级血量增益
-        description:["战车驾驶技术一流，还会修理，肉搏也不弱，这不就是主角光环么？"]
+        attack: 30,
+        defend: 30,
+		lvAdd: 60,//等级增益系数
+        skillList: [],// 技能列表
+        description:"战车驾驶技术一流，还会修理，肉搏也不弱，这不就是主角光环么？",
 	},
     {
         index:1,
@@ -21,10 +22,11 @@ let HeroList= [
         force:80,//力量
         mind:150,//智慧
         speed:50,//速度
-        atk: 20,
-        def: 20,
-        hpAdd: 40,//等级血量增益
-        description:["修理MAX，还能战场修理，还能改造战车，绝对的辅助一把手"]
+        attack: 20,
+        defend: 20,
+        lvAdd: 40,//等级血量增益
+        skillList: [],// 技能列表
+        description:"修理MAX，还能战场修理，还能改造战车，绝对的辅助一把手"
     },
     {
         index:2,
@@ -34,36 +36,66 @@ let HeroList= [
         force:160,//力量
         mind:80,//智慧
         speed:120,//速度
-        atk: 50,
-        def: 50,
-        hpAdd: 100,//等级血量增益
-        description:["肉搏强悍，但是也不可能与战车匹敌的，各种人武器玩的666."]
+        attack: 50,
+        defend: 50,
+        lvAdd: 100,//等级血量增益
+        skillList: [],// 技能列表
+        description:"肉搏强悍，但是也不可能与战车匹敌的，各种人武器玩的666."
+    },
+    {
+        index:3,
+        img:"黑色梅卡瓦",//movePic
+        face:"face雷娜",//头像
+        job:"战士",//职业
+        force:160,//力量
+        mind:80,//智慧
+        speed:120,//速度
+        attack: 50,
+        defend: 50,
+        lvAdd: 100,//等级血量增益
+        skillList: [],// 技能列表
+        description:"肉搏强悍，但是也不可能与战车匹敌的，各种人武器玩的666."
+    },
+];
+let EnemyList= [
+    {
+        index:0,
+        img:"巨炮",//movePic
+        col:1,
+        row:1,
+        speed:120,//速度
+        isTank:true,
+        description:"大破坏前，军方防御型阵地大炮"
+    },
+    {
+        index:1,
+        col:1,
+        row:1,
+        img:"沙漠之舟",//movePic
+        speed:10,//速度
+        isTank:true,
+        description:"移动碉堡，强悍的防御和攻击让人生畏，但速度和智商感人"
+    },
+    {
+        index:2,
+        img:"红色梅卡瓦",//movePic
+        speed:245,//速度
+        isTank:true,
+        description:"初代最强NPC，有异意么？",
     },
 ];
 let HeroPlayer = {
 	// 人物列表中人物编号
-    index: 0,
     isHero: true,
     //角色昵称
     nickName:'',
-    img:'',
-    force:0,//力量
-    mind:0,//智慧
-    speed:0,//速度
-    atk: 0,
-    def: 0,
     // 各种战斗信息
-    Hp: 0,
-    MaxHp: 0,
+    Hp: 100,
     Sp: 0,
-    MaxSp: 0,
     Level: 1,
     Exp: 0,
     // 升级经验值
-    maxExp: 100,
     alive: true,
-    // 技能列表
-    skillList: [],
     // 装备：武器、防具、装饰
     weapon: -1,
     armor: -1,
@@ -72,37 +104,27 @@ let HeroPlayer = {
 	inTank: false,
     //是否在战场
     inFight: false,
-	getPerson:function(){
-		return HeroList[this.index];
-	},
-	getName:function(){
-		return this.nickName;
-	},
-
-	getFace:function(){
-		return HeroList[this.index].face;
-	},
 	// 设置等级，直接影响的是上限值
 	setLevel:function(lv){
-		let person = this.getPerson();
 		this.Level = lv;
-        this.img = person.img;
-        this.force = person.force;
-		this.mind = person.mind;
-		this.speed = person.speed;
-		this.atk =  person.atk;
-		this.def =  person.def;
-		this.MaxHp = 100 + person.hpAdd * lv;
-        this.maxExp= this.MaxHp*2;
+        this.attack =  (60 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0;
+        this.defend =  (44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0;
+		this.maxHp = (200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv - 200)>>0;
+        this.maxExp= (210 * Math.sqrt(lv) - 230 * lv + 200 * lv * lv - 110)>>0;
 	},
     // 设置装甲值
-    setSp:function(){
-        this.MaxSp = 0;
+    setSp:function(num){
+        this.maxSp = num;
+    },
+    // 满回复
+    fullSp:function(){
+        this.Sp= this.maxSp;
     },
 	// 满回复
 	fullHeal:function(){
-		this.Hp= this.MaxHp;
-		this.Sp= this.MaxSp;
+		this.Hp= this.maxHp;
+		// this.Sp= this.maxSp;
+        this.alive = true;
 	},
 	// 受攻击，减血
 	beHit: function(hit){
@@ -118,22 +140,20 @@ let HeroPlayer = {
             if (name==='再生丸'){
             	this.alive= true;
             } else {
-            	Fight.showInfo('再生丸或电击可复活队友');
                 alert('再生丸或电击可复活队友');
             	return;
 			}
         }
 		hp = hp>>0;
 		this.Hp= Number(this.Hp)+ Number(hp);
-		if (this.Hp>= this.MaxHp) {
-			this.Hp= this.MaxHp;
+		if (this.Hp>= this.maxHp) {
+			this.Hp= this.maxHp;
 		}
 	},
 	addSp: function(hit){
-		hit= Math.ceil(hit);
-		this.Sp= this.Sp+ hit;
-		if (this.Sp>= this.MaxSp) {
-			this.Sp= this.MaxSp;
+		this.Sp= this.Sp + hit;
+		if (this.Sp>= this.maxSp) {
+			this.Sp= this.maxSp;
 		}
 	},
 	// 增加经验值
