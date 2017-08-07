@@ -46,19 +46,23 @@
 
 </div><!-- /.container -->
 </body>
+
 <script>
-//    $.getJSON(API+'Map/index?callback=?',{},function (e) {
-//        console.log(e);
-//        let len = e.length,obj,addContent = '';
-//        for (let i = 0; i < len; i++) {
-//            obj = e[i];
-//            addContent+=`<option value="${obj['id']}">${obj['name']}</option>`;
-//        }
-//        $('#mapId').append(addContent);
-//    });
+    let id = location.href.split('=')[1];
+    if(id){
+        console.log('id',id);
+        $('#save_form').append('<input type="hidden" name="id" value="'+id+'">');
+        $.getJSON(API+'Map/index?id='+id+'&callback=?',{},function (e) {
+            console.log(e);
+             $('input[name="name"]').val(e.name);          
+             $('input[name="fileName"]').val(e.fileName);
+             $('input[name="music"]').val(e.music);
+        });
+    }
 
     $('#sub').click(function () {
         document.save_form.submit();
     });
+
 </script>
 </html>

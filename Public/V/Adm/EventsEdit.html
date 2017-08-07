@@ -98,7 +98,35 @@
 
 </div><!-- /.container -->
 </body>
+
 <script>
+
+    let id = location.href.split('=')[1];
+
+    if(id){
+        console.log('id',id);
+        $('#save_form').append('<input type="hidden" name="id" value="'+id+'">');
+        $.getJSON(API+'Event/index?id='+id+'&callback=?',{},function (e) {
+            console.log(e);
+
+            $('select[name="type"]').val(e.type);           
+            $('input[name="name"]').val(e.name); 
+            $('input[name="img"]').val(e.img);
+            $('input[name="row"]').val(e.row);
+            $('input[name="col"]').val(e.col);
+            $('select[name="move"]').val(e.move);
+            $('select[name="dir"]').val(e.dir); 
+            $('textarea[name="textScript"]').val(e.textScript);
+
+        });
+    }
+
+</script>
+
+<script>
+    $('#sub').click(function () {
+        document.save_form.submit();
+    });
     let html = '';
     function eventCommand(id) {
         switch (id){
@@ -151,11 +179,6 @@
         console.log(html);
         document.getElementById('eventEdit').innerHTML = html;
     }
-
-    $('#sub').click(function () {
-        document.save_form.submit();
-    });
-
     function addScript(id,data) {
         let eventTextScript = $('#textScript').val();
         switch (id){

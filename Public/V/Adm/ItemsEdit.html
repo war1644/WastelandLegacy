@@ -34,7 +34,7 @@
 <div class="container">
     <div class="starter-template">
         <h1>废土战记：物品编辑器</h1>
-        <form name="save_form" method="post" action="http://e.cn/Item/edit" id="save_form" target="_blank" >
+        <form name="save_form" method="post" action="/Item/edit" id="save_form" target="_blank" >
             <ul class="list-group">
                 <li class="list-group-item">
                     <p>贩卖地 :
@@ -90,6 +90,11 @@
                     </p>
                 </li>
                 <li class="list-group-item">
+                    <p>可用职业 :
+                        <input type="text" name="job">
+                    </p>
+                </li>
+                <li class="list-group-item">
                     <p>效果 :
                         <input placeholder="(hero)=>{hero.addHp(100);}" name="effect" id="effect">
                         </input>
@@ -103,6 +108,7 @@
 
 </div><!-- /.container -->
 </body>
+
 <script>
     $.getJSON(API+'Map/index?callback=?',{},function (e) {
         console.log(e);
@@ -117,5 +123,29 @@
     $('#sub').click(function () {
         document.save_form.submit();
     });
+
+    let id = location.href.split('=')[1];
+    if(id){
+        console.log('id',id);
+        $('#save_form').append('<input type="hidden" name="id" value="'+id+'">');
+        $.getJSON(API+'Item/index?id='+id+'&callback=?',{},function (e) {
+            console.log(e);
+            //<select name="mapId" id="mapId"></select>
+            $('select[name="mapId"]').val(e.id);
+            $('select[name="type"]').val(e.type);
+            $('select[name="position"]').val(e.position);
+            $('input[name="name"]').val(e.name);
+            $('input[name="price"]').val(e.price);
+            $('input[name="description"]').val(e.description);
+            $('input[name="attack"]').val(e.attack);
+            $('select[name="range"]').val(e.range);
+            $('input[name="defend"]').val(e.defend);
+            $('select[name="job"]').val(e.job);
+            $('input[name="job"]').val(e.job);
+            $('input[name="effect"]').val(e.effect);
+            $('input[name="attackAnimation"]').val(e.attackAnimation);
+
+        });
+    }
 </script>
 </html>

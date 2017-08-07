@@ -12,7 +12,7 @@
  * v2017/8/7 10:13 初版
  */
 
-const API = 'http://e.cn/';
+const API = 'http://zregs.com/';
 
 let Lib = {
      insertBase:function(){
