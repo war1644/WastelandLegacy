@@ -20,7 +20,11 @@ use App\M\EventsM;
 class EventC extends AppC{
     public function index(){
         $m = new EventsM();
-        echo ResultFormat($m->getList());
+        if(isset($_GET['id'])){
+            echo ResultFormat($m->find($_GET['id']));
+        }else{
+            echo ResultFormat($m->getList());
+        }
     }
 
     public function edit(){
