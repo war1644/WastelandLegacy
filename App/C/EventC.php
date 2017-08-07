@@ -15,21 +15,22 @@ namespace App\C;
  */
 
 namespace App\C;
-use Base\Lib\C;
+use App\M\EventsM;
 
-class AppC extends C{
+class EventC extends AppC{
     public function index(){
-
-    }
-    public function getList(){
-
+        $m = new EventsM();
+        echo ResultFormat($m->getList());
     }
 
-    public function add(){
-
-    }
-
-    public function save(){
-
+    public function edit(){
+        if(!isset($_POST['name'])) die();
+        $m = new EventsM();
+        if(isset($_POST['id'])){
+            $result = $m->save();
+        }else{
+            $result = $m->add($_POST);
+        }
+        echo ResultFormat($result);
     }
 }

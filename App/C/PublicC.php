@@ -24,8 +24,9 @@ use Base\Tool\Page;
 
 class PublicC extends AppC {
 
-    public function upload(){
-
+    public function index(){
+//        $client = stream_socket_client('tcp://s.kingsmith.com.cn:8404');
+//        var_dump($client);
     }
 
     public function getEventTest(){
@@ -125,7 +126,7 @@ class PublicC extends AppC {
      */
     public function page() {
         $page = new Page(345);
-        print_r($page->show());
+        echo ResultFormat($page->show());
     }
 
     /**

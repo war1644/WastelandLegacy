@@ -15,21 +15,23 @@ namespace App\C;
  */
 
 namespace App\C;
-use Base\Lib\C;
+use App\M\ItemsM;
 
-class AppC extends C{
+class ItemC extends AppC{
     public function index(){
-
-    }
-    public function getList(){
-
+        $m = new ItemsM();
+        echo ResultFormat($m->getList());
     }
 
-    public function add(){
-
+    public function edit(){
+        if(!isset($_POST['name'])) die();
+        $m = new ItemsM();
+        if(isset($_POST['id'])){
+            $result = $m->save();
+        }else{
+            $result = $m->add($_POST);
+        }
+        echo ResultFormat($result);
     }
 
-    public function save(){
-
-    }
 }

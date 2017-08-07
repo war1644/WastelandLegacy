@@ -6,18 +6,26 @@
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * 游戏基础模型
+ * 游戏人物职业模型
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
- * v2017/04/08 初版
+ * v2017/03/22 初版
  */
 
 namespace App\M;
-use Base\Lib\M;
-class AppModel extends M{
-    public function getList($field='*') {
-        $sql = "SELECT $field FROM $this->table";
-        return $this->executeSql($sql,[],'all');
+
+
+class ItemsM extends AppModel {
+    /**
+     * 获取帐号信息
+     */
+    public function getAuth($data,$field='*') {
+        $keys = array_keys($data);
+        $values = array_values($data);
+        $str = join('=? and ',$keys);
+        $sql = "SELECT $field FROM $this->table WHERE $str=?";
+        return $this->executeSql($sql,$values);
     }
+
 }

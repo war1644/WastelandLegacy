@@ -17,7 +17,7 @@ namespace Base\DB;
  * v2016/12/15  初版
  */
 
-class DB {
+class MyPDO {
     protected static $obj = null;
     protected $db;
     protected $dbName;
@@ -45,8 +45,6 @@ class DB {
     public static function Ins(){
         if (self::$obj===null){
             self::$obj = new static();
-
-            //            self::$obj = new self();
         }
         return self::$obj;
     }

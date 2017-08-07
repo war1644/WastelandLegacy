@@ -1,0 +1,64 @@
+<!--
+/**
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆██▄▄▃▂
+ *  ████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * 后台物品编辑
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2017/08/06 初版
+ */
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="废土战记">
+    <meta name="author" content="路漫漫">
+    <title>废土战记</title>
+    <link rel="shortcut icon" href="./../favicon.ico" type="image/x-icon" />
+    <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="./Lib.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="starter-template">
+        <h1>废土战记：地图编辑器</h1>
+        <form name="save_form" method="post" action="/Map/edit" id="save_form" target="_blank" >
+            <ul class="list-group">
+                <li class="list-group-item">地图名称 : <input type="text" name="name"></li>
+                <li class="list-group-item">文件名称 : <input type="text" name="fileName"></li>
+                <li class="list-group-item">背景音乐 : <input type="text" name="music"></li>
+                <a href='#' id="sub">提交</a>
+            </ul>
+        </form>
+    </div>
+
+</div><!-- /.container -->
+</body>
+<script>
+//    $.getJSON(API+'Map/index?callback=?',{},function (e) {
+//        console.log(e);
+//        let len = e.length,obj,addContent = '';
+//        for (let i = 0; i < len; i++) {
+//            obj = e[i];
+//            addContent+=`<option value="${obj['id']}">${obj['name']}</option>`;
+//        }
+//        $('#mapId').append(addContent);
+//    });
+
+    $('#sub').click(function () {
+        document.save_form.submit();
+    });
+</script>
+</html>

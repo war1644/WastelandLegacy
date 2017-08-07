@@ -76,6 +76,11 @@ class Macaw {
         //当前请求不带参数url,忽略域名
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $ip = GetIp();
+        $urlArr = explode('/',$uri);
+        if(in_array('index.php',$urlArr)){
+            unset($urlArr[0],$urlArr[1]);
+            $uri = '/'.join('/',$urlArr);
+        }
         //当前请求方法
         $method = $_SERVER['REQUEST_METHOD'];
         //记录到日志

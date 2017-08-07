@@ -1,0 +1,202 @@
+<!--
+/**
+ *         ▂▃╬▄▄▃▂▁▁
+ *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▇▅▅          BUG
+ *  ▄▅████☆RED █ WOLF☆██▄▄▃▂
+ *  ████████████████████████████
+ *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+ *
+ * 后台物品编辑
+ * @author 路漫漫
+ * @link ahmerry@qq.com
+ * @version
+ * v2017/08/06 初版
+ */
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="废土战记">
+    <meta name="author" content="路漫漫">
+    <title>废土战记</title>
+    <link rel="shortcut icon" href="./../favicon.ico" type="image/x-icon" />
+    <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="./Lib.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="starter-template">
+        <h1>废土战记：事件编辑器</h1>
+                <form name="save_form" method="post" action="/Event/edit" id="save_form" target="_blank">
+                <ul class="list-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <li class="list-group-item">事件类型：
+                        <select id="type" name="type">
+                            <option value="npc">NPC</option>
+                            <option value="jump">场景切换</option>
+                            <option value="box">箱子</option>
+                            <option value="auto">自动触发</option>
+                            <option value="item">物品</option>
+                        </select>
+                    <li class="list-group-item">事件名：<input type="text" name="name"></li>
+                    <li class="list-group-item">事件图片：
+                        <input type="text" name="img">
+                        <img id="eventImg" src="">
+                    </li>
+                    <li class="list-group-item">分割row：<input type="text" name="row"></li>
+                    <li class="list-group-item">分割col：<input type="text" name="col"></li>
+                    <li class="list-group-item">自动移动：<select id="move" name="move">
+                        <option value="0">否</option>
+                        <option value="1">是</option>
+                    </select></li>
+                    <li class="list-group-item">初始朝向：
+                        <select id="dir" name="dir">
+                            <option value="0">DOWN</option>
+                            <option value="1">LEFT</option>
+                            <option value="2">RIGHT</option>
+                            <option value="3">UP</option>
+                        </select>
+                    </li>
+                </ul>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <p>事件脚本 :</p>
+                    <textarea name="textScript" id="textScript" style="width:300px;height:300px;"></textarea>
+                    <p><a href='#' id="sub">提交</a></p>
+                </div>
+                </form>
+        <ul class="list-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <li class="list-group-item">
+                <p>脚本编辑类型：
+                    <select name="command_list" id="select_command" onchange="if(this.value!=-1){eventCommand(Number(this.value));}">
+                        <option value="-1"> - </option>
+                        <option value="0">0. 创建条件</option>
+                        <option value="1">1. 创建对话</option>
+                        <option value="2">2. 创建选项</option>
+                        <option value="3">3. 创建战斗</option>
+                        <option value="4">4. 创建传送</option>
+                        <option value="5">5. 执行javascript</option>
+                        <!--<option value="4">5. 创建等待</option>-->
+                        <!--<option value="7">7. 等待事件</option>-->
+                        <!--<option value="8">8. 修改变量</option>-->
+                        <!--<option value="10">10. 执行javascript</option>-->
+                    </select>
+                </p>
+            </li>
+            <li class="list-group-item" id="eventEdit">
+
+            </li>
+        </ul>
+
+
+    </div>
+
+</div><!-- /.container -->
+</body>
+<script>
+    let html = '';
+    function eventCommand(id) {
+        switch (id){
+            case 0://创建条件
+                html = `<form onsubmit="addScript(${id},[this.variable.value,this.condition.value,this.variable2.value]); return false;" action="" ><p>变量：<input type="text" name="variable"></p>
+            <p>条件：<select name="condition">
+                <option value="==">等于</option>
+                <option value="!=">不等于</option>
+                <option value="<">小于</option>
+                <option value=">">大于</option>
+                <option value="<=">小于或等于</option>
+                <option value=">=">大于或等于</option>
+            </select></p>
+            <p>变量：<input type="text" name="variable2"></p>
+            <input type="submit" value="确定"></form>`;
+                break;
+            case 1://创建对话
+                html = `<form onsubmit="addScript(${id},this.talkScript.value); return false;" action="" ><p>创建对话：</p>
+            <textarea name="talkScript" id="talkScript" style="width:300px;height:200px;">我是零食，游戏的美工。看什么看，我就平胸，MDZZ</textarea>
+            <input type="submit" value="确定"></form>`;
+                break;
+            case 2://创建选项
+                html = `<form onsubmit="addScript(${id},[this.optionVariable.value,this.textOption1.value,this.textOption2.value,this.textOption3.value,this.textOption4.value]); return false;" action="" ><p>创建选项</p>
+            <p>存到变量中：<input type="text" name="optionVariable"></p>
+            <p>选项1：<input type="text" name="textOption1"></p>
+            <p>选项2：<input type="text" name="textOption2"></p>
+            <p>选项3：<input type="text" name="textOption3"></p>
+            <p>选项4：<input type="text" name="textOption4"></p>
+            <input type="submit" value="确定"></form>`;
+                break;
+            case 3://创建战斗
+                html = `<form onsubmit="addScript(${id},this.enemy.value); return false;" action="" ><p>创建战斗</p>
+            <p>参战敌人ID：<input type="text" name="enemy"></p>
+            <input type="submit" value="确定"></form>`;
+                break;
+            case 4://创建传送
+                html = `<form onsubmit="addScript(${id},[this.mapId.value,this.mapX.value,this.mapY.value,this.dir.value]); return false;" action="" ><p>传送位置</p>
+            <p>地图ID：<input type="text" name="mapId"></p>
+            <p>X：<input type="text" name="mapX"></p>
+            <p>Y：<input type="text" name="mapY"></p>
+            <p>朝向：<input type="text" name="dir"></p>
+            <input type="submit" value="确定"></form>`;
+                break;
+            case 5://
+                html = `<form onsubmit="addScript(${id},this.jsText.value); return false;" action="" ><p>javascript文本：</p>
+            <textarea name="jsText" id="jsText" style="width:300px;height:200px;"></textarea>
+            <input type="submit" value="确定"></form>`;
+                break;
+        }
+        console.log(html);
+        document.getElementById('eventEdit').innerHTML = html;
+    }
+
+    $('#sub').click(function () {
+        document.save_form.submit();
+    });
+
+    function addScript(id,data) {
+        let eventTextScript = $('#textScript').val();
+        switch (id){
+            case 0:
+                eventTextScript += `if(${data[0]} ${data[1]} ${data[2]}){}`;
+                break;
+            case 1:
+                //对话
+                eventTextScript += 'Talk.startTalk([';
+                if(data.indexOf('\n') === -1){
+                    //没有回车，表示单行对话
+                    eventTextScript += '{msg:'+data+'},\n';
+                } else {
+                    //如果有回车，表示多行对话
+                    let talkTextArr = data.split('\n');
+                    let len = talkTextArr.length;
+                    for (let i = 0; i < len; i++) {
+                        eventTextScript += '{msg:'+talkTextArr[i]+'},';
+                    }
+                }
+                eventTextScript += ']);';
+                break;
+            case 2:
+                let len = data.length,option='';
+                for (let i = 1; i < len; i++) {
+                    if(data[i]==='') continue;
+                    option += `{text:${data[i]},action: function(){\nRPG.${data[0]}=${i};\nRPG.popState(); }},`;
+                }
+                eventTextScript += 'Talk.startTalk([{option:['+option+']}])';
+                break;
+            case 3:
+                eventTextScript += `RPG.pushState(RPG.FIGHT_RESULT);\nRPG.flickerAnimation(Fight.bossFight,[${data}]);`;
+                break;
+            case 4://传送
+                eventTextScript += `jumpStage(${data[0]}, ${data[1]}, ${data[2]}, ${data[2]});`;
+                break;
+            case 5:
+                eventTextScript += data;
+                break;
+        }
+        $('#textScript').val(eventTextScript+'\n');
+    }
+</script>
+</html>

@@ -36,4 +36,8 @@ include MFPATH."Base/Lib/F.php";
 include MFPATH."Base/Lib/Base.php";
 
 //路由,交通指挥出场
+if(file_exists(APP_PATH.'Config/config.php')){
+    include APP_PATH."Config/routes.php";
+}
 include CONFIG_PATH."routes.php";
+
