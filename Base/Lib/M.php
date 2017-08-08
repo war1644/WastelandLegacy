@@ -134,7 +134,7 @@ class M {
 
         $sql = 'update ' . $this->table . ' set ';
         foreach($data as $k=>$v) {
-            $sql .= $k . '=? ,';
+            $sql .= '`'.$k . '`=? ,';
         }
 
         $sql = substr($sql , 0 , -1);

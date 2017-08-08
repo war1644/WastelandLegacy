@@ -6,7 +6,7 @@
  *  ████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * 后台物品编辑
+ * 后台编辑器首页
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
@@ -32,39 +32,13 @@
 </head>
 <body>
 <div class="container col-xs-10 col-sm-10 col-md-10 col-lg-10">
-    <div class="starter-template">
-        <h1>废土战记：地图列表</h1>
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>id</th>
-                    <th>文件名</th>
-                    <th>地图名</th>
-                    <th>地图背景音乐</th>
-                </tr>
-                </thead>
-                <tbody class="itemList">
-                </tbody>
-            </table>
 
+    <div class="starter-template MF">
+        <h1>欢迎来到废土战记后台编辑器</h1>
     </div>
-
 </div><!-- /.container -->
 </body>
 <script>
-    $.getJSON(API+'Map/index?callback=?',{},function (e) {
-        console.log(e);
-        let len = e.length,obj,addContent = '';
-        for (let i = 0; i < len; i++) {
-            obj = e[i];
-            let str = '';
-            for(let key in obj ){
-                str += '<td>'+obj[key]+'</td>';
-            }
-            str += '<td><a href="MapsEdit.html?id='+obj.id+'">编辑</a></td>';
-            addContent+='<tr>'+str+'</tr>';
-        }
-        $('.itemList').append(addContent);
-    })
+
 </script>
 </html>

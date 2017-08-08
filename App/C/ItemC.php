@@ -31,7 +31,7 @@ class ItemC extends AppC{
         if(!isset($_POST['name'])) die();
         $m = new ItemsM();
         if(isset($_POST['id'])){
-            $result = $m->save();
+            $result = $m->save(   $_POST);
         }else{
             $result = $m->add($_POST);
         }
