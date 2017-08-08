@@ -23,24 +23,25 @@ Macaw::any('',function (){
 });
 
 Macaw::any('Item/(:all)',function ($p){
-    $c = new App\C\ItemC();
+    $c = new App\C\Admin\ItemC();
     $c->method = $p;
     $c->$p();
 });
 Macaw::any('Map/(:all)',function ($p){
-    $c = new App\C\MapC();
+    $c = new App\C\Admin\MapC();
     $c->method = $p;
     $c->$p();
 });
 Macaw::any('Event/(:all)',function ($p){
-    $c = new App\C\EventC();
+    $c = new App\C\Admin\EventC();
     $c->method = $p;
     $c->$p();
 });
 
-Macaw::any('Home/Home/(:all)',function ($p){
-    $c = new App\C\Home\HomeC();
+Macaw::any('Public/(:all)',function ($p){
+    $c = new App\C\PublicC();
     $c->method = $p;
     $c->$p();
 });
+
 

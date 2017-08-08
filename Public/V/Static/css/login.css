@@ -1,0 +1,456 @@
+/**
+*         ▂▃╬▄▄▃▂▁▁
+*  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▇▅▅          BUG
+*  ▄▅████☆RED █ WOLF☆██▄▄▃▂
+*  ████████████████████████████
+*  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
+*
+* 客户端基础CSS
+* @author 路漫漫
+* @link ahmerry@qq.com
+* @version
+* v2017/8/8 11:13 初版
+* 
+*/
+
+body#bacBody {
+    margin: 0;
+    background-image:url('/../images/bgimg/02.jpg');
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+
+/*动态背景*/
+.slideshow {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
+}
+.slideshow-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: no-repeat 50% 50%;
+    background-size: cover;
+    -webkit-animation-name: kenburns;
+    animation-name: kenburns;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-duration: 16s;
+    animation-duration: 16s;
+    opacity: 1;
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+.slideshow-image:nth-child(1) {
+    -webkit-animation-name: kenburns-1;
+    animation-name: kenburns-1;
+    z-index: 3;
+}
+.slideshow-image:nth-child(2) {
+    -webkit-animation-name: kenburns-2;
+    animation-name: kenburns-2;
+    z-index: 2;
+}
+.slideshow-image:nth-child(3) {
+    -webkit-animation-name: kenburns-3;
+    animation-name: kenburns-3;
+    z-index: 1;
+}
+.slideshow-image:nth-child(4) {
+    -webkit-animation-name: kenburns-4;
+    animation-name: kenburns-4;
+    z-index: 0;
+}
+
+@keyframes kenburns-1 {
+    0% {
+        opacity: 1;
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+    1.5625% {
+        opacity: 1;
+    }
+    23.4375% {
+        opacity: 1;
+    }
+    26.5625% {
+        opacity: 0;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+    98.4375% {
+        opacity: 0;
+        -webkit-transform: scale(1.21176);
+        transform: scale(1.21176);
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes kenburns-2 {
+    23.4375% {
+        opacity: 1;
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+    26.5625% {
+        opacity: 1;
+    }
+    48.4375% {
+        opacity: 1;
+    }
+    51.5625% {
+        opacity: 0;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+}
+
+@keyframes kenburns-3 {
+    48.4375% {
+        opacity: 1;
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+    51.5625% {
+        opacity: 1;
+    }
+    73.4375% {
+        opacity: 1;
+    }
+    76.5625% {
+        opacity: 0;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+}
+
+@keyframes kenburns-4 {
+    73.4375% {
+        opacity: 1;
+        -webkit-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+    76.5625% {
+        opacity: 1;
+    }
+    98.4375% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+/*动态背景end*/
+
+
+
+/*登录注册*/
+
+.cont_login {
+    position: relative;
+    width: 26rem;
+    margin: 0 auto;
+}
+.cont_login .close{
+    color: #000;
+    font-size: 1rem;
+
+}
+.cont_info_log_sign_up {
+    position: absolute;
+    width: 26rem;
+    height: 13rem;
+    top: 4rem;
+    z-index: 1;
+}
+.col_md_login {
+    position: relative;
+    float: left;
+    width: 50%;
+}
+.cont_ba_opcitiy {
+    position: relative;
+    background-color: rgba(187, 168, 170, 0.79);
+    width: 90%;
+    border-radius: 10px;
+    text-align: center;
+    margin: 1.7rem auto 0;
+    padding: 1.3rem 0px;
+}
+.cont_ba_opcitiy > h2 {
+    font-weight: 400;
+    color: #fff;
+    font-size: 0.8rem;
+}
+.cont_ba_opcitiy > p {
+    font-weight: 400;
+    margin-top: 15px;
+    color: #fff;
+    font-size: 0.8rem;
+}
+
+.btn_login {
+    font-size: 0.7rem;
+    background-color: #FF9800;
+    border: none;
+    padding: 10px;
+    width: 9.5rem;
+    border-radius: 3px;
+    box-shadow: 1px 5px 20px -5px rgba(0,0,0,0.4);
+    color: #fff;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.col_md_sign_up {
+    position: relative;
+    float: left;
+    width: 50%;
+}
+.btn_sign_up {
+    font-size: 0.7rem;
+    background-color: #f44336;
+    border: none;
+    padding: 10px;
+    width: 9.5rem;
+    border-radius: 3px;
+    box-shadow: 1px 5px 20px -5px rgba(0,0,0,0.4);
+    color: #fff;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.cont_back_info {
+    position: relative;
+    float: left;
+    width: 26rem;
+    height: 13rem;
+    overflow: hidden;
+    background-color: #fff;
+    margin-top: 4rem;
+    box-shadow: 1px 10px 30px -10px rgba(0,0,0,0.5);
+}
+.cont_forms_active_login , .cont_forms_active_sign_up {
+    z-index: 2;
+}
+
+.cont_forms_active_sign_up {
+    box-shadow: 1px 10px 30px -10px rgba(0,0,0,0.5);
+    height: 420px;
+    top: 20px;
+    left: 320px;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+}
+.cont_img_back_grey {
+    position: absolute;
+    width: 950px;
+    top: -80px;
+    left: 50%;
+    margin-left: -475px;
+}
+.cont_img_back_grey > img {
+    width: 100%;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    opacity: 0.2;
+    animation-name: animar_fondo;
+    animation-duration: 20s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes animar_fondo{
+    0% {
+        -webkit-transform: scale(1) translate(0px);
+        -moz-transform: scale(1) translate(0px);
+        -ms-transform: scale(1) translate(0px);
+        -o-transform: scale(1) translate(0px);
+        transform: scale(1) translate(0px);
+    }
+    100% {
+        -webkit-transform: scale(1.5) translate(50px);
+        -moz-transform: scale(1.5) translate(50px);
+        -ms-transform: scale(1.5) translate(50px);
+        -o-transform: scale(1.5) translate(50px);
+        transform: scale(1.5) translate(50px);
+    }
+}
+.cont_forms {
+    position: absolute;
+    overflow: hidden;
+    top: 4rem;
+    left: 0px;
+    width: 13rem;
+    height: 13rem;
+    background-color: #999;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+}
+.cont_forms_ch{
+    top: 1rem;
+    height: 18rem;
+}
+.cont_forms_change{
+    top: 1rem;
+    left: 13rem;
+    height: 19rem;
+}
+.cont_img_back_ {
+    position: absolute;
+    width: 29rem;
+    /*top: -80px;*/
+    left: -88px;
+}
+.cont_img_back_ > img {
+    width: 100%;
+    opacity: 0.3;
+    animation-name: animar_fondo;
+    animation-duration: 20s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+.cont_form_login {
+    text-align: center;
+    position: absolute;
+    opacity: 0;
+    display: none;
+    width: 13rem;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+}
+.cont_form_login > a, .cont_form_sign_up > a {
+    color: #757575;
+    position: relative;
+    float: left;
+    margin: 10px 0 0 30px;
+
+}
+.cont_form_login > h2 {
+    margin-top: 2rem;
+    font-weight: 400;
+    color: #fff;
+    font-size: 0.7rem;
+}
+
+.cont_form_login > input {
+    padding: 0.5rem 5px;
+    margin-left: 0.5rem;
+    margin-top: 1rem;
+    width: 10rem;
+    border: none;
+    text-align: left;
+    color: #757575;
+    font-size: 0.5rem;
+}
+.cont_form_login > input.vcode , .cont_form_sign_up > input.vcode{
+    float: left;
+    width: 3.1rem;
+    margin-bottom: 2rem;
+    margin-left: 1.2rem;
+}
+.Career{
+    display: inline-block;
+    margin-left: -6px;
+    width: 20px;
+    height: 24px;
+}
+.cont_form_sign_up {
+    text-align: center;
+    position: absolute;
+    width: 13rem;
+    float: left;
+    opacity: 0;
+    display: none;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -ms-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+}
+.cont_form_sign_up > h2 {
+    margin-top: 2rem;
+    font-weight: 400;
+    color: #fff;
+    font-size: 0.7rem;
+}
+.cont_form_sign_up > input {
+    text-align: left;
+    padding: 0.4rem 5px;
+    margin-bottom: 0.5rem;
+    width: 10rem;
+    border: none;
+    color: #757575;
+    font-size: 0.5rem;
+}
+.cont_form_sign_up .typeradio {
+    width: 10px;
+    color: #fff;
+}
+/*登录结束*/
+
+/*进入地图*/
+.come_map , .come_game{
+    margin-top: 10%;
+    text-align: center;
+    width: 200px;
+    height: 240px;
+    background: #f79d00;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0.8;
+    border-radius: 10px;
+    box-shadow: 0 0 100px #000;
+}
+/*进入地图 end*/
+
+/*去管理面板*/
+.gogens{
+    position: absolute;
+    right: 50%;
+    bottom: 12%;
+    margin-right: -50px;
+    cursor:pointer;
+    width: 100px;
+    height: 30px;
+    background: #f79d00;
+    border-radius: 5px;
+    line-height: 30px;
+}
+/*去管理面板 end*/

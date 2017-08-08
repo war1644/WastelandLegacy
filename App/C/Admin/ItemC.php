@@ -14,12 +14,12 @@ namespace App\C;
  * v2017/04/08 初版
  */
 
-namespace App\C;
-use App\M\EventsM;
+namespace App\C\Admin;
+use App\M\ItemsM;
 
-class EventC extends AppC{
+class ItemC extends AdminC{
     public function index(){
-        $m = new EventsM();
+        $m = new ItemsM();
         if(isset($_GET['id'])){
             echo ResultFormat($m->find($_GET['id']));
         }else{
@@ -29,12 +29,13 @@ class EventC extends AppC{
 
     public function edit(){
         if(!isset($_POST['name'])) die();
-        $m = new EventsM();
+        $m = new ItemsM();
         if(isset($_POST['id'])){
-            $result = $m->save(    $_POST);
+            $result = $m->save(   $_POST);
         }else{
             $result = $m->add($_POST);
         }
         echo ResultFormat($result);
     }
+
 }

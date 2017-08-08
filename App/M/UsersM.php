@@ -78,8 +78,10 @@ class UsersM extends AppModel {
     private function loginFollow($id){
         $result = $this->find($id);
         if ($result) {
-            $result['wl'] = $result['password'];
-            SetCache($result,$result['wl']);
+            if(!defined('ADMIN')){
+                define('ADMIN',$result['id']);
+                Session('ADMIN',$result['id']);
+            }
             unset($result['password'],$result['salt']);
             return ['code' => 1, 'msg' => '', 'data' => $result];
         } else {

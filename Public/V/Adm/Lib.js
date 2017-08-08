@@ -14,8 +14,22 @@
 
 const API = 'http://zregs.com/';
 
+if(localStorage.getItem('userInfo')){
+    location.href = '/V/admin.html';
+}
+
 let Lib = {
-     insertBase:function(){
+    userinfo:null,
+
+    checkAuth:function () {
+        Lib.userinfo = localStorage.getItem('userInfo');
+        if(Lib.userinfo){
+            Lib.userinfo = JSON.parse(Lib.userinfo);
+            $('.navbar-brand').html(`废土战记,管理员：${Lib.userinfo['name']}`);
+        }
+    },
+
+    insertBase:function(){
          let content = `
             <nav class="navbar navbar-inverse">
                 <div class="container">
@@ -66,4 +80,5 @@ let Lib = {
 
 window.onload = function () {
     Lib.insertBase();
+    Lib.checkAuth();
 };

@@ -14,12 +14,12 @@ namespace App\C;
  * v2017/04/08 初版
  */
 
-namespace App\C;
-use App\M\MapsM;
+namespace App\C\Admin;
+use App\M\EventsM;
 
-class MapC extends AppC{
+class EventC extends AdminC {
     public function index(){
-        $m = new MapsM();
+        $m = new EventsM();
         if(isset($_GET['id'])){
             echo ResultFormat($m->find($_GET['id']));
         }else{
@@ -29,9 +29,9 @@ class MapC extends AppC{
 
     public function edit(){
         if(!isset($_POST['name'])) die();
-        $m = new MapsM();
+        $m = new EventsM();
         if(isset($_POST['id'])){
-            $result = $m->save(     $_POST);
+            $result = $m->save(    $_POST);
         }else{
             $result = $m->add($_POST);
         }

@@ -23,6 +23,7 @@ defined('V_URL') || define('V_URL' , BASE_URL.'V/');
 defined('UP_PATH') || define('UP_PATH' , RUN_PATH.'Upload/');
 defined('CONFIG_PATH') || define('CONFIG_PATH' , MFPATH.'Base/Config/');
 defined('STATIC_URL') || define('STATIC_URL' , V_URL.'Static/');
+defined('ASSET_PATH') || define('ASSET_PATH' , MFPATH.'Base/Asset/');
 
 //功能性常量
 defined('REDIS') || define('REDIS' , false);

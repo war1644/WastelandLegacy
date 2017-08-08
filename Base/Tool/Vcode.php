@@ -37,9 +37,9 @@ class Vcode {
 		$str = 'ABCDEFGHIJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
 		$code = substr(str_shuffle($str) , 0 , $len);
 		Session('vcode',$code);
-
-		$color = imagecolorallocate($this->im, mt_rand(0,100),  mt_rand(0,100),  mt_rand(0,100));
-		imagestring($this->im, 5 , 10, 5, $code, $color);
+        $color = imagecolorallocate($this->im, mt_rand(0,100),  mt_rand(0,100),  mt_rand(0,100));
+        imagettftext($this->im, 32, 0, 10, 20, $color, ASSET_PATH.'pix.ttf', $code);
+//        imagestring($this->im, 5 , 10, 5, $code, $color);
 		header('content-type:image/png');
 		imagepng($this->im);
 		imagedestroy($this->im);

@@ -14,7 +14,7 @@
  */
 -->
 <!DOCTYPE html>
-<html lang="zh-CN" dir="ltr">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
@@ -51,9 +51,9 @@
                 </div>
                 <div class="col_md_sign_up">
                     <div class="cont_ba_opcitiy">
-                        <h2>注册</h2>
-                        <p>没有账号，请注册</p>
-                        <button class="btn_sign_up" onclick="cambiar_sign_up()">注册</button>
+                        <h2>？？？</h2>
+                        <p>没账号?，那你来后台高毛</p>
+                        <button class="btn_sign_up" onclick="this.innerHTML='点也没有卵用'"> >_< </button>
                     </div>
                 </div>
             </div>
@@ -76,34 +76,16 @@
                         <button class="btn_login" id="loginAction">登录</button>
                     </div>
                 </form>
-                <!--注册-->
-                <form action="http://e.cn/Public/register" method="post" id="register">
-                    <div class="cont_form_sign_up" style="display: none; opacity: 0;">
-                        <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b
-                                class="close">x</b></a>
-                        <h2>注册</h2>
-                        <input type="text" name="email" placeholder="邮箱或手机">
-                        <input type="text" name="name" placeholder="用户名">
-                        <input type="password" name="password" placeholder="密码">
-                        <input type="password" name="password_confirm" placeholder="确认密码">
-                        <input type="text" name="vcode" class="vcode" placeholder="验证码" style="margin-bottom: 0;">
-                        <img src="/Public/vcode" alt="" style="margin-top: -0.2rem">
-                        <br/>
-                        <span id="cpass" style="display: inline-flex;"></span>
-                        <button class="btn_sign_up">注册</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
     <div class="come_map" style="display: none">
-        <h3>角色状态</h3>
+        <h3>身份识别卡</h3>
         <div class="row1" align="center">
             昵称 : <b class="userName">xxxxx</b><br/><br/>
             <div class="avatar" style="width:24px;height:24px;"></div>
             <br/>
-            <a href="./map.html">进入地图</a><br/><br/>
-            <span class="gensmall"><a href="/Public/logout">退出游戏</a></span><br/><br/>
+            <a href="./Adm/index.html">进入后台</a><br/><br/>
         </div>
     </div>
 </div>
@@ -114,54 +96,22 @@
         document.querySelector("#backMp3").src = "./RPG/Sound/Bgm/Startup.mp3";
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login cont_forms_ch";
         document.querySelector('.cont_form_login').style.display = "block";
-        document.querySelector('.cont_form_sign_up').style.opacity = "0";
-
         setTimeout(function(){  document.querySelector('.cont_form_login').style.opacity = "1"; },400);
-
-        setTimeout(function(){
-            document.querySelector('.cont_form_sign_up').style.display = "none";
-        },200);
     }
 
-    function cambiar_sign_up(at) {
-        $.getJSON('/Job/index?callback=?',function (res) {
-            if (res.code) {
-                var list = res.data;
-                var classnode = '';
-                for (var i in list) {
-                    var images = "'/images/charasets/"+list[i].movePic+"'";
-                    classnode += '<input class="typeradio" type="radio" name="jobId" value="'+list[i].id+'"/><span class="Career" style="background-image:url('+images+')"></span><i>'+list[i].name+'</i>';
-                }
-                $("#cpass").html(classnode);
-            }
-        });
-        document.querySelector("#backMp3").src = "./RPG/Sound/Bgm/NameSetting.mp3";
-
-        document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_sign_up cont_forms_change";
-        document.querySelector('.cont_form_sign_up').style.display = "block";
-        document.querySelector('.cont_form_login').style.opacity = "0";
-
-        setTimeout(function(){  document.querySelector('.cont_form_sign_up').style.opacity = "1";
-        },100);
-
-        setTimeout(function(){   document.querySelector('.cont_form_login').style.display = "none";
-        },400);
-    }
     function ocultar_login_sign_up() {
 
         document.querySelector('.cont_forms').className = "cont_forms";
-        document.querySelector('.cont_form_sign_up').style.opacity = "0";
         document.querySelector('.cont_form_login').style.opacity = "0";
 
         setTimeout(function(){
-            document.querySelector('.cont_form_sign_up').style.display = "none";
             document.querySelector('.cont_form_login').style.display = "none";
         },500);
 
     }
 
     $("#loginAction").click(function () {
-        var data = Lib.prototype.getFormJson('#login');
+        let data = Lib.prototype.getFormJson('#login');
         $.post('/Public/login',data,function (result) {
             if (result.code == 1) {
                 localStorage.setItem("userInfo" , JSON.stringify(result.data));
@@ -169,7 +119,6 @@
                 $(".avatar").css('backgroundImage','url("/images/charasets/'+result.data.movePic+'")');
                 $(".cont_centrar").hide();
                 $(".come_map").show();
-
             } else {
                 refreshVcode();
             }
@@ -184,27 +133,6 @@
     function refreshVcode () {
         $('.refreshVcode').attr('src',"/Public/vcode");
     }
-
-    //ajax交互备用方法
-    //    $("form").submit(function() {
-    //        $(".submit_btn").val('登陆中...');
-    //        // $(".submit_btn").attr('登陆中...');
-    //        var self = $(this);
-    //        $.post(self.attr("action"), self.serialize(), success, "json");
-    //        return false;
-    //
-    //        function success(data) {
-    //            if (data.status) {
-    //                window.location.href = data.url;
-    //            } else {
-    //                // self.find(".check-tips").text(data.info);
-    //                alert(data.info);
-    //                //刷新验证码
-    //                $(".ver_btn").click();
-    //            }
-    //        }
-    //    });
-
 
 
 </script>

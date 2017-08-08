@@ -16,20 +16,19 @@ namespace App\C;
 use App\M\EventsM;
 use App\M\JobsM;
 use App\M\MapsM;
-use App\M\TilesetsM;
 use App\M\UsersM;
-use Base\Tool\TileMapProcess;
 use Base\Tool\Vcode;
 use Base\Tool\Page;
 
 class PublicC extends AppC {
 
     public function index(){
+        die();
 //        $client = stream_socket_client('tcp://s.kingsmith.com.cn:8404');
 //        var_dump($client);
     }
 
-    public function getEventTest(){
+    private function getEventTest(){
         $id = intval($_GET['testEventId']);
         $event = new EventsM(2);
         $eventTestData = [
@@ -51,7 +50,7 @@ class PublicC extends AppC {
         }
     }
 
-    public function getMap(){
+    private function getMap(){
         $respond = ['code' => -1, 'msg' => '无效数据'];
         if (!isset($_POST['uid'])) return $respond;
         $u = new UsersM();
@@ -65,7 +64,7 @@ class PublicC extends AppC {
             return $respond;
         }
     }
-    public function getMapTest() {
+    private function getMapTest() {
         $mapId = intval($_GET['mapId']);
         echo ResultFormat( file_get_contents(V_PATH . "Static/assets/home$mapId.json"));
 
@@ -73,7 +72,7 @@ class PublicC extends AppC {
 
     public function test(){
 //        Session('test','无诶娘');
-        var_dump(Session('test'));
+//        var_dump(Session('test'));
 //        if ($_POST['textScript']){
 //            $event = new EventsM();
 //            list($compiled, $result) = $event->enScript($_POST['textScript']);
@@ -93,24 +92,24 @@ class PublicC extends AppC {
      * 登录
      */
     public function login(){
-//        if (Vcode::check($_POST['vcode'])){
+        if (Vcode::check($_POST['vcode'])){
             $u = new UsersM();
             echo ResultFormat($u->login());
-//        }else{
-//            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
-//        }
+        }else{
+            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
+        }
     }
 
     /**
      * 注册
      */
     public function register(){
-//        if (Vcode::check($_POST['vcode'])){
+        if (Vcode::check($_POST['vcode'])){
             $u = new UsersM();
             echo ResultFormat($u->register());
-//        }else{
-//            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
-//        }
+        }else{
+            echo ResultFormat(['code'=>-1,'msg'=>'验证码错误']);
+        }
     }
 
     /**

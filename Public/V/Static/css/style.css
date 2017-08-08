@@ -18,7 +18,7 @@ body, font, th, td, p, table, textarea, input, select
 
 body#bacBody {
 	margin: 0;
-	background-image:url('http://game.duanxq.cn/images/bgimg/02.jpg');
+	background-image:url('/../images/bgimg/02.jpg');
 	background-repeat: no-repeat;
 	background-size:cover;
 }
@@ -1112,7 +1112,7 @@ textarea#text_script
 
 .cont_form_login > input {
 	padding: 0.5rem 5px;
-	/* margin-left: 0.5rem; */
+	 margin-left: 0.5rem;
 	margin-top: 1rem;
 	width: 10rem;
 	border: none;
