@@ -12,9 +12,9 @@
  * v2017/8/7 10:13 初版
  */
 
-const API = 'http://zregs.com/';
+const API = '/';
 
-if(localStorage.getItem('userInfo')){
+if(!localStorage.getItem('userInfo')){
     location.href = '/V/admin.html';
 }
 

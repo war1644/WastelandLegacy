@@ -14,7 +14,7 @@ namespace App\C;
  * v2017/04/08 初版
  */
 
-namespace App\Admin;
+namespace App\C\Admin;
 use App\M\MapsM;
 
 class MapC extends AdminC{

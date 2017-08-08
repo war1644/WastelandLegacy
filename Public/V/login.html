@@ -14,7 +14,7 @@
  */
 -->
 <!DOCTYPE html>
-<html lang="zh-CN" dir="ltr">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
@@ -27,7 +27,7 @@
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body id="bacBody" style="width: 100vw;height: 100vh;">
-<audio id="backMp3" src="./RPG/Sound/Bgm/Startup.mp3" autoplay loop></audio>
+<audio id="backMp3" src="/Asset/Sound/Bgm/Startup.mp3" autoplay loop></audio>
 <div id="display_body">
     <!--动态背景图-->
     <div class="slideshow">
@@ -111,7 +111,7 @@
 <script src="./Static/js/gameLib.js"></script>
 <script>
     function cambiar_login() {
-        document.querySelector("#backMp3").src = "./RPG/Sound/Bgm/Startup.mp3";
+        document.querySelector("#backMp3").src = "/Asset/Sound/Bgm/Startup.mp3";
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login cont_forms_ch";
         document.querySelector('.cont_form_login').style.display = "block";
         document.querySelector('.cont_form_sign_up').style.opacity = "0";
@@ -129,13 +129,13 @@
                 var list = res.data;
                 var classnode = '';
                 for (var i in list) {
-                    var images = "'/images/charasets/"+list[i].movePic+"'";
+                    var images = "'/Asset/charasets/"+list[i].movePic+"'";
                     classnode += '<input class="typeradio" type="radio" name="jobId" value="'+list[i].id+'"/><span class="Career" style="background-image:url('+images+')"></span><i>'+list[i].name+'</i>';
                 }
                 $("#cpass").html(classnode);
             }
         });
-        document.querySelector("#backMp3").src = "./RPG/Sound/Bgm/NameSetting.mp3";
+        document.querySelector("#backMp3").src = "/Asset/Sound/Bgm/NameSetting.mp3";
 
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_sign_up cont_forms_change";
         document.querySelector('.cont_form_sign_up').style.display = "block";
@@ -166,7 +166,7 @@
             if (result.code == 1) {
                 localStorage.setItem("userInfo" , JSON.stringify(result.data));
                 $(".userName").text(result.data.name);
-                $(".avatar").css('backgroundImage','url("/images/charasets/'+result.data.movePic+'")');
+                $(".avatar").css('backgroundImage','url("/Asset/charasets/'+result.data.movePic+'")');
                 $(".cont_centrar").hide();
                 $(".come_map").show();
 

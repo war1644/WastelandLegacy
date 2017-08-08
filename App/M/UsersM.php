@@ -91,7 +91,7 @@ class UsersM extends AppModel {
 
     private function registerFollow($id){
         $jobs = new JobsM();
-        $field = '`name`,movePic,battlePic, picWidth, picHeight, hpPlus, spPlus, attackPlus, defencePlus, mindPlus, agilityPlus';
+        $field = '`name`,movePic,fightPic, picWidth, picHeight, hpPlus, attackPlus, defendPlus, mindPlus, speedPlus';
         $result = $jobs->getJob($_POST['jobId'],$field);
         if ($result['code']){
             $class = $result['data'];
@@ -104,27 +104,23 @@ class UsersM extends AppModel {
         $hpMax = ( $hpMax < 1 ) ? 1 : $hpMax;
         $hp += $hpMax;
 
-        $sp = $class['spPlus'];
-        $spMax = mt_rand(0, ceil($class['spPlus']/10));
-        $sp += $spMax;
-
         $attack = mt_rand(0, ceil($class['attackPlus']/10));
-        $defence = mt_rand(0, ceil($class['defencePlus']/10));
+        $defence = mt_rand(0, ceil($class['defendPlus']/10));
         $mind = mt_rand(0, ceil($class['mindPlus']/10));
-        $agility = mt_rand(0, ceil($class['agilityPlus']/10));
+        $agility = mt_rand(0, ceil($class['speedPlus']/10));
 
         $config = new ConfigM();
         $result = $config->getConfig(1);
         if ($result['code']) {
             $result = $result['data'];
         } else {
-            $result['defaultLocation'] = '0,0,0,0';
+            $result['defaultLocation'] = '2,2,2,0';
         }
 
         list($mapId, $mapX, $mapY, $mapDir) = explode(',', $result['defaultLocation']);
 
-        $sql = "UPDATE $this->table SET hp=?, hpMax=?, sp=?, spMax=?, attack=?, defence=?, mind=?, agility=?,movePic=?, battlePic=?, picWidth=?, picHeight=?, mapId=?, mapX=?, mapY=?, mapDir=? WHERE id=?";
-        $result = $this->executeSql($sql,[$hp,$hpMax,$sp,$spMax,$attack,$defence, $mind, $agility, $class['movePic'], $class['battlePic'], $class['picWidth'], $class['picHeight'],$mapId, $mapX, $mapY, $mapDir ,$id]);
+        $sql = "UPDATE $this->table SET hp=?, hpMax=?, attack=?, defend=?, mind=?, speed=?,movePic=?, fightPic=?, picWidth=?, picHeight=?, mapId=?, mapX=?, mapY=?, mapDir=? WHERE id=?";
+        $result = $this->executeSql($sql,[$hp,$hpMax,$attack,$defence, $mind, $agility, $class['movePic'], $class['fightPic'], $class['picWidth'], $class['picHeight'],$mapId, $mapX, $mapY, $mapDir ,$id]);
         return $result;
     }
 
@@ -179,9 +175,9 @@ class UsersM extends AppModel {
             $this->hp += $gain_hp;
             $this->mp += $gain_mp;
             $this->attack += $gain_attack;
-            $this->defence += $gain_defense;
+            $this->defend += $gain_defense;
             $this->mind += $gain_mind;
-            $this->agility += $gain_hp;
+            $this->speed += $gain_hp;
             $this->level += $gain_level;
             $this->exp += $gain_exp;
 

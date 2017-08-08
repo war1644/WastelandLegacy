@@ -27,7 +27,7 @@
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body id="bacBody" style="width: 100vw;height: 100vh;">
-<audio id="backMp3" src="./RPG/Sound/Bgm/Startup.mp3" autoplay loop></audio>
+<audio id="backMp3" src="/Asset/Sound/Bgm/Startup.mp3" autoplay loop></audio>
 <div id="display_body">
     <!--动态背景图-->
     <div class="slideshow">
@@ -52,7 +52,7 @@
                 <div class="col_md_sign_up">
                     <div class="cont_ba_opcitiy">
                         <h2>？？？</h2>
-                        <p>没账号?，那你来后台高毛</p>
+                        <p>没账号?，那你来后台搞毛</p>
                         <button class="btn_sign_up" onclick="this.innerHTML='点也没有卵用'"> >_< </button>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
 <script src="./Static/js/gameLib.js"></script>
 <script>
     function cambiar_login() {
-        document.querySelector("#backMp3").src = "./RPG/Sound/Bgm/Startup.mp3";
+        document.querySelector("#backMp3").src = "/Asset/Sound/Bgm/Startup.mp3";
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login cont_forms_ch";
         document.querySelector('.cont_form_login').style.display = "block";
         setTimeout(function(){  document.querySelector('.cont_form_login').style.opacity = "1"; },400);
@@ -116,7 +116,7 @@
             if (result.code == 1) {
                 localStorage.setItem("userInfo" , JSON.stringify(result.data));
                 $(".userName").text(result.data.name);
-                $(".avatar").css('backgroundImage','url("/images/charasets/'+result.data.movePic+'")');
+                $(".avatar").css('backgroundImage','url("/Asset/charasets/'+result.data.movePic+'")');
                 $(".cont_centrar").hide();
                 $(".come_map").show();
             } else {

@@ -17,12 +17,12 @@ namespace App\M;
 
 
 class JobsM extends AppModel {
-    private  $hostNpc = 'http://game.duanxq.cn/images/charasets/';
-    private  $hostBattle = 'http://game.duanxq.cn/images/battler/';
+    private  $hostNpc = '/images/charasets/';
+    private  $hostBattle = '/images/battler/';
 
     public function getCurr() {
 //        $sql = "SELECT `name`,CONCAT('$this->hostNpc',movePic) as movePic,CONCAT('$this->hostBattle',battlePic) as battlePic,description FROM $this->table WHERE id>? limit 10";
-        $sql = "SELECT id,`name`,movePic,battlePic,description FROM $this->table limit 6";
+        $sql = "SELECT id,`name`,movePic,fightPic,description FROM $this->table limit 6";
         $result = $this->executeSql($sql,[],'all');
         if ($result) {
             return ['code' => 1, 'msg' => '', 'data' => $result];

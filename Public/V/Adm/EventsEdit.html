@@ -45,8 +45,17 @@
                             <option value="item">物品</option>
                         </select>
                     <li class="list-group-item">事件名：<input type="text" name="name"></li>
+                    <li class="list-group-item">
+                        <p>所在地图场景 :
+                            <select name="eventMapId" id="eventMapId"></select>
+                        </p>
+                    </li>
+                    <li class="list-group-item"> 所在地图场景X坐标 :<input name="x" id="x"></li>
+                    <li class="list-group-item"> 所在地图场景Y坐标 :<input name="x" id="y"></li>
                     <li class="list-group-item">事件图片：
-                        <input type="text" name="img">
+                        <input type="text" name="img" onchange="
+                          $('#eventImg').attr('src','/Asset/'+this.value);
+                        ">
                         <img id="eventImg" src="">
                     </li>
                     <li class="list-group-item">分割row：<input type="text" name="row" value="4"></li>
@@ -100,30 +109,16 @@
 </body>
 
 <script>
+    $.getJSON(API+'Map/index?callback=?',{},function (e) {
+        console.log(e);
+        let len = e.length,obj,addContent = '';
+        for (let i = 0; i < len; i++) {
+            obj = e[i];
+            addContent+=`<option value="${obj['id']}">${obj['name']}</option>`;
+        }
+        $('#eventMapId').append(addContent);
+    });
 
-    let id = location.href.split('=')[1];
-
-    if(id){
-        console.log('id',id);
-        $('#save_form').append('<input type="hidden" name="id" value="'+id+'">');
-        $.getJSON(API+'Event/index?id='+id+'&callback=?',{},function (e) {
-            console.log(e);
-
-            $('select[name="type"]').val(e.type);           
-            $('input[name="name"]').val(e.name); 
-            $('input[name="img"]').val(e.img);
-            $('input[name="row"]').val(e.row);
-            $('input[name="col"]').val(e.col);
-            $('select[name="move"]').val(e.move);
-            $('select[name="dir"]').val(e.dir); 
-            $('textarea[name="textScript"]').val(e.textScript);
-
-        });
-    }
-
-</script>
-
-<script>
     $('#sub').click(function () {
         document.save_form.submit();
     });
@@ -220,6 +215,24 @@
                 break;
         }
         $('#textScript').val(eventTextScript+'\n');
+    }
+
+    let id = location.href.split('=')[1];
+
+    if(id){
+        console.log('id',id);
+        $('#save_form').append('<input type="hidden" name="id" value="'+id+'">');
+        $.getJSON(API+'Event/index?id='+id+'&callback=?',{},function (e) {
+            $('select[name="type"]').val(e.type);
+            $('input[name="name"]').val(e.name);
+            $('input[name="img"]').val(e.img);
+            $('input[name="row"]').val(e.row);
+            $('input[name="col"]').val(e.col);
+            $('select[name="move"]').val(e.move);
+            $('select[name="dir"]').val(e.dir);
+            $('textarea[name="textScript"]').val(e.textScript);
+
+        });
     }
 </script>
 </html>

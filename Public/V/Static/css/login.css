@@ -15,7 +15,7 @@
 
 body#bacBody {
     margin: 0;
-    background-image:url('/../images/bgimg/02.jpg');
+    background-image:url('/V/Static/img/bgimg/02.jpg');
     background-repeat: no-repeat;
     background-size:cover;
 }
