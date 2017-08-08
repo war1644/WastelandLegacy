@@ -355,7 +355,7 @@ let Fight = {
         // 有装备的战斗效果
         if(hero.getWeapon){
             let item1 = hero.getWeapon();
-            if (item1) effect = item1.atkEff;
+            if (item1) effect = item1.attackAnimation;
         }
 
         Fight.playAction(hero, toHero, effect, function () {
@@ -681,11 +681,11 @@ let Fight = {
      * */
     actionQueue:()=>{
         if(Fight.isForestall()) {
-            Fight.infoCommand('我方偷袭敌人');
+            Fight.infoCommand('我方偷袭敌人!');
             //偷袭敌人 我方所有人员先行攻击
             Fight.queue = mainTeam.heroList.concat(Fight.eTeam.heroList);
         } else if(Fight.isSneak()) {
-            Fight.infoCommand('被敌人偷袭');
+            Fight.infoCommand('被敌人偷袭!');
             //被偷袭 敌方所有人员先行攻击
             Fight.queue = Fight.eTeam.heroList.concat(mainTeam.heroList);
         }else {
@@ -705,28 +705,28 @@ let Fight = {
      */
     physicalAttack:(heroAtk, heroDef)=>{
         let atk, def;
-        let weaponAddOn = 1;
-        let armorAddOn = 1;
+        let weaponAttack = 1;
+        let armorDefend = 1;
         let vaporAtk, vaporDef;
         // 有装备，加成
         if (heroAtk.weapon >= 0) {
-            let aon = heroAtk.getWeapon().addOn;
-            if (aon) weaponAddOn = aon;
+            let aon = heroAtk.getWeapon().attack;
+            if (aon) weaponAttack = aon;
         }
         // 士气加成
         vaporAtk = (heroAtk.Hp / heroAtk.maxHp + 1) / 2 * 100;
         // 攻击力
-        atk = (heroAtk.attack+vaporAtk)* weaponAddOn;
+        atk = heroAtk.attack + vaporAtk + weaponAttack;
         // 防守方护甲加成
         if (heroDef.armor >= 0) {
-            let aon = heroDef.getArmor().addOn;
-            if (aon) armorAddOn = aon;
+            let aon = heroDef.getArmor().defend;
+            if (aon) armorDefend = aon;
         }
         // 士气加成
         vaporDef= (heroDef.Hp/ heroDef.maxHp+ 1)/ 2* 100;
         // 防御力
-        def= (heroDef.defend+vaporDef)*armorAddOn;
-        // 攻击效果随机加成 0.9~1.1
+        def= heroDef.defend + vaporDef + armorDefend;
+        // 攻击效果随机加成 0.9 ~ 1.1
         let ran= (rangeRand(0, 100)+ 1000)/ 1000;
         let result= (atk- def/ 2)* ran;
         if (result<= 0) {

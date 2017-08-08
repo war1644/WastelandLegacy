@@ -100,6 +100,9 @@ let HeroPlayer = {
     weapon: -1,
     armor: -1,
     ornament: -1,
+    hand:-1,
+    foot:-1,
+    head:-1,
 	//是否在战车内
 	inTank: false,
     //是否在战场
@@ -107,9 +110,9 @@ let HeroPlayer = {
 	// 设置等级，直接影响的是上限值
 	setLevel:function(lv){
 		this.Level = lv;
-        this.attack =  (60 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0;
-        this.defend =  (44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0;
-		this.maxHp = (200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv - 200)>>0;
+        this.attack = (60 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0;
+        this.defend = (44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0;
+        this.maxHp = (200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv - 200)>>0;
         this.maxExp= (210 * Math.sqrt(lv) - 230 * lv + 200 * lv * lv - 110)>>0;
 	},
     // 设置装甲值
@@ -167,7 +170,7 @@ let HeroPlayer = {
 	},
 	// 更换武器
 	changeWeapon: function(id){
-		let a= this.weapon;
+		let a = this.weapon;
 		this.weapon= id;
 		return Number(a);
 	},
@@ -183,6 +186,24 @@ let HeroPlayer = {
 		this.ornament= id;
 		return Number(a);
 	},
+    // 更换手
+    changeHand:function(id){
+        let a= this.hand;
+        this.hand= id;
+        return Number(a);
+    },
+    // 更换装饰
+    changeFoot:function(id){
+        let a= this.foot;
+        this.foot= id;
+        return Number(a);
+    },
+    // 更换装饰
+    changeHead:function(id){
+        let a= this.head;
+        this.head = id;
+        return Number(a);
+    },
 	getWeapon:function(){
 		return ItemList[this.weapon];
 	},

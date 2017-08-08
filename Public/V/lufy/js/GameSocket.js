@@ -24,9 +24,9 @@ let GameSocket = {
     onLink:()=> {
         socket = new WebSocket("ws://192.168.2.208:8886");
         socket.onopen = function () {
-            RPG.newGame();
             Lib.showInfo('握手成功');
             if (socket.readyState === 1) {
+                RPG.newGame();
                 socket.wlSend('login');
             }
         };

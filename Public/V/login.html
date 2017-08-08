@@ -102,7 +102,7 @@
             昵称 : <b class="userName">xxxxx</b><br/><br/>
             <div class="avatar" style="width:24px;height:24px;"></div>
             <br/>
-            <a href="./map.html">进入地图</a><br/><br/>
+            <a href="./lufy/index.html">进入游戏</a><br/><br/>
             <span class="gensmall"><a href="/Public/logout">退出游戏</a></span><br/><br/>
         </div>
     </div>
@@ -164,7 +164,7 @@
         var data = Lib.prototype.getFormJson('#login');
         $.post('/Public/login',data,function (result) {
             if (result.code == 1) {
-                localStorage.setItem("userInfo" , JSON.stringify(result.data));
+                localStorage.setItem("wlUserInfo" , JSON.stringify(result.data));
                 $(".userName").text(result.data.name);
                 $(".avatar").css('backgroundImage','url("/Asset/charasets/'+result.data.movePic+'")');
                 $(".cont_centrar").hide();

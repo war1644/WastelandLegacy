@@ -324,6 +324,9 @@ function gameInit(){
     //数据初始化优先于显示部分的初始化
     LGlobal.aspectRatio = PORTRAIT;
     Lib.bgm('start_mp3',true);
+    $.getJSON(API+'Event/getList?callback=?',{playerName:playerName},function (e) {
+        
+    });
     //游戏层显示初始化
     gameLayerInit();
 

@@ -5,13 +5,14 @@
  *  ▄▅████☆RED█WOLF☆███▄▄▃▂
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
- * 客户端基础类
+ * 客户端基础类库
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
  * v2016/12/9 初版
  *
  */
+const API = '/';
 //扩展send方法
 WebSocket.prototype.wlSend = function (type,content) {
     let s = this;
@@ -732,16 +733,16 @@ let UI = {
         // bitmap.y= gap;
         // effectLayer.addChild (bitmap);
         // 物品名称
-        let text = UI.text(item1.name,gap* 2+ 30,gap+ 5);
+        let text = UI.simpleText(item1.name+'         '+num,undefined,undefined,50,2*gap);
         effectLayer.addChild(text);
         // 物品数量
-        let numText = text.clone();
-        numText.x = 180;
-        numText.text = num;
-        effectLayer.addChild(numText);
+        // let numText = text.clone();
+        // numText.x = 180;
+        // numText.text = ;
+        // effectLayer.addChild(numText);
         setTimeout(function(){
             effectLayer.removeAllChild();
-        }, 1000);
+        }, 2000);
     },
     /**
      * diy按钮 简单的边框+文字组成

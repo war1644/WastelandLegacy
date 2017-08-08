@@ -41,12 +41,13 @@ let PlayerTeam = {
 			let item = RPG.beget(Item);
 			item.index = id;
 			item.num = num;
-            item.name = ItemList[id].name;
-            item.description = ItemList[id].description;
-            item.kind = ItemList[id].kind;
-            item.type = ItemList[id].type;
-            item.addOn = ItemList[id].addOn;
-            item.cost = ItemList[id].cost;
+			RPG.extend(item,ItemList[id]);
+            // item.name = ItemList[id].name;
+            // item.description = ItemList[id].description;
+            // item.kind = ItemList[id].kind;
+            // item.type = ItemList[id].type;
+            // item.addOn = ItemList[id].addOn;
+            // item.cost = ItemList[id].cost;
 			this.itemList.push(item);
 		}
 		if (visible) UI.showGetItem(id, num);
@@ -68,22 +69,34 @@ let PlayerTeam = {
 		} else {
 			this.itemList= this.itemList.slice(0, itemId).concat(this.itemList.slice(itemId+ 1));
 		}
-		if (item1.getItem().kind=== 2){
-			// 使用类
-			item1.useTo(hero1);
-		} else if (item1.getItem().kind=== 1){
-			// 装配类
-			switch (item1.getItem().type) {
-				case 1: 
-					this.addItem(hero1.changeWeapon(item1.index), 1);
-					break;
-				case 2: 
-					this.addItem(hero1.changeArmor(item1.index), 1);
-					break;
-				case 3: 
-					this.addItem(hero1.changeOrn(item1.index), 1);
-					break;
-			}
+
+		switch (item1.getItem().type){
+			case 1:
+			case 3:
+                // 装配类
+                switch (item1.getItem().position) {
+                    case 1:
+                        this.addItem(hero1.changeWeapon(item1.index), 1);
+                        break;
+                    case 2:
+                        this.addItem(hero1.changeArmor(item1.index), 1);
+                        break;
+                    case 3:
+                        this.addItem(hero1.changeHand(item1.index), 1);
+                        break;
+                    case 4:
+                        this.addItem(hero1.changeFoot(item1.index), 1);
+                        break;
+                    case 5:
+                        this.addItem(hero1.changeHead(item1.index), 1);
+                        break;
+                }
+                break;
+			case 2:
+			case 4:
+                // 使用类
+                item1.useTo(hero1);
+                break;
 		}
 	},
 

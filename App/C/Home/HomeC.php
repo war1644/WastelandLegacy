@@ -19,7 +19,13 @@ use Base\Lib\C;
 class HomeC extends C{
     public function __construct() {
         parent::__construct();
-        if (!Session('uid')) die();
+        if(!isset($_GET['player'])) die();
+        if (!Session($_GET['player'])) die();
+    }
+
+    public function getMyData(){
+//        $name = $_GET['player'];
+//        Session($_GET['player'])
     }
 
 

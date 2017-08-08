@@ -14,6 +14,7 @@ namespace App\C;
  * v2016/12/9 初版
  */
 use App\M\EventsM;
+use App\M\ItemsM;
 use App\M\JobsM;
 use App\M\MapsM;
 use App\M\UsersM;
@@ -134,6 +135,16 @@ class PublicC extends AppC {
     public function vcode() {
         $vcode = new Vcode();
         $vcode->scode();
+    }
+
+    public function getMyData(){
+        $m = new MapsM();
+        $map = $m->getList();
+        $m = new EventsM();
+        $event = $m->getList();
+        $m = new ItemsM();
+        $item = $m->getList();
+        echo ResultFormat(['map'=>$map,'event'=>$event,'item'=>$item]);
     }
 
 }

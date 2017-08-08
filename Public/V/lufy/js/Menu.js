@@ -133,7 +133,7 @@ let Menu = {
                     text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
                     break;
                 case 'buy':
-                    text = UI.text(item1.name+'    '+item1.cost+'G',gap* 2+ 30,i* 30+ gap+ 5);
+                    text = UI.text(item1.name+'    '+item1.price+'G',gap* 2+ 30,i* 30+ gap+ 5);
                     break;
                 default:
                     text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
@@ -224,21 +224,21 @@ let Menu = {
         // item1 = mainTeam.itemList[itemId].getItem();
         item1 = Menu.currentItemList[Menu.chooseItem];
         text = UI.text('',gap* 2,5);
-        console.log('item1',item1);
-        switch (item1.kind){
+        switch (item1.type){
             case 1:
+            case 3:
                 text.text = item1.name+ "装配：";
                 break;
             case 2:
+            case 4:
                 text.text = item1.name+ "使用：";
                 break;
-            case 4:
-            case 3:
+            case 5:
                 text.text = item1.name+ "不可用";
                 break;
         }
         RPG.descLayer.addChild(text);
-        if ( (item1.kind === 1) || (item1.kind === 2) ) {
+        if(item1.type!==5){
             // 显示姓名
             Menu.nameText = text.clone();
             Menu.nameText.x = text.x+ text.getWidth()+ gap;
@@ -254,51 +254,8 @@ let Menu = {
                 // 测试物品效果的英雄
                 let hero2= RPG.beget(HeroPlayer);
                 RPG.extend(hero2, hero);
-                //
-                chara.x = cc* i+ cc/ 2- STEP/ 2;
-                chara.y = gap* 2+ 5;
-                // 根据物品的属性，增加相应属性值的显示
-                if (item1.kind===1) {
-                    // 装备类，显示现有的装配物
-                    let tempItem;
-                    switch (item1.type){
-                        case 1:
-                            tempItem= hero.weapon;
-                            break;
-                        case 2:
-                            tempItem= hero.armor;
-                            break;
-                        case 3:
-                            tempItem= hero.ornament;
-                            break;
-                    }
-
-                } else if (item1.kind=== 2) {
-                    // 使用类，显示对应的值
-                    let text1 = text.clone();
-                    text1.x = chara.x+ STEP/ 2;
-                    text1.y = chara.y+ STEP+ 5;
-                    text1.textAlign= "center";
-                    if (item1.type=== 1) {
-                        text1.text = "HP="+ hero.Hp;
-                    }
-                    RPG.descLayer.addChild(text1);
-                    // 预计使用效果
-                    // item1.effect(hero2);
-                    // let text2 = text1.clone();
-                    // if (item1.type=== 1) {
-                    // 	text2.text = "HP="+ hero2.Hp;
-                    // }
-                    // if (text2.text=== text.text) {
-                    // 	text2.color = "#FFFFFF";
-                    // } else {
-                    // 	text2.color = "#00FFFF";
-                    // }
-                    // text2.visible= false;
-                    // RPG.descLayer.addChild(text2);
-                    // Menu.showItemEffectLabel.push(text2);
-                    // Menu.showItemEffectLabel.push(text);
-                }
+                chara.x = cc* i + (cc>>1)- (STEP>>1);
+                chara.y = gap* 2 + 5;
                 RPG.descLayer.addChild(chara);
             }
             Menu.chooseItem= itemId;
@@ -315,11 +272,6 @@ let Menu = {
             Menu.chooseItem= -1;
             return;
         }
-
-        // 图标作为拖动物
-        // let bitmapData = new LBitmapData(assets["iconset"], ItemList[item1.index].pic.x*Menu.iconStep, ItemList[item1.index].pic.y*Menu.iconStep, Menu.iconStep, Menu.iconStep);
-        // Menu.dragingItem = new LBitmap(bitmapData);
-
     },
 	// 显示物品使用效果
     showLabel:(itemId)=>{
@@ -688,7 +640,6 @@ let Menu = {
         ax = ax- talkLayer.x;
         ay = ay- talkLayer.y;
 
-
         let	iconMenuItem;
         Menu.cmdChoose= -1;
         let len = Menu.iconMenu.length;
@@ -882,8 +833,8 @@ let Menu = {
             let item1 = Menu.currentItemList[cc];
             let select,index;
             Menu.dragTimer = setTimeout(function(){
-                console.log('调用了',item1.kind);
-                switch (item1.kind){
+                switch (item1.type){
+                    case 3:
                     case 1:
                         select = {msg:"确认装备么？",option:[
                             {text:'是',action:()=>{
@@ -907,10 +858,9 @@ let Menu = {
                                 Fight.menu.visible = true;
                             }},
                         ]};
-                        Talk.setTalkPos('middle');
                         Talk.makeChoice(select,Menu.touchLayer);
-                        Talk.setTalkPos('bottom');
                         break;
+                    case 4:
                     case 2:
                         let list = Fight.eTeam.heroList.concat(Fight.pTeam.heroList),optionList=[];
                         for (let i = 0; i < list.length; i++) {
@@ -925,12 +875,9 @@ let Menu = {
                             }});
                         }
                         select = {msg:"对谁使用？",option:optionList};
-                        Talk.setTalkPos('middle');
                         Talk.makeChoice(select,Menu.touchLayer);
-                        Talk.setTalkPos('bottom');
                         break;
-                    case 4:
-                    case 3:
+                    case 5:
                         Menu.touchLayer.addChild(UI.diyButton(200, 40,(WIDTH-200)>>1, HEIGHT>>1,'该物品不能使用',function () {
 
                              Menu.touchLayer.removeAllChild();
@@ -951,7 +898,7 @@ let Menu = {
         // 显示单一物品详细信息
         item1 = Menu.currentItemList[Menu.chooseItem];
         text = UI.text('给谁：',gap* 2,5);
-        Menu.itemCost = item1.cost;
+        Menu.itemCost = item1.price;
         RPG.descLayer.addChild(text);
         // 显示姓名
         Menu.nameText = text.clone();
@@ -987,8 +934,8 @@ let Menu = {
         RPG.descLayer.removeAllChild();
         // 显示单一物品详细信息
         item1 = Menu.currentItemList[Menu.chooseItem];
-        text = UI.text(item1.name+'呀，好像很破的样子。'+item1.cost+'吧，卖么？',gap,gap);
-        Menu.itemCost = item1.cost;
+        text = UI.text(item1.name+'呀，好像很破的样子。'+item1.price+'吧，卖么？',gap,gap);
+        Menu.itemCost = item1.price;
         RPG.descLayer.addChild(text);
         // 显示姓名
         Menu.nameText = text.clone();

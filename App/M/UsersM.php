@@ -79,8 +79,11 @@ class UsersM extends AppModel {
         $result = $this->find($id);
         if ($result) {
             if(!defined('ADMIN')){
-                define('ADMIN',$result['id']);
-                Session('ADMIN',$result['id']);
+                if( in_array($result['id'],[1,2,3,4,5])) {
+                    define('ADMIN',$result['id']);
+                    Session('ADMIN',$result['id']);
+                }
+                Session($result['name'],json_encode($result,JSON_UNESCAPED_UNICODE));
             }
             unset($result['password'],$result['salt']);
             return ['code' => 1, 'msg' => '', 'data' => $result];
