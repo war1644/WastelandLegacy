@@ -69,7 +69,7 @@
                         <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b
                                 class="close">x</b></a>
                         <h2>登录</h2>
-                        <input type="text" name="name" placeholder="用户名">
+                        <input type="text" name="name" placeholder="游戏昵称">
                         <input type="password" name="password" placeholder="密码">
                         <input type="text" name="vcode" class="vcode" placeholder="验证码">
                         <img class="refreshVcode" src="/Public/vcode" alt="" style="margin-top: 1rem">
@@ -77,15 +77,15 @@
                     </div>
                 </form>
                 <!--注册-->
-                <form action="http://e.cn/Public/register" method="post" id="register">
+                <form action="/Public/register" method="post" id="register">
                     <div class="cont_form_sign_up" style="display: none; opacity: 0;">
                         <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b
                                 class="close">x</b></a>
                         <h2>注册</h2>
-                        <input type="text" name="email" placeholder="邮箱或手机">
-                        <input type="text" name="name" placeholder="用户名">
+                        <!--<input type="text" name="email" placeholder="邮箱（找回密码用）">-->
+                        <input type="text" name="name" placeholder="游戏昵称">
                         <input type="password" name="password" placeholder="密码">
-                        <input type="password" name="password_confirm" placeholder="确认密码">
+                        <!--<input type="password" name="password_confirm" placeholder="确认密码">-->
                         <input type="text" name="vcode" class="vcode" placeholder="验证码" style="margin-bottom: 0;">
                         <img src="/Public/vcode" alt="" style="margin-top: -0.2rem">
                         <br/>
@@ -124,13 +124,14 @@
     }
 
     function cambiar_sign_up(at) {
-        $.getJSON('/Job/index?callback=?',function (res) {
+        $.getJSON('/Public/jobs?callback=?',function (res) {
             if (res.code) {
+                console.log(res);
                 var list = res.data;
                 var classnode = '';
                 for (var i in list) {
-                    var images = "'/Asset/charasets/"+list[i].movePic+"'";
-                    classnode += '<input class="typeradio" type="radio" name="jobId" value="'+list[i].id+'"/><span class="Career" style="background-image:url('+images+')"></span><i>'+list[i].name+'</i>';
+                    var images = "/Asset/人物行走图/"+list[i].movePic+".png";
+                    classnode += '<input class="typeradio" type="radio" name="jobName" value="'+list[i].name+'"/><span class="Career" style="background-image:url('+images+')"></span><i>'+list[i].name+'</i>';
                 }
                 $("#cpass").html(classnode);
             }

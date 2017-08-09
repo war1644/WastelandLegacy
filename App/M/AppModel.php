@@ -20,4 +20,25 @@ class AppModel extends M{
         $sql = "SELECT $field FROM $this->table";
         return $this->executeSql($sql,[],'all');
     }
+
+    public function getEvent($field='*') {
+        $sql = "SELECT $field FROM $this->table";
+        return $this->executeSql($sql,[],'all');
+    }
+
+    /**
+     * 获取数据
+     */
+    public function getData($data=false,$mode='row',$field='*') {
+        if($data) {
+            $keys = array_keys( $data );
+            $values = array_values( $data );
+            $str = join( '`=? and `', $keys );
+            $sql = "SELECT $field FROM $this->table WHERE $str=?";
+            return $this->executeSql($sql,$values,$mode);
+        }else{
+            $sql = "SELECT $field FROM $this->table";
+            return $this->executeSql($sql,[],'all');
+        }
+    }
 }

@@ -8,7 +8,7 @@
         talk: talkList,
         // 为了表达复杂情节，须预存一些人物
         storyList: [],
-        bgm:'town_mp3',
+        music:'town_mp3',
         events: [
             //
             {type:"npc", img:"黑色梅卡瓦", x:11,  y:19,action:()=>{
@@ -24,7 +24,7 @@
                         ]);
                         Talk.waitTalk(()=>{
                             RPG.pushState(RPG.FIGHT_RESULT);
-                            RPG.flickerAnimation(Fight.bossFight,2);
+                            RPG.flickerAnimation(Fight.bossFight,2,60);
                         });
                         RPG.setSwitch('wolf已战斗');
                     });
@@ -51,6 +51,7 @@
                     });
                 });
                 Talk.startTalk(talkList.雷娜);
+
             }},
             /*{type:"auto",visible: ()=>{return (!RPG.checkSwitch("gameInitAutoTalk"));},
                 action: function() {
@@ -102,6 +103,7 @@
             }},
 
         ],
+
     },
     stage02:{
         name: "战车工厂",

@@ -37,6 +37,12 @@ Macaw::any('Event/(:all)',function ($p){
     $c->method = $p;
     $c->$p();
 });
+Macaw::any('Job/(:all)',function ($p){
+    $c = new App\C\Admin\JobC();
+    $c->method = $p;
+    $c->$p();
+});
+
 
 Macaw::any('Public/(:all)',function ($p){
     $c = new App\C\PublicC();

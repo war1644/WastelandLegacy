@@ -13,7 +13,7 @@ function Character(isHero=false,move=3,data,row=4,col=4,speed=3, actEvent=false)
 	let self = this;
 	self.isHero = isHero;
 	// 1=随机自动；2=指定路线；3=外部装饰
-	self.moveMode= move;
+	self.moveMode= Number(move);
 	self.rpgEvent = actEvent;
     self.callback = false;
 	//设定人物动作速度

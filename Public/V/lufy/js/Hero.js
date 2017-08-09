@@ -92,6 +92,7 @@ let HeroPlayer = {
     // 各种战斗信息
     Hp: 100,
     Sp: 0,
+    maxSp:0,
     Level: 1,
     Exp: 0,
     // 升级经验值

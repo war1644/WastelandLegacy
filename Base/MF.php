@@ -28,7 +28,7 @@ defined('ASSET_PATH') || define('ASSET_PATH' , MFPATH.'Base/Asset/');
 //功能性常量
 defined('REDIS') || define('REDIS' , false);
 defined('APP_PATH') || define('APP_PATH' , MFPATH.'App/');
-
+defined('CACHE_PATH') || define('CACHE_PATH',RUN_PATH.'Cache/');
 /***********************框架需要的全局内容可以在此引入**************************/
 //全局方法
 include MFPATH."Base/Lib/F.php";

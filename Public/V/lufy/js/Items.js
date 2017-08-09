@@ -8,7 +8,7 @@
 
 let ItemList= [
 
-		{cost:10,name:"迫击炮", kind: 1, type: 1,  attackAnimation:"pSwipe", description:"定位自己的位置，以及呼叫卫星攻击", effect:(hero)=>{hero.changeWeapon(0);}},
+		// {cost:10,name:"迫击炮", kind: 1, type: 1,  attackAnimation:"pSwipe", description:"定位自己的位置，以及呼叫卫星攻击", effect:(hero)=>{hero.changeWeapon(0);}},
 
 	];
 

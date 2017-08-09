@@ -109,7 +109,7 @@ let Talk = {
      * 关闭对话框
      */
     closeTalk:(del=0)=>{
-        console.warn('调用colse');
+        // console.warn('调用colse');
         //将对话层清空
         Talk.layer.removeAllChild();
         //对话结束
@@ -174,7 +174,7 @@ let Talk = {
         }
         // 游戏状态切换----对话中
         if (!RPG.checkState(RPG.IN_TALKING)){
-            console.log('checkState');
+            // console.log('checkState');
             //进入地图等待状态
             RPG.pushState(RPG.MAP_WAITING);
             RPG.pushState(RPG.IN_TALKING);
@@ -280,7 +280,7 @@ let Talk = {
                 // 不可见的对象，不触发
                 if (!npc.visible) continue;
                 //判断前面有npc，有则开始对话
-                if ((npc.px === tx && npc.py === ty) || (!player.move && (npc.px === x && npc.py === y))){
+                if ((npc.px == tx && npc.py == ty) || (!player.move && (npc.px == x && npc.py == y))){
                     if (npc.rpgEvent) {
                         // 首先转身
                         npc.anime.setAction(3- player.direction);

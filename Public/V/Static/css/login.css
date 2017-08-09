@@ -381,7 +381,7 @@ body#bacBody {
     float: left;
     width: 3.1rem;
     margin-bottom: 2rem;
-    margin-left: 1.2rem;
+    margin-left: 1.6rem;
 }
 .Career{
     display: inline-block;
@@ -454,3 +454,9 @@ body#bacBody {
     line-height: 30px;
 }
 /*去管理面板 end*/
+
+@media (min-width: 600px) {
+    .facet_sidebar {
+        display: none;
+    }
+}

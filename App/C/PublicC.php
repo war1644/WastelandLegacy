@@ -24,9 +24,7 @@ use Base\Tool\Page;
 class PublicC extends AppC {
 
     public function index(){
-        die();
-//        $client = stream_socket_client('tcp://s.kingsmith.com.cn:8404');
-//        var_dump($client);
+        echo file_get_contents('D:/www/game/WastelandLegacy/Base/Asset/2.json');
     }
 
     private function getEventTest(){
@@ -138,13 +136,16 @@ class PublicC extends AppC {
     }
 
     public function getMyData(){
+        if(!isset($_GET['id'])) die();
         $m = new MapsM();
-        $map = $m->getList();
+        $map = $m->find($_GET['id']);
+        $filename = iconv('utf-8','gb2312',$map['name']);
+        $map['map'] = file_get_contents(ASSET_PATH.$filename.'.json');
         $m = new EventsM();
-        $event = $m->getList();
+        $map['events'] = $m->getData(['eventMapId'=>$map['id']],'all');
         $m = new ItemsM();
-        $item = $m->getList();
-        echo ResultFormat(['map'=>$map,'event'=>$event,'item'=>$item]);
+        $map['items'] = $m->getData(['place'=>$map['id']],'all');
+        echo ResultFormat(['stage'=>$map]);
     }
 
 }

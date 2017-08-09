@@ -32,7 +32,7 @@ class JobsM extends AppModel {
     }
 
     public function getJob($id,$field='*') {
-        $sql = "SELECT $field FROM $this->table WHERE id = ?";
+        $sql = "SELECT $field FROM $this->table WHERE name = ?";
         $result = $this->executeSql($sql,[$id]);
         if ($result) {
             return ['code' => 1, 'msg' => '', 'data' => $result];

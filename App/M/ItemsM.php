@@ -17,15 +17,6 @@ namespace App\M;
 
 
 class ItemsM extends AppModel {
-    /**
-     * 获取帐号信息
-     */
-    public function getAuth($data,$field='*') {
-        $keys = array_keys($data);
-        $values = array_values($data);
-        $str = join('=? and ',$keys);
-        $sql = "SELECT $field FROM $this->table WHERE $str=?";
-        return $this->executeSql($sql,$values);
-    }
+
 
 }

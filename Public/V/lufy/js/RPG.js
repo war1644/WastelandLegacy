@@ -298,7 +298,14 @@ let RPG = {
             // 按钮被透过窗口点击
             if (RPG.checkState(RPG.IN_COVER)) {
                 if(!playerName){
-                    playerName = prompt('来个名字吧：');
+                    // playerName = prompt('来个名字吧：');
+                    if(!Lib.userInfo){
+                        Lib.userInfo = JSON.parse(localStorage.getItem('wlUserInfo'));
+                        if(!Lib.userInfo){
+                            alert('请登录');
+                        }
+                        playerName = Lib.userInfo.name;
+                    }
                     if(playerName) GameSocket.onLink();
                 }else {
                     GameSocket.onLink();
@@ -351,17 +358,15 @@ let RPG = {
         //向玩家队伍增加人物（人物索引，人物等级)
         mainTeam.addHero(0, 50, playerName);
         mainTeam.addHero(1, 50, '废土小伙伴');
-        //添置物品
-        mainTeam.addItem(11, 20);
-        mainTeam.addItem(12, 20);
 
         RPG.initSwitch();
-        //初始化敌人
-        RPG.initEnemyTeam();
         //进入地图控制状态
         RPG.setState(RPG.MAP_CONTROL);
         //载入场景
-        jumpStage(script.stage01, 15, 22, 3);
+        gameStageInit(Lib.userInfo.mapId, Lib.userInfo.mapX, Lib.userInfo.mapY, Lib.userInfo.mapDir);
+        //初始化敌人
+        RPG.initEnemyTeam();
+        // mainTeam.addItem()
     },
 
 // 初始化敌人战斗队的数据
@@ -372,7 +377,7 @@ let RPG = {
         team1.clear();
         team1.addEnemy(0, 50);
         team1.addEnemy(1, 50);
-        team1.addItem(1, 2);
+        // team1.addItem(1, 2);
         RPG.enemyTeam.push(team1);
 
         // B队=1
@@ -380,14 +385,14 @@ let RPG = {
         team1.clear();
         team1.addEnemy(0, 50);
         team1.addEnemy(1, 50);
-        team1.addItem(1, 2);
+        // team1.addItem(1, 2);
         RPG.enemyTeam.push(team1);
 
         // C队=2
         team1 = RPG.beget(PlayerTeam);
         team1.clear();
         team1.addEnemy(0, 60);
-        team1.addItem(1, 2);
+        // team1.addItem(1, 2);
         RPG.enemyTeam.push(team1);
 
         // D队=3
@@ -403,7 +408,7 @@ let RPG = {
         team1.addEnemy(1, 50);
         team1.addEnemy(0, 50);
         team1.addEnemy(1, 50);
-        team1.addItem(1, 2);
+        // team1.addItem(1, 2);
         RPG.enemyTeam.push(team1);
     },
 
@@ -459,7 +464,7 @@ let RPG = {
                     }
                     RPG.initSwitch();
                     RPG.extend(RPG.SWITCH, saveData.swt);
-                    jumpStage(script[saveData.stageId], Number(saveData.px), Number(saveData.py));
+                    gameStageInit(saveData.stageId, Number(saveData.px), Number(saveData.py));
                     RPG.initEnemyTeam();
                     // 进入地图控制状态
                     RPG.setState(RPG.MAP_CONTROL);
@@ -522,7 +527,7 @@ let RPG = {
         )
     },
     // 屏幕黑白闪速
-    flickerAnimation: function(callback,teamId) {
+    flickerAnimation: function(callback,teamId,level=0) {
         Lib.bgm('StartBattle');
         effectLayer.removeAllChild();
         let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1,'#fff');
@@ -530,7 +535,7 @@ let RPG = {
         setTimeout(function () {
             console.log('LTweenLite.remove',LTweenLite.remove(flicker));
             effectLayer.removeAllChild();
-            if(callback) callback(teamId);
+            if(callback) callback(teamId,level);
         },1000)
     },
 

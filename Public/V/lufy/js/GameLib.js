@@ -12,7 +12,13 @@
  * v2016/12/9 初版
  *
  */
+//根目录
 const API = '/';
+//资源根目录
+const API_RESOURCE = '/Asset/';
+//地图
+const API_MAP = '/Asset/地图/';
+
 //扩展send方法
 WebSocket.prototype.wlSend = function (type,content) {
     let s = this;
@@ -53,7 +59,7 @@ function checkTrigger(){
     for(let i=0;i<events.length;i++){
         triggerEvent = events[i];
         if (!triggerEvent.img){
-            if( (player.px === triggerEvent.x) && (player.py === triggerEvent.y) ){
+            if( (player.px == triggerEvent.x) && (player.py == triggerEvent.y) ){
                 //获取该场景脚本数据
                 if (triggerEvent.action){
                     // 一旦触发事件，按键取消
@@ -135,22 +141,28 @@ function checkIntoBattle(){
     }
 }
 
-let jumpStage = function(newStage, x, y, dir=0){
-    if(stage){
-        socket.wlSend('removeUser',{stageId:stage.id});
-    }
+let jumpStage = function(x, y, dir=0){
     Lib.bgm('JumpStage');
-    stage = newStage;
     stage.autoEvents = [];
     stage.triggerEvents = [];
     stage.npcEvents = [];
     //当前场景地图
     CurrentMap = stage.map;
-    CurrentMapImg = stage.imgName;
     let len = stage.events.length,
         events = stage.events;
     charaLayer.removeAllChild();
     for(let i=0;i<len;i++){
+        if(events[i].action){
+            console.log(i,events[i].action);
+            events[i].action = eval(events[i].action);
+        }
+
+        if(events[i].img){
+            let arr = events[i].img.split('/');
+            if(arr.length>1){
+                events[i].img = arr.pop();
+            }
+        }
         switch (events[i].type){
             case 'auto':
                 stage.autoEvents.push(events[i]);
@@ -168,13 +180,17 @@ let jumpStage = function(newStage, x, y, dir=0){
         }
     }
     //初始化一些设置
-    initScript(x, y, dir);
+    initScript(Number(x), Number(y), Number(dir));
+};
+
+let loadStage = function () {
+
 };
 
 function drawImgMap(map) {
     //得到地图图层
-    let bitmapData = new LBitmapData(assets[CurrentMapImg[0]]);
-    let bitmapDataUp = new LBitmapData(assets[CurrentMapImg[1]]);
+    let bitmapData = new LBitmapData(assets[stage.name+'_0']);
+    let bitmapDataUp = new LBitmapData(assets[stage.name+'_1']);
     let bitmap = new LBitmap(bitmapData);
     let bitmapUp = new LBitmap(bitmapDataUp);
     let len = map.layers.length;
@@ -261,15 +277,14 @@ function addNpc(npcObj){
             valid= npcObj.visible();
         }
         if (valid){
-
             let row= npcObj.row || 4;
             let col= npcObj.col || 4;
             let imgData = new LBitmapData(assets[npcObj.img]);
             npc = new Character(false,npcObj.move,imgData, row, col, 3, npcObj.action);
             npc.x = npcObj.x * STEP- (npc.pw- STEP)/2;
             npc.y = npcObj.y * STEP- (npc.ph- STEP);
-            npc.px = npcObj.x;
-            npc.py = npcObj.y;
+            npc.px = Number(npcObj.x);
+            npc.py = Number(npcObj.y);
             if(npcObj.type === 'player'){
                 netPlayer[npcObj['name']] = npc;
                 npc.name = npcObj.name;
@@ -286,7 +301,7 @@ function addNpc(npcObj){
                 npc.visible = false;
             }
             if('dir' in npcObj){
-                npc.anime.setAction(npcObj.dir);
+                npc.anime.setAction(Number(npcObj.dir));
                 npc.anime.onframe();
             }
             charaLayer.addChild(npc);
@@ -317,6 +332,7 @@ let moveNetNpc = function(name, content ,callback){
 };
 
 let Lib = {
+    userInfo:null,
     /**
      * 重排角色，以便正确遮盖
      * */
@@ -744,6 +760,19 @@ let UI = {
             effectLayer.removeAllChild();
         }, 2000);
     },
+
+    showImg:(img)=>{
+        let bitmapData = new LBitmapData(assets[img]);
+        let bitmap = new LBitmap(bitmapData);
+        bitmap.x = (WIDTH-bitmap.getWidth())>>1;
+        bitmap.y = (WIDTH-bitmap.getHeight())>>1;
+        infoLayer.addChild(bitmap);
+        setTimeout(function () {
+            infoLayer.removeAllChild();
+        },3000)
+    },
+
+
     /**
      * diy按钮 简单的边框+文字组成
      **/

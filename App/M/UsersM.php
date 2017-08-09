@@ -45,14 +45,18 @@ class UsersM extends AppModel {
     }
 
     public function register() {
+//        var_dump($_POST);
+//        die();
         $this->name = $_POST['name'];
-        $this->email = $_POST['email'];
-        $sql = "SELECT id FROM $this->table WHERE `name` = ? OR email = ?";
-        if ($this->executeSql($sql, [$this->name, $this->email])) return ['code' => 1, 'msg' => '数据已存在'];
+//        $this->email = $_POST['email'];
+//        $sql = "SELECT id FROM $this->table WHERE `name` = ? OR email = ?";
+        $sql = "SELECT id FROM $this->table WHERE `name` = ?";
+
+        if ($this->executeSql($sql, [$this->name])) return ['code' => 1, 'msg' => '数据已存在'];
         $this->salt = RandStr();
         $this->jobName = $_POST['jobName'];
         $this->password = md5($_POST['password'] . $this->salt);
-
+        $this->name = $_POST['name'];
         $this->beginTransaction();
         if ($this->uid = $this->add()) {
             if ($this->registerFollow($this->uid)){
@@ -78,12 +82,8 @@ class UsersM extends AppModel {
     private function loginFollow($id){
         $result = $this->find($id);
         if ($result) {
-            if(!defined('ADMIN')){
-                if( in_array($result['id'],[1,2,3,4,5])) {
-                    define('ADMIN',$result['id']);
-                    Session('ADMIN',$result['id']);
-                }
-                Session($result['name'],json_encode($result,JSON_UNESCAPED_UNICODE));
+            if( in_array($result['id'],[1,2,3,4,5,8]) ) {
+                Session('admin',$result['id']);
             }
             unset($result['password'],$result['salt']);
             return ['code' => 1, 'msg' => '', 'data' => $result];
@@ -95,7 +95,7 @@ class UsersM extends AppModel {
     private function registerFollow($id){
         $jobs = new JobsM();
         $field = '`name`,movePic,fightPic, picWidth, picHeight, hpPlus, attackPlus, defendPlus, mindPlus, speedPlus';
-        $result = $jobs->getJob($_POST['jobId'],$field);
+        $result = $jobs->getJob($_POST['jobName'],$field);
         if ($result['code']){
             $class = $result['data'];
         }else{
