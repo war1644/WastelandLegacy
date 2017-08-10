@@ -99,6 +99,14 @@ class PublicC extends AppC {
         }
     }
 
+    public function login2(){
+        if(isset($_POST['password'])){
+            $u = new UsersM();
+            echo ResultFormat($u->login());
+        }
+        die();
+    }
+
     /**
      * 注册
      */

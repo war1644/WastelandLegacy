@@ -129,19 +129,18 @@ function main(){
         {name:'Startup',path:"/Asset/Sound/Bgm/Startup.mp3"},
         {name:'TownTheme',path:"/Asset/Sound/Bgm/TownTheme.mp3"},
         {name:'Town',path:"/Asset/Sound/Bgm/Town.mp3"},
-        {name:'Select',path:"/Asset/Sound/Sfx/Select.wav"},
-        {name:'JumpStage',path:"/Asset/Sound/Sfx/JumpStage.wav"},
-        {name:'StartBattle',path:"/Asset/Sound/Bgm/enemy.mp3"},
         {name:'BossFight',path:"/Asset/Sound/Bgm/BossFight.mp3"},
         {name:'BattleTheme',path:"/Asset/Sound/Bgm/BattleTheme.mp3"},
-        {name:'TownTheme',path:"/Asset/Sound/Bgm/TownTheme.mp3"},
         {name:'战车恰恰悠扬激进版',path:"/Asset/Sound/Bgm/战车恰恰悠扬激进版.mp3"},
-        {name:'一切开始的地方',path:"/Asset/Sound/Bgm/一切开始的地方.mid"},
-
+        // {name:'一切开始的地方',path:"/Asset/Sound/Bgm/一切开始的地方.mid"},
         {name:'GunAct',path:"/Asset/Sound/Sfx/GunAct.mp3"},
         {name:'boom',path:"/Asset/Sound/Sfx/boom.mp3"},
         {name:'Fail',path:"/Asset/Sound/Sfx/Fail.mp3"},
         {name:'Winning',path:"/Asset/Sound/Sfx/Winning.mp3"},
+        {name:'Select',path:"/Asset/Sound/Sfx/Select.wav"},
+        {name:'JumpStage',path:"/Asset/Sound/Sfx/JumpStage.wav"},
+        {name:'StartBattle',path:"/Asset/Sound/Sfx/enemy.mp3"},
+
     ];
 
 	//js
@@ -187,12 +186,11 @@ function main(){
 
 
     //FightPic
+    imgData.push({name:"野战炮",path:"/Asset/战斗/敌人/野战炮.png"});
+    imgData.push({name:"加农炮",path:"/Asset/战斗/敌人/加农炮.png"});
     imgData.push({name:"巨炮",path:"/Asset/战斗/敌人/巨炮.png"});
     imgData.push({name:"沙漠之舟",path:"/Asset/战斗/敌人/沙漠之舟.png"});
     imgData.push({name:"戈斯战车",path:"/Asset/战斗/敌人/戈斯战车.png"});
-    imgData.push({name:"黑色战车",path:"/Asset/战斗/黑色战车.png"});
-    imgData.push({name:"加农炮",path:"/Asset/战斗/敌人/加农炮.png"});
-    imgData.push({name:"野战炮",path:"/Asset/战斗/敌人/野战炮.png"});
 
     //face
     imgData.push({name:"face猎人",path:"/Asset/头像/女猎人.png"});
@@ -218,13 +216,6 @@ function main(){
 		}
 	);
 }
-// let waitCharPos = function (npc, x, y, callback){
-//     if (npc.px !== x || npc.py !== y) {
-//         setTimeout(function(){waitCharPos(npc, x, y, callback);}, 500);
-//     } else {
-//         if (callback) callback();
-//     }
-// };
 
 function onDown(event) {
     // 如果点击位置有NPC事件，优先触发talk事件
@@ -292,7 +283,7 @@ function gameInit(){
     LGlobal.setDebug(true);
     //数据初始化优先于显示部分的初始化
     LGlobal.aspectRatio = PORTRAIT;
-    Lib.bgm('start_mp3',true);
+    Lib.bgm('战车恰恰悠扬激进版',true);
     //游戏层显示初始化
     gameLayerInit();
 
@@ -383,3 +374,10 @@ function gameStageInit(stageId,x,y,dir) {
         }
     });
 }
+// let waitCharPos = function (npc, x, y, callback){
+//     if (npc.px !== x || npc.py !== y) {
+//         setTimeout(function(){waitCharPos(npc, x, y, callback);}, 500);
+//     } else {
+//         if (callback) callback();
+//     }
+// };

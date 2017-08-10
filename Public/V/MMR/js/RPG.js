@@ -302,11 +302,11 @@ let RPG = {
                     if(!Lib.userInfo){
                         Lib.userInfo = JSON.parse(localStorage.getItem('wlUserInfo'));
                         if(!Lib.userInfo){
-                            alert('请登录');
+                            Lib.login();
+                        }else {
+                            playerName = Lib.userInfo.name;
                         }
-                        playerName = Lib.userInfo.name;
                     }
-                    if(playerName) GameSocket.onLink();
                 }else {
                     GameSocket.onLink();
                 }

@@ -32,7 +32,6 @@ let GameSocket = {
         };
         socket.onmessage = function (e) {
             let data = JSON.parse(e.data);
-            console.log(data);
             GameSocket.haveMsg(data);
         };
         socket.onerror = function (e) {

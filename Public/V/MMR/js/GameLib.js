@@ -368,12 +368,9 @@ let Lib = {
         }
     },
 
-    bgm:function(sound=false,loop=false,volume=0.6){
-        if (sound) {
-            sound = assets[sound];
-        } else {
-            sound = assets[RPG.curBGM];
-        }
+    bgm:function(sound,loop=false,volume=0.6){
+        RPG.curBGM = sound;
+        sound = assets[sound];
         let obj = new LSound(sound);
         obj.setVolume(volume);
         if (loop) {
@@ -384,10 +381,28 @@ let Lib = {
             timer = setTimeout(function () {
                 obj.play(0,99);
             },2000);
-            RPG.curBGM = sound;
             RPG.curBGMObj = obj;
         }else {
             obj.play();
+        }
+    },
+    login:function () {
+        let name = prompt("昵称","");
+        let pwd = prompt("密码","");
+        if(name && pwd){
+            $.post('/Public/login2',{name:name,password:pwd},function (result) {
+                if (result.code == 1) {
+                    Lib.userInfo = result.data;
+                    localStorage.setItem("wlUserInfo" , JSON.stringify(result.data));
+                    playerName = name;
+                    GameSocket.onLink();
+                } else {
+                    Lib.login();
+                }
+            });
+        }else{
+            // alert("信息录入成功！");
+            return true;
         }
     }
 };
