@@ -21,8 +21,7 @@ class JobsM extends AppModel {
     private  $hostBattle = '/images/battler/';
 
     public function getCurr() {
-//        $sql = "SELECT `name`,CONCAT('$this->hostNpc',movePic) as movePic,CONCAT('$this->hostBattle',battlePic) as battlePic,description FROM $this->table WHERE id>? limit 10";
-        $sql = "SELECT id,`name`,movePic,fightPic,description FROM $this->table limit 6";
+        $sql = "SELECT id,`name`,movePic,fightPic,description FROM $this->table limit 3";
         $result = $this->executeSql($sql,[],'all');
         if ($result) {
             return ['code' => 1, 'msg' => '', 'data' => $result];
@@ -32,7 +31,7 @@ class JobsM extends AppModel {
     }
 
     public function getJob($id,$field='*') {
-        $sql = "SELECT $field FROM $this->table WHERE name = ?";
+        $sql = "SELECT $field FROM $this->table WHERE id = ?";
         $result = $this->executeSql($sql,[$id]);
         if ($result) {
             return ['code' => 1, 'msg' => '', 'data' => $result];

@@ -19,8 +19,8 @@ let Fight = {
 // 最大HP，用于对比显示，给一个最小的参考值，一场战斗一旦确定则不再改变
     maxHpAll: 1000,
     maxMpAll: 100,
-    //战利品和经验获得 凌弱战true
-    trophy: false,
+    //战利品和经验获得
+    trophy: true,
     // 当前正在动作的对象
     currentFighter:{},
     currentToFighter:{},
@@ -55,9 +55,17 @@ let Fight = {
     /**
      * 普通战斗
      */
-    simpleFight: (teamId, npc = {}) => {
+    simpleFight: (enemyId, npc = {}) => {
+        let enemyTeam = RPG.beget(PlayerTeam);
+        enemyTeam.clear();
         let enemyHero = RPG.beget(HeroPlayer);
         let playerHero = RPG.beget(HeroPlayer);
+        if(enemyId.length >1){
+            for (let i = 0; i < enemyId.length; i++) {
+                let id = enemyId[i];
+                enemyTeam.addEnemy(id, lv);
+            }
+        }
         RPG.extend(enemyHero, RPG.enemyTeam[teamId].getHero());
         RPG.extend(playerHero, mainTeam.getHero());
 
@@ -116,7 +124,7 @@ let Fight = {
      * 战斗初始化
      */
     startFight: (enemyTeam, playerTeam) => {
-        Lib.bgm('BossFight',true);
+
         //设置控制状态
         RPG.pushState(RPG.IN_FIGHTING);
         // 设置战斗状态
@@ -146,7 +154,7 @@ let Fight = {
             FightMenu.showFightInfo();
             FightMenu.layer.addChildAt(Fight.textObj,1);
         }
-        Fight.infoCommand('遭遇战，敌我力量悬殊，敌方士气大减');
+        // Fight.infoCommand('遭遇战，敌我力量悬殊，敌方士气大减');
         Fight.drawFighters();
         Fight.actionQueue();
         // socket.wlSend('fight',{});
@@ -169,7 +177,7 @@ let Fight = {
             x = j ? WIDTH-gap*3 : gap;
             for (let i = 0; i < team.length; i++) {
                 hero1 = team[i];
-                bitmapData = new LBitmapData(assets[hero1.img]);
+                bitmapData = new LBitmapData(assets[hero1.fightPic]);
                 col = hero1.col || 4;
                 row = hero1.row || 4;
                 chara = new Fighter(bitmapData, row, col);
@@ -432,9 +440,11 @@ let Fight = {
                                     if (Fight.checkFight()) {
                                         //显示战斗结果
                                         Fight.showResult();
+
                                         switch(Fight.state){
                                             case 1:
-                                                Fight.endCallback();
+                                                // Fight.endCallback();
+
                                                 break;
                                             case 2:
                                                 break;
@@ -510,20 +520,44 @@ let Fight = {
         // }
     },
 
-    bossFight: (enemyId) => {
+    bossFight: (enemyId,lv) => {
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
-        enemyTeam.addEnemy(enemyId, 80);
-        Fight.startFight(enemyTeam, mainTeam, false);
-        Menu.waitMenu(function () {
+        for (let i = 0; i < enemyId.length; i++) {
+            let id = enemyId[i];
+            enemyTeam.addEnemy(id, lv);
+        }
+        Lib.bgm('BossFight',true);
+
+        Fight.startFight(enemyTeam, mainTeam);
+        //战斗结束后回调
+        Menu.waitMenu(()=>{
             if (Fight.state === Fight.WIN) {
                 RPG.popState();
-                RPG.setSwitch("gate1win");
-                let char1 = stage.storyList["boss"];
-                char1.visible = false;
             } else if (Fight.state === Fight.LOST) {
-                // 战败
-                // RPG.drawGameOver();
+                //战败
+            } else {
+                // 不胜不败，并不可能
+                RPG.popState();
+            }
+        });
+    },
+    normalFight: (enemyId,lv) => {
+        let enemyTeam = RPG.beget(PlayerTeam);
+        enemyTeam.clear();
+        for (let i = 0; i < enemyId.length; i++) {
+            let id = enemyId[i];
+            enemyTeam.addEnemy(id, lv);
+        }
+        Lib.bgm('BattleTheme',true);
+
+        Fight.startFight(enemyTeam, mainTeam);
+        //战斗结束后回调
+        Menu.waitMenu(()=>{
+            if (Fight.state === Fight.WIN) {
+                RPG.popState();
+            } else if (Fight.state === Fight.LOST) {
+                //战败
             } else {
                 // 不胜不败，并不可能
                 RPG.popState();
@@ -637,6 +671,8 @@ let Fight = {
             }
             FightMenu.setFormation('我方团灭，别说忘了存档');
         }
+        setTimeout(Menu.closeMenu,3000);
+
     },
 
     //计算团队的平均速度
@@ -791,6 +827,7 @@ let Fight = {
             }
         }
     },
+
     infoCommand:function (text) {
         if(Fight.textArr.length>=5){
             Fight.textArr.pop();

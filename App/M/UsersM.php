@@ -45,18 +45,16 @@ class UsersM extends AppModel {
     }
 
     public function register() {
-//        var_dump($_POST);
-//        die();
         $this->name = $_POST['name'];
-//        $this->email = $_POST['email'];
-//        $sql = "SELECT id FROM $this->table WHERE `name` = ? OR email = ?";
-        $sql = "SELECT id FROM $this->table WHERE `name` = ?";
+        $this->email = $_POST['email'];
+        $sql = "SELECT id FROM $this->table WHERE `name` = ? OR email = ?";
 
-        if ($this->executeSql($sql, [$this->name])) return ['code' => 1, 'msg' => '数据已存在'];
+        if ($this->executeSql($sql, [$this->name,$this->email])) return ['code' => 1, 'msg' => '数据已存在'];
         $this->salt = RandStr();
-        $this->jobName = $_POST['jobName'];
+        $this->jobId = $_POST['jobId'];
         $this->password = md5($_POST['password'] . $this->salt);
         $this->name = $_POST['name'];
+        $this->email = $_POST['email'];
         $this->beginTransaction();
         if ($this->uid = $this->add()) {
             if ($this->registerFollow($this->uid)){
@@ -94,36 +92,23 @@ class UsersM extends AppModel {
 
     private function registerFollow($id){
         $jobs = new JobsM();
-        $field = '`name`,movePic,fightPic, picWidth, picHeight, hpPlus, attackPlus, defendPlus, mindPlus, speedPlus';
-        $result = $jobs->getJob($_POST['jobName'],$field);
-        if ($result['code']){
-            $class = $result['data'];
+        $field = '`name`,movePic,fightPic';
+        $result = $jobs->find($_POST['jobId'],$field);
+        if ($result){
+            $class = $result;
         }else{
             return $result;
         }
 
-        $hp = $class['hpPlus'];
-        $hpMax = mt_rand(0, ceil($class['hpPlus']/10));
-        $hpMax = ( $hpMax < 1 ) ? 1 : $hpMax;
-        $hp += $hpMax;
-
-        $attack = mt_rand(0, ceil($class['attackPlus']/10));
-        $defence = mt_rand(0, ceil($class['defendPlus']/10));
-        $mind = mt_rand(0, ceil($class['mindPlus']/10));
-        $agility = mt_rand(0, ceil($class['speedPlus']/10));
-
         $config = new ConfigM();
-        $result = $config->getConfig(1);
-        if ($result['code']) {
-            $result = $result['data'];
-        } else {
-            $result['defaultLocation'] = '2,2,2,0';
+        $result = $config->find(1);
+        if ($result){
+            list($mapId, $mapX, $mapY, $mapDir) = explode(',', $result['defaultLocation']);
+        }else{
+            return $result;
         }
-
-        list($mapId, $mapX, $mapY, $mapDir) = explode(',', $result['defaultLocation']);
-
-        $sql = "UPDATE $this->table SET hp=?, hpMax=?, attack=?, defend=?, mind=?, speed=?,movePic=?, fightPic=?, picWidth=?, picHeight=?, mapId=?, mapX=?, mapY=?, mapDir=? WHERE id=?";
-        $result = $this->executeSql($sql,[$hp,$hpMax,$attack,$defence, $mind, $agility, $class['movePic'], $class['fightPic'], $class['picWidth'], $class['picHeight'],$mapId, $mapX, $mapY, $mapDir ,$id]);
+        $sql = "UPDATE $this->table SET movePic=?, fightPic=?, mapId=?, mapX=?, mapY=?, mapDir=? WHERE id=?";
+        $result = $this->executeSql($sql,[$class['movePic'], $class['fightPic'],$mapId, $mapX, $mapY, $mapDir ,$id]);
         return $result;
     }
 

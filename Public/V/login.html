@@ -77,20 +77,20 @@
                     </div>
                 </form>
                 <!--注册-->
-                <form action="/Public/register" method="post" id="register">
+                <form action="" method="post" id="register">
                     <div class="cont_form_sign_up" style="display: none; opacity: 0;">
                         <a style="text-decoration: none" href="#" onclick="ocultar_login_sign_up()"><b
                                 class="close">x</b></a>
                         <h2>注册</h2>
-                        <!--<input type="text" name="email" placeholder="邮箱（找回密码用）">-->
+                        <input type="text" name="email" placeholder="邮箱（找回密码用）">
                         <input type="text" name="name" placeholder="游戏昵称">
                         <input type="password" name="password" placeholder="密码">
                         <!--<input type="password" name="password_confirm" placeholder="确认密码">-->
                         <input type="text" name="vcode" class="vcode" placeholder="验证码" style="margin-bottom: 0;">
-                        <img src="/Public/vcode" alt="" style="margin-top: -0.2rem">
+                        <img class="refreshVcode" src="/Public/vcode" alt="" style="margin-top: -0.2rem">
                         <br/>
                         <span id="cpass" style="display: inline-flex;"></span>
-                        <button class="btn_sign_up">注册</button>
+                        <button class="btn_sign_up" id="registerAction">注册</button>
                     </div>
                 </form>
             </div>
@@ -102,7 +102,7 @@
             昵称 : <b class="userName">xxxxx</b><br/><br/>
             <div class="avatar" style="width:24px;height:24px;"></div>
             <br/>
-            <a href="./lufy/index.html">进入游戏</a><br/><br/>
+            <a href="./MMR/index.html">进入游戏</a><br/><br/>
             <span class="gensmall"><a href="/Public/logout">退出游戏</a></span><br/><br/>
         </div>
     </div>
@@ -123,15 +123,15 @@
         },200);
     }
 
-    function cambiar_sign_up(at) {
+    function cambiar_sign_up() {
         $.getJSON('/Public/jobs?callback=?',function (res) {
             if (res.code) {
                 console.log(res);
-                var list = res.data;
-                var classnode = '';
-                for (var i in list) {
-                    var images = "/Asset/人物行走图/"+list[i].movePic+".png";
-                    classnode += '<input class="typeradio" type="radio" name="jobName" value="'+list[i].name+'"/><span class="Career" style="background-image:url('+images+')"></span><i>'+list[i].name+'</i>';
+                let list = res.data;
+                let classnode = '';
+                for (let i in list) {
+                    let images = "/Asset/人物行走图/"+list[i].movePic+".png";
+                    classnode += '<input class="typeradio" type="radio" name="jobId" value="'+list[i].id+'"/><span class="Career" style="background-image:url('+images+')"></span><i>'+list[i].name+'</i>';
                 }
                 $("#cpass").html(classnode);
             }
@@ -167,7 +167,25 @@
             if (result.code == 1) {
                 localStorage.setItem("wlUserInfo" , JSON.stringify(result.data));
                 $(".userName").text(result.data.name);
-                $(".avatar").css('backgroundImage','url("/Asset/charasets/'+result.data.movePic+'")');
+                $(".avatar").css('backgroundImage','url("/Asset/人物行走图/'+result.data.movePic+'")');
+                $(".cont_centrar").hide();
+                $(".come_map").show();
+
+            } else {
+                refreshVcode();
+            }
+        });
+        return false;
+    });
+
+    $("#registerAction").click(function () {
+        let data = Lib.prototype.getFormJson('#register');
+        $.post('/Public/register',data,function (result) {
+            console.log(result);
+            if (result.code == 1) {
+                localStorage.setItem("wlUserInfo" , JSON.stringify(result.data));
+                $(".userName").text(result.data.name);
+                $(".avatar").css('backgroundImage','url("/Asset/人物行走图/'+result.data.movePic+'")');
                 $(".cont_centrar").hide();
                 $(".come_map").show();
 

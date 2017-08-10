@@ -116,18 +116,7 @@ function main(){
 	LGlobal.preventDefault = false;
     LGlobal.speed = 1000/30;
 
-    /*if(LGlobal.canTouch){
-		LGlobal.stageScale = LStageScaleMode.EXACT_FIT;  //指定整个应用程序在指定区域中可见，但不尝试保持原始高宽比。
-		//LGlobal.stageScale = LStageScaleMode.NO_BORDER;  //指定整个应用程序填满指定区域，不会发生扭曲，但有可能会进行一些裁切，同时保持应用程序的原始高宽比。
-		//LGlobal.stageScale = LStageScaleMode.NO_SCALE;  //指定应用程序的大小是固定的，因此，即使在更改播放器窗口大小时，它仍然保持不变。
-		//LGlobal.stageScale = LStageScaleMode.SHOW_ALL;  //指定整个应用程序在指定区域中可见，且不会发生扭曲，同时保持应用程序的原始高宽比。
-		LSystem.screen(LStage.FULL_SCREEN);
-	}*/
-
     if(LGlobal.mobile){
-        // LGlobal.height = LGlobal.width*window.innerHeight/window.innerWidth;
-        // LGlobal.canvasObj.width  = LGlobal.width;
-        // LGlobal.canvasObj.height  = LGlobal.height;
         LGlobal.align = LStageAlign.TOP_LEFT;
         //指定整个应用程序在指定区域中可见，且不会发生扭曲，同时保持应用程序的原始高宽比。
         LGlobal.stageScale = LStageScaleMode.EXACT_FIT;
@@ -137,17 +126,18 @@ function main(){
 	//BGM SFX
     imgData = [
         {name:'NameSetting',path:'/Asset/Sound/Bgm/NameSetting.mp3'},
-        // {name:'lose',path:'/Asset/bgm/lose.mp3'},
-        // {name:'message',path:'/Asset/bgm/message.wav'},
-        {name:'start_mp3',path:"/Asset/Sound/Bgm/Startup.mp3"},
-        {name:'town_mp3',path:"/Asset/Sound/Bgm/TownTheme.mp3"},
-        {name:'town2_mp3',path:"/Asset/Sound/Bgm/Town.mp3"},
-        {name:'Select_wav',path:"/Asset/Sound/Sfx/Select.wav"},
+        {name:'Startup',path:"/Asset/Sound/Bgm/Startup.mp3"},
+        {name:'TownTheme',path:"/Asset/Sound/Bgm/TownTheme.mp3"},
+        {name:'Town',path:"/Asset/Sound/Bgm/Town.mp3"},
+        {name:'Select',path:"/Asset/Sound/Sfx/Select.wav"},
         {name:'JumpStage',path:"/Asset/Sound/Sfx/JumpStage.wav"},
         {name:'StartBattle',path:"/Asset/Sound/Bgm/enemy.mp3"},
         {name:'BossFight',path:"/Asset/Sound/Bgm/BossFight.mp3"},
         {name:'BattleTheme',path:"/Asset/Sound/Bgm/BattleTheme.mp3"},
         {name:'TownTheme',path:"/Asset/Sound/Bgm/TownTheme.mp3"},
+        {name:'战车恰恰悠扬激进版',path:"/Asset/Sound/Bgm/战车恰恰悠扬激进版.mp3"},
+        {name:'一切开始的地方',path:"/Asset/Sound/Bgm/一切开始的地方.mid"},
+
         {name:'GunAct',path:"/Asset/Sound/Sfx/GunAct.mp3"},
         {name:'boom',path:"/Asset/Sound/Sfx/boom.mp3"},
         {name:'Fail',path:"/Asset/Sound/Sfx/Fail.mp3"},
@@ -168,64 +158,49 @@ function main(){
     imgData.push({type:"js",path:"./js/Fight.js"});
     imgData.push({type:"js",path:"./js/Fighter.js"});
     imgData.push({type:"js",path:"./js/GameSocket.js"});
-    // imgData.push({type:"js",path:"./js/Script.js"});
 
     //game other img
-    // imgData.push({name:"start_png",path:"./image/start.bmp"});
-    // imgData.push({name:"button",path:"./image/button.png"});
-    // imgData.push({name:"iconset",path:"./image/IconSet.png"});
-    // imgData.push({name: "focus", path: "./image/focus.png" });
     imgData.push({name: "empty", path: "/Asset/事件/empty.png" });
     imgData.push({name: "箱子", path: "/Asset/事件/箱子.png" });
-    // imgData.push({name: "right", path: "./image/right.png" });
     imgData.push({name: "通缉令-戈麦斯", path: "/Asset/事件/通缉令-戈麦斯.png" });
 
-	//movePic
+	//人物行走图
     imgData.push({name:"猎人",path:"/Asset/人物行走图/猎人.png"});
     imgData.push({name:"机械师",path:"/Asset/人物行走图/机械师.png"});
-    imgData.push({name:"蕾娜",path:"/Asset/人物行走图/蕾娜.png"});
     imgData.push({name:"战士",path:"/Asset/人物行走图/战士.png"});
-    // imgData.push({name:"白象战车",path:"/Asset/人物行走图/白象战车.png"});
-    // imgData.push({name:"黑色梅卡瓦",path:"/Asset/人物行走图/黑色梅卡瓦.png"});
-    // imgData.push({name:"红色梅卡瓦",path:"/Asset/人物行走图/红色梅卡瓦.png"});
+    imgData.push({name:"护士",path:"/Asset/人物行走图/护士.png"});
+    imgData.push({name:"蕾娜",path:"/Asset/人物行走图/蕾娜.png"});
 	imgData.push({name:"姐姐",path:"/Asset/人物行走图/姐姐.png"});
     imgData.push({name:"老爹",path:"/Asset/人物行走图/老爹.png"});
-    // imgData.push({name:"猎人A",path:"/Asset/人物行走图/猎人A.png"});
+    imgData.push({name:"重甲猎人",path:"/Asset/人物行走图/重甲猎人.png"});
+    imgData.push({name:"穷猎人",path:"/Asset/人物行走图/穷猎人.png"});
     imgData.push({name:"商人妹子",path:"/Asset/人物行走图/商人妹子.png"});
     imgData.push({name:"交易员",path:"/Asset/人物行走图/交易员.png"});
     imgData.push({name:"大姐姐",path:"/Asset/人物行走图/大姐姐.png"});
-    imgData.push({name:"戴达罗斯",path:"/Asset/战车行走图/Boss/戴达罗斯.png"});
+    imgData.push({name:"明奇",path:"/Asset/人物行走图/明奇.png"});
+
+    //战车行走图
+    imgData.push({name:"M1战车MMR",path:"/Asset/战车行走图/MMR/M1战车MMR.png"});
+    imgData.push({name:"救护车MMR",path:"/Asset/战车行走图/MMR/救护车MMR.png"});
+    imgData.push({name:"红狼战车MMR",path:"/Asset/战车行走图/MMR/红狼战车MMR.png"});
+    imgData.push({name:"黑色战车MMR",path:"/Asset/战车行走图/MMR/黑色战车MMR.png"});
+
 
     //FightPic
     imgData.push({name:"巨炮",path:"/Asset/战斗/敌人/巨炮.png"});
     imgData.push({name:"沙漠之舟",path:"/Asset/战斗/敌人/沙漠之舟.png"});
-    imgData.push({name:"戈斯战车.png",path:"/Asset/战斗/敌人/戈斯战车.png"});
+    imgData.push({name:"戈斯战车",path:"/Asset/战斗/敌人/戈斯战车.png"});
+    imgData.push({name:"黑色战车",path:"/Asset/战斗/黑色战车.png"});
+    imgData.push({name:"加农炮",path:"/Asset/战斗/敌人/加农炮.png"});
+    imgData.push({name:"野战炮",path:"/Asset/战斗/敌人/野战炮.png"});
 
     //face
-    // imgData.push({name:"face女猎人",path:"/Asset/头像/女猎人.png"});
-    // imgData.push({name:"face女猎人2",path:"./Asset/头像/女猎人2.png"});
-    // imgData.push({name:"face女机械师",path:"./Asset/头像/女机械师.png"});
-    // imgData.push({name:"face女战士",path:"./Asset/头像/女战士.png"});
+    imgData.push({name:"face猎人",path:"/Asset/头像/女猎人.png"});
+    imgData.push({name:"face机械师",path:"/Asset/头像/女机械师.png"});
+    imgData.push({name:"face战士",path:"/Asset/头像/女战士.png"});
     imgData.push({name:"face雷娜",path:"/Asset/头像/雷娜.png"});
 
-    //map
-    // imgData.push({name:"home1_0",path:"./assets/home1_0.png"});
-    // imgData.push({name:"home1_1",path:"./assets/home1_1.png"});
-    // imgData.push({name:"home2_0",path:"./assets/home2_0.png"});
-    // imgData.push({name:"home2_1",path:"./assets/home2_1.png"});
-    // imgData.push({name:"town_0",path:"./assets/laduo_0.png"});
-    // imgData.push({name:"town_1",path:"./assets/laduo_1.png"});
-    // imgData.push({name:"hunter_center_0",path:"./assets/hunter_center_0.png"});
-    // imgData.push({name:"hunter_center_1",path:"./assets/hunter_center_1.png"});
-
 	//effect
-	// imgData.push({name: "pSword", path: "./image/FightPic/pSword.png" });
-	// imgData.push({name: "pAttack", path: "./image/FightPic/pAttack.png" });
-	// imgData.push({name: "pStick", path: "./image/FightPic/pStick.png" });
-	// imgData.push({name: "pSwipe", path: "./image/FightPic/pSwipe.png" });
-	// imgData.push({name: "mAttack", path: "./image/FightPic/mAttack.png" });
-	// imgData.push({name: "mUse", path: "./image/FightPic/mUse.png" });
-    // imgData.push({name: "heal", path: "./image/FightPic/heal.png" });
     imgData.push({name: "220Animation", path: "/Asset/战斗/动画/220Animation.png" });
 
     loadingLayer = new LoadingSample7();
@@ -356,7 +331,6 @@ function initScript(x,y,frame=0){
     );
     // 立即检测自动动作
     checkAuto();
-
 }
 
 /**
@@ -404,7 +378,6 @@ function gameStageInit(stageId,x,y,dir) {
                 jumpStage(x,y,dir);
             });
             console.log('ItemList',ItemList);
-
         } else {
             alert('游戏数据初始化错误，请刷新游戏重试！')
         }

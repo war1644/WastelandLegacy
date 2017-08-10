@@ -356,8 +356,9 @@ let RPG = {
         //初始化玩家队伍
         mainTeam = RPG.beget(PlayerTeam);
         //向玩家队伍增加人物（人物索引，人物等级)
-        mainTeam.addHero(0, 50, playerName);
-        mainTeam.addHero(1, 50, '废土小伙伴');
+        mainTeam.addHero(1, Lib.userInfo.level, playerName);
+        mainTeam.addHero(2, Lib.userInfo.level, '废土机械师小伙伴');
+        // mainTeam.addHero(3, Lib.userInfo.level, '废土战士小伙伴');
 
         RPG.initSwitch();
         //进入地图控制状态
@@ -365,7 +366,7 @@ let RPG = {
         //载入场景
         gameStageInit(Lib.userInfo.mapId, Lib.userInfo.mapX, Lib.userInfo.mapY, Lib.userInfo.mapDir);
         //初始化敌人
-        RPG.initEnemyTeam();
+        // RPG.initEnemyTeam();
         // mainTeam.addItem()
     },
 
@@ -465,7 +466,7 @@ let RPG = {
                     RPG.initSwitch();
                     RPG.extend(RPG.SWITCH, saveData.swt);
                     gameStageInit(saveData.stageId, Number(saveData.px), Number(saveData.py));
-                    RPG.initEnemyTeam();
+                    // RPG.initEnemyTeam();
                     // 进入地图控制状态
                     RPG.setState(RPG.MAP_CONTROL);
 

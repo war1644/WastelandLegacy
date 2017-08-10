@@ -22,7 +22,7 @@ let GameSocket = {
     },
 
     onLink:()=> {
-        socket = new WebSocket("ws://zregs.com:8886");
+        socket = new WebSocket("ws://localhost:8886");
         socket.onopen = function () {
             Lib.showInfo('握手成功');
             if (socket.readyState === 1) {

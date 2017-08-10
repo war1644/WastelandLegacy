@@ -251,7 +251,7 @@
                         eventTextScript += '{msg:"'+talkTextArr[i]+'"},\n';
                     }
                 }
-                eventTextScript += ']);\nTalk.callback(()=>{\n\n});';
+                eventTextScript += ']);\nTalk.waitTalk(()=>{\n\n});';
                 break;
             case 2:
                 let len = data.length,option='';

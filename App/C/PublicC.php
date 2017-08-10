@@ -142,7 +142,8 @@ class PublicC extends AppC {
         $filename = iconv('utf-8','gb2312',$map['name']);
         $map['map'] = file_get_contents(ASSET_PATH.$filename.'.json');
         $m = new EventsM();
-        $map['events'] = $m->getData(['eventMapId'=>$map['id']],'all');
+        $eventData = $m->getData(['eventMapId'=>$map['id']],'all');
+        $map['events'] = DelTransfer($eventData);
         $m = new ItemsM();
         $map['items'] = $m->getData(['place'=>$map['id']],'all');
         echo ResultFormat(['stage'=>$map]);

@@ -181,7 +181,23 @@ function SqlDef($arr) {
         if (is_string($v)) {
             $arr[$k] = addslashes ($v);
         } elseif (is_array($v)) {
-            $arr[$k] = sqlDef($v);
+            $arr[$k] = SqlDef($v);
+        }
+    }
+    return $arr;
+}
+
+/**
+ * 递归删除转义数组中的字符
+ * @param
+ * @return bool 失败则返回false
+ */
+function DelTransfer($arr) {
+    foreach ($arr as $k => $v) {
+        if (is_string($v)) {
+            $arr[$k] = stripslashes($v);
+        } elseif (is_array($v)) {
+            $arr[$k] = DelTransfer($v);
         }
     }
     return $arr;

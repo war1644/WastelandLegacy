@@ -135,7 +135,10 @@ function checkIntoBattle(){
         if (rangeRand(0,9)>2){
             RPG.pushState(RPG.FIGHT_RESULT);
             Lib.bgm('StartBattle');
-            RPG.flickerAnimation(Fight.simpleFight,4);
+            let Level = mainTeam.heroList[0].Level;
+            let len = EnemyList.length;
+            let arr = [rangeRand(1,len),rangeRand(1,len),rangeRand(1,len)];
+            RPG.flickerAnimation(Fight.bossFight,arr,Level-10);
         }
         player.tmp = 0;
     }
@@ -245,7 +248,7 @@ function setHero(x, y, dir){
 
     let row = mainTeam.getHero().row || 4;
     let col = mainTeam.getHero().col || 4;
-    heroImg = mainTeam.getHero().img;
+    heroImg = mainTeam.getHero().movePic;
     let imgData = new LBitmapData(assets[heroImg]);
     hero = new Character(true, 0, imgData, row, col);
     hero.name = mainTeam.getHero().nickName;

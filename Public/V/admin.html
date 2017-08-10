@@ -116,7 +116,7 @@
             if (result.code == 1) {
                 localStorage.setItem("userInfo" , JSON.stringify(result.data));
                 $(".userName").text(result.data.name);
-                $(".avatar").css('backgroundImage','url("/Asset/charasets/'+result.data.movePic+'")');
+                $(".avatar").css('backgroundImage','url("/Asset/人物行走图/'+result.data.movePic+'")');
                 $(".cont_centrar").hide();
                 $(".come_map").show();
             } else {

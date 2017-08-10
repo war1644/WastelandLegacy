@@ -133,7 +133,7 @@
             // fight test
             {type:"npc", img:"白象战车", x:5,  y:2, move:1, action: function(){
                 RPG.pushState(RPG.FIGHT_RESULT);
-                RPG.flickerAnimation(Fight.simpleFight,1);
+                // RPG.flickerAnimation(Fight.simpleFight,1);
             }},
             {type:"jump",x: 6, y: 13, action:()=>{
                     // 二楼

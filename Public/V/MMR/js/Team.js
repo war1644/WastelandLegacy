@@ -119,18 +119,17 @@ let PlayerTeam = {
      * 向队伍增加人物
      * @param id {int} 序号
      * @param lv  {int} 等级
-	 * @param nick  {string} 等级
+     * @param nick  {string} 等级
      * @returns
      */
-	addHero: function (id, lv, nick='路漫漫'){
-		let h1 = RPG.beget(HeroPlayer);
-        RPG.extend(h1, HeroList[id]);
+    addHero: function (id, lv, nick='路漫漫'){
+        let h1 = RPG.beget(HeroPlayer);
+        RPG.extend(h1, JobList[id-1]);
         h1.nickName = nick;
-        h1.setLevel(lv);
-		h1.fullHeal();
-        console.log('h1',h1);
+        h1.setLevel(Number(lv));
+        h1.fullHeal();
         this.heroList.push(h1);
-	},
+    },
     /**
      * 向队伍增加怪物
      * @param id {int} 序号
@@ -139,9 +138,9 @@ let PlayerTeam = {
      */
     addEnemy: function (id, lv){
         let e1 = RPG.beget(HeroPlayer);
-        RPG.extend(e1, EnemyList[id]);
-        e1.setLevel(lv);
-        e1.nickName = e1.img;
+        RPG.extend(e1, EnemyList[id-1]);
+        e1.setEnemyLevel(lv);
+        e1.nickName = e1.fightPic;
         e1.isHero = false;
         e1.fullHeal();
         this.heroList.push(e1);
