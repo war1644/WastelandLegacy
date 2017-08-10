@@ -54,6 +54,10 @@ let Lib = {
                           <a class="list-group-item" href="MapsEdit.html">新增地图场景</a>
                           <a class="list-group-item" href="EventsList.html">事件脚本列表</a>
                           <a class="list-group-item" href="EventsEdit.html">新增事件脚本</a>
+                          <a class="list-group-item" href="JobsEdit.html">新增游戏职业</a>
+                          <a class="list-group-item" href="JobsList.html">游戏职业列表</a>
+                          <a class="list-group-item" href="EnemysEdit.html">新增游戏敌人</a>
+                          <a class="list-group-item" href="EnemysList.html">游戏敌人列表</a>
                         </div>
                     </ul>
                 </div>

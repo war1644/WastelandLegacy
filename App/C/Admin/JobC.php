@@ -37,4 +37,73 @@ class JobC extends AdminC{
         }
         echo ResultFormat($result);
     }
+
+    public function drawCurve(){
+        $function = $_GET['curve'];
+        $level = 1;
+        $curve = [];
+        $type = $_GET['type'];
+
+        while ( $level < 100 ){
+            eval('$curve[$level] = '.str_replace('lv', $level, $function).';');
+            if($level===1){
+                $level_1 = $curve[$level];
+            }
+            if($level===99){
+                $level_99 = $curve[$level];
+            }
+            $level++;
+        }
+
+        $max = max($curve);
+        $divide = 1;
+        while ( ($max / $divide) + 1 > 399 ){
+            $divide++;
+        }
+
+        $width = 850;
+        $height = 550;
+        $max = 450;
+
+        $picture = imagecreate($width, $height);
+        $white = imagecolorallocate($picture, 255, 255, 255); // background
+        $black = imagecolorallocate($picture, 0, 0, 0);
+        $gray = imagecolorallocate($picture, 128, 128, 128);
+
+        switch($type){
+            case 'maxHpCurve':
+            case 'attackCurve':
+            case 'defendCurve':
+                $color = imagecolorallocate($picture, 255, 0, 0);
+                imagestring($picture, 5, 25, 25, $type, $color);
+                break;
+            case 'driveCurve':
+            case 'speedCurve':
+                $color = imagecolorallocate($picture, 0, 0, 255);
+                imagestring($picture, 5, 25, 25, $type, $color);
+                break;
+            case 'maxExpCurve':
+                $color = imagecolorallocate($picture, 0, 180, 0);
+                imagestring($picture, 5, 25, 25, $type, $color);
+                break;
+            default:
+                $color = $gray;
+                break;
+
+        }
+
+        foreach ( $curve as $key => $val )
+        {
+            $val = ceil($val / $divide) + 1;
+            imagerectangle($picture, $key * 8 + 5, $max - $val, $key * 8 + 8, $max, $color);
+            imagerectangle($picture, $key * 8 + 6, $max - $val + 1, $key * 8 + 7, $max - 1, $color);
+        }
+
+        imagestring($picture, 5, 25, $max + 15, $level_1 . ' -> ' . $level_99, $black);
+        imagestring($picture, 5, 25, $max + 30, $function, $gray);
+
+        header('Content-type: image/png');
+        imagepng($picture);
+        imagedestroy($picture);
+    }
 }

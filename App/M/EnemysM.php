@@ -1,5 +1,4 @@
 <?php
-namespace App\C\Admin;
 /**
  *         ▂▃╬▄▄▃▂▁▁
  *  ●●●█〓██████████████▇▇▇▅▅▅▅▅▅▅▅▅▇▅▅          BUG
@@ -7,18 +6,17 @@ namespace App\C\Admin;
  *  █████████████████████████████
  *  ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙◤
  *
- * demo 示例
+ * 游戏人物职业模型
  * @author 路漫漫
  * @link ahmerry@qq.com
  * @version
- * v2016/12/09 初版
+ * v2017/03/22 初版
  */
-use Base\Lib\C;
-class AdminC extends C {
-    function __construct() {
-//        if (!Session('admin')){
-//            die();
-//        }
-    }
+
+namespace App\M;
+
+
+class EnemysM extends AppModel {
+
 
 }

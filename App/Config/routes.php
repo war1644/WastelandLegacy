@@ -42,6 +42,11 @@ Macaw::any('Job/(:all)',function ($p){
     $c->method = $p;
     $c->$p();
 });
+Macaw::any('Enemy/(:all)',function ($p){
+    $c = new App\C\Admin\EnemyC();
+    $c->method = $p;
+    $c->$p();
+});
 
 
 Macaw::any('Public/(:all)',function ($p){
