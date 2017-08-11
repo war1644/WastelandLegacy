@@ -25,21 +25,23 @@
             {name: "费雷塔", msg: "如何？不错吧？打败他就有50000G的赏金，这些钱可够花好几个月的。"},
             {name: "费雷塔", msg: "我们明天讨伐的讨伐目标就是他了。你先去镇子里的旅馆休息一下吧。"},
     	],
-        雷娜:[{img: "face雷娜", name: "", msg: "咦，你是赏金猎人么？",option:[
-                {text: "是", action:()=>{
-                    Talk.startTalk([
-                        {img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
-                        {img: "face雷娜", name: "", msg: "赶紧来猎人中心吧，再见啦"},
-                    ]);
-                }},
-                {text: "否",action:()=>{
-                    Talk.callback = null;
-                    Talk.startTalk([
-                        {img: "face雷娜", name: "", msg: "哎，来了一个废物"},
-                    ]);
-                }}
-            ]},
-        ],
+        雷娜:
+            Talk.startTalk([
+                {img: "face雷娜", name: "", msg: "咦，你是赏金猎人么？",option:[
+                    {text: "是", action:()=>{
+                        Talk.startTalk([
+                            {img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
+                            {img: "face雷娜", name: "", msg: "赶紧来猎人中心吧，再见啦"},
+                        ]);
+                    }},
+                    {text: "否",action:()=>{
+                        Talk.callback = null;
+                        Talk.startTalk([
+                            {img: "face雷娜", name: "", msg: "哎，来了一个废物"},
+                        ]);
+                    }}
+                ]},
+            ]),
 		gameAbout:[
             {index:0,img: "face雷娜", name: "游戏美工04", msg: ""},
             {index:1,img: "face雷娜", name: "游戏美工04", msg: ""},
@@ -55,13 +57,13 @@
                         {img: "face雷娜", name: "游戏美工04", msg: "走到NPC旁点击NPC对话"},
                         {img: "face雷娜", name: "游戏美工04", msg: "WARNING：遇到凶残的敌人就跑吧，不然没人救你哦"},
                     ]);
-                    // infoLayer.removeAllChild();
                 }},
                 {text: "否",action:()=>{
                     Talk.startTalk([
-                        {img: "face雷娜", name: "游戏美工04", msg: "那么，开始你的废土捡破烂生活吧"},
+                        {img: "face雷娜", name: "游戏美工04", msg: "程序设计：路漫漫，7。;\n游戏素材：〇亖;\nQQ群：375499028"},
+
+                        {img: "face雷娜", name: "游戏美工04", msg: "好了，不废话了，开始你的废土捡破烂生活吧"},
                     ]);
-                    // infoLayer.removeAllChild();
                 }}
             ]},
         fight:[

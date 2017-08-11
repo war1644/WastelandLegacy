@@ -452,25 +452,11 @@ Character.prototype.changeDirAlt = function (dirs){
 		if(self.isHero) {
 			self.checkMap(dir);
 		}
-		let x = player.px,y=player.py;
-        // switch (dir){
-		// 	case DOWN:
-		// 		y+=1;
-		// 		break;
-         //    case LEFT:
-         //    	x-=1;
-         //        break;
-         //    case RIGHT:
-         //        x+=1;
-         //        break;
-         //    case UP:
-         //        y-=1;
-         //        break;
-		// }
         socket.wlSend('move',{type:'player',img:player.img,stageId:stage.id,x:player.px,y:player.py,dir:dir});
 		//如果可以移动，则开始移动
 		self.move = true;
-		player.tmp ++;
+		if(RPG.fight) player.tmp ++;
+
 		//self.moveIndex = 0;
 	}else {
 		dir = dirs[0];

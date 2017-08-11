@@ -3,6 +3,7 @@ let JobList= [
 	{
 		id:1,
         name:"猎人",//movePic
+        jobName:"猎人",
 		movePic:"猎人",
         fightPic:"猎人",
 		face:"face猎人",//头像
@@ -18,6 +19,7 @@ let JobList= [
     {
         id:2,
         name:"机械师",//movePic
+        jobName:"机械师",
         movePic:"机械师",
         fightPic:"机械师",
         face:"face机械师",//头像
@@ -32,6 +34,8 @@ let JobList= [
     },
     {
         id:3,
+        name:"机械师",//movePic
+        jobName:"机械师",
         movePic:"战士",
         fightPic:"战士",
         face:"face战士",//头像
@@ -72,6 +76,42 @@ let EnemyList= [
     },
     {
         id:4,
+        col:1,
+        row:1,
+        isBoss:true,
+        fightPic:"亡灵士兵",//movePic
+        isTank:false,
+        description:""
+    },
+    {
+        id:5,
+        col:1,
+        row:1,
+        isBoss:true,
+        fightPic:"毁灭战车",//movePic
+        isTank:true,
+        description:""
+    },
+    {
+        id:6,
+        col:1,
+        row:1,
+        isBoss:true,
+        fightPic:"戈麦斯",//movePic
+        isTank:true,
+        description:""
+    },
+    {
+        id:7,
+        col:1,
+        row:1,
+        isBoss:true,
+        fightPic:"喽啰",//movePic
+        isTank:false,
+        description:""
+    },
+    {
+        id:8,
         col:1,
         row:1,
         isBoss:true,

@@ -37,8 +37,8 @@
         <form name="save_form" method="post" action="/Map/edit" id="save_form" target="_blank" >
             <ul class="list-group">
                 <li class="list-group-item">地图名称 : <input type="text" name="name"></li>
-                <li class="list-group-item">文件名称 : <input type="text" name="fileName"></li>
                 <li class="list-group-item">背景音乐 : <input type="text" name="music"></li>
+                <li class="list-group-item">载入文件名称 : <input type="text" name="fileName"></li>
                 <a href='#' id="sub">提交</a>
             </ul>
         </form>
@@ -54,9 +54,9 @@
         $('#save_form').append('<input type="hidden" name="id" value="'+id+'">');
         $.getJSON(API+'Map/index?id='+id+'&callback=?',{},function (e) {
             console.log(e);
-             $('input[name="name"]').val(e.name);          
-             $('input[name="fileName"]').val(e.fileName);
-             $('input[name="music"]').val(e.music);
+            $('input[name="name"]').val(e.name);
+            $('input[name="music"]').val(e.music);
+            $('input[name="fileName"]').val(e.fileName);
         });
     }
 

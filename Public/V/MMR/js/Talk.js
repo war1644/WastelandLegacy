@@ -158,6 +158,7 @@ let Talk = {
      * @returns
      */
     startTalk:(talkList=false,layer=false,index=0,end=0)=>{
+        Lib.bgm('按钮');
         if(talkList && Talk.talkScript){
             if(RPG.checkState(RPG.IN_CHOOSING)) RPG.popState();
             Talk.closeTalk();

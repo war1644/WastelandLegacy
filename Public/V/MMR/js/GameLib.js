@@ -20,7 +20,7 @@ const API_RESOURCE = '/Asset/';
 const API_MAP = '/Asset/地图/';
 
 //扩展send方法
-WebSocket.prototype.wlSend = function (type,content) {
+WebSocket.prototype.wlSend = function (type,content={}) {
     let s = this;
     let params = {};
     params.type = type;
@@ -114,14 +114,16 @@ function checkAuto(){
     for(let i=0;i<events.length;i++){
         autoEvent = events[i];
         if (autoEvent.type==="auto"){
-            if (autoEvent.visible && autoEvent.visible()){
+            // if (autoEvent.visible && autoEvent.visible()){
                 if (autoEvent.action){
+                    Talk.setTalkPos("middle");
                     // 一旦触发事件，按键取消
                     isKeyDown= false;
                     autoEvent.action();
+                    Talk.setTalkPos("bottom");
                     return;
                 }
-            }
+            // }
         }
     }
 }
@@ -138,7 +140,7 @@ function checkIntoBattle(){
             let Level = mainTeam.heroList[0].Level;
             let len = EnemyList.length;
             let arr = [rangeRand(1,len),rangeRand(1,len),rangeRand(1,len)];
-            RPG.flickerAnimation(Fight.bossFight,arr,Level-10);
+            RPG.flickerAnimation(Fight.normalFight,arr,Level-10);
         }
         player.tmp = 0;
     }
@@ -192,8 +194,8 @@ let loadStage = function () {
 
 function drawImgMap(map) {
     //得到地图图层
-    let bitmapData = new LBitmapData(assets[stage.name+'_0']);
-    let bitmapDataUp = new LBitmapData(assets[stage.name+'_1']);
+    let bitmapData = new LBitmapData(assets[stage.fileName+'_0']);
+    let bitmapDataUp = new LBitmapData(assets[stage.fileName+'_1']);
     let bitmap = new LBitmap(bitmapData);
     let bitmapUp = new LBitmap(bitmapDataUp);
     let len = map.layers.length;
@@ -383,28 +385,26 @@ let Lib = {
             },2000);
             RPG.curBGMObj = obj;
         }else {
+            obj.setVolume(1.0);
             obj.play();
         }
     },
     login:function () {
-        let name = prompt("昵称","");
+        playerName = prompt("昵称","");
         let pwd = prompt("密码","");
-        if(name && pwd){
-            $.post('/Public/login2',{name:name,password:pwd},function (result) {
-                if (result.code == 1) {
-                    Lib.userInfo = result.data;
-                    localStorage.setItem("wlUserInfo" , JSON.stringify(result.data));
-                    playerName = name;
-                    GameSocket.onLink();
-                } else {
-                    Lib.login();
-                }
-            });
+        if(playerName && pwd){
+            GameSocket.onLink(playerName,pwd);
         }else{
-            // alert("信息录入成功！");
-            return true;
+            return false;
         }
-    }
+    },
+    //计算地图坐标
+    gridPos:function (x,y) {
+        let px = ((x-mapLayer.x)/STEP)>>0;
+        let py = ((y-mapLayer.y)/STEP)>>0;
+        return [px,py];
+    },
+
 };
 
 let UI = {

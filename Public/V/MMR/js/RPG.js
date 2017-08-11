@@ -79,7 +79,7 @@ let RPG = {
     currentButton: null,
     // 存档信息
     saveList: [],
-    MaxSaveSlot: 3,
+    MaxSaveSlot: 1,
     WebAudioSound:null,
 // ==========================================================
 
@@ -236,7 +236,7 @@ let RPG = {
     dealNormal: function (x, y) {
         // 根据点击位置，判断移动方向
         if (player) {
-            console.log('player', player.px,player.py);
+            console.log('clickPos',Lib.gridPos(x, y));
             //获取移动方向
             let ret = RPG.getMoveDir(x, y);
             if (ret.length === 0) {
@@ -280,7 +280,12 @@ let RPG = {
         return result;
     },
     howToUse: function () {
-        Talk.makeChoice(talkList.gameExplainTalk);
+        Talk.startTalk([
+            {img: "face雷娜", name: "游戏美工04", msg: "程序设计：路漫漫，7。;\n游戏素材：〇亖;\nQQ群：375499028"},
+
+            {img: "face雷娜", name: "游戏美工04", msg: "好了，不废话了，开始你的废土捡破烂生活吧"},
+        ]);
+        // Talk.makeChoice(talkList.gameExplainTalk);
     },
     drawCover: function () {
         // 封面图
@@ -294,20 +299,18 @@ let RPG = {
         sLayer.addChild(title);
 
         // 新的开始
-        let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "新游戏", function () {
+        let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "进入废土", function () {
             // 按钮被透过窗口点击
             if (RPG.checkState(RPG.IN_COVER)) {
                 if(!playerName){
-                    // playerName = prompt('来个名字吧：');
-                    if(!Lib.userInfo){
-                        Lib.userInfo = JSON.parse(localStorage.getItem('wlUserInfo'));
-                        if(!Lib.userInfo){
-                            Lib.login();
-                        }else {
-                            playerName = Lib.userInfo.name;
-                        }
-                    }
-                }else {
+                    // Lib.userInfo = JSON.parse(localStorage.getItem('wlUserInfo'));
+                    // if(!Lib.userInfo){
+                        Lib.login();
+                    // }else {
+                    //     playerName = Lib.userInfo.name;
+                    //     GameSocket.onLink();
+                    // }
+                } else {
                     GameSocket.onLink();
                 }
             }
@@ -315,16 +318,16 @@ let RPG = {
         sLayer.addChild(button01);
 
         // 继续
-        let button02 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)+60, "载入进度", function () {
-            if (RPG.checkState(RPG.IN_COVER)) {
-                Menu.openLoadMenu();
-            }
-        },18);
-        button02.setState(LButton.STATE_DISABLE);
-        sLayer.addChild(button02);
+        // let button02 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)+60, "载入进度", function () {
+        //     if (RPG.checkState(RPG.IN_COVER)) {
+        //         Menu.openLoadMenu();
+        //     }
+        // },18);
+        // button02.setState(LButton.STATE_DISABLE);
+        // sLayer.addChild(button02);
 
         // 关于
-        let button03 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)+120, "关于", function () {
+        let button03 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)+60, "关于", function () {
             if (RPG.checkState(RPG.IN_COVER)) {
                 RPG.howToUse();
             }
@@ -334,10 +337,10 @@ let RPG = {
         if (window.localStorage) {
             let saveList = JSON.parse(window.localStorage.getItem("WLSaveList"));
             if (saveList) {
-                button02.setState(LButton.STATE_ENABLE);
+                // button02.setState(LButton.STATE_ENABLE);
                 RPG.copySaveList(saveList);
             } else {
-                button02.setState(LButton.STATE_DISABLE);
+                // button02.setState(LButton.STATE_DISABLE);
                 RPG.newSaveList();
             }
         }
@@ -356,8 +359,8 @@ let RPG = {
         //初始化玩家队伍
         mainTeam = RPG.beget(PlayerTeam);
         //向玩家队伍增加人物（人物索引，人物等级)
-        mainTeam.addHero(1, Lib.userInfo.level, playerName);
-        mainTeam.addHero(2, Lib.userInfo.level, '废土机械师小伙伴');
+        mainTeam.addHero(Lib.userInfo.jobId, Lib.userInfo.level, Lib.userInfo.name);
+        // mainTeam.addHero(2, Lib.userInfo.level, '废土机械师小伙伴');
         // mainTeam.addHero(3, Lib.userInfo.level, '废土战士小伙伴');
 
         RPG.initSwitch();
@@ -426,68 +429,38 @@ let RPG = {
     },
 
     saveGame: function (slot) {
-        if (slot >= 0 && slot < RPG.MaxSaveSlot) {
-            RPG.saveList[slot].name = stage.name;
-            RPG.saveList[slot].date = RPG.getDateTimeStr();
-            if (window.localStorage) {
-                window.localStorage.setItem("WLSaveList", JSON.stringify(RPG.saveList));
-                let saveData = {
-                    px: player.px,
-                    py: player.py,
-                    itemList: mainTeam.itemList,
-                    heroList: mainTeam.heroList,
-                    stageId: stage.id,
-                    swt: RPG.SWITCH
-                };
-                // window.localStorage.setItem("WLSaveSlot" + slot, RPG.Serialize(saveData));
-                window.localStorage.setItem("WLSaveSlot" + slot, JSON.stringify(saveData));
-
-            }
+        RPG.saveList[slot].name = stage.name;
+        RPG.saveList[slot].date = RPG.getDateTimeStr();
+        if (window.localStorage) {
+            window.localStorage.setItem("WLSaveList", JSON.stringify(RPG.saveList));
+            let saveData = {
+                px: player.px,
+                py: player.py,
+                itemList: mainTeam.itemList,
+                heroList: mainTeam.heroList,
+                stageId: stage.id,
+                swt: RPG.SWITCH
+            };
+            socket.wlSend('setSave',{saveData});
         }
     },
 
-    loadGame: function (slot) {
-        if (slot >= 0 && slot < RPG.MaxSaveSlot) {
-            if (window.localStorage) {
-                let saveDataStr = window.localStorage.getItem("WLSaveSlot" + slot);
-                if (saveDataStr) {
-                    // let tempData = eval("(" + saveData + ")");
-                    let saveData = JSON.parse(saveDataStr);
-                    console.log(saveData);
-
-                    mainTeam = RPG.beget(PlayerTeam);
-                    for (let i = 0; i < saveData.itemList.length; i++) {
-                        mainTeam.addItem(saveData.itemList[i].index, saveData.itemList[i].num);
-                    }
-                    for (let i = 0; i < saveData.heroList.length; i++) {
-                        mainTeam.addHero(saveData.heroList[i].index, saveData.heroList[i].Level);
-                        RPG.extend(mainTeam.heroList[i], saveData.heroList[i]);
-                    }
-                    RPG.initSwitch();
-                    RPG.extend(RPG.SWITCH, saveData.swt);
-                    gameStageInit(saveData.stageId, Number(saveData.px), Number(saveData.py));
-                    // RPG.initEnemyTeam();
-                    // 进入地图控制状态
-                    RPG.setState(RPG.MAP_CONTROL);
-
-                    /*mainTeam = RPG.beget(PlayerTeam);
-                    for (let i = 0; i < tempData.items.length; i++) {
-                        mainTeam.addItem(tempData.items[i].index, tempData.items[i].num);
-                    }
-                    for (let i = 0; i < tempData.heros.length; i++) {
-                        mainTeam.addHero(tempData.heros[i].index, tempData.heros[i].Level);
-                        RPG.extend(mainTeam.heroList[i], tempData.heros[i]);
-                    }
-                    RPG.initSwitch();
-                    RPG.extend(RPG.SWITCH, tempData.swt);
-                    jumpStage(script[tempData.gate], Number(tempData.x), Number(tempData.y));
-                    RPG.initEnemyTeam();
-                    // 进入地图控制状态
-                    RPG.setState(RPG.MAP_CONTROL);*/
-
-                }
-            }
+    loadGame: function (content) {
+        let saveData = content;
+        console.log('load saveData',saveData);
+        mainTeam = RPG.beget(PlayerTeam);
+        for (let i = 0; i < saveData.itemList.length; i++) {
+            mainTeam.addItem(saveData.itemList[i].index, saveData.itemList[i].num);
         }
+        for (let i = 0; i < saveData.heroList.length; i++) {
+            mainTeam.addHero(saveData.heroList[i].index, saveData.heroList[i].Level);
+            RPG.extend(mainTeam.heroList[i], saveData.heroList[i]);
+        }
+        RPG.initSwitch();
+        RPG.extend(RPG.SWITCH, saveData.swt);
+        gameStageInit(saveData.stageId, Number(saveData.px), Number(saveData.py));
+        // 进入地图控制状态
+        RPG.setState(RPG.MAP_CONTROL);
     },
 
     /**

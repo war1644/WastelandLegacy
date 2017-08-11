@@ -257,9 +257,9 @@
                 let len = data.length,option='';
                 for (let i = 1; i < len; i++) {
                     if(data[i]==='') continue;
-                    option += `{text:${data[i]},action: function(){\nRPG.${data[0]}=${i};\nRPG.popState(); }},`;
+                    option += `{text:'${data[i]}',action:()=>{\nRPG.${data[0]}=${i};\nRPG.popState();\n}},\n`;
                 }
-                eventTextScript += 'Talk.startTalk([{option:['+option+']}])';
+                eventTextScript += 'Talk.startTalk([{option:[\n'+option+']}])';
                 break;
             case 3://创建战斗
                 eventTextScript += `RPG.pushState(RPG.FIGHT_RESULT);\nRPG.flickerAnimation(Fight.bossFight,[${data[0]}],${data[1]});`;

@@ -69,13 +69,13 @@
                     <li class="list-group-item">职业增加 防御：<input type="text" name="defendPlus"></li>
                     <li class="list-group-item">职业增加 智慧：<input type="text" name="mindPlus"></li>
                     <li class="list-group-item">职业增加 敏捷：<input type="text" name="speedPlus"></li> -->
-                    <li class="list-group-item">公式 Exp：<input type="text" name="maxExpCurve" id="maxExpCurve"><button onclick="lookCurve($('#maxExpCurve'));">查看曲线</button></li>
-                    <li class="list-group-item">公式 HP：<input type="text" name="maxHpCurve"> <button onclick="lookCurve($('#maxHpCurve'));">查看曲线</button></li>
+                    <li class="list-group-item">公式 Exp：<input type="text" name="maxExpCurve" id="maxExpCurve"><button onclick="lookCurve($('#maxExpCurve'));return false">查看曲线</button></li>
+                    <li class="list-group-item">公式 HP：<input type="text" name="maxHpCurve" id="maxHpCurve"> <button onclick="lookCurve($('#maxHpCurve'));return false">查看曲线</button></li>
                     <!-- <li class="list-group-item">公式 MP：<input type="text" name="mpCurve"> <button>查看曲线</button></li> -->
-                    <li class="list-group-item">公式 攻击：<input type="text" name="attackCurve"><button onclick="lookCurve($('#attackCurve'));">查看曲线</button></li>
-                    <li class="list-group-item">公式 防御：<input type="text" name="defendCurve"><button onclick="lookCurve($('#defendCurve'));">查看曲线</button></li>
-                    <li class="list-group-item">公式 驾驶：<input type="text" name="driveCurve"><button onclick="lookCurve($('#driveCurve'));">查看曲线</button></li>
-                    <li class="list-group-item">公式 敏捷：<input type="text" name="speedCurve"><button onclick="lookCurve($('#speedCurve'));">查看曲线</button></li>
+                    <li class="list-group-item">公式 攻击：<input type="text" id="attackCurve" name="attackCurve"><button onclick="lookCurve($('#attackCurve'));return false">查看曲线</button></li>
+                    <li class="list-group-item">公式 防御：<input type="text" id="defendCurve" name="defendCurve"><button onclick="lookCurve($('#defendCurve'));return false">查看曲线</button></li>
+                    <li class="list-group-item">公式 驾驶：<input type="text" id="driveCurve" name="driveCurve"><button onclick="lookCurve($('#driveCurve'));return false">查看曲线</button></li>
+                    <li class="list-group-item">公式 敏捷：<input type="text" id="speedCurve" name="speedCurve"><button onclick="lookCurve($('#speedCurve'));return false">查看曲线</button></li>
                     <a href='#' id="sub">确定</a>
                 </ul>
                 </form>

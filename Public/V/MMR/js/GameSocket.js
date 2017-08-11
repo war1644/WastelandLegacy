@@ -21,13 +21,19 @@ let GameSocket = {
         }
     },
 
-    onLink:()=> {
-        socket = new WebSocket("ws://localhost:8886");
+    onLink:(name,pwd)=> {
+        if(socket){
+            socket.wlSend('getSave');
+        }else {
+            socket = new WebSocket("ws://zregs.com:8886");
+        }
+
         socket.onopen = function () {
             Lib.showInfo('握手成功');
             if (socket.readyState === 1) {
-                RPG.newGame();
-                socket.wlSend('login');
+                socket.wlSend('login',{pwd:pwd});
+            } else {
+                Lib.showInfo('握手失败');
             }
         };
         socket.onmessage = function (e) {
@@ -49,7 +55,14 @@ let GameSocket = {
                 Lib.showInfo(value["error"]);
                 break;
             case "login":
-                Lib.showInfo(value.msg);
+                Lib.showInfo('正在初始化数据...');
+                if('code' in value.content){
+                    alert(value.content.msg);
+                    return false;
+                }
+                Lib.userInfo = value.content;
+                console.log('set',Lib.userInfo);
+                RPG.newGame();
                 break;
             case "talk":
                 Lib.showInfo(value.content.msg);
@@ -78,7 +91,26 @@ let GameSocket = {
                 break;
             case "action":
                 break;
-            case "kill":
+            case "getSave":
+                if (value.content) {
+                    let saveData = value.content;
+                    console.log('load saveData',saveData);
+                    mainTeam = RPG.beget(PlayerTeam);
+                    for (let i = 0; i < saveData.itemList.length; i++) {
+                        mainTeam.addItem(saveData.itemList[i].index, saveData.itemList[i].num);
+                    }
+                    for (let i = 0; i < saveData.heroList.length; i++) {
+                        mainTeam.addHero(saveData.heroList[i].index, saveData.heroList[i].Level);
+                        RPG.extend(mainTeam.heroList[i], saveData.heroList[i]);
+                    }
+                    RPG.initSwitch();
+                    RPG.extend(RPG.SWITCH, saveData.swt);
+                    gameStageInit(saveData.stageId, Number(saveData.px), Number(saveData.py));
+                    // 进入地图控制状态
+                    RPG.setState(RPG.MAP_CONTROL);
+                } else {
+                   alert('没有存档，请刷新游戏重新登录开始新游戏');
+                }
                 break;
 
         }

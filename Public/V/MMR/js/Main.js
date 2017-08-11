@@ -126,13 +126,22 @@ function main(){
 	//BGM SFX
     imgData = [
         {name:'NameSetting',path:'/Asset/Sound/Bgm/NameSetting.mp3'},
-        {name:'Startup',path:"/Asset/Sound/Bgm/Startup.mp3"},
+        {name:'无限音轨',path:"/Asset/Sound/Bgm/无限音轨.mp3"},
         {name:'TownTheme',path:"/Asset/Sound/Bgm/TownTheme.mp3"},
         {name:'Town',path:"/Asset/Sound/Bgm/Town.mp3"},
         {name:'BossFight',path:"/Asset/Sound/Bgm/BossFight.mp3"},
         {name:'BattleTheme',path:"/Asset/Sound/Bgm/BattleTheme.mp3"},
         {name:'战车恰恰悠扬激进版',path:"/Asset/Sound/Bgm/战车恰恰悠扬激进版.mp3"},
-        // {name:'一切开始的地方',path:"/Asset/Sound/Bgm/一切开始的地方.mid"},
+        {name:'7mm机关炮',path:"/Asset/Sound/Bgm/7mm机关炮.mp3"},
+        {name:'商队',path:"/Asset/Sound/Bgm/商队.mp3"},
+        {name:'消逝的过去',path:"/Asset/Sound/Bgm/消逝的过去.mp3"},
+        {name:'迪加',path:"/Asset/Sound/Bgm/迪加.mp3"},
+        {name:'山洞',path:"/Asset/Sound/Bgm/山洞.mp3"},
+        {name:'未知荒野',path:"/Asset/Sound/Bgm/未知荒野.mp3"},
+        {name:'战车恰恰',path:"/Asset/Sound/Bgm/战车恰恰.mp3"},
+        {name:'流浪',path:"/Asset/Sound/Bgm/流浪.mp3"},
+        {name:'道具屋',path:"/Asset/Sound/Bgm/道具屋.mp3"},
+
         {name:'GunAct',path:"/Asset/Sound/Sfx/GunAct.mp3"},
         {name:'boom',path:"/Asset/Sound/Sfx/boom.mp3"},
         {name:'Fail',path:"/Asset/Sound/Sfx/Fail.mp3"},
@@ -140,6 +149,13 @@ function main(){
         {name:'Select',path:"/Asset/Sound/Sfx/Select.wav"},
         {name:'JumpStage',path:"/Asset/Sound/Sfx/JumpStage.wav"},
         {name:'StartBattle',path:"/Asset/Sound/Sfx/enemy.mp3"},
+        {name:'获得物品',path:"/Asset/Sound/Sfx/获得物品.wav"},
+        {name:'交易',path:"/Asset/Sound/Sfx/交易.wav"},
+        {name:'睡觉',path:"/Asset/Sound/Sfx/睡觉.mp3"},
+        {name:'逃跑',path:"/Asset/Sound/Sfx/逃跑.wav"},
+        {name:'按钮',path:"/Asset/Sound/Sfx/按钮.wav"},
+        {name:'普通攻击',path:"/Asset/Sound/Sfx/普通攻击.wav"},
+        {name:'普通攻击End',path:"/Asset/Sound/Sfx/普通攻击End.wav"},
 
     ];
 
@@ -186,11 +202,14 @@ function main(){
 
 
     //FightPic
-    imgData.push({name:"野战炮",path:"/Asset/战斗/敌人/野战炮.png"});
-    imgData.push({name:"加农炮",path:"/Asset/战斗/敌人/加农炮.png"});
-    imgData.push({name:"巨炮",path:"/Asset/战斗/敌人/巨炮.png"});
-    imgData.push({name:"沙漠之舟",path:"/Asset/战斗/敌人/沙漠之舟.png"});
-    imgData.push({name:"戈斯战车",path:"/Asset/战斗/敌人/戈斯战车.png"});
+    imgData.push({name:"野战炮",path:"/Asset/战斗/MMR/野战炮.png"});
+    imgData.push({name:"加农炮",path:"/Asset/战斗/MMR/加农炮.png"});
+    imgData.push({name:"巨炮",path:"/Asset/战斗/MMR/巨炮.png"});
+    imgData.push({name:"亡灵士兵",path:"/Asset/战斗/MMR/亡灵士兵.png"});
+    imgData.push({name:"喽啰",path:"/Asset/战斗/MMR/喽啰.png"});
+    imgData.push({name:"毁灭战车",path:"/Asset/战斗/MMR/毁灭战车.png"});
+    imgData.push({name:"戈麦斯",path:"/Asset/战斗/MMR/戈麦斯.png"});
+    imgData.push({name:"沙漠之舟",path:"/Asset/战斗/MMR/沙漠之舟.png"});
 
     //face
     imgData.push({name:"face猎人",path:"/Asset/头像/女猎人.png"});
@@ -351,7 +370,7 @@ function gameLayerInit() {
     backLayer.addChild(infoLayer);
 }
 
-function gameStageInit(stageId,x,y,dir) {
+function gameStageInit(stageId,x,y,dir=3) {
     $.getJSON(API+'Public/getMyData?callback=?',{id:stageId},function (e) {
         console.log(e);
         if('stage' in e){
@@ -359,7 +378,7 @@ function gameStageInit(stageId,x,y,dir) {
             stage = e.stage;
             stage.map = JSON.parse(stage.map);
             ItemList = stage.items;
-            let downMap = stage.name+'_0',upMap = stage.name+'_1';
+            let downMap = stage.fileName+'_0',upMap = stage.fileName+'_1';
             LLoadManage.load ([
                 {name:downMap,path:API_MAP+downMap+'.png'},
                 {name:upMap,path:API_MAP+upMap+'.png'},

@@ -83,6 +83,7 @@ let Menu = {
             talkLayer.addChild(ctrlLayer);
         }
         ctrlLayer.removeAllChild();
+        ctrlLayer.addShape();
 
         if(!RPG.checkState(RPG.IN_MENU)) RPG.pushState(RPG.IN_MENU);
 
@@ -142,7 +143,7 @@ let Menu = {
             Menu.listLayer.addChild(text);
         }
         // 选择高亮条
-        Menu.listFocus= UI.drawColorWindow(Menu.listLayer, 0, 0, menuWidth-gap*2, 25,0.5,'#eee');
+        Menu.listFocus= UI.drawColorWindow(Menu.listLayer, gap, 0, menuWidth-gap*2, 25,0.5,'#eee');
 
         // if (Menu.chooseItem>= 0) {
         //     Menu.menuShowOneItem(Menu.chooseItem);
@@ -327,31 +328,27 @@ let Menu = {
         let valueLength,
             hero1 = mainTeam.heroList[Menu.currentHeroShow],
             rightPos = 110,
-            leftPos = 10,
-            topPos = 10,
+            leftPos = gap,
+            topPos = gap,
+            textGap = 25,
             item1,
             textObj,numObj;
 
         if (!hero1) hero1= mainTeam.heroList[0];
         Menu.menuPage= 1;
         ctrlLayer.removeAllChild();
-        textObj = UI.simpleText('');
         let item = [
-            {text:'NAME',obj:textObj.clone()},
-            {text:'FACE',obj:textObj.clone()},
-            {text:'HP',obj:textObj.clone()},
-            {text:'SP',obj:textObj.clone()},
-            {text:'LV',obj:textObj.clone()},
-            {text:'EXP',obj:textObj.clone()}
+            {text:'NAME',obj:UI.simpleText('')},
+            {text:'FACE',obj:UI.simpleText('')},
+            {text:'JOB',obj:UI.simpleText('')},
+            {text:'HP',obj:UI.simpleText('')},
+            {text:'SP',obj:UI.simpleText('')},
+            {text:'LV',obj:UI.simpleText('')},
+            {text:'EXP',obj:UI.simpleText('')}
         ];
         for (let i = 0; i < item.length; i++) {
             let obj = item[i];
             switch (obj.text){
-                case 'NAME':
-                    obj.obj.x = rightPos;
-                    obj.obj.y = topPos;
-                    obj.obj.text = hero1.nickName;
-                    break;
                 case 'FACE':
                     // 头像
                     let imgData = new LBitmapData(assets[hero1.face]);
@@ -360,40 +357,53 @@ let Menu = {
                     bitmap.y = topPos;
                     ctrlLayer.addChild(bitmap);
                     break;
+                case 'NAME':
+                    obj.obj.x = rightPos;
+                    obj.obj.y = topPos;
+                    obj.obj.text = hero1.nickName;
+                    break;
+                case 'JOB':
+                    topPos+= textGap;
+                    obj.obj.text = '职业：'+hero1.jobName;
+                    obj.obj.x = rightPos;
+                    obj.obj.y = topPos;
+
+                    break;
                 case 'HP':
                     // hp血条
                     // valueLength= (menuWidth- rightPos)- gap;
                     // RPG.drawScale(ctrlLayer, "winback", rightPos, 52, valueLength, 12);
                     // RPG.drawScale(ctrlLayer, "#ff565c", rightPos, 50, valueLength* hero1.getHpRate(), 15);
-                    topPos+= 20;
+                    topPos+= textGap;
                     obj.obj.x = rightPos;
                     obj.obj.y = topPos;
-                    obj.obj.text = obj.text+' : '+hero1.Hp+ " / "+ hero1.maxHp;
+                    obj.obj.text = obj.text+'：'+hero1.Hp+ " / "+ hero1.maxHp;
                     // numObj = textObj.clone();
                     // numObj.x = rightPos;
                     // numObj.y = topPos+20;
                     // numObj.text = hero1.Hp+ " / "+ hero1.MaxHp;
                     // ctrlLayer.addChild(numObj);
                     break;
-                case 'SP':
-                    // 战车血条
-                    // valueLength= (menuWidth- rightPos)- gap;
-                    // RPG.drawScale(ctrlLayer, "winback", rightPos, 92, valueLength, 12);
-                    // RPG.drawScale(ctrlLayer, "#2b92ff", rightPos, 92, valueLength* hero1.getMpRate(), 12);
-                    obj.obj.x = rightPos;
-                    obj.obj.y = 70;
-                    obj.obj.text = obj.text+' : '+hero1.Sp+ " / "+ hero1.maxSp;
-                    // numObj = textObj.clone();
-                    // numObj.x = rightPos;
-                    // numObj.y = 90;
-                    // numObj.text = hero1.Sp+ "/"+ hero1.MaxSp;
-                    // ctrlLayer.addChild(numObj);
-                    break;
+                // case 'SP':
+                //     // 战车血条
+                //     // valueLength= (menuWidth- rightPos)- gap;
+                //     // RPG.drawScale(ctrlLayer, "winback", rightPos, 92, valueLength, 12);
+                //     // RPG.drawScale(ctrlLayer, "#2b92ff", rightPos, 92, valueLength* hero1.getMpRate(), 12);
+                //     obj.obj.x = rightPos;
+                //     obj.obj.y = 70;
+                //     obj.obj.text = obj.text+'： '+hero1.Sp+ " / "+ hero1.maxSp;
+                //     // numObj = textObj.clone();
+                //     // numObj.x = rightPos;
+                //     // numObj.y = 90;
+                //     // numObj.text = hero1.Sp+ "/"+ hero1.MaxSp;
+                //     // ctrlLayer.addChild(numObj);
+                //     break;
 
                 case 'LV':
-                    obj.obj.x = leftPos;
-                    obj.obj.y = 110;
-                    obj.obj.text = obj.text+' : '+hero1.Level;
+                    topPos+= textGap;
+                    obj.obj.x = rightPos;
+                    obj.obj.y = topPos;
+                    obj.obj.text = obj.text+'： '+hero1.Level;
                     // numObj = textObj.clone();
                     // numObj.x = leftPos;
                     // numObj.y = 130;
@@ -401,13 +411,14 @@ let Menu = {
                     // ctrlLayer.addChild(numObj);
                     break;
                 case 'EXP':
+                    topPos+= textGap;
                     // 经验条
                     // valueLength= (menuWidth- rightPos)- gap;
                     // RPG.drawScale(ctrlLayer, "winback", rightPos, 132, valueLength, 12);
                     // RPG.drawScale(ctrlLayer, "#28ff4e", rightPos, 130, valueLength* hero1.getExpRate(), 15);
                     obj.obj.x = rightPos;
-                    obj.obj.y = 110;
-                    obj.obj.text = obj.text+' : '+hero1.Exp+' / '+hero1.maxExp;
+                    obj.obj.y = topPos;
+                    obj.obj.text = obj.text+'： '+hero1.Exp+' / '+hero1.maxExp;
                     // numObj = textObj.clone();
                     // numObj.x = rightPos;
                     // numObj.y = 130;
@@ -422,7 +433,7 @@ let Menu = {
         let showedItems=["weapon","armor","ornament"];
         let text = UI.simpleText('装备：');
         text.x = 2*gap;
-        text.y = 150;
+        text.y = topPos+textGap;
         ctrlLayer.addChild(text);
         for (let i= 0; i<= 2; i++) {
             item1 = ItemList[hero1[showedItems[i]]];
@@ -436,7 +447,7 @@ let Menu = {
                 // 物品名称
                 let text = UI.simpleText(item1.name);
                 text.x = leftPos + gap;
-                text.y = 180+ i* 30 + gap;
+                text.y = 150+ i* 30 + gap;
                 ctrlLayer.addChild(text);
             }
         }
@@ -538,7 +549,7 @@ let Menu = {
         ctrlLayer.addChild(saveButton);
         let loadSave= UI.diyButton(60, 30, gap*2 + 70, menuHeight>>1, "载入", function(e){
             Menu.closeMenu();
-            RPG.loadGame(Menu.saveSlot);
+            if(RPG.saveList[0].name !== '空记录') socket.wlSend('getSave');
         });
         ctrlLayer.addChild(loadSave);
     },

@@ -139,7 +139,7 @@ let PlayerTeam = {
     addEnemy: function (id, lv){
         let e1 = RPG.beget(HeroPlayer);
         RPG.extend(e1, EnemyList[id-1]);
-        e1.setEnemyLevel(lv);
+        e1.setEnemyLevel(Number(lv));
         e1.nickName = e1.fightPic;
         e1.isHero = false;
         e1.fullHeal();

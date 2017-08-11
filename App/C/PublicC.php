@@ -147,7 +147,7 @@ class PublicC extends AppC {
         if(!isset($_GET['id'])) die();
         $m = new MapsM();
         $map = $m->find($_GET['id']);
-        $filename = iconv('utf-8','gb2312',$map['name']);
+        $filename = iconv('utf-8','gb2312',$map['fileName']);
         $map['map'] = file_get_contents(ASSET_PATH.$filename.'.json');
         $m = new EventsM();
         $eventData = $m->getData(['eventMapId'=>$map['id']],'all');
