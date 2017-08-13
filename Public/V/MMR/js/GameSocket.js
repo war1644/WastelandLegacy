@@ -96,9 +96,12 @@ let GameSocket = {
                     let saveData = value.content;
                     console.log('load saveData',saveData);
                     mainTeam = RPG.beget(PlayerTeam);
-                    for (let i = 0; i < saveData.itemList.length; i++) {
-                        mainTeam.addItem(saveData.itemList[i].index, saveData.itemList[i].num);
+                    if(typeof saveData.itemList === 'object'){
+                        for (let i = 0; i < saveData.itemList.length; i++) {
+                            mainTeam.addItem(saveData.itemList[i].index, saveData.itemList[i].num);
+                        }
                     }
+
                     for (let i = 0; i < saveData.heroList.length; i++) {
                         mainTeam.addHero(saveData.heroList[i].index, saveData.heroList[i].Level);
                         RPG.extend(mainTeam.heroList[i], saveData.heroList[i]);

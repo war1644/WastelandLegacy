@@ -148,7 +148,7 @@
     $('#sub').click(function () {
         if(!id){
             let eventTextScript = $('#action').val();
-            $('#action').val('()=>{\n'+eventTextScript+'}');
+            $('#action').val('(npc)=>{\n'+eventTextScript+'}');
         }
 
         document.save_form.submit();

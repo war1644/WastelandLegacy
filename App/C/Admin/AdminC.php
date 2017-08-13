@@ -16,9 +16,9 @@ namespace App\C\Admin;
 use Base\Lib\C;
 class AdminC extends C {
     function __construct() {
-//        if (!Session('admin')){
-//            die();
-//        }
+        if (!Session('admin')){
+            die();
+        }
     }
 
 }

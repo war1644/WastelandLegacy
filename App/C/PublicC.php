@@ -143,17 +143,25 @@ class PublicC extends AppC {
         $vcode->scode();
     }
 
+    public function getItem(){
+        $m = new ItemsM();
+        echo ResultFormat($m->getList());
+    }
+
     public function getMyData(){
         if(!isset($_GET['id'])) die();
         $m = new MapsM();
         $map = $m->find($_GET['id']);
-        $filename = iconv('utf-8','gb2312',$map['fileName']);
+        if(PATH_SEPARATOR==':'){
+            $filename = $map['fileName'];
+        }else{
+            $filename = iconv('utf-8','gb2312',$map['fileName']);
+        }
+
         $map['map'] = file_get_contents(ASSET_PATH.$filename.'.json');
         $m = new EventsM();
         $eventData = $m->getData(['eventMapId'=>$map['id']],'all');
         $map['events'] = DelTransfer($eventData);
-        $m = new ItemsM();
-        $map['items'] = $m->getData(['place'=>$map['id']],'all');
         echo ResultFormat(['stage'=>$map]);
     }
 

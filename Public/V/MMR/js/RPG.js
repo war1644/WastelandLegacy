@@ -281,7 +281,7 @@ let RPG = {
     },
     howToUse: function () {
         Talk.startTalk([
-            {img: "face雷娜", name: "游戏美工04", msg: "程序设计：路漫漫，7。;\n游戏素材：〇亖;\nQQ群：375499028"},
+            {img: "face雷娜", name: "游戏美工04", msg: "程序设计：路漫漫，7。，问道中情;\n游戏素材：〇亖;\nQQ群：375499028"},
 
             {img: "face雷娜", name: "游戏美工04", msg: "好了，不废话了，开始你的废土捡破烂生活吧"},
         ]);
@@ -293,7 +293,7 @@ let RPG = {
         let sLayer = effectLayer;
         sLayer.removeAllChild();
 
-        let title = UI.simpleText('废土战记',30);
+        let title = UI.simpleText('废土战纪',30);
         title.x = WIDTH-title.getWidth()>>1;
         title.y = HEIGHT>>3;
         sLayer.addChild(title);

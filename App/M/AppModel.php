@@ -21,11 +21,6 @@ class AppModel extends M{
         return $this->executeSql($sql,[],'all');
     }
 
-    public function getEvent($field='*') {
-        $sql = "SELECT $field FROM $this->table";
-        return $this->executeSql($sql,[],'all');
-    }
-
     /**
      * 获取数据
      */

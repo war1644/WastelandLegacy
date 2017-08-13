@@ -167,7 +167,6 @@ function main(){
     imgData.push({type:"js",path:"./js/RPG.js"});
 	imgData.push({type:"js",path:"./js/Menu.js"});
 	imgData.push({type:"js",path:"./js/Team.js"});
-    imgData.push({type:"js",path:"./js/TalkList.js"});
     imgData.push({type:"js",path:"./js/Effect.js"});
     imgData.push({type:"js",path:"./js/FightMenu.js"});
     imgData.push({type:"js",path:"./js/Fight.js"});
@@ -305,6 +304,8 @@ function gameInit(){
     Lib.bgm('战车恰恰悠扬激进版',true);
     //游戏层显示初始化
     gameLayerInit();
+    //游戏全局数据初始化
+    gameDataInit();
 
     //添加帧事件，开始游戏循环
     backLayer.addEventListener(LEvent.ENTER_FRAME,onFrame);
@@ -368,16 +369,34 @@ function gameLayerInit() {
     //信息层
     infoLayer = new LSprite();
     backLayer.addChild(infoLayer);
+
+}
+
+/**
+ * 各图层初始化
+ **/
+function gameDataInit() {
+    //ItemList
+    $.getJSON(API+'Public/getItem?callback=?',{},function (e) {
+        if(typeof e === 'object'){
+            console.log(e);
+            ItemList = e;
+        } else {
+            if(confirm('获取物品列表失败，点击确认重试')){
+                gameDataInit();
+            }
+        }
+    });
+
 }
 
 function gameStageInit(stageId,x,y,dir=3) {
     $.getJSON(API+'Public/getMyData?callback=?',{id:stageId},function (e) {
-        console.log(e);
+        console.log('stage',e);
         if('stage' in e){
             if(stage) socket.wlSend('removeUser',{stageId:stage.id});
             stage = e.stage;
             stage.map = JSON.parse(stage.map);
-            ItemList = stage.items;
             let downMap = stage.fileName+'_0',upMap = stage.fileName+'_1';
             LLoadManage.load ([
                 {name:downMap,path:API_MAP+downMap+'.png'},
@@ -387,9 +406,10 @@ function gameStageInit(stageId,x,y,dir=3) {
                 assets[upMap] = e[upMap];
                 jumpStage(x,y,dir);
             });
-            console.log('ItemList',ItemList);
         } else {
-            alert('游戏数据初始化错误，请刷新游戏重试！')
+            if(confirm('游戏数据初始化错误，点击确认重试')){
+                gameStageInit(stageId,x,y,dir);
+            }
         }
     });
 }

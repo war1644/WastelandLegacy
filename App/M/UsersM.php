@@ -80,7 +80,7 @@ class UsersM extends AppModel {
     private function loginFollow($id){
         $result = $this->find($id);
         if ($result) {
-            if( in_array($result['id'],[1,2,3,4,5,8]) ) {
+            if( in_array($result['id'],[1,2,3,4,5,6,7,8,9]) ) {
                 Session('admin',$result['id']);
             }
             unset($result['password'],$result['salt']);
