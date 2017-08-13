@@ -14,6 +14,7 @@ namespace App\C;
  * v2016/12/9 初版
  */
 use App\M\EventsM;
+use App\M\EnemysM;
 use App\M\ItemsM;
 use App\M\JobsM;
 use App\M\MapsM;
@@ -145,6 +146,14 @@ class PublicC extends AppC {
 
     public function getItem(){
         $m = new ItemsM();
+        echo ResultFormat($m->getList());
+    }
+    public function getJob(){
+        $m = new JobsM();
+        echo ResultFormat($m->getList());
+    }
+    public function getEnemy(){
+        $m = new EnemysM();
         echo ResultFormat($m->getList());
     }
 

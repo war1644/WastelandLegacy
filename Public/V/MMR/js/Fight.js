@@ -653,10 +653,18 @@ let Fight = {
                 for (let j = 0; j < Fight.eTeam.itemList.length; j++) {
                     item1 = Fight.eTeam.itemList[j];
                     // 获得敌队的物品
-                    Fight.pTeam.addItem(item1.index, item1.num);
+                    Fight.pTeam.addItem(item1.id, item1.num);
                     // 图片
                     // 物品数量
                     text = UI.text(item1.num, xx, yy + j * 30 + 5);
+                    Fight.layer.addChild(text);
+                }
+                for (let j = 0; j < Fight.eTeam.heroList.length; j++) {
+                    let enemy = Fight.eTeam.heroList[j];
+                    // 获得敌队的物品
+                    Fight.pTeam.addMoney(enemy.price);
+                    // 物品数量
+                    text = UI.text(item1.num, xx, yy +50 + j * 30 + 5);
                     Fight.layer.addChild(text);
                 }
             }

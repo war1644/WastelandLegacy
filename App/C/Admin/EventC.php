@@ -21,7 +21,7 @@ class EventC extends AdminC {
     public function index(){
         $m = new EventsM();
         if(isset($_GET['id'])){
-            echo ResultFormat($m->find($_GET['id']));
+            echo ResultFormat(DelTransfer($m->find($_GET['id'])));
         }else{
             echo ResultFormat($m->getList());
         }

@@ -326,7 +326,7 @@ function gameInit(){
  **/
 function initScript(x,y,frame=0){
     //效果层初始化
-    effectLayer.removeAllChild();
+    // effectLayer.removeAllChild();
     //对话层初始化
     talkLayer.removeAllChild();
     //默认对话位置居中
@@ -387,10 +387,31 @@ function gameDataInit() {
             }
         }
     });
+    $.getJSON(API+'Public/getJob?callback=?',{},function (e) {
+        if(typeof e === 'object'){
+            console.log(e);
+            JobList = e;
+        } else {
+            if(confirm('获取物品列表失败，点击确认重试')){
+                gameDataInit();
+            }
+        }
+    });
+    $.getJSON(API+'Public/getEnemy?callback=?',{},function (e) {
+        if(typeof e === 'object'){
+            console.log(e);
+            EnemyList = e;
+        } else {
+            if(confirm('获取物品列表失败，点击确认重试')){
+                gameDataInit();
+            }
+        }
+    });
 
 }
 
 function gameStageInit(stageId,x,y,dir=3) {
+    RPG.blackEffect();
     $.getJSON(API+'Public/getMyData?callback=?',{id:stageId},function (e) {
         console.log('stage',e);
         if('stage' in e){
@@ -404,6 +425,7 @@ function gameStageInit(stageId,x,y,dir=3) {
             ],false,function (e) {
                 assets[downMap] = e[downMap];
                 assets[upMap] = e[upMap];
+                RPG.whiteEffect();
                 jumpStage(x,y,dir);
             });
         } else {

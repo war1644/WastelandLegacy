@@ -10,8 +10,10 @@ let PlayerTeam = {
 	itemList: [],
     //单位列表
 	heroList: [],
+	//是否在战车内
+	inTank:false,
     //钱钱
-    money: 100,
+    money: 1000,
 	init: function (){
 		this.itemList=[];
 		this.heroList=[];
@@ -31,7 +33,7 @@ let PlayerTeam = {
 		if (id < 0) return;
 		let found= false;
 		for (let i=0; i< this.itemList.length; i++) {
-			if (this.itemList[i].index === id) {
+			if (this.itemList[i].id === id) {
 				this.itemList[i].num = Number(this.itemList[i].num) + Number(num);
 				found = true;
 				break;
@@ -39,16 +41,9 @@ let PlayerTeam = {
 		}
 		if (!found) {
 			let item = RPG.beget(Item);
-			item.index = id;
-			item.num = num;
-			RPG.extend(item,ItemList[id]);
-            // item.name = ItemList[id].name;
-            // item.description = ItemList[id].description;
-            // item.kind = ItemList[id].kind;
-            // item.type = ItemList[id].type;
-            // item.addOn = ItemList[id].addOn;
-            // item.cost = ItemList[id].cost;
-			this.itemList.push(item);
+			RPG.extend(item,ItemList[id-1]);
+            item.num = num;
+            this.itemList.push(item);
 		}
 		if (visible) UI.showGetItem(id, num);
 	},
@@ -70,32 +65,32 @@ let PlayerTeam = {
 			this.itemList= this.itemList.slice(0, itemId).concat(this.itemList.slice(itemId+ 1));
 		}
 
-		switch (item1.getItem().type){
-			case 1:
-			case 3:
+		switch (item1.type){
+			case '1':
+			case '3':
                 // 装配类
-                switch (item1.getItem().position) {
-                    case 1:
-                        this.addItem(hero1.changeWeapon(item1.index), 1);
+                switch (item1.position) {
+                    case '1':
+                        this.addItem(hero1.changeWeapon(item1.id), 1);
                         break;
-                    case 2:
-                        this.addItem(hero1.changeArmor(item1.index), 1);
+                    case '2':
+                        this.addItem(hero1.changeArmor(item1.id), 1);
                         break;
-                    case 3:
-                        this.addItem(hero1.changeHand(item1.index), 1);
+                    case '3':
+                        this.addItem(hero1.changeHand(item1.id), 1);
                         break;
-                    case 4:
-                        this.addItem(hero1.changeFoot(item1.index), 1);
+                    case '4':
+                        this.addItem(hero1.changeFoot(item1.id), 1);
                         break;
-                    case 5:
-                        this.addItem(hero1.changeHead(item1.index), 1);
+                    case '5':
+                        this.addItem(hero1.changeHead(item1.id), 1);
                         break;
                 }
                 break;
 			case 2:
 			case 4:
                 // 使用类
-                item1.useTo(hero1);
+                if (item1.effect) item1.effect(hero1);
                 break;
 		}
 	},
@@ -177,7 +172,7 @@ let PlayerTeam = {
      */
 	fullHeal: function(){
 		for (let i= 0; i< this.heroList.length; i++){
-			this.heroList[i].alive= true;
+			// this.heroList[i].alive= true;
 			this.heroList[i].fullHeal();
 		}		
 	},
@@ -190,7 +185,7 @@ let PlayerTeam = {
 		let item1, hero1;
 		for (let i= 0; i< this.itemList.length; i++) {
 			item1= this.itemList[i];
-			if (item1.index== itemId) {
+			if (item1.id== itemId) {
 				return true;
 			}
 		}
@@ -213,7 +208,7 @@ let PlayerTeam = {
         console.log('index',index);
         for (let i= 0; i< this.itemList.length; i++) {
 			item1 = this.itemList[i];
-			if (item1.index === index) {
+			if (item1.id === index) {
                 if (item1.num > 1){
                     this.itemList[i].num= item1.num- 1;
                 } else {

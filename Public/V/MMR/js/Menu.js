@@ -131,13 +131,13 @@ let Menu = {
             // 物品名称
             switch (Menu.trade){
                 case 'sell':
-                    text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
+                    text = UI.text(item1.name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
                     break;
                 case 'buy':
                     text = UI.text(item1.name+'    '+item1.price+'G',gap* 2+ 30,i* 30+ gap+ 5);
                     break;
                 default:
-                    text = UI.text(ItemList[item1.index].name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
+                    text = UI.text(item1.name+'    '+item1.num,gap* 2+ 30,i* 30+ gap+ 5);
                     break;
             }
             Menu.listLayer.addChild(text);
@@ -169,7 +169,7 @@ let Menu = {
 
         let i,item1,text,money;
         text = UI.simpleText("物品",18);
-        text.x = menuWidth-text.getWidth()>>1;
+        text.x = (menuWidth-text.getWidth())>>1;
         text.y = 2*gap;
         Menu.layer.addChild(text);
         //绘制钱钱
@@ -204,13 +204,13 @@ let Menu = {
             // 逐个显示物品
             item1 = Menu.currentItemList[i];
             // 物品名称
-            text = UI.simpleText(ItemList[item1.index].name+'    '+item1.num);
+            text = UI.simpleText(item1.name+'    '+item1.num);
             text.x = gap*5;
             text.y = i* 30+ gap+ 5;
             Menu.listLayer.addChild(text);
         }
         // 选择高亮条
-        Menu.listFocus= UI.drawColorWindow(Menu.listLayer, 0, 0, menuWidth-gap*2, 25,0.5,'#eee');
+        Menu.listFocus= UI.drawColorWindow(Menu.listLayer, gap, 0, menuWidth-gap*2, 25,0.5,'#eee');
         Menu.menuShowOneItem(0);
         Menu.layer.addChild(Menu.touchLayer);
 
@@ -222,24 +222,24 @@ let Menu = {
         // 详细信息
         RPG.descLayer.removeAllChild();
         // 显示单一物品详细信息
-        // item1 = mainTeam.itemList[itemId].getItem();
         item1 = Menu.currentItemList[Menu.chooseItem];
+        console.log('item1',item1);
         text = UI.text('',gap* 2,5);
         switch (item1.type){
-            case 1:
-            case 3:
+            case '1':
+            case '3':
                 text.text = item1.name+ "装配：";
                 break;
-            case 2:
-            case 4:
+            case '2':
+            case '4':
                 text.text = item1.name+ "使用：";
                 break;
-            case 5:
+            case '5':
                 text.text = item1.name+ "不可用";
                 break;
         }
         RPG.descLayer.addChild(text);
-        if(item1.type!==5){
+        if(item1.type != 5){
             // 显示姓名
             Menu.nameText = text.clone();
             Menu.nameText.x = text.x+ text.getWidth()+ gap;
@@ -249,7 +249,7 @@ let Menu = {
             let cc= (menuWidth- gap* 2)/ mainTeam.heroList.length;
             for (i=0; i< mainTeam.heroList.length; i++){
                 let hero = mainTeam.heroList[i];
-                let heroImg= hero.img;
+                let heroImg= hero.movePic;
                 let bitmapData = new LBitmapData(assets[heroImg]);
                 let chara = new Fighter(bitmapData,4,4);
                 // 测试物品效果的英雄
@@ -364,7 +364,7 @@ let Menu = {
                     break;
                 case 'JOB':
                     topPos+= textGap;
-                    obj.obj.text = '职业：'+hero1.jobName;
+                    obj.obj.text = '职业：'+hero1.name;
                     obj.obj.x = rightPos;
                     obj.obj.y = topPos;
 
@@ -430,20 +430,15 @@ let Menu = {
         }
 
         // 显示持有物品 武器 防具 饰物
-        let showedItems=["weapon","armor","ornament"];
+        let showedItems=["weapon","armor","ornament",'hand','foot','head'];
         let text = UI.simpleText('装备：');
         text.x = 2*gap;
         text.y = topPos+textGap;
         ctrlLayer.addChild(text);
-        for (let i= 0; i<= 2; i++) {
-            item1 = ItemList[hero1[showedItems[i]]];
+        for (let i= 0; i < showedItems.length; i++) {
+            let id = hero1[showedItems[i]]-1;
+            item1 = ItemList[id];
             if (item1) {
-                // 图片
-                // let imgData = new LBitmapData(assets["iconset"], item1.pic.x*Menu.iconStep, item1.pic.y*Menu.iconStep, Menu.iconStep, Menu.iconStep);
-                // let bitmap = new LBitmap(imgData);
-                // bitmap.x= leftPos;
-                // bitmap.y= 160+ i* 30;
-                // ctrlLayer.addChild (bitmap);
                 // 物品名称
                 let text = UI.simpleText(item1.name);
                 text.x = leftPos + gap;
@@ -483,7 +478,7 @@ let Menu = {
                         mainTeam.addMoney(Menu.itemCost);
                         break;
                     case 'buy':
-                        mainTeam.addItem(Menu.chooseItem, 1);
+                        mainTeam.addItem(Menu.chooseItem+1, 1);
                         mainTeam.reduceMoney(Menu.itemCost);
                         break;
                     default:
@@ -561,10 +556,6 @@ let Menu = {
         text.x = menuWidth-text.getWidth()>>1;
         text.y = 2*gap;
         ctrlLayer.addChild(text);
-        // UI.text("载入进度",menuWidth/ 2,10,'20');
-        // text.width= 200;
-        // text.textAlign= "center";
-        // ctrlLayer.addChild(text);
         // 可用存档槽
         if (!Menu.listLayer) {
             Menu.listLayer= new LSprite();
@@ -576,8 +567,6 @@ let Menu = {
         ctrlLayer.addChild(Menu.listLayer);
         Menu.listLayer.mask = null;
         // 选择高亮条
-        // Menu.listFocus= UI.drawImgColor(Menu.listLayer, gap, 0, menuWidth- gap* 2, 30);
-        // 选择高亮条
         Menu.listFocus= UI.drawColorWindow(Menu.listLayer, gap, 0, menuWidth-gap*2, 25,0.5,'#eee');
         Menu.saveSlot= 0;
         //
@@ -587,8 +576,6 @@ let Menu = {
             text.x = menuWidth>>3;
             text.y = i* 30+ 5;
             Menu.listLayer.addChild(text);
-            // text = UI.text(RPG.showSaveSlot(i),gap* 2,i* 30+ 5);
-            // Menu.listLayer.addChild(text);
         }
         // 空白按钮图片
         let button01= UI.diyButton(90, 30, gap* 2, menuHeight- 60, "载入进度", function(e){
@@ -620,6 +607,7 @@ let Menu = {
 
     // 游戏进行中，打开主菜单
     openMenu: function() {
+        Lib.bgm('按钮');
         //切换状态
         RPG.pushState(RPG.IN_MENU);
         //将对话层清空
@@ -695,7 +683,7 @@ let Menu = {
             case 1:
                 // 长按卸下装备
                 Menu.dragTimer= setTimeout(function(){
-                    cc= ((ay- 160)/ 40)<<0;
+                    cc = ((ay- 160)/ 40)<<0;
                     hero1 = mainTeam.heroList[Menu.currentHeroShow];
                     switch (cc) {
                         case 0:
@@ -710,8 +698,20 @@ let Menu = {
                             mainTeam.addItem(hero1.changeOrn(-1), 1);
                             Menu.menuShowState();
                             break;
+                        case 3:
+                            mainTeam.addItem(hero1.changeHand(-1), 1);
+                            Menu.menuShowState();
+                            break;
+                        case 4:
+                            mainTeam.addItem(hero1.changeFoot(-1), 1);
+                            Menu.menuShowState();
+                            break;
+                        case 5:
+                            mainTeam.addItem(hero1.changeHead(-1), 1);
+                            Menu.menuShowState();
+                            break;
                     }
-                }, 500);
+                }, 1000);
                 break;
             case 2:
                 // 拉动物品条，以及长按使用物品
@@ -770,7 +770,7 @@ let Menu = {
                                     break;
                             }
 
-                            console.log('cc',cc, Menu.nameText.text);
+                            // console.log('cc',cc, Menu.nameText.text);
                             // Menu.showLabel(cc);
                             // 同时显示可能会出现的值的变化
                             //console.log(Menu.nameText.text);
@@ -908,19 +908,18 @@ let Menu = {
         RPG.descLayer.removeAllChild();
         // 显示单一物品详细信息
         item1 = Menu.currentItemList[Menu.chooseItem];
-        text = UI.text('给谁：',gap* 2,5);
+        text = UI.text('给谁：',gap* 2,gap);
         Menu.itemCost = item1.price;
         RPG.descLayer.addChild(text);
         // 显示姓名
         Menu.nameText = text.clone();
-        Menu.nameText.x = text.x+ text.getWidth()+ gap;
-        Menu.nameText.text = "";
+        Menu.nameText.x = text.x +text.getWidth() + gap;
         RPG.descLayer.addChild(Menu.nameText);
         Menu.chooseHero= -1;
         let cc= (menuWidth- gap* 2)/ mainTeam.heroList.length;
         for (i=0; i< mainTeam.heroList.length; i++){
             let hero = mainTeam.heroList[i];
-            let heroImg = hero.img;
+            let heroImg = hero.movePic;
             let bitmapData = new LBitmapData(assets[heroImg]);
             let chara = new Fighter(bitmapData,4,4);
             chara.x = cc* i+ cc/ 2- STEP/ 2;

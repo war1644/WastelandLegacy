@@ -1,124 +1,9 @@
 // 游戏玩家职业信息
 let JobList= [
-	{
-		id:1,
-        name:"猎人",//movePic
-        jobName:"猎人",
-		movePic:"猎人",
-        fightPic:"猎人",
-		face:"face猎人",//头像
-        attackCurve : '(60 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0',
-        defendCurve : '(44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0',
-        maxHpCurve : '(200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv - 200)>>0',
-        maxExpCurve : '(210 * Math.sqrt(lv) - 230 * lv + 200 * lv * lv - 110)>>0',
-        driveCurve : '(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0',
-        speedCurve : '(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0',
-        skillList: [],// 技能列表
-        description:"战车驾驶技术一流，还会修理，肉搏也不弱，这不就是主角光环么？",
-	},
-    {
-        id:2,
-        name:"机械师",//movePic
-        jobName:"机械师",
-        movePic:"机械师",
-        fightPic:"机械师",
-        face:"face机械师",//头像
-        attackCurve : '(60 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0',
-        defendCurve : '(44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0',
-        maxHpCurve : '(200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv - 200)>>0',
-        maxExpCurve : '(210 * Math.sqrt(lv) - 230 * lv + 200 * lv * lv - 110)>>0',
-        driveCurve : '(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0',
-        speedCurve : '(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0',
-        skillList: [],// 技能列表
-        description:"修理MAX，还能战场修理，还能改造战车，绝对的辅助一把手"
-    },
-    {
-        id:3,
-        name:"机械师",//movePic
-        jobName:"机械师",
-        movePic:"战士",
-        fightPic:"战士",
-        face:"face战士",//头像
-        attackCurve : '(60 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0',
-        defendCurve : '(44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0',
-        maxHpCurve : '(200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv - 200)>>0',
-        maxExpCurve : '(210 * Math.sqrt(lv) - 230 * lv + 200 * lv * lv - 110)>>0',
-        driveCurve : '(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0',
-        speedCurve : '(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0',
-        skillList: [],// 技能列表
-        description:"肉搏强悍，但是也不可能与战车匹敌的，各种人武器玩的666."
-    },
+
 ];
 let EnemyList= [
-    {
-        id:1,
-        fightPic:"加农炮",//movePic
-        col:1,
-        row:1,
-        isTank:true,
-        description:"大破坏前，军方常规大炮"
-    },
-    {
-        id:2,
-        col:1,
-        row:1,
-        fightPic:"野战炮",//movePic
-        isTank:true,
-        description:"大破坏前，军方常规大炮"
-    },
-    {
-        id:3,
-        fightPic:"巨炮",//movePic
-        col:1,
-        row:1,
-        isTank:true,
-        description:"大破坏前，军方防御型阵地大炮"
-    },
-    {
-        id:4,
-        col:1,
-        row:1,
-        isBoss:true,
-        fightPic:"亡灵士兵",//movePic
-        isTank:false,
-        description:""
-    },
-    {
-        id:5,
-        col:1,
-        row:1,
-        isBoss:true,
-        fightPic:"毁灭战车",//movePic
-        isTank:true,
-        description:""
-    },
-    {
-        id:6,
-        col:1,
-        row:1,
-        isBoss:true,
-        fightPic:"戈麦斯",//movePic
-        isTank:true,
-        description:""
-    },
-    {
-        id:7,
-        col:1,
-        row:1,
-        isBoss:true,
-        fightPic:"喽啰",//movePic
-        isTank:false,
-        description:""
-    },
-    {
-        id:8,
-        col:1,
-        row:1,
-        isBoss:true,
-        fightPic:"沙漠之舟",//movePic
-        isTank:true,
-        description:"移动碉堡，强悍的防御和攻击让人生畏，但速度和智商感人"
-    }
+
 ];
 let HeroPlayer = {
 	// 人物列表中人物编号
@@ -220,7 +105,7 @@ let HeroPlayer = {
 	// 更换武器
 	changeWeapon: function(id){
 		let a = this.weapon;
-		this.weapon= id;
+		this.weapon = id;
 		return Number(a);
 	},
 	// 更换防具

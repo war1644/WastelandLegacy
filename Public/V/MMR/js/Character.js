@@ -341,11 +341,35 @@ Character.prototype.checkRoad = function (dir){
 			break;
 	}
 
-    if(toY <= -1 || toX <= -1) return false;
-	if(toY >= CurrentMap.height || toX >= CurrentMap.width) return false;
+    if(toY <= 0){
+        if(self.isHero) checkTrigger('up');
+		return false;
+    }
+    if(toX <= 0){
+        if(self.isHero) checkTrigger('left');
+        return false;
+    }
+	if(toY >= CurrentMap.height-1){
+        if(self.isHero) checkTrigger('down');
+    	return false;
+    }
+    if(toX >= CurrentMap.width-1){
+        if(self.isHero) checkTrigger('right');
+        return false;
+    }
 
 	//目的地为障碍，则不可移动
-	if(CurrentMapMove.data[toY*CurrentMap.width+ toX] > 0) return false;
+    let tileId = Number(CurrentMapMove.data[toY*CurrentMap.width+ toX]);
+    switch (tileId-1){
+		case 219:
+		case 8:
+            return false;
+			break;
+        case 227:
+        case 7:
+            if(mainTeam.inTank) return false;
+            break;
+	}
 
 	//如果前方有NPC，同样不可移动
     for(let key in charaLayer.childList){

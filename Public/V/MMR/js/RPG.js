@@ -281,11 +281,10 @@ let RPG = {
     },
     howToUse: function () {
         Talk.startTalk([
-            {img: "face雷娜", name: "游戏美工04", msg: "程序设计：路漫漫，7。，问道中情;\n游戏素材：〇亖;\nQQ群：375499028"},
-
-            {img: "face雷娜", name: "游戏美工04", msg: "好了，不废话了，开始你的废土捡破烂生活吧"},
+            {img: "face雷娜", name: "游戏美工04", msg: "程序设计：[路漫漫]，[7。]，[问道中情]"},
+            {img: "face雷娜", name: "游戏美工04", msg: "游戏素材：[〇亖]\nQQ群：375499028"},
+            {img: "face雷娜", name: "游戏美工04", msg: "好了，不废话，开始你的废土捡破烂生活吧"},
         ]);
-        // Talk.makeChoice(talkList.gameExplainTalk);
     },
     drawCover: function () {
         // 封面图
@@ -479,24 +478,14 @@ let RPG = {
 
     // 屏幕从黑切换到白，模拟过去了一天的效果
     nightAndDay: function(callback) {
+        Lib.bgm('睡觉');
         effectLayer.removeAllChild();
         let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1);
         LTweenLite.to(bmp, 5,
-            {alpha: 0, ease: Quad.easeOut,
-                onComplete: function () {
+            {alpha: 0, onComplete: function () {
                     effectLayer.removeChild(bmp);
                     if (callback) callback();
                 }
-                //     LTweenLite.to(bmp, 2,
-                //         {
-                //             alpha: 0, ease: Quad.easeIn,
-                //             onComplete: function () {
-                //                 effectLayer.removeChild(bmp);
-                //                 if (callback) callback();
-                //             }
-                //         }
-                //     )
-                // }
             }
         )
     },
@@ -511,6 +500,29 @@ let RPG = {
             effectLayer.removeAllChild();
             if(callback) callback(teamId,level);
         },1000)
+    },
+    // 屏幕渐变黑
+    blackEffect: function(callback) {
+        effectLayer.removeAllChild();
+        let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 0.1);
+        LTweenLite.to(bmp, 2,
+            {alpha: 1,onComplete: function () {
+                    if (callback) callback();
+                }
+            }
+        )
+    },
+    whiteEffect: function(callback) {
+        effectLayer.removeAllChild();
+        let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1);
+        LTweenLite.to(bmp, 2,
+            {alpha: 0, ease: Quad.easeOut,
+                onComplete: function () {
+                    effectLayer.removeChild(bmp);
+                    if (callback) callback();
+                }
+            }
+        )
     },
 
 };

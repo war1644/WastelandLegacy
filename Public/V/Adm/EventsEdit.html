@@ -46,6 +46,7 @@
                             <option value="touch">点击触发</option>
                         </select>
                     <li class="list-group-item">事件名：<input type="text" name="name"></li>
+                    <li class="list-group-item">剧情人物标记（不是就不填）：<input type="text" name="story"></li>
                     <li class="list-group-item">
                         <p>所在地图场景 :
                             <select name="eventMapId" id="eventMapId"></select>
@@ -75,7 +76,9 @@
                     </li>
                 </ul>
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <p>事件脚本 :</p>
+                    <p>NPC出现条件：</p>
+                    <textarea name="visible" id="visible" style="width:300px;height:50px;"></textarea>
+                    <p>事件脚本：</p>
                     <textarea name="action" id="action" style="width:300px;height:300px;"></textarea>
                     <p><a href='#' id="sub">提交</a></p>
                 </div>
@@ -121,6 +124,11 @@
                 $('#col').val('1');
                 break;
             case 'auto':
+                $('#visible').val('()=>{return 1;}');
+                $('#img').val('');
+                $('#row').val('0');
+                $('#col').val('0');
+                break;
             case 'jump'://传送
                 $('#img').val('');
                 $('#row').val('0');
@@ -148,7 +156,7 @@
     $('#sub').click(function () {
         if(!id){
             let eventTextScript = $('#action').val();
-            $('#action').val('(npc)=>{\n'+eventTextScript+'}');
+            $('#action').val('(npc)=>{\n'+eventTextScript+'\n}');
         }
 
         document.save_form.submit();
@@ -302,6 +310,7 @@
             $('input[name="x"]').val(e.x);
             $('input[name="y"]').val(e.y);
             $('select[name="eventMapId"]').val(e.eventMapId);
+            $('textarea[name="visible"]').val(e.visible);
 
         });
     }

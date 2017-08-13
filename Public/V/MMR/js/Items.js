@@ -22,15 +22,14 @@ let SkillList= [
 ];
 
 let Item= {
-	index: 0,
 	num: 0,
 	useTo: function(hero){
-		if (ItemList[this.index].effect){
-			ItemList[this.index].effect(hero);
+		if (this.effect){
+            this.effect(hero);
 		}
 	},
 	getItem: function(){
-		return ItemList[this.index];
+		return ItemList[this.id];
 	},
 };
 

@@ -46,6 +46,10 @@
                     <th>朝向</th>
                     <th>事件脚本</th>
                     <th>自动移动</th>
+                    <th>地图场景ID</th>
+                    <th>X</th>
+                    <th>Y</th>
+                    <th>NPC出现条件</th>
                 </tr>
                 </thead>
                 <tbody class="itemList">
@@ -66,7 +70,7 @@
             for(let key in obj ){
                 str += '<td>'+obj[key]+'</td>';
             }
-            str += '<td><a href="EventsEdit.html?id='+obj.id+'">编辑</a></td>';
+            str += '<td><a target="_blank" href="EventsEdit.html?id='+obj.id+'">编辑</a></td>';
             addContent+='<tr>'+str+'</tr>';
         }
         $('.itemList').append(addContent);

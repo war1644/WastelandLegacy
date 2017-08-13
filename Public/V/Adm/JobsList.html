@@ -62,7 +62,7 @@
             for(let key in obj ){
                 str += '<td>'+obj[key]+'</td>';
             }
-            str += '<td><a href="JobsEdit.html?id='+obj.id+'">编辑</a></td>';
+            str += '<td><a target="_blank" href="JobsEdit.html?id='+obj.id+'">编辑</a></td>';
             addContent+='<tr>'+str+'</tr>';
         }
         $('.itemList').append(addContent);

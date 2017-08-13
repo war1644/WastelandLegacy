@@ -206,7 +206,7 @@ let Talk = {
             }
 
             //对话背景
-            UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
+            let talkWinow = UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
             //对话头像
             if (talkObject.img) {
                 let imgData = new LBitmapData(assets[talkObject.img]);
@@ -233,6 +233,7 @@ let Talk = {
             msg.width = Talk.WIDTH - gap*2;
             msg.setWordWrap(true, 20);
             talkLayer.addChild(msg);
+
             msg.speed = 1;
             //对话内容逐字显示
             msg.wind(Talk.closeSentence);

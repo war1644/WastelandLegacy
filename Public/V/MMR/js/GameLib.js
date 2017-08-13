@@ -53,12 +53,57 @@ function rangeRand(min,max) {
 }
 
 //走到触发型 场景跳转
-function checkTrigger(){
+function checkTrigger(boundary=false){
     let events = stage.triggerEvents;
     let triggerEvent;
     for(let i=0;i<events.length;i++){
         triggerEvent = events[i];
         if (!triggerEvent.img){
+            if(boundary && ( (triggerEvent.y==0) && (triggerEvent.x==0) )){
+                //获取该场景脚本数据
+                if (triggerEvent.action){
+                    // 一旦触发事件，按键取消
+                    isKeyDown= false;
+                    triggerEvent.action();
+                    return;
+                }
+            }
+            if(boundary=='up' && (triggerEvent.y==0)){
+                //获取该场景脚本数据
+                if (triggerEvent.action){
+                    // 一旦触发事件，按键取消
+                    isKeyDown= false;
+                    triggerEvent.action();
+                    return;
+                }
+            }
+            if(boundary=='down' && (triggerEvent.y==999)){
+                //获取该场景脚本数据
+                if (triggerEvent.action){
+                    // 一旦触发事件，按键取消
+                    isKeyDown= false;
+                    triggerEvent.action();
+                    return;
+                }
+            }
+            if(boundary=='left' && (triggerEvent.x==0)){
+                //获取该场景脚本数据
+                if (triggerEvent.action){
+                    // 一旦触发事件，按键取消
+                    isKeyDown= false;
+                    triggerEvent.action();
+                    return;
+                }
+            }
+            if(boundary=='right' && (triggerEvent.y==999)){
+                //获取该场景脚本数据
+                if (triggerEvent.action){
+                    // 一旦触发事件，按键取消
+                    isKeyDown= false;
+                    triggerEvent.action();
+                    return;
+                }
+            }
             if( (player.px == triggerEvent.x) && (player.py == triggerEvent.y) ){
                 //获取该场景脚本数据
                 if (triggerEvent.action){
@@ -114,7 +159,7 @@ function checkAuto(){
     for(let i=0;i<events.length;i++){
         autoEvent = events[i];
         if (autoEvent.type==="auto"){
-            // if (autoEvent.visible && autoEvent.visible()){
+            if (autoEvent.visible && autoEvent.visible()){
                 if (autoEvent.action){
                     Talk.setTalkPos("middle");
                     // 一旦触发事件，按键取消
@@ -123,7 +168,7 @@ function checkAuto(){
                     Talk.setTalkPos("bottom");
                     return;
                 }
-            // }
+            }
         }
     }
 }
@@ -161,7 +206,10 @@ let jumpStage = function(x, y, dir=0){
             console.log(i,events[i].action);
             events[i].action = eval(events[i].action);
         }
-
+        if(events[i].visible){
+            console.log(i,events[i].visible);
+            events[i].visible = eval(events[i].visible);
+        }
         if(events[i].img){
             let arr = events[i].img.split('/');
             if(arr.length>1){
@@ -253,6 +301,7 @@ function setHero(x, y, dir){
     heroImg = mainTeam.getHero().movePic;
     let imgData = new LBitmapData(assets[heroImg]);
     hero = new Character(true, 0, imgData, row, col);
+    hero.inTank = false;
     hero.name = mainTeam.getHero().nickName;
     player = hero;
     player.img = heroImg;
@@ -758,8 +807,8 @@ let UI = {
 
     // 显示获得物品
     showGetItem:(id, num)=>{
-        UI.drawBorderWindow(effectLayer,0,0,WIDTH, 40);
-        let item1 = ItemList[id];
+        let showWinow = UI.drawBorderWindow(effectLayer,0,HEIGHT>>1,WIDTH, 40);
+        let item1 = ItemList[id-1];
         // 图片
         // bitmapData = new LBitmapData(assets["iconset"], item1.pic.x*RPG.iconStep, item1.pic.y*RPG.iconStep, RPG.iconStep, RPG.iconStep),
         // bitmap = new LBitmap(bitmapData);
@@ -767,26 +816,25 @@ let UI = {
         // bitmap.y= gap;
         // effectLayer.addChild (bitmap);
         // 物品名称
-        let text = UI.simpleText(item1.name+'         '+num,undefined,undefined,50,2*gap);
-        effectLayer.addChild(text);
-        // 物品数量
-        // let numText = text.clone();
-        // numText.x = 180;
-        // numText.text = ;
-        // effectLayer.addChild(numText);
+        let text = UI.simpleText(item1.name+'         *'+num,18);
+        text.x = (WIDTH - text.getWidth())>>1;
+        text.y = gap;
+        showWinow.addChild(text);
+
         setTimeout(function(){
             effectLayer.removeAllChild();
         }, 2000);
     },
 
-    showImg:(img)=>{
+    showImg:(img,callback)=>{
         let bitmapData = new LBitmapData(assets[img]);
         let bitmap = new LBitmap(bitmapData);
         bitmap.x = (WIDTH-bitmap.getWidth())>>1;
-        bitmap.y = (WIDTH-bitmap.getHeight())>>1;
+        bitmap.y = (HEIGHT-bitmap.getHeight())>>1;
         infoLayer.addChild(bitmap);
         setTimeout(function () {
             infoLayer.removeAllChild();
+            if(callback) callback();
         },3000)
     },
 
@@ -817,6 +865,7 @@ let UI = {
         });
         button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
             if (RPG.currentButton === button01) {
+                Lib.bgm('按钮');
                 if (callback) callback();
             }
         });

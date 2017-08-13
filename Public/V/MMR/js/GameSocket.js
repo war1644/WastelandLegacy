@@ -25,7 +25,7 @@ let GameSocket = {
         if(socket){
             socket.wlSend('getSave');
         }else {
-            socket = new WebSocket("ws://zregs.com:8886");
+            socket = new WebSocket('ws://'+location.host+':8886');
         }
 
         socket.onopen = function () {
