@@ -72,8 +72,6 @@ Effect.prototype.play = function (aTimes, aFunc){
 	self.frameId= 0;
 	self.func= aFunc;
 	self.move= true;
-	//self.anime.removeAllEventListener();
-	//self.anime.addEventListener(LEvent.COMPLETE, aFunc);
 };
 
 

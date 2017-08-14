@@ -179,6 +179,8 @@ let Menu = {
         //按钮
         let btn = UI.diyButton(0,0,menuWidth-50,gap,'退出',()=>{
             talkLayer.removeChild(Menu.layer);
+            Fight.menu.visible = true;
+            RPG.popState();
         });
         Menu.layer.addChild(btn);
 

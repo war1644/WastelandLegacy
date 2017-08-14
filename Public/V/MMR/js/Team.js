@@ -10,6 +10,7 @@ let PlayerTeam = {
 	itemList: [],
     //单位列表
 	heroList: [],
+	tankList:[],
 	//是否在战车内
 	inTank:false,
     //钱钱
@@ -30,10 +31,11 @@ let PlayerTeam = {
      * @returns
      */
 	addItem: function (id, num=1, visible=false){
+        id = Number(id);
 		if (id < 0) return;
 		let found= false;
 		for (let i=0; i< this.itemList.length; i++) {
-			if (this.itemList[i].id === id) {
+			if (this.itemList[i].id == id) {
 				this.itemList[i].num = Number(this.itemList[i].num) + Number(num);
 				found = true;
 				break;
@@ -87,10 +89,13 @@ let PlayerTeam = {
                         break;
                 }
                 break;
-			case 2:
-			case 4:
+			case '2':
+			case '4':
                 // 使用类
-                if (item1.effect) item1.effect(hero1);
+                if (item1.effect){
+                    item1.effect = eval(item1.effect);
+                	item1.effect(hero1);
+                }
                 break;
 		}
 	},
@@ -112,6 +117,21 @@ let PlayerTeam = {
 
     /**
      * 向队伍增加人物
+     * @param id {int} 序号
+     * @param lv  {int} 等级
+     * @param nick  {string} 等级
+     * @returns
+     */
+    addTank: function (id, lv, nick='路漫漫'){
+        let h1 = RPG.beget(TankPlayer);
+        RPG.extend(h1, JobList[id-1]);
+        h1.nickName = nick;
+        h1.setLevel(Number(lv));
+        h1.fullHeal();
+        this.heroList.push(h1);
+    },
+    /**
+     * 向队伍增加战车
      * @param id {int} 序号
      * @param lv  {int} 等级
      * @param nick  {string} 等级
@@ -192,7 +212,7 @@ let PlayerTeam = {
 		// 物品表里没有，看装备情况
 		for (let i= 0; i< this.heroList.length; i++){
 			hero1= this.heroList[i];
-			if (hero1.weapon== itemId || hero1.armor== itemId || hero1.ornament== itemId){
+			if (hero1.weapon== itemId || hero1.armor== itemId || hero1.ornament== itemId || hero1.hand== itemId || hero1.foot== itemId || hero1.head== itemId){
 				return true;
 			}
 		}
@@ -236,12 +256,12 @@ let PlayerTeam = {
 	 * 加钱
 	 * */
 	addMoney:function (num) {
-		this.money += num;
+		this.money += Number(num);
     },
 	/**
 	 * 减钱
 	 * */
     reduceMoney:function (num) {
-		this.money -= num;
+		this.money -= Number(num);
     },
 };

@@ -91,24 +91,28 @@ let GameSocket = {
                 break;
             case "action":
                 break;
+            case "setSave":
+                if (value.content) {
+                    UI.showInfo('保存成功');
+                } else {
+                    UI.showInfo('保存失败');
+                }
+                break;
             case "getSave":
                 if (value.content) {
-                    let saveData = value.content;
-                    console.log('load saveData',saveData);
+                    let saveData = value.content.saveData;
                     mainTeam = RPG.beget(PlayerTeam);
-                    if(typeof saveData.itemList === 'object'){
-                        for (let i = 0; i < saveData.itemList.length; i++) {
-                            mainTeam.addItem(saveData.itemList[i].index, saveData.itemList[i].num);
-                        }
+                    for (let i = 0; i < saveData.itemList.length; i++) {
+                        mainTeam.addItem(saveData.itemList[i].id, saveData.itemList[i].num);
                     }
 
                     for (let i = 0; i < saveData.heroList.length; i++) {
-                        mainTeam.addHero(saveData.heroList[i].index, saveData.heroList[i].Level);
+                        mainTeam.addHero(saveData.heroList[i].id, saveData.heroList[i].Level);
                         RPG.extend(mainTeam.heroList[i], saveData.heroList[i]);
                     }
                     RPG.initSwitch();
                     RPG.extend(RPG.SWITCH, saveData.swt);
-                    gameStageInit(saveData.stageId, Number(saveData.px), Number(saveData.py));
+                    gameStageInit(Number(saveData.stageId), Number(saveData.px), Number(saveData.py));
                     // 进入地图控制状态
                     RPG.setState(RPG.MAP_CONTROL);
                 } else {

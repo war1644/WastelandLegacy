@@ -151,6 +151,7 @@ function main(){
         {name:'StartBattle',path:"/Asset/Sound/Sfx/enemy.mp3"},
         {name:'获得物品',path:"/Asset/Sound/Sfx/获得物品.wav"},
         {name:'交易',path:"/Asset/Sound/Sfx/交易.wav"},
+        {name:'出现',path:"/Asset/Sound/Sfx/出现.wav"},
         {name:'睡觉',path:"/Asset/Sound/Sfx/睡觉.mp3"},
         {name:'逃跑',path:"/Asset/Sound/Sfx/逃跑.wav"},
         {name:'按钮',path:"/Asset/Sound/Sfx/按钮.wav"},
@@ -192,6 +193,8 @@ function main(){
     imgData.push({name:"交易员",path:"/Asset/人物行走图/交易员.png"});
     imgData.push({name:"大姐姐",path:"/Asset/人物行走图/大姐姐.png"});
     imgData.push({name:"明奇",path:"/Asset/人物行走图/明奇.png"});
+    imgData.push({name:"路人",path:"/Asset/人物行走图/路人.png"});
+    imgData.push({name:"士兵",path:"/Asset/人物行走图/士兵.png"});
 
     //战车行走图
     imgData.push({name:"M1战车MMR",path:"/Asset/战车行走图/MMR/M1战车MMR.png"});
@@ -379,7 +382,6 @@ function gameDataInit() {
     //ItemList
     $.getJSON(API+'Public/getItem?callback=?',{},function (e) {
         if(typeof e === 'object'){
-            console.log(e);
             ItemList = e;
         } else {
             if(confirm('获取物品列表失败，点击确认重试')){
@@ -389,7 +391,6 @@ function gameDataInit() {
     });
     $.getJSON(API+'Public/getJob?callback=?',{},function (e) {
         if(typeof e === 'object'){
-            console.log(e);
             JobList = e;
         } else {
             if(confirm('获取物品列表失败，点击确认重试')){
@@ -399,7 +400,6 @@ function gameDataInit() {
     });
     $.getJSON(API+'Public/getEnemy?callback=?',{},function (e) {
         if(typeof e === 'object'){
-            console.log(e);
             EnemyList = e;
         } else {
             if(confirm('获取物品列表失败，点击确认重试')){
@@ -413,7 +413,6 @@ function gameDataInit() {
 function gameStageInit(stageId,x,y,dir=3) {
     RPG.blackEffect();
     $.getJSON(API+'Public/getMyData?callback=?',{id:stageId},function (e) {
-        console.log('stage',e);
         if('stage' in e){
             if(stage) socket.wlSend('removeUser',{stageId:stage.id});
             stage = e.stage;

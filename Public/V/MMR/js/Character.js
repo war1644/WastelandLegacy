@@ -341,23 +341,6 @@ Character.prototype.checkRoad = function (dir){
 			break;
 	}
 
-    if(toY <= 0){
-        if(self.isHero) checkTrigger('up');
-		return false;
-    }
-    if(toX <= 0){
-        if(self.isHero) checkTrigger('left');
-        return false;
-    }
-	if(toY >= CurrentMap.height-1){
-        if(self.isHero) checkTrigger('down');
-    	return false;
-    }
-    if(toX >= CurrentMap.width-1){
-        if(self.isHero) checkTrigger('right');
-        return false;
-    }
-
 	//目的地为障碍，则不可移动
     let tileId = Number(CurrentMapMove.data[toY*CurrentMap.width+ toX]);
     switch (tileId-1){
@@ -370,6 +353,23 @@ Character.prototype.checkRoad = function (dir){
             if(mainTeam.inTank) return false;
             break;
 	}
+
+    if(toY <= 0){
+        if(self.isHero) checkTrigger('up');
+        return false;
+    }
+    if(toX <= 0){
+        if(self.isHero) checkTrigger('left');
+        return false;
+    }
+    if(toY >= CurrentMap.height-1){
+        if(self.isHero) checkTrigger('down');
+        return false;
+    }
+    if(toX >= CurrentMap.width-1){
+        if(self.isHero) checkTrigger('right');
+        return false;
+    }
 
 	//如果前方有NPC，同样不可移动
     for(let key in charaLayer.childList){

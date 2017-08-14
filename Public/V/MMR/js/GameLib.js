@@ -58,6 +58,7 @@ function checkTrigger(boundary=false){
     let triggerEvent;
     for(let i=0;i<events.length;i++){
         triggerEvent = events[i];
+        if (triggerEvent.visible && !triggerEvent.visible()) continue;
         if (!triggerEvent.img){
             if(boundary && ( (triggerEvent.y==0) && (triggerEvent.x==0) )){
                 //获取该场景脚本数据
@@ -196,6 +197,7 @@ let jumpStage = function(x, y, dir=0){
     stage.autoEvents = [];
     stage.triggerEvents = [];
     stage.npcEvents = [];
+    stage.storyList = {};
     //当前场景地图
     CurrentMap = stage.map;
     let len = stage.events.length,
@@ -203,11 +205,9 @@ let jumpStage = function(x, y, dir=0){
     charaLayer.removeAllChild();
     for(let i=0;i<len;i++){
         if(events[i].action){
-            console.log(i,events[i].action);
             events[i].action = eval(events[i].action);
         }
         if(events[i].visible){
-            console.log(i,events[i].visible);
             events[i].visible = eval(events[i].visible);
         }
         if(events[i].img){
@@ -227,7 +227,6 @@ let jumpStage = function(x, y, dir=0){
             case 'item':
             case 'box':
             case 'npc':
-                // stage.npcEvents.push(events[i]);
                 addNpc(events[i]);
                 break;
         }
@@ -258,43 +257,10 @@ function drawImgMap(map) {
 
 function setHero(x, y, dir){
     if (x === null) return;
-    let w1= (WIDTH/STEP)>>1,
-        h1= (HEIGHT/STEP)>>1,
-        w2= Math.ceil(WIDTH/ STEP/ 2),
-        h2= Math.ceil(HEIGHT/ STEP/ 2),
-        moveX=0,
-        moveY=0,
-        hero,
+    let hero,
         heroImg;
     // 把玩家置于屏幕的正中
-    if (CurrentMap.width< w1+ w2) {
-        moveX= (CurrentMap.width- w2- w1)>>1;
-    } else {
-        if (x< w1){
-            moveX= 0;
-        } else if (x>= CurrentMap.width- w1) {
-            moveX= CurrentMap.width- w2- w1;
-        } else {
-            moveX= x- w1;
-        }
-    }
-    if (CurrentMap.height< h1+ h2) {
-        moveY= (CurrentMap.height- h2- h1)>>1;
-    } else {
-        if (y< h1){
-            moveY= 0;
-        } else if (y>= CurrentMap.height- h1){
-            moveY= CurrentMap.height- h2- h1;
-        } else {
-            moveY= y- h1;
-        }
-    }
-    mapLayer.x= -moveX* STEP;
-    mapLayer.y= -moveY* STEP;
-    upLayer.x= -moveX* STEP;
-    upLayer.y= -moveY* STEP;
-    charaLayer.x= -moveX* STEP;
-    charaLayer.y= -moveY* STEP;
+    Lib.setCamera(x,y);
 
     let row = mainTeam.getHero().row || 4;
     let col = mainTeam.getHero().col || 4;
@@ -351,6 +317,7 @@ function addNpc(npcObj){
             if (npcObj.preSet) npcObj.preSet(npc);
             // 如果是情节人物，则进入情节列表
             if (npcObj.story){
+
                 stage.storyList[npcObj.story] = npc;
                 npc.visible = false;
             }
@@ -384,9 +351,47 @@ let moveNetNpc = function(name, content ,callback){
 
 
 };
-
 let Lib = {
     userInfo:null,
+
+    setCamera:(x,y)=>{
+        if (x === null) return;
+        let w1= (WIDTH/STEP)>>1,
+            h1= (HEIGHT/STEP)>>1,
+            w2= Math.ceil(WIDTH/ STEP/ 2),
+            h2= Math.ceil(HEIGHT/ STEP/ 2),
+            moveX=0,
+            moveY=0;
+        // 把玩家置于屏幕的正中
+        if (CurrentMap.width< w1+ w2) {
+            moveX= (CurrentMap.width- w2- w1)>>1;
+        } else {
+            if (x< w1){
+                moveX= 0;
+            } else if (x>= CurrentMap.width- w1) {
+                moveX= CurrentMap.width- w2- w1;
+            } else {
+                moveX= x- w1;
+            }
+        }
+        if (CurrentMap.height< h1+ h2) {
+            moveY= (CurrentMap.height- h2- h1)>>1;
+        } else {
+            if (y< h1){
+                moveY= 0;
+            } else if (y>= CurrentMap.height- h1){
+                moveY= CurrentMap.height- h2- h1;
+            } else {
+                moveY= y- h1;
+            }
+        }
+        mapLayer.x= -moveX* STEP;
+        mapLayer.y= -moveY* STEP;
+        upLayer.x= -moveX* STEP;
+        upLayer.y= -moveY* STEP;
+        charaLayer.x= -moveX* STEP;
+        charaLayer.y= -moveY* STEP;
+    },
     /**
      * 重排角色，以便正确遮盖
      * */
@@ -717,13 +722,13 @@ let UI = {
      */
     text:(text,x,y,size=14,color='#fff')=>{
         let textObj = new LTextField();
+        if (text) textObj.setWordWrap(true,20);
+        textObj.width = menuWidth-2*gap;
         textObj.x = x;
         textObj.y = y;
         textObj.size = size;
         textObj.color = color;
         textObj.text = text;
-        if (text) textObj.setWordWrap(true,18);
-        textObj.width = menuWidth-2*gap;
         return textObj;
     },
     /**
@@ -731,6 +736,8 @@ let UI = {
      */
     simpleText:(text,size=14,color='#eee',x=0,y=0)=>{
         let textObj = new LTextField();
+        // textObj.setWordWrap(true,20);
+        // textObj.width = menuWidth-2*gap;
         textObj.text = text;
         textObj.size = size;
         textObj.color = color;
@@ -825,6 +832,22 @@ let UI = {
             effectLayer.removeAllChild();
         }, 2000);
     },
+    // 显示获得物品
+    showInfo:(text)=>{
+        let obj = UI.simpleText(text,18);
+        obj.setWordWrap(true,20);
+        obj.width = menuWidth-2*gap;
+        obj.x = gap;
+        obj.y = gap;
+        let h = obj.getHeight()+2*gap,
+            w = obj.getWidth()+2*gap;
+        let x = (WIDTH - w)>>1;
+        let showWinow = UI.drawBorderWindow(infoLayer,x,HEIGHT>>1,w, h);
+        showWinow.addChild(obj);
+        setTimeout(function(){
+            infoLayer.removeAllChild();
+        }, 2000);
+    },
 
     showImg:(img,callback)=>{
         let bitmapData = new LBitmapData(assets[img]);
@@ -838,6 +861,15 @@ let UI = {
         },3000)
     },
 
+    changeDress:(npc,img)=>{
+        npc.lastBitmapData = npc.anime.childList[0].bitmapData.clone();
+        mainTeam.heroList[0].movePic = img;
+        mainTeam.heroList[0].fightPic = img;
+        mainTeam.heroList[0].inTank = true;
+        mainTeam.addTank();
+        npc.anime.childList[0].bitmapData = new LBitmapData(assets[img]);
+        npc.anime.onframe();
+    },
 
     /**
      * diy按钮 简单的边框+文字组成

@@ -51,6 +51,7 @@ let Fight = {
     tmpTeam:null,
     layer:new LSprite(),
     touchLayer:new LSprite(),
+    time:false,
 
     /**
      * 普通战斗
@@ -147,7 +148,7 @@ let Fight = {
         Fight.eTeam = enemyTeam;
         Fight.pTeam = playerTeam;
         if(!Fight.textObj){
-            Fight.textObj = UI.simpleText('',10);
+            Fight.textObj = UI.simpleText('',12);
             Fight.textObj.x = gap;
             Fight.textObj.y = HEIGHT-Fight.infoHeight + gap;
             Fight.textObj.setWordWrap(true,20);
@@ -156,57 +157,85 @@ let Fight = {
         }
         // Fight.infoCommand('遭遇战，敌我力量悬殊，敌方士气大减');
         Fight.drawFighters();
-        Fight.actionQueue();
         // socket.wlSend('fight',{});
 
-        Fight.starQueue();
 
     },
 
     /**
      * 绘制战斗场景
      */
-    drawFighters: () => {
+    drawFighters: (j=0,i=0,y=0) => {
         // 战斗窗口基本站位
-        let hero1, chara, bitmapData, col,row, x, y, team, hpText, dir;
+        let hero1, chara, bitmapData, col,row, team,x, hpText, dir;
         //绘制敌我两队到战场
-        for (let j = 0; j < 2; j++) {
-            team = j ? Fight.pTeam.heroList : Fight.eTeam.heroList;
-            dir = j ? RPG.LEFT : RPG.RIGHT;
-            y = gap * 2;
-            x = j ? WIDTH-gap*4 : gap;
-            for (let i = 0; i < team.length; i++) {
-                hero1 = team[i];
-                bitmapData = new LBitmapData(assets[hero1.fightPic]);
-                col = hero1.col || 4;
-                row = hero1.row || 4;
-                chara = new Fighter(bitmapData, row, col);
-                if (!hero1.alive) {
-                    y = y + chara.getHeight() + 30;
-                    continue;
+        team = j ? Fight.pTeam.heroList : Fight.eTeam.heroList;
+        dir = j ? RPG.LEFT : RPG.RIGHT;
+        if(i==0) y = gap * 2;
+        x = j ? WIDTH-gap*4 : gap;
+
+        // for (let j = 0; j < 2; j++) {
+        //
+        //     for (let i = 0; i < team.length; i++) {
+
+        Lib.bgm('出现');
+        hero1 = team[i];
+        bitmapData = new LBitmapData(assets[hero1.fightPic]);
+        col = hero1.col || 4;
+        row = hero1.row || 4;
+        chara = new Fighter(bitmapData, row, col);
+        if (!hero1.alive) {
+            y = y + chara.getHeight() + 30;
+            Fight.time = setTimeout(()=>{
+                if(j>0){
+                    console.log('调用time',Fight.time);
+                    Fight.actionQueue();
+                    Fight.starQueue();
+                    return;
                 }
-                chara.changeDir(dir);
-                chara.x = x;
-                chara.y = y;
-                Fight.layer.addChild(chara);
-
-                hero1.fighter = chara;
-                y = y + chara.getHeight() + 5;
-
-                hpText = UI.simpleText(hero1.Hp,10);
-                if(j){
-                    hpText.x = x-gap;
+                if(i<team.length-1){
+                    Fight.drawFighters(j,i+1,y);
                 } else {
-                    hpText.x = x+gap;
+                    Fight.drawFighters(j+1,0,y);
                 }
-                hpText.y = y;
-                Fight.layer.addChild(hpText);
-                hero1.hpText = hpText;
-                y += 3*gap;
-                Fight.infoCommand(hero1.nickName+'进入战场');
-            }
-        }
+            },500);
 
+            return;
+            // continue;
+        }
+        chara.changeDir(dir);
+        chara.x = x;
+        chara.y = y;
+        Fight.layer.addChild(chara);
+
+        hero1.fighter = chara;
+        y = y + chara.getHeight() + 5;
+
+        hpText = UI.simpleText(hero1.Hp,10);
+        if(j){
+            chara.move = false;
+            hpText.x = x-gap;
+        } else {
+            hpText.x = x+gap;
+        }
+        hpText.y = y;
+        Fight.layer.addChild(hpText);
+        hero1.hpText = hpText;
+        y += 3*gap;
+        Fight.infoCommand(hero1.nickName+'进入战场');
+        Fight.time = setTimeout(()=>{
+            if(j>0){
+                console.log('调用time',Fight.time);
+                Fight.actionQueue();
+                Fight.starQueue();
+                return;
+            }
+            if(i<team.length-1){
+                Fight.drawFighters(j,i+1,y);
+            } else {
+                Fight.drawFighters(j+1,0,y);
+            }
+        },500);
     },
 
     /**
@@ -664,7 +693,7 @@ let Fight = {
                     // 获得敌队的物品
                     Fight.pTeam.addMoney(enemy.price);
                     // 物品数量
-                    text = UI.text(item1.num, xx, yy +50 + j * 30 + 5);
+                    text = UI.text(enemy.price, xx, yy +50 + j * 30 + 5);
                     Fight.layer.addChild(text);
                 }
             }
@@ -725,11 +754,11 @@ let Fight = {
      * */
     actionQueue:()=>{
         if(Fight.isForestall()) {
-            Fight.infoCommand('我方偷袭敌人!');
+            UI.showInfo('我方偷袭敌人!');
             //偷袭敌人 我方所有人员先行攻击
             Fight.queue = mainTeam.heroList.concat(Fight.eTeam.heroList);
         } else if(Fight.isSneak()) {
-            Fight.infoCommand('被敌人偷袭!');
+            UI.showInfo('被敌人偷袭!');
             //被偷袭 敌方所有人员先行攻击
             Fight.queue = Fight.eTeam.heroList.concat(mainTeam.heroList);
         }else {
@@ -762,10 +791,11 @@ let Fight = {
         // 攻击力
         atk = heroAtk.attack + vaporAtk + weaponAttack;
         // 防守方护甲加成
-        if (heroDef.armor >= 0) {
-            let aon = heroDef.getArmor().defend;
-            if (aon) armorDefend = aon;
-        }
+        let armor = heroDef.armor>-1 ? heroDef.getArmor().defend:0;
+        let hand = heroDef.hand>-1 ? heroDef.getHand().defend:0;
+        let foot = heroDef.foot>-1 ? heroDef.getFoot().defend:0;
+        let head = heroDef.head>-1 ? heroDef.getHead().defend:0;
+        armorDefend = armor+hand+foot+head;
         // 士气加成
         vaporDef= (heroDef.Hp/ heroDef.maxHp+ 1)/ 2* 100;
         // 防御力

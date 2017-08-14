@@ -265,6 +265,9 @@ let RPG = {
         }
     },
     getDateTimeStr: function () {
+        if(RPG.checkSwitch('费雷塔任务')){
+
+        }
         let myDate = new Date();
         let hh = myDate.getHours();
         let mm = myDate.getMinutes();
@@ -287,6 +290,7 @@ let RPG = {
         ]);
     },
     drawCover: function () {
+
         // 封面图
         RPG.setState(RPG.IN_COVER);
         let sLayer = effectLayer;
@@ -496,7 +500,6 @@ let RPG = {
         let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1,'#fff');
         let flicker = LTweenLite.to(bmp,0.1,{alpha:0,loop:true}).to(bmp,0.1,{alpha:1});
         setTimeout(function () {
-            console.log('LTweenLite.remove',LTweenLite.remove(flicker));
             effectLayer.removeAllChild();
             if(callback) callback(teamId,level);
         },1000)

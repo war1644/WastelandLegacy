@@ -296,9 +296,10 @@
 
     let id = location.href.split('=')[1];
     if(id){
-        console.log('id',id);
         $('#save_form').append('<input type="hidden" name="id" value="'+id+'">');
         $.getJSON(API+'Event/index?id='+id+'&callback=?',{},function (e) {
+            console.log('event',e);
+
             $('select[name="type"]').val(e.type);
             $('input[name="name"]').val(e.name);
             $('input[name="img"]').val(e.img);
@@ -311,6 +312,7 @@
             $('input[name="y"]').val(e.y);
             $('select[name="eventMapId"]').val(e.eventMapId);
             $('textarea[name="visible"]').val(e.visible);
+            $('input[name="story"]').val(e.story);
 
         });
     }

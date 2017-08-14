@@ -25,6 +25,7 @@ Fighter.prototype.onframe = function (){
 	if (!RPG.checkState(RPG.UNDER_WINDOWS)) return;
 	// 打开菜单时停止运动
 	let self = this;
+    if(!self.move) return;
 	if(self.speedIndex++ < self.speed) return;
 	self.speedIndex = 0;
 	self.anime.onframe();
@@ -35,4 +36,5 @@ Fighter.prototype.changeDir = function (dir){
 	let self = this;
 	self.direction = dir;
 	self.anime.setAction(dir);
+    self.anime.onframe();
 };

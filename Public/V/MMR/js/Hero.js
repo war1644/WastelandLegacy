@@ -6,7 +6,6 @@ let EnemyList= [
 
 ];
 let HeroPlayer = {
-	// 人物列表中人物编号
     isHero: true,
     //角色昵称
     nickName:'',
@@ -139,11 +138,23 @@ let HeroPlayer = {
         return Number(a);
     },
 	getWeapon:function(){
-		return ItemList[this.weapon];
+		return ItemList[this.weapon-1];
 	},
 	getArmor:function(){
-		return ItemList[this.armor];
+		return ItemList[this.armor-1];
 	},
+    getOrn:function(){
+        return ItemList[this.ornament-1];
+    },
+    getHand:function(){
+        return ItemList[this.hand-1];
+    },
+    getFoot:function(){
+        return ItemList[this.foot-1];
+    },
+    getHead:function(){
+        return ItemList[this.head-1];
+    },
 
 };
 
