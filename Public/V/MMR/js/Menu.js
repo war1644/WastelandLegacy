@@ -248,9 +248,15 @@ let Menu = {
             Menu.nameText.text = "";
             RPG.descLayer.addChild(Menu.nameText);
             Menu.chooseHero= -1;
-            let cc= (menuWidth- gap* 2)/ mainTeam.heroList.length;
-            for (i=0; i< mainTeam.heroList.length; i++){
-                let hero = mainTeam.heroList[i];
+            let heroList;
+            if(item1.type==3 || item1.type==4){
+                heroList = mainTeam.tankList;
+            } else {
+                heroList = mainTeam.heroList;
+            }
+            let cc= (menuWidth- gap* 2)/ heroList.length;
+            for (i=0; i< heroList.length; i++){
+                let hero = heroList[i];
                 let heroImg= hero.movePic;
                 let bitmapData = new LBitmapData(assets[heroImg]);
                 let chara = new Fighter(bitmapData,4,4);
@@ -443,7 +449,91 @@ let Menu = {
             if (item1) {
                 // 物品名称
                 let text = UI.simpleText(item1.name);
-                text.x = leftPos + gap;
+                text.x = leftPos + 3*gap;
+                text.y = 150+ i* 30 + gap;
+                ctrlLayer.addChild(text);
+            }
+        }
+    },
+    //菜单显示状态
+    tankState: function() {
+        Menu.menuPage= 3;
+        if(!mainTeam.inTank){
+            ctrlLayer.removeAllChild();
+            let text = UI.simpleText("你的战车呢？",18);
+            text.x = menuWidth-text.getWidth()>>1;
+            text.y = HEIGHT-text.getHeight()>>1;
+            ctrlLayer.addChild(text);
+            return;
+        }
+        //对话人物名称
+        let valueLength,
+            hero1 = mainTeam.tankList[Menu.currentHeroShow],
+            rightPos = 110,
+            leftPos = gap,
+            topPos = gap,
+            textGap = 25,
+            item1,
+            textObj,numObj;
+
+        if (!hero1) hero1= mainTeam.tankList[0];
+        ctrlLayer.removeAllChild();
+        let item = [
+            {text:'NAME',obj:UI.simpleText('')},
+            {text:'FACE',obj:UI.simpleText('')},
+            {text:'HP',obj:UI.simpleText('')},
+            {text:'weight',obj:UI.simpleText('')},
+            {text:'EXP',obj:UI.simpleText('')}
+        ];
+        for (let i = 0; i < item.length; i++) {
+            let obj = item[i];
+            switch (obj.text){
+                case 'FACE':
+                    // 头像
+                    let imgData = new LBitmapData(assets[hero1.fightPic],0,0,24,24);
+                    let bitmap = new LBitmap(imgData);
+                    bitmap.x = leftPos + 2*gap;
+                    bitmap.y = topPos + 2*gap;
+                    ctrlLayer.addChild(bitmap);
+                    break;
+                case 'NAME':
+                    obj.obj.x = rightPos;
+                    obj.obj.y = topPos;
+                    obj.obj.text = hero1.nickName;
+                    break;
+                case 'HP':
+                    // hp血条
+                    // valueLength= (menuWidth- rightPos)- gap;
+                    // RPG.drawScale(ctrlLayer, "winback", rightPos, 52, valueLength, 12);
+                    // RPG.drawScale(ctrlLayer, "#ff565c", rightPos, 50, valueLength* hero1.getHpRate(), 15);
+                    topPos+= textGap;
+                    obj.obj.x = rightPos;
+                    obj.obj.y = topPos;
+                    obj.obj.text = 'SP：'+hero1.Hp+ " / "+ hero1.maxHp;
+                    break;
+                case 'weight':
+                    topPos+= textGap;
+                    obj.obj.x = rightPos;
+                    obj.obj.y = topPos;
+                    obj.obj.text = '总重： '+hero1.maxWeight+' T';
+                    break;
+            }
+            ctrlLayer.addChild(obj.obj);
+        }
+
+        // 显示持有物品 武器 防具 饰物
+        let showedItems=["mainCannon","subCannon","SE",'CUnit','engine'];
+        let text = UI.simpleText('装备：');
+        text.x = 2*gap;
+        text.y = topPos+textGap;
+        ctrlLayer.addChild(text);
+        for (let i= 0; i < showedItems.length; i++) {
+            let id = hero1[showedItems[i]]-1;
+            item1 = ItemList[id];
+            if (item1) {
+                // 物品名称
+                let text = UI.simpleText(item1.name);
+                text.x = leftPos + 3*gap;
                 text.y = 150+ i* 30 + gap;
                 ctrlLayer.addChild(text);
             }
@@ -669,7 +759,7 @@ let Menu = {
                     Menu.menuShowItems();
                     break;
                 case 3:
-                    Menu.menuShowTasks();
+                    Menu.tankState();
                     break;
                 case 4:
                     Menu.menuShowSave(true);
@@ -734,6 +824,35 @@ let Menu = {
                     }
                 }
                 break;
+            case 3:
+                // 长按卸下装备
+                Menu.dragTimer= setTimeout(function(){
+                    cc = ((ay- 160)/ 40)<<0;
+                    hero1 = mainTeam.tankList[Menu.currentHeroShow];
+                    switch (cc) {
+                        case 0:
+                            hero1.addItem(hero1.changeMainCannon(-1), 1);
+                            Menu.menuShowState();
+                            break;
+                        case 1:
+                            hero1.addItem(hero1.changeSubCannon(-1), 1);
+                            Menu.menuShowState();
+                            break;
+                        case 2:
+                            hero1.addItem(hero1.changeSE(-1), 1);
+                            Menu.menuShowState();
+                            break;
+                        case 3:
+                            hero1.addItem(hero1.changeCUnit(-1), 1);
+                            Menu.menuShowState();
+                            break;
+                        case 4:
+                            hero1.addItem(hero1.changeEngine(-1), 1);
+                            Menu.menuShowState();
+                            break;
+                    }
+                }, 1000);
+                break;
             case 4:
             case 5:
                 // 选择存档槽
@@ -749,7 +868,7 @@ let Menu = {
         if (isKeyDown){
             ax= ax- talkLayer.x-20;
             ay= ay- talkLayer.y-20;
-            if (Menu.menuPage===2){
+            if (Menu.menuPage===2 || Menu.menuPage===3){
                 // 物品窗口
                 if (Menu.isItemDraging){
                     // 动态选择人物
@@ -758,8 +877,14 @@ let Menu = {
                     // 动态选择人物
                     if (Menu.nameText) {
                         // 可以选人的状态
-                        let cc= (ax/ (menuWidth/ mainTeam.heroList.length))<<0;
-                        if (cc>=0 && cc<mainTeam.heroList.length && ay> RPG.descLayer.y) {
+                        let heroList;
+                        if(Menu.menuPage===3){
+                            heroList = mainTeam.tankList;
+                        }else {
+                            heroList = mainTeam.heroList;
+                        }
+                        let cc= (ax/ (menuWidth/ heroList.length))<<0;
+                        if (cc>=0 && cc<heroList.length && ay> RPG.descLayer.y) {
                             Menu.chooseHero = cc;
                             switch (Menu.trade){
                                 case 'sell':
@@ -768,7 +893,7 @@ let Menu = {
                                 case 'buy':
                                 default:
                                     // 物品装配或使用
-                                    Menu.nameText.text= mainTeam.heroList[cc].nickName;
+                                    Menu.nameText.text= heroList[cc].nickName;
                                     break;
                             }
 
@@ -892,9 +1017,7 @@ let Menu = {
                         break;
                     case 5:
                         Menu.touchLayer.addChild(UI.diyButton(200, 40,(WIDTH-200)>>1, HEIGHT>>1,'该物品不能使用',function () {
-
                              Menu.touchLayer.removeAllChild();
-
                         },20));
                         break;
                 }

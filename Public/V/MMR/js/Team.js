@@ -11,6 +11,7 @@ let PlayerTeam = {
     //单位列表
 	heroList: [],
 	tankList:[],
+	unuseTankList:[],
 	//是否在战车内
 	inTank:false,
     //钱钱
@@ -22,7 +23,55 @@ let PlayerTeam = {
 	clear: function (){
 		this.itemList=[];
 		this.heroList=[];
+        this.tankList=[];
+        this.unuseTankList=[];
 	},
+	downTank:function () {
+        let tank = mainTeam.tankList.splice(0,1)[0];
+        tank.stageId = stage.id;
+        tank.px = player.px;
+        tank.py = player.py;
+        tank.dir = player.direction;
+
+        let bitmapData = player.anime.childList[0].bitmapData.clone();
+        let bitmap = new LBitmap(bitmapData);
+        bitmap.x = player.px*STEP;
+        bitmap.y = player.py*STEP;
+        tank.chara = charaLayer.addChild(bitmap);
+        UI.changeDress(player,mainTeam.heroList[0].charaMovePic);
+        mainTeam.inTank = false;
+        mainTeam.unuseTankList.push(tank);
+
+    },
+	upTank:function () {
+        if(mainTeam.unuseTankList.length<1 && stage.tankEvents.length<1){
+            UI.showInfo('附近没有战车');
+            return false;
+        }
+        if(mainTeam.unuseTankList.length>0){
+            let tank = mainTeam.unuseTankList[0];
+            if( (tank.stageId == stage.id) && (tank.px == player.px) && (tank.py == player.py) ){
+                mainTeam.tankList.push(mainTeam.unuseTankList[0]);
+                UI.changeDress(player,tank.movePic);
+                mainTeam.inTank = true;
+                charaLayer.removeChild(tank.chara);
+                return;
+            }
+		}
+        if(stage.tankEvents.length>0){
+            for (let i = 0; i < stage.tankEvents.length; i++) {
+                let tank = stage.tankEvents[i];
+                if((tank.x == player.px) && (tank.y == player.py)){
+                    if(tank.action) tank.action();
+                    mainTeam.addTank(1,tank.img);
+                    UI.changeDress(player,tank.img);
+                    mainTeam.inTank = true;
+                    charaLayer.removeChild(tank.chara);
+                    return;
+                }
+            }
+        }
+    },
     /**
      * 使用物品
      * @param visible {boolean} 是否给出一个提示框，显示得到了哪些物品
@@ -69,7 +118,6 @@ let PlayerTeam = {
 
 		switch (item1.type){
 			case '1':
-			case '3':
                 // 装配类
                 switch (item1.position) {
                     case '1':
@@ -86,6 +134,25 @@ let PlayerTeam = {
                         break;
                     case '5':
                         this.addItem(hero1.changeHead(item1.id), 1);
+                        break;
+                }
+			case '3':
+                // 装配类
+                switch (item1.position) {
+                    case '1':
+                        hero1.addItem(hero1.changeMainCannon(itemId), 1);
+                        break;
+                    case '2':
+                        hero1.addItem(hero1.changeSubCannon(itemId), 1);
+                        break;
+                    case '3':
+                        hero1.addItem(hero1.changeSE(itemId), 1);
+                        break;
+                    case '4':
+                        hero1.addItem(hero1.changeCUnit(itemId), 1);
+                        break;
+                    case '5':
+                        hero1.addItem(hero1.changeEngine(itemId), 1);
                         break;
                 }
                 break;
@@ -122,13 +189,16 @@ let PlayerTeam = {
      * @param nick  {string} 等级
      * @returns
      */
-    addTank: function (id, lv, nick='路漫漫'){
-        let h1 = RPG.beget(TankPlayer);
-        RPG.extend(h1, JobList[id-1]);
-        h1.nickName = nick;
-        h1.setLevel(Number(lv));
-        h1.fullHeal();
-        this.heroList.push(h1);
+    addTank: function (id, nick){
+        let t1 = RPG.beget(TankPlayer);
+        RPG.extend(t1, TankList[id-1]);
+        if(nick){
+            t1.nickName = nick;
+        }else {
+            t1.nickName = t1.name;
+        }
+        t1.initTank();
+        this.tankList.push(t1);
     },
     /**
      * 向队伍增加战车
@@ -192,7 +262,7 @@ let PlayerTeam = {
      */
 	fullHeal: function(){
 		for (let i= 0; i< this.heroList.length; i++){
-			// this.heroList[i].alive= true;
+			this.heroList[i].alive= true;
 			this.heroList[i].fullHeal();
 		}		
 	},

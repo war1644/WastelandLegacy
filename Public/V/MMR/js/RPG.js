@@ -240,7 +240,25 @@ let RPG = {
             //获取移动方向
             let ret = RPG.getMoveDir(x, y);
             if (ret.length === 0) {
-                Menu.openMenu();
+                Talk.startTalk([
+                    {msg:'功能控制',option:[
+                        {text:'乘降',action:()=>{
+                            if(mainTeam.inTank){
+                                mainTeam.downTank(x,y);
+                            } else {
+                                mainTeam.upTank(x,y)
+                            }
+                            Talk.closeTalk();
+                        }},
+                        {text:'菜单',action:()=>{
+                            Talk.closeTalk();
+                            Menu.openMenu();
+                        }},
+                        {text:'取消',action:()=>{
+                            Talk.closeTalk();
+                        }},
+                    ]}
+                ]);
             } else {
                 player.changeDirAlt(ret);
             }
@@ -441,6 +459,8 @@ let RPG = {
                 py: player.py,
                 itemList: mainTeam.itemList,
                 heroList: mainTeam.heroList,
+                tankList: mainTeam.tankList,
+                unuseTankList:mainTeam.unuseTankList,
                 stageId: stage.id,
                 swt: RPG.SWITCH
             };
@@ -470,11 +490,11 @@ let RPG = {
      * 载入特效
      *
      * */
-    loadEffect: function(name,w=48,h=48,type=0){
+    loadEffect: function(name,row=4,col=5){
         if (!effectList[name]){
             let bitmapData, chara;
             bitmapData = new LBitmapData(assets[name]);
-            chara = new Effect(bitmapData, w, h,type);
+            chara = new Effect(bitmapData, row, col);
             effectList[name]= chara;
         }
         return effectList[name];

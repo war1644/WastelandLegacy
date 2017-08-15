@@ -102,14 +102,27 @@ let GameSocket = {
                 if (value.content) {
                     let saveData = value.content.saveData;
                     mainTeam = RPG.beget(PlayerTeam);
-                    for (let i = 0; i < saveData.itemList.length; i++) {
-                        mainTeam.addItem(saveData.itemList[i].id, saveData.itemList[i].num);
+                    if(saveData.itemList) {
+                        for (let i = 0; i < saveData.itemList.length; i++) {
+                            mainTeam.addItem(saveData.itemList[i].id, saveData.itemList[i].num);
+                        }
                     }
-
                     for (let i = 0; i < saveData.heroList.length; i++) {
                         mainTeam.addHero(saveData.heroList[i].id, saveData.heroList[i].Level);
                         RPG.extend(mainTeam.heroList[i], saveData.heroList[i]);
                     }
+                    if(saveData.tankList){
+                        for (let i = 0; i < saveData.tankList.length; i++) {
+                            mainTeam.addTank(saveData.tankList[i].id, saveData.tankList[i].Level);
+                            RPG.extend(mainTeam.tankList[i], saveData.tankList[i]);
+                        }
+                    }
+                    if(saveData.unuseTankList){
+                        for (let i = 0; i < saveData.unuseTankList.length; i++) {
+                            mainTeam.unuseTankList[i] = saveData.unuseTankList[i];
+                        }
+                    }
+
                     RPG.initSwitch();
                     RPG.extend(RPG.SWITCH, saveData.swt);
                     gameStageInit(Number(saveData.stageId), Number(saveData.px), Number(saveData.py));

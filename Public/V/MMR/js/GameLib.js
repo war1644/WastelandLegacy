@@ -185,7 +185,10 @@ function checkIntoBattle(){
             Lib.bgm('StartBattle');
             let Level = mainTeam.heroList[0].Level;
             let len = EnemyList.length;
-            let arr = [rangeRand(1,len),rangeRand(1,len),rangeRand(1,len)];
+            let arrLen = rangeRand(1,4),arr = [];
+            for (let i = 0; i < arrLen; i++) {
+                arr.push(rangeRand(1,len));
+            }
             RPG.flickerAnimation(Fight.normalFight,arr,Level-10);
         }
         player.tmp = 0;
@@ -197,12 +200,25 @@ let jumpStage = function(x, y, dir=0){
     stage.autoEvents = [];
     stage.triggerEvents = [];
     stage.npcEvents = [];
+    stage.tankEvents = [];
     stage.storyList = {};
     //当前场景地图
     CurrentMap = stage.map;
     let len = stage.events.length,
         events = stage.events;
     charaLayer.removeAllChild();
+    if(mainTeam.unuseTankList>0){
+        let tank = mainTeam.unuseTankList[0];
+        if(tank.stageId == stage.id){
+            let dir = Number(tank.dir);
+            let bitmapData = new LBitmapData(assets[tank.movePic],dir*24,0,24,24);
+            let bitmap = new LBitmap(bitmapData);
+            bitmap.x = tank.px*STEP;
+            bitmap.y = tank.py*STEP;
+            charaLayer.addChild(bitmap);
+        }
+    }
+
     for(let i=0;i<len;i++){
         if(events[i].action){
             events[i].action = eval(events[i].action);
@@ -219,6 +235,19 @@ let jumpStage = function(x, y, dir=0){
         switch (events[i].type){
             case 'auto':
                 stage.autoEvents.push(events[i]);
+                break;
+            case 'tank':
+                let tank = events[i];
+                if(tank.visible && tank.visible()){
+                    console.log('tank',tank);
+                    let dir = Number(tank.dir);
+                    let bitmapData = new LBitmapData(assets[tank.img],dir*24,0,24,24);
+                    let bitmap = new LBitmap(bitmapData);
+                    bitmap.x = tank.x*STEP;
+                    bitmap.y = tank.y*STEP;
+                    tank.chara = charaLayer.addChild(bitmap);
+                    stage.tankEvents.push(tank);
+                }
                 break;
             case 'jump':
                 stage.triggerEvents.push(events[i]);
@@ -863,10 +892,19 @@ let UI = {
 
     changeDress:(npc,img)=>{
         npc.lastBitmapData = npc.anime.childList[0].bitmapData.clone();
+        if(mainTeam.inTank){
+            mainTeam.heroList[0].tankMovePic = mainTeam.heroList[0].movePic;
+            mainTeam.heroList[0].tankFightPic = mainTeam.heroList[0].fightPic;
+        } else {
+            mainTeam.heroList[0].charaMovePic = mainTeam.heroList[0].movePic;
+            mainTeam.heroList[0].charaFightPic = mainTeam.heroList[0].fightPic;
+        }
         mainTeam.heroList[0].movePic = img;
         mainTeam.heroList[0].fightPic = img;
-        mainTeam.heroList[0].inTank = true;
-        mainTeam.addTank();
+        for (let i = 0; i < mainTeam.heroList.length; i++) {
+            let hero = mainTeam.heroList[i];
+            hero.inTank = true;
+        }
         npc.anime.childList[0].bitmapData = new LBitmapData(assets[img]);
         npc.anime.onframe();
     },

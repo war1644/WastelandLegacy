@@ -165,6 +165,7 @@ function main(){
 	imgData.push({type:"js",path:"./js/Character.js"});
 	imgData.push({type:"js",path:"./js/Items.js"});
 	imgData.push({type:"js",path:"./js/Hero.js"});
+    imgData.push({type:"js",path:"./js/Tank.js"});
     imgData.push({type:"js",path:"./js/RPG.js"});
 	imgData.push({type:"js",path:"./js/Menu.js"});
 	imgData.push({type:"js",path:"./js/Team.js"});
@@ -195,13 +196,14 @@ function main(){
     imgData.push({name:"明奇",path:"/Asset/人物行走图/明奇.png"});
     imgData.push({name:"路人",path:"/Asset/人物行走图/路人.png"});
     imgData.push({name:"士兵",path:"/Asset/人物行走图/士兵.png"});
+    imgData.push({name:"喽啰move",path:"/Asset/人物行走图/喽啰.png"});
 
     //战车行走图
     imgData.push({name:"M1战车MMR",path:"/Asset/战车行走图/MMR/M1战车MMR.png"});
     imgData.push({name:"救护车MMR",path:"/Asset/战车行走图/MMR/救护车MMR.png"});
     imgData.push({name:"红狼战车MMR",path:"/Asset/战车行走图/MMR/红狼战车MMR.png"});
     imgData.push({name:"黑色战车MMR",path:"/Asset/战车行走图/MMR/黑色战车MMR.png"});
-
+    imgData.push({name:"毁灭战车move",path:"/Asset/战车行走图/Boss/毁灭战车.png"});
 
     //FightPic
     imgData.push({name:"野战炮",path:"/Asset/战斗/MMR/野战炮.png"});

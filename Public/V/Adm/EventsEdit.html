@@ -39,6 +39,7 @@
                     <li class="list-group-item">事件类型：
                         <select id="type" name="type" onchange="changeEventType(this.value);">
                             <option value="npc">NPC</option>
+                            <option value="tank">战车</option>
                             <option value="jump">场景切换</option>
                             <option value="box">箱子</option>
                             <option value="auto">自动触发</option>
@@ -259,7 +260,7 @@
                         eventTextScript += '{msg:"'+talkTextArr[i]+'"},\n';
                     }
                 }
-                eventTextScript += ']);\nTalk.waitTalk(()=>{\n\n});';
+                eventTextScript += ']);\n';
                 break;
             case 2:
                 let len = data.length,option='';
@@ -298,8 +299,6 @@
     if(id){
         $('#save_form').append('<input type="hidden" name="id" value="'+id+'">');
         $.getJSON(API+'Event/index?id='+id+'&callback=?',{},function (e) {
-            console.log('event',e);
-
             $('select[name="type"]').val(e.type);
             $('input[name="name"]').val(e.name);
             $('input[name="img"]').val(e.img);
@@ -313,7 +312,6 @@
             $('select[name="eventMapId"]').val(e.eventMapId);
             $('textarea[name="visible"]').val(e.visible);
             $('input[name="story"]').val(e.story);
-
         });
     }
 </script>

@@ -502,7 +502,6 @@ Character.prototype.checkMap = function (dir){
 	let h1= HEIGHT>>1;
 	let h2= Math.ceil(HEIGHT/2);
 	mapMove = false;
-    //console.log(self.y, charaLayer.y, HEIGHT / 2);
     switch (dir){
 		case UP:
 			if(self.y + charaLayer.y> h1) break;
