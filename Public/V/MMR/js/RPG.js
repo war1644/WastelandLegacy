@@ -318,6 +318,11 @@ let RPG = {
         title.x = WIDTH-title.getWidth()>>1;
         title.y = HEIGHT>>3;
         sLayer.addChild(title);
+        let ver = UI.simpleText(VER);
+        ver.x = WIDTH-ver.getWidth()>>1;
+        ver.y = title.y+title.getHeight()+20;
+        sLayer.addChild(ver);
+
 
         // 新的开始
         let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "进入废土", function () {

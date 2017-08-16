@@ -207,7 +207,7 @@ let jumpStage = function(x, y, dir=0){
     let len = stage.events.length,
         events = stage.events;
     charaLayer.removeAllChild();
-    if(mainTeam.unuseTankList>0){
+    if(mainTeam.unuseTankList.length>0){
         let tank = mainTeam.unuseTankList[0];
         if(tank.stageId == stage.id){
             let dir = Number(tank.dir);
@@ -239,7 +239,6 @@ let jumpStage = function(x, y, dir=0){
             case 'tank':
                 let tank = events[i];
                 if(tank.visible && tank.visible()){
-                    console.log('tank',tank);
                     let dir = Number(tank.dir);
                     let bitmapData = new LBitmapData(assets[tank.img],dir*24,0,24,24);
                     let bitmap = new LBitmap(bitmapData);

@@ -37,7 +37,8 @@ const
     RIGHT = 2,
     UP = 3,
     //间隙
-    gap = 10;
+    gap = 10,
+    VER = 'V20170816.1';
 
 let
     //游戏初始宽

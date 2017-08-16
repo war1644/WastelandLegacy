@@ -289,9 +289,6 @@ let Fight = {
                     Fight.infoCommand('敌方速度很快,'+Fight.currentFighter.nickName +'逃离失败');
                     Fight.nextFighter();
                 }else {
-                    let index = Fight.queue.indexOf(Fight.currentFighter);
-                    Fight.queue.splice(index,1);
-                    Fight.infoCommand(Fight.currentFighter.nickName +'逃离战场');
                     if(mainTeam.inTank){
                         Fight.currentFighter = Fight.pTeam.tankList[0];
                         for (let i = 0; i < Fight.queue.length; i++) {
@@ -302,9 +299,21 @@ let Fight = {
                                 Fight.infoCommand(obj.nickName +'逃离战场');
                             }
                         }
+                        Fight.currentFighter.fighter.visible = false;
+                        Fight.currentFighter.hpText.visible = false;
+                    }else {
+                        for (let i = 0; i < Fight.queue.length; i++) {
+                            let obj = Fight.queue[i];
+                            if(obj.isHero){
+                                let index = Fight.queue.indexOf(obj);
+                                Fight.queue.splice(index,1);
+                                Fight.infoCommand(obj.nickName +'逃离战场');
+                                obj.fighter.visible = false;
+                                obj.hpText.visible = false;
+                            }
+                        }
                     }
-                    Fight.currentFighter.fighter.visible = false;
-                    Fight.currentFighter.hpText.visible = false;
+
                     // 然后判断胜负
                     if (Fight.checkFight()) {
                         Menu.closeMenu();
@@ -822,7 +831,7 @@ let Fight = {
         // 防御力
         def = vaporDef + armorDefend;
         // 攻击效果随机加成 0.9 ~ 1.1
-        let ran= (rangeRand(0, 100)+ 1000)/ 1000;
+        let ran= rangeRand(1,5);
         let result= (atk- def/ 2)* ran;
         if (result<= 0) {
             result= 1;

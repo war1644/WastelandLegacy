@@ -27,7 +27,7 @@ let PlayerTeam = {
         this.unuseTankList=[];
 	},
 	downTank:function () {
-        let tank = mainTeam.tankList.splice(0,1)[0];
+        let tank = mainTeam.tankList.pop();
         tank.stageId = stage.id;
         tank.px = player.px;
         tank.py = player.py;
@@ -37,11 +37,10 @@ let PlayerTeam = {
         let bitmap = new LBitmap(bitmapData);
         bitmap.x = player.px*STEP;
         bitmap.y = player.py*STEP;
-        tank.chara = charaLayer.addChild(bitmap);
+        tank.chara = charaLayer.addChild(bitmap).clone();
         UI.changeDress(player,mainTeam.heroList[0].charaMovePic);
         mainTeam.inTank = false;
         mainTeam.unuseTankList.push(tank);
-
     },
 	upTank:function () {
         if(mainTeam.unuseTankList.length<1 && stage.tankEvents.length<1){
@@ -51,10 +50,11 @@ let PlayerTeam = {
         if(mainTeam.unuseTankList.length>0){
             let tank = mainTeam.unuseTankList[0];
             if( (tank.stageId == stage.id) && (tank.px == player.px) && (tank.py == player.py) ){
-                mainTeam.tankList.push(mainTeam.unuseTankList[0]);
+                mainTeam.tankList.push(tank);
+                charaLayer.removeChild(tank.chara);
+                mainTeam.unuseTankList.pop();
                 UI.changeDress(player,tank.movePic);
                 mainTeam.inTank = true;
-                charaLayer.removeChild(tank.chara);
                 return;
             }
 		}
@@ -136,6 +136,7 @@ let PlayerTeam = {
                         this.addItem(hero1.changeHead(item1.id), 1);
                         break;
                 }
+                break;
 			case '3':
                 // 装配类
                 switch (item1.position) {
