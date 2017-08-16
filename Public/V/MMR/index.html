@@ -75,8 +75,8 @@
 
     </div>
     <div class="footBtn" style="display: none">
-        <input type="text" id="userMsg">
-        <button id="send">发送</button>
+        <input type="text" id="userMsg" onkeydown="if(event.keyCode==13){GameSocket.sendMsg();}">
+        <button id="send" >发送</button>
         <button id="clear">清屏</button>
     </div>
 

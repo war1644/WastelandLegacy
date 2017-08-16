@@ -25,7 +25,6 @@ use Base\Tool\Page;
 class PublicC extends AppC {
 
     public function index(){
-        echo file_get_contents('D:/www/game/WastelandLegacy/Base/Asset/2.json');
     }
 
     private function getEventTest(){

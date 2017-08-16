@@ -43,8 +43,9 @@ class JobC extends AdminC{
         $level = 1;
         $curve = [];
         $type = $_GET['type'];
-
+        $function = str_replace('Math.', '', $function);
         while ( $level < 100 ){
+
             eval('$curve[$level] = '.str_replace('lv', $level, $function).';');
             if($level===1){
                 $level_1 = $curve[$level];

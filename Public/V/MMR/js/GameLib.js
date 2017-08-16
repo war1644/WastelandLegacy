@@ -473,11 +473,12 @@ let Lib = {
         }
     },
     login:function () {
-        playerName = prompt("昵称","");
-        let pwd = prompt("密码","");
+        playerName = prompt("注册时的昵称","");
+        let pwd = prompt("注册时的密码","");
         if(playerName && pwd){
             GameSocket.onLink(playerName,pwd);
         }else{
+            playerName = false;
             return false;
         }
     },

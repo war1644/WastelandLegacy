@@ -61,6 +61,7 @@ let Fight = {
         RPG.pushState(RPG.IN_FIGHTING);
         // 设置战斗状态
         Fight.state = Fight.FIGHTING;
+        Fight.queueIndex = 0;
         //将对话层清空
         talkLayer.removeAllChild();
         //当对话开始，且按照顺序进行对话
@@ -78,14 +79,14 @@ let Fight = {
         enemyTeam.fullHeal();
         Fight.eTeam = enemyTeam;
         Fight.pTeam = playerTeam;
-        if(!Fight.textObj){
+        // if(!Fight.textObj){
             Fight.textObj = UI.simpleText('',12);
             Fight.textObj.x = gap;
             Fight.textObj.y = HEIGHT-Fight.infoHeight + gap;
             Fight.textObj.setWordWrap(true,20);
             FightMenu.showFightInfo();
             FightMenu.layer.addChildAt(Fight.textObj,1);
-        }
+        // }
         // Fight.infoCommand('遭遇战，敌我力量悬殊，敌方士气大减');
         Fight.drawFighters();
         // socket.wlSend('fight',{});
@@ -269,7 +270,7 @@ let Fight = {
                 Menu.fightShowItems();
                 break;
             case 3://防御
-                Fight.infoCommand(Fight.currentFighter+'防御中...');
+                Fight.infoCommand(Fight.currentFighter.nickName+'防御中...');
                 Fight.nextFighter();
                 break;
             case 4://乘降
@@ -285,27 +286,36 @@ let Fight = {
                  若使用道具或某些特性逃跑必定成功*/
                 //hero.speed;
                 if(Fight.isSneak()) {
-                    Fight.infoCommand('敌方速度很快,'+Fight.currentFighter +'逃离失败');
+                    Fight.infoCommand('敌方速度很快,'+Fight.currentFighter.nickName +'逃离失败');
+                    Fight.nextFighter();
                 }else {
-                    if(mainTeam.inTank){
-                        Fight.currentFighter = Fight.pTeam.tankList[0];
-                    }
-                    Fight.currentFighter.fighter.visible = false;
-                    Fight.currentFighter.hpText.visible = false;
                     let index = Fight.queue.indexOf(Fight.currentFighter);
                     Fight.queue.splice(index,1);
                     Fight.infoCommand(Fight.currentFighter.nickName +'逃离战场');
+                    if(mainTeam.inTank){
+                        Fight.currentFighter = Fight.pTeam.tankList[0];
+                        for (let i = 0; i < Fight.queue.length; i++) {
+                            let obj = Fight.queue[i];
+                            if(obj.isHero){
+                                let index = Fight.queue.indexOf(obj);
+                                Fight.queue.splice(index,1);
+                                Fight.infoCommand(obj.nickName +'逃离战场');
+                            }
+                        }
+                    }
+                    Fight.currentFighter.fighter.visible = false;
+                    Fight.currentFighter.hpText.visible = false;
                     // 然后判断胜负
                     if (Fight.checkFight()) {
-                        //显示战斗结果
-                        Fight.showResult();
-                        Fight.endCallback();
+                        Menu.closeMenu();
+                        // //显示战斗结果
+                        // Fight.showResult();
+                        // Fight.endCallback();
                         return;
                     }else {
                         Fight.nextFighter();
                     }
                 }
-                // Menu.closeMenu();
                 break;
         }
         // 行动结束后，再显示菜单
@@ -419,6 +429,16 @@ let Fight = {
                             Fight.infoCommand(toHero.nickName+'被击败');
                             let index = Fight.queue.indexOf(Fight.currentToFighter);
                             console.log('splice queue',Fight.queue.splice(index, 1));
+                            if(toHero.isHero && mainTeam.inTank){
+                                for (let i = 0; i < Fight.queue.length; i++) {
+                                    let obj = Fight.queue[i];
+                                    if(obj.isHero){
+                                        let index = Fight.queue.indexOf(obj);
+                                        Fight.queue.splice(index,1);
+                                        Fight.infoCommand(obj.nickName +'逃离战场');
+                                    }
+                                }
+                            }
                         }
                         // 动画效果消失
                         Fight.layer.removeChild(effect);
@@ -430,17 +450,15 @@ let Fight = {
                                     if (Fight.checkFight()) {
                                         //显示战斗结果
                                         Fight.showResult();
-
-                                        switch(Fight.state){
-                                            case 1:
-                                                Fight.endCallback();
-
-                                                break;
-                                            case 2:
-                                                break;
-                                            default:
-                                                break;
-                                        }
+                                        // switch(Fight.state){
+                                        //     case 1:
+                                        //         Fight.endCallback();
+                                        //         break;
+                                        //     case 2:
+                                        //         break;
+                                        //     default:
+                                        //         break;
+                                        // }
 
                                         return;
                                     }
@@ -521,16 +539,17 @@ let Fight = {
 
         Fight.startFight(enemyTeam, mainTeam);
         //战斗结束后回调
-        Menu.waitMenu(()=>{
-            if (Fight.state === Fight.WIN) {
+        if(!Menu.callback){
+            Menu.waitMenu(()=>{
                 RPG.popState();
-            } else if (Fight.state === Fight.LOST) {
-                //战败
-            } else {
-                // 不胜不败，并不可能
-                RPG.popState();
-            }
-        });
+                if (Fight.state === Fight.WIN) {
+                } else if (Fight.state === Fight.LOST) {
+                    //战败
+                } else {
+                    // 不胜不败，并不可能
+                }
+            });
+        }
     },
     normalFight: (enemyId,lv) => {
         let enemyTeam = RPG.beget(PlayerTeam);
@@ -545,13 +564,12 @@ let Fight = {
         //战斗结束后回调
         if(!Menu.callback){
             Menu.waitMenu(()=>{
+                RPG.popState();
                 if (Fight.state === Fight.WIN) {
-                    RPG.popState();
                 } else if (Fight.state === Fight.LOST) {
                     //战败
                 } else {
                     // 不胜不败，并不可能
-                    RPG.popState();
                 }
             });
         }
@@ -573,27 +591,31 @@ let Fight = {
         for (let j = 0; j < Fight.pTeam.heroList.length; j++) {
             hero1 = Fight.pTeam.heroList[j];
             a = 0;
-            for (let i = 0; i < Fight.eTeam.heroList.length; i++) {
-                hero2 = Fight.eTeam.heroList[i];
+            a += hero1.Hp;
+
+            // for (let i = 0; i < Fight.eTeam.heroList.length; i++) {
+            //     hero2 = Fight.eTeam.heroList[i];
                 // 基本经验
-                b1 = (hero2.Level - hero1.Level + 3) * 2;
-                if (b1 > 16) {
-                    b1 = 16;
-                } else if (b1 < 0) {
-                    b1 = 0;
-                }
-                // 奖励经验
-                if (hero2.Level > hero1.Level) {
-                    b2 = 32;
-                } else {
-                    b2 = 64 / (hero1.Level - hero2.Level + 2);
-                }
-                a = a + b1;
-                if (i === 0) {
-                    // 第一敌人，有额外的奖励经验
-                    a = a + b2;
-                }
-            }
+
+                // b1 = (hero2.Level - hero1.Level) * 2;
+                // // if (b1 > 16) {
+                // //     b1 = 16;
+                // // } else if (b1 < 0) {
+                // //     b1 = 0;
+                // // }
+                // // 奖励经验
+                // if (hero2.Level > hero1.Level) {
+                //     b2 = 32;
+                // } else {
+                //     b2 = 64 / (hero1.Level - hero2.Level + 2);
+                // }
+                // a = a + b1;
+                // if (i === 0) {
+                //     // 第一敌人，有额外的奖励经验
+                //     a = a + b2;
+                // }
+                // a += hero1.Hp;
+            // }
             if (!hero1.alive) {
                 // 战场阵亡，经验减半
                 a = a / 2;
@@ -626,17 +648,9 @@ let Fight = {
                 hero1 = Fight.pTeam.heroList[j];
                 // 增加经验，及判断升级
                 hero1.addExp(exp[j]);
-                // 人物转正面
-                // hero1.fighter.changeDir(0);
-                // 阵亡将士显示
-                // if (!hero1.alive) {
-                //     hero1.fighter.visible = true;
-                //     hero1.fighter.alpha = 0.3;
-                // }
-                // hero1.fighter.x = menuWidth / 2 - STEP / 2;
+
                 // 显示获得的经验值
                 text = UI.text(hero1.nickName+" Exp " + exp[j] + "↑",xx, yy);
-                // text = UI.text("Exp " + exp[j] + "↑", hero1.fighter.x + 40, hero1.fighter.y + 5);
                 Fight.layer.addChild(text);
                 yy += 20;
             }
@@ -674,6 +688,7 @@ let Fight = {
             }
             FightMenu.setFormation('我方团灭，别说忘了存档');
         }
+        Lib.bgm(stage.music,true);
         setTimeout(Menu.closeMenu,3000);
 
     },

@@ -329,7 +329,7 @@ function gameInit(){
  * 根据脚本，初始化游戏画面
  * x,y 玩家进入场景的x,y坐标
  **/
-function initScript(x,y,frame=0){
+function initScript(x,y,dir=0){
     //效果层初始化
     // effectLayer.removeAllChild();
     //对话层初始化
@@ -337,7 +337,7 @@ function initScript(x,y,frame=0){
     //默认对话位置居中
     Talk.setTalkPos("bottom");
 
-    setHero(x,y,frame);
+    setHero(x,y,dir);
     // 绘制地图
     drawImgMap(CurrentMap);
     Lib.bgm(stage.music,true);

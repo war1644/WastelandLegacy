@@ -98,18 +98,12 @@ let Talk = {
      */
     waitTalk:(callback)=>{
         Talk.callback = callback;
-        // if (Talk.talkScript) {
-        //     setTimeout(function(){Talk.waitTalk(callback)}, 1000);
-        // } else {
-        //     if (callback) callback();
-        // }
     },
 
     /**
      * 关闭对话框
      */
     closeTalk:(del=0)=>{
-        // console.warn('调用colse');
         //将对话层清空
         Talk.layer.removeAllChild();
         //对话结束
@@ -175,7 +169,6 @@ let Talk = {
         }
         // 游戏状态切换----对话中
         if (!RPG.checkState(RPG.IN_TALKING)){
-            // console.log('checkState');
             //进入地图等待状态
             RPG.pushState(RPG.MAP_WAITING);
             RPG.pushState(RPG.IN_TALKING);

@@ -88,9 +88,9 @@ Character.prototype.onframe = function (){
  **/
 Character.prototype.npcMove = function (){
 	// NPC移动，仅在地图控制或无控等待下可行
-	// if (!RPG.checkState(RPG.UNDER_MAP)) {
-	// 	return;
-	// }
+	if (!RPG.checkState(RPG.UNDER_MAP)) {
+		return;
+	}
 	let self = this,
 		//设定一个移动步长中的移动次数
 		ml_cnt = 4,

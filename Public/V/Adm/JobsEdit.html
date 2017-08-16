@@ -33,9 +33,8 @@
 </head>
 
 <script type="text/javascript">
-
     function urlencode(content){
-        return content.replace('+', '%2B');
+        return content.replace(/\+/g, '%2B');
     }
 </script>
 
