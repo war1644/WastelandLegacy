@@ -459,12 +459,11 @@ let RPG = {
         RPG.saveList[slot].date = RPG.getDateTimeStr();
         if (window.localStorage) {
             window.localStorage.setItem("WLSaveList", JSON.stringify(RPG.saveList));
-            let tmp=[];
-
-            if(tmp.length>0){
-                for (let i = 0; i < tmp.length; i++) {
-                    let obj = tmp[i];
-                    delete obj.chara;
+            let tmp = [];
+            if(mainTeam.unuseTankList.length>0){
+                for (let i = 0; i < mainTeam.unuseTankList.length; i++) {
+                    tmp.push(mainTeam.unuseTankList[i].chara);
+                    mainTeam.unuseTankList[i].chara = false;
                 }
             }
             let saveData = {
@@ -473,11 +472,18 @@ let RPG = {
                 itemList: mainTeam.itemList,
                 heroList: mainTeam.heroList,
                 tankList: mainTeam.tankList,
-                unuseTankList:tmp,
+                unuseTankList:mainTeam.unuseTankList,
                 stageId: stage.id,
                 swt: RPG.SWITCH
             };
             socket.wlSend('setSave',saveData);
+
+            if(tmp.length>0){
+                for (let i = 0; i < tmp.length; i++) {
+                    mainTeam.unuseTankList[i].chara = tmp[i];
+                }
+            }
+
         }
     },
 

@@ -472,10 +472,10 @@ let Lib = {
         }
     },
     login:function () {
-        playerName = prompt("注册时的昵称（'http://zregs.com/V/login.html注册）","");
-        let pwd = prompt("注册时的密码","");
-        if(playerName && pwd){
-            GameSocket.onLink(playerName,pwd);
+        playerName = prompt("游戏昵称","");
+        // let pwd = prompt("注册时的密码","");
+        if(playerName){
+            GameSocket.onLink(playerName);
         }else{
             playerName = false;
             return false;

@@ -21,7 +21,7 @@ let GameSocket = {
         }
     },
 
-    onLink:(name,pwd)=> {
+    onLink:(name,pwd=false)=> {
         if(socket){
             socket.wlSend('getSave');
         }else {
@@ -86,7 +86,7 @@ let GameSocket = {
                 addNpc(value.content);
                 break;
             case "move":
-                if(value.content.stageId !== stage.id) return;
+                if(value.content.stageId != stage.id) return;
                 moveNetNpc(value["name"], value.content);
                 break;
             case "action":
