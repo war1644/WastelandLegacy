@@ -50,8 +50,9 @@ let PlayerTeam = {
         if(mainTeam.unuseTankList.length>0){
             let tank = mainTeam.unuseTankList[0];
             if( (tank.stageId == stage.id) && (tank.px == player.px) && (tank.py == player.py) ){
-                mainTeam.tankList.push(tank);
                 charaLayer.removeChild(tank.chara);
+                delete tank.chara;
+                mainTeam.tankList.push(tank);
                 mainTeam.unuseTankList.pop();
                 UI.changeDress(player,tank.movePic);
                 mainTeam.inTank = true;
@@ -63,10 +64,10 @@ let PlayerTeam = {
                 let tank = stage.tankEvents[i];
                 if((tank.x == player.px) && (tank.y == player.py)){
                     if(tank.action) tank.action();
+                    charaLayer.removeChild(tank.chara);
                     mainTeam.addTank(1,tank.img);
                     UI.changeDress(player,tank.img);
                     mainTeam.inTank = true;
-                    charaLayer.removeChild(tank.chara);
                     return;
                 }
             }

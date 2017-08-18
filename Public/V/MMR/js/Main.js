@@ -38,7 +38,7 @@ const
     UP = 3,
     //间隙
     gap = 10,
-    VER = 'V20170816.1';
+    VER = 'V20170817.7';
 
 let
     //游戏初始宽
@@ -162,19 +162,20 @@ function main(){
     ];
 
 	//js
-	imgData.push({type:"js",path:"./js/Talk.js"});
-	imgData.push({type:"js",path:"./js/Character.js"});
-	imgData.push({type:"js",path:"./js/Items.js"});
-	imgData.push({type:"js",path:"./js/Hero.js"});
-    imgData.push({type:"js",path:"./js/Tank.js"});
-    imgData.push({type:"js",path:"./js/RPG.js"});
-	imgData.push({type:"js",path:"./js/Menu.js"});
-	imgData.push({type:"js",path:"./js/Team.js"});
-    imgData.push({type:"js",path:"./js/Effect.js"});
-    imgData.push({type:"js",path:"./js/FightMenu.js"});
-    imgData.push({type:"js",path:"./js/Fight.js"});
-    imgData.push({type:"js",path:"./js/Fighter.js"});
-    imgData.push({type:"js",path:"./js/GameSocket.js"});
+    imgData.push({type:"js",path:"./js/GameLib.js?ver="+VER});
+	imgData.push({type:"js",path:"./js/Talk.js?ver="+VER});
+	imgData.push({type:"js",path:"./js/Character.js?ver="+VER});
+	imgData.push({type:"js",path:"./js/Items.js?ver="+VER});
+	imgData.push({type:"js",path:"./js/Hero.js?ver="+VER});
+    imgData.push({type:"js",path:"./js/Tank.js?ver="+VER});
+    imgData.push({type:"js",path:"./js/RPG.js?ver="+VER});
+	imgData.push({type:"js",path:"./js/Menu.js?ver="+VER});
+	imgData.push({type:"js",path:"./js/Team.js?ver="+VER});
+    imgData.push({type:"js",path:"./js/Effect.js?ver="+VER});
+    imgData.push({type:"js",path:"./js/FightMenu.js?ver="+VER});
+    imgData.push({type:"js",path:"./js/Fight.js?ver="+VER});
+    imgData.push({type:"js",path:"./js/Fighter.js?ver="+VER});
+    imgData.push({type:"js",path:"./js/GameSocket.js?ver="+VER});
 
     //game other img
     imgData.push({name: "empty", path: "/Asset/事件/empty.png" });

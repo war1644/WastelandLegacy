@@ -26,18 +26,26 @@
             {name: "费雷塔", msg: "我们明天讨伐的讨伐目标就是他了。你先去镇子里的旅馆休息一下吧。"},
     	],
         雷娜:
+            Talk.waitTalk(function () {
+                let x = player.px,y=player.py;
+                player.setCoordinate(x+1, y, 0);
+                RPG.nightAndDay(function () {
+                    player.setCoordinate(x, y, LEFT);
+                    mainTeam.fullHeal();
+                    RPG.popState();
+                });
+            })
             Talk.startTalk([
-                {img: "face雷娜", name: "", msg: "咦，你是赏金猎人么？",option:[
+                {msg: "睡觉吗？",option:[
                     {text: "是", action:()=>{
                         Talk.startTalk([
-                            {img: "face雷娜", name: "", msg: "卧槽，来了一个生力军"},
-                            {img: "face雷娜", name: "", msg: "赶紧来猎人中心吧，再见啦"},
+                            {msg: "好累，赶紧躺下休息"},
                         ]);
                     }},
                     {text: "否",action:()=>{
                         Talk.callback = null;
                         Talk.startTalk([
-                            {img: "face雷娜", name: "", msg: "哎，来了一个废物"},
+                            {msg: "嗯，还是不要睡别人的床"},
                         ]);
                     }}
                 ]},

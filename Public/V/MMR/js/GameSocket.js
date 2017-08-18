@@ -68,7 +68,7 @@ let GameSocket = {
                 Lib.showInfo(value.content.msg);
                 break;
             case "removeUser":
-                if(value.content.stageId !== stage.id) return;
+                if(value.content.stageId != stage.id) return;
                 let npc = netPlayer[value.name];
                 charaLayer.removeChild(npc);
                 delete netPlayer[value.name];
@@ -80,7 +80,7 @@ let GameSocket = {
                 // }
                 break;
             case "addUser":
-                if(value.content.stageId !== stage.id) return;
+                if(value.content.stageId != stage.id) return;
                 if(value.name === playerName) return;
                 value.content.name = value.name;
                 addNpc(value.content);
@@ -100,7 +100,7 @@ let GameSocket = {
                 break;
             case "getSave":
                 if (value.content) {
-                    let saveData = value.content.saveData;
+                    let saveData = value.content;
                     mainTeam = RPG.beget(PlayerTeam);
                     if(saveData.itemList) {
                         for (let i = 0; i < saveData.itemList.length; i++) {
@@ -111,16 +111,19 @@ let GameSocket = {
                         mainTeam.addHero(saveData.heroList[i].id, saveData.heroList[i].Level);
                         RPG.extend(mainTeam.heroList[i], saveData.heroList[i]);
                     }
-                    if(saveData.tankList){
-                        for (let i = 0; i < saveData.tankList.length; i++) {
-                            mainTeam.addTank(saveData.tankList[i].id, saveData.tankList[i].Level);
-                            RPG.extend(mainTeam.tankList[i], saveData.tankList[i]);
-                        }
+                    if(saveData.tankList && saveData.tankList.length>0){
+                        mainTeam.tankList = saveData.tankList;
+                        mainTeam.inTank = true;
+                        // for (let i = 0; i < saveData.tankList.length; i++) {
+                        //     mainTeam.addTank(saveData.tankList[i].id, saveData.tankList[i].Level);
+                        //     RPG.extend(mainTeam.tankList[i], saveData.tankList[i]);
+                        // }
                     }
-                    if(saveData.unuseTankList){
-                        for (let i = 0; i < saveData.unuseTankList.length; i++) {
-                            mainTeam.unuseTankList[i] = saveData.unuseTankList[i];
-                        }
+                    if(saveData.unuseTankList  && saveData.unuseTankList.length>0){
+                        mainTeam.unuseTankList = saveData.unuseTankList;
+                        // for (let i = 0; i < saveData.unuseTankList.length; i++) {
+                        //     mainTeam.unuseTankList[i] = saveData.unuseTankList[i];
+                        // }
                     }
 
                     RPG.initSwitch();

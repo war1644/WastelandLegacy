@@ -371,7 +371,7 @@ let moveNpc = function(npc, stepArr ,callback){
 let moveNetNpc = function(name, content ,callback){
     if(name===playerName) return;
     let npc = netPlayer[name];
-    if(npc.px !== content.x || npc.px !== content.y){
+    if(npc.px !== content.x || npc.py !== content.y){
         npc.setCoordinate(content.x,content.y,content.dir);
     }
     npc.moveMode = 3;
@@ -472,7 +472,7 @@ let Lib = {
         }
     },
     login:function () {
-        playerName = prompt("注册时的昵称","");
+        playerName = prompt("注册时的昵称（'http://zregs.com/V/login.html注册）","");
         let pwd = prompt("注册时的密码","");
         if(playerName && pwd){
             GameSocket.onLink(playerName,pwd);

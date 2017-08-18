@@ -11,16 +11,49 @@
         music:'town_mp3',
         events: [
             //
-            {type:"npc", img:"黑色梅卡瓦", x:11,  y:19,action:()=>{
-                // 情节开始
-                if (stage.storyList["wolf"] && !RPG.checkSwitch('wolf已战斗')) {
-                    let char1 = stage.storyList["wolf"];
-                    char1.setCoordinate(9, 10, DOWN);
+            {type:"npc", img:"黑色梅卡瓦", x:11,  y:19,action:(npc)=>{
+                // 对话模版
+                Talk.startTalk([
+                    {msg: "乘降战车",option:[
+                        {text:"是",action:()=>{
+                            UI.changeDress(player,npc.img);
+                            npc.visible = false;
+
+                        }},
+                        {text:"否",action:()=>{
+                            Talk.closeTalk();
+                        }},
+                    ]},
+                ]);
+
+                // 选项对话模版
+                Talk.startTalk([
+                    {msg: "你好呀",option:[
+                        {text:"是",action:()=>{
+                            Talk.startTalk([{msg:'啊？那真是不幸'}]);
+                        }},
+                        {text:"否",action:()=>{
+                            Talk.closeTalk();
+                        }},
+                    ]},
+                ]);
+
+                if (stage.storyList["费雷塔"] && RPG.checkSwitch('费雷塔任务')) {
+
+                    let char1 = stage.storyList["费雷塔"];
+                    char1.setCoordinate(4, 7, UP);
                     char1.visible = true;
 
-                    moveNpc(char1,[0,0,0,0,0,0,0,2,2],()=>{
+                    moveNpc(char1,[3,3,3,3,1],()=>{
                         Talk.startTalk([
-                            {name:'狼',msg:'臭小子，敢动我战车？'}
+                            {msg: "乘降战车",option:[
+                                {text:"是",action:()=>{
+
+                                }},
+                                {text:"否",action:()=>{
+
+                                }},
+                            ]},
                         ]);
                         Talk.waitTalk(()=>{
                             RPG.pushState(RPG.FIGHT_RESULT);
@@ -31,7 +64,77 @@
                 }
             }},
             // 备用地图角色
-            {type:"npc", img:"红色梅卡瓦", x:-1,  y:-2, story:"wolf"},
+            {type:"npc", img:"毁灭战车", x:-1,  y:-2, story:"wolf"},
+            {type:"auto", img:"", x:0,  y:0, story:"wolf",action:()=>{
+                let chara = stage.storyList['戈麦斯'];
+                let npc1 = stage.storyList['喽啰1'];
+                let npc2 = stage.storyList['喽啰2'];
+                let npc3 = stage.storyList['喽啰3'];
+                let npc4 = stage.storyList['喽啰4'];
+
+                player.setCoordinate(10, 2, DOWN);
+                chara.visible = true;
+                Talk.startTalk([
+                    {name:'戈麦斯',msg:'哈哈!又是来讨伐我的赏金猎人吗？小的们，上！他们的战车和钱谁抢到就是谁的！'},
+                    {name:'费雷塔',msg:'站住！不要跑！'},
+                ]);
+                npc1.visible = true;
+                npc2.visible = true;
+                npc3.visible = true;
+                npc4.visible = true;
+                moveNpc(chara,[0,0,1,1,1,1,1,1,1,1,1,1],()=>{
+                    chara.visible = false;
+                    RPG.setSwitch('戈麦斯已跑',1);
+                    RPG.pushState(RPG.FIGHT_RESULT);
+                    RPG.flickerAnimation(Fight.normalFight,[4,4,4,4],10);
+                    npc1.visible = false;
+                    npc2.visible = false;
+                    npc3.visible = false;
+                    npc4.visible = false;
+                    Menu.waitMenu(()=>{
+                        RPG.popState();
+                        if(Fight.state===Fight.LOST) {
+                            Talk.startTalk([
+                                {name:'费雷塔',msg:'尼玛，几个土匪都那么强。。。'},
+                                {name:'费雷塔',msg:'给老子等着'},
+                            ]);
+                            RPG.setSwitch('戈麦斯已跑',0);
+                            return;
+                        }
+                        Talk.startTalk([
+                            {name:'费雷塔',msg:'可恶啊...让那个混蛋溜了...得赶紧追...'},
+                            {name:'费雷塔',msg:'啊...这声音...引擎好像出了些问题，我不会修车，你下车看看吧.'},
+                        ]);
+                        Talk.callback = ()=>{
+                            mainTeam.downTank();
+                            chara.setCoordinate(15, 3, LEFT);
+                            chara.visible = true;
+                            moveNpc(chara,[1,1,1,1,1,3],()=>{
+                                Talk.startTalk([
+                                    {name:'戈麦斯',msg:'没想到吧？我还在这里呢！去死吧，肮脏的赏金猎人！'},
+                                ]);
+                                Talk.callback = ()=>{
+                                    RPG.pushState(RPG.FIGHT_RESULT);
+                                    RPG.flickerAnimation(Fight.normalFight,[7],40);
+                                    Menu.waitMenu(()=>{
+                                        Talk.startTalk([
+                                            {name:'费雷塔',msg:'如何？我已经表现出我对掠夺者的忠心了，现在能让我加入掠夺者了吧？'},
+                                            {name:'戈麦斯',msg:'嗯，你对我的确很忠诚，不过...'},
+                                        ]);
+                                        Talk.callback = ()=>{
+                                            gameStageInit(27,6,2,DOWN);
+                                            RPG.setSwitch('第一章结束');
+                                        };
+                                    });
+                                }
+                            })
+                        }
+                    });
+                });
+
+
+
+            }},
             // 备用地图角色
             {type:"npc", img:"猎人A", x:15,  y:16, move:1,action:()=>{
                 Talk.startTalk([{name:'路人',msg:'欢迎来到河畔镇'}]);
@@ -260,6 +363,19 @@
             // 备用地图角色
             {type:"npc", img:"猎人A", x:8,  y:10,dir:UP, move:1,action:()=>{
                 Talk.startTalk(stage.talk.猎人);
+                (npc)=>{
+                    Talk.startTalk([
+                        {name: "费雷塔", msg: "新来的，过来一下，看看这个吧"},
+                    ]);
+                    Talk.waitTalk(
+                        ()=>{UI.showImg('通缉令-戈麦斯');}
+                    )
+                    Talk.startTalk([
+                        {name: "费雷塔", msg: "如何？不错吧？打败他就有50000G的赏金，这些钱可够花好几个月的。"},
+                        {name: "费雷塔", msg: "我们明天讨伐的讨伐目标就是他了。你先去镇子里的旅馆休息一下吧。"},
+                    ]);
+                    RPG.setSwitch("费雷塔任务", true);
+                }
             }},
             // 赏金猎人办事处
             {type:"npc", img:"办事员", x:7,  y:7,dir:RIGHT, action:()=>{
