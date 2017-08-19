@@ -215,7 +215,7 @@ let jumpStage = function(x, y, dir=0){
             let bitmap = new LBitmap(bitmapData);
             bitmap.x = tank.px*STEP;
             bitmap.y = tank.py*STEP;
-            charaLayer.addChild(bitmap);
+            mainTeam.unuseTankList[0].chara = charaLayer.addChild(bitmap);
         }
     }
 
@@ -297,10 +297,16 @@ function setHero(x, y, dir){
     hero = new Character(true, 0, imgData, row, col);
     hero.inTank = false;
     hero.name = mainTeam.getHero().nickName;
+    let text = UI.simpleText(hero.name,10);
+    text.width = text.getWidth()>>0;
+    text.x = ((STEP - text.getWidth())>>1);
+    text.y = -(text.getHeight()>>0)-5;
+    hero.addChild(text);
+    hero.text = text;
     player = hero;
     player.img = heroImg;
     //玩家遇敌率
-    player.enemyShow = 10;
+    player.enemyShow = 5;
     player.tmp = 0;
     hero.x = x * STEP- ((hero.pw- STEP)>>1);
     hero.y = y * STEP- (hero.ph- STEP);
@@ -336,6 +342,12 @@ function addNpc(npcObj){
             if(npcObj.type === 'player'){
                 netPlayer[npcObj['name']] = npc;
                 npc.name = npcObj.name;
+                npc.netType = 1;
+                let text = UI.simpleText(npc.name,10);
+                text.width = text.getWidth()>>0;
+                text.x = ((STEP - text.getWidth())>>1);
+                text.y = -(text.getHeight()>>0)-5;
+                npc.addChild(text);
             }else{
                 npc.name = npcObj.img;
             }

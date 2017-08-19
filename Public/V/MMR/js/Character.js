@@ -352,6 +352,10 @@ Character.prototype.checkRoad = function (dir){
         case 7:
             if(mainTeam.inTank) return false;
             break;
+		case 1:
+            if(!self.isHero) return false;
+			if(dir!=UP) return false;
+			break;
 	}
 
     if(toY <= 0){
@@ -376,6 +380,7 @@ Character.prototype.checkRoad = function (dir){
         let npc = charaLayer.childList[key];
         // 不可见的NPC不在考虑内
 		if (!npc.visible) continue;
+		if(npc.netType) continue;
         // NPC本身占位
         // if(npc.x/ STEP === toX && npc.y/ STEP === toY) return false;
         // 运动中NPC，则是它预占位

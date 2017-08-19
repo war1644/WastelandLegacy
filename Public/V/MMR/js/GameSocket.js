@@ -57,6 +57,7 @@ let GameSocket = {
             case "login":
                 Lib.showInfo('正在初始化数据...');
                 if('code' in value.content){
+                    playerName = false;
                     alert(value.content.msg);
                     return false;
                 }

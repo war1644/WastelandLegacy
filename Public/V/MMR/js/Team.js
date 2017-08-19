@@ -37,7 +37,8 @@ let PlayerTeam = {
         let bitmap = new LBitmap(bitmapData);
         bitmap.x = player.px*STEP;
         bitmap.y = player.py*STEP;
-        tank.chara = charaLayer.addChild(bitmap).clone();
+        tank.chara = bitmap;
+        charaLayer.addChild(bitmap);
         UI.changeDress(player,mainTeam.heroList[0].charaMovePic);
         mainTeam.inTank = false;
         mainTeam.unuseTankList.push(tank);
@@ -51,7 +52,7 @@ let PlayerTeam = {
             let tank = mainTeam.unuseTankList[0];
             if( (tank.stageId == stage.id) && (tank.px == player.px) && (tank.py == player.py) ){
                 charaLayer.removeChild(tank.chara);
-                delete tank.chara;
+                tank.chara = null;
                 mainTeam.tankList.push(tank);
                 mainTeam.unuseTankList.pop();
                 UI.changeDress(player,tank.movePic);

@@ -38,7 +38,7 @@ const
     UP = 3,
     //间隙
     gap = 10,
-    VER = 'V20170818.2';
+    VER = 'V20170818.13';
 
 let
     //游戏初始宽
@@ -347,6 +347,10 @@ function initScript(x,y,dir=0){
         'addUser',
         {stageId:stage.id,type:'player',img:player.img,x:player.px, y:player.py, dir:player.direction}
     );
+    //弹出刚才的等待状态，这样人物才会动
+
+    if(RPG.checkState(RPG.MAP_WAITING)) RPG.popState();
+    //
     // 立即检测自动动作
     checkAuto();
 }
@@ -415,6 +419,7 @@ function gameDataInit() {
 }
 
 function gameStageInit(stageId,x,y,dir=3) {
+    if(!RPG.checkState(RPG.MAP_WAITING))RPG.pushState(RPG.MAP_WAITING);
     RPG.blackEffect();
     $.getJSON(API+'Public/getMyData?callback=?',{id:stageId},function (e) {
         if('stage' in e){
