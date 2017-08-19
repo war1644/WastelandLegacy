@@ -23,7 +23,7 @@ window._requestAF = (function() {
         };
 })();
 
-// LGlobal.aspectRatio = LANDSCAPE;提示只支持横屏
+LGlobal.aspectRatio = LANDSCAPE;//提示只支持横屏
 window.onload = function(){
     LInit(window._requestAF,"mylegend",WIDTH,HEIGHT,main);
 };
@@ -42,22 +42,22 @@ const
 
 let
     //游戏初始宽
-	WIDTH= 320,
+	WIDTH= 480,
     sound={},
     sound2={},
 audioContext,
 	tempLength= 0;
 if (window.innerHeight>=window.innerWidth){
-	tempLength= window.innerHeight* WIDTH/window.innerWidth;
-} else{
-	tempLength= window.innerWidth* WIDTH/window.innerHeight;	
+    tempLength= window.innerWidth* WIDTH/window.innerHeight;
+} else {
+    tempLength= window.innerHeight* WIDTH/window.innerWidth;
 }
 let tempCells= (tempLength/ STEP)>>0;
 let HEIGHT= tempCells* STEP;
 // 高度太低没法玩
-if (HEIGHT < 480) {
-	HEIGHT= 480;
-	tempLength= HEIGHT/ window.innerHeight* window.innerWidth;
+if (HEIGHT < 320) {
+	HEIGHT= 320;
+	tempLength= HEIGHT/window.innerHeight *window.innerWidth;
 	tempCells= (tempLength/ STEP)>>0;
 	WIDTH = tempCells* STEP;
 }
@@ -226,7 +226,7 @@ function main(){
 	//effect
     imgData.push({name: "220Animation", path: "/Asset/战斗/动画/220Animation.png" });
 
-    loadingLayer = new LoadingSample7();
+    loadingLayer = new LoadingSample3();
 	addChild(loadingLayer);	
 	LLoadManage.load(
 		imgData,
