@@ -297,6 +297,7 @@ let Fight = {
                                 let index = Fight.queue.indexOf(obj);
                                 Fight.queue.splice(index,1);
                                 Fight.infoCommand(obj.nickName +'逃离战场');
+                                i = index - 1;
                             }
                         }
                         Fight.currentFighter.fighter.visible = false;
@@ -310,6 +311,7 @@ let Fight = {
                                 Fight.infoCommand(obj.nickName +'逃离战场');
                                 obj.fighter.visible = false;
                                 obj.hpText.visible = false;
+                                i = index - 1;
                             }
                         }
                     }
