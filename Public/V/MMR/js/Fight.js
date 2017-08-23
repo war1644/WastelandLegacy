@@ -286,7 +286,7 @@ let Fight = {
                  若使用道具或某些特性逃跑必定成功*/
                 //hero.speed;
                 if(Fight.isSneak()) {
-                    Fight.infoCommand('敌方速度很快,'+Fight.currentFighter.nickName +'逃离失败');
+                    Fight.infoCommand('敌方速度过快,'+Fight.currentFighter.nickName +'逃离失败');
                     Fight.nextFighter();
                 }else {
                     if(mainTeam.inTank){

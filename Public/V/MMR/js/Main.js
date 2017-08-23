@@ -126,38 +126,38 @@ function main(){
 	//准备读取资源
 	//BGM SFX
     imgData = [
-        {name:'NameSetting',path:'/Asset/Sound/Bgm/NameSetting.mp3'},
-        {name:'无限音轨',path:"/Asset/Sound/Bgm/无限音轨.mp3"},
-        {name:'TownTheme',path:"/Asset/Sound/Bgm/TownTheme.mp3"},
-        {name:'Town',path:"/Asset/Sound/Bgm/Town.mp3"},
-        {name:'BossFight',path:"/Asset/Sound/Bgm/BossFight.mp3"},
-        {name:'BattleTheme',path:"/Asset/Sound/Bgm/BattleTheme.mp3"},
-        {name:'战车恰恰悠扬激进版',path:"/Asset/Sound/Bgm/战车恰恰悠扬激进版.mp3"},
-        {name:'7mm机关炮',path:"/Asset/Sound/Bgm/7mm机关炮.mp3"},
-        {name:'商队',path:"/Asset/Sound/Bgm/商队.mp3"},
-        {name:'消逝的过去',path:"/Asset/Sound/Bgm/消逝的过去.mp3"},
-        {name:'迪加',path:"/Asset/Sound/Bgm/迪加.mp3"},
-        {name:'山洞',path:"/Asset/Sound/Bgm/山洞.mp3"},
-        {name:'未知荒野',path:"/Asset/Sound/Bgm/未知荒野.mp3"},
-        {name:'战车恰恰',path:"/Asset/Sound/Bgm/战车恰恰.mp3"},
-        {name:'流浪',path:"/Asset/Sound/Bgm/流浪.mp3"},
-        {name:'道具屋',path:"/Asset/Sound/Bgm/道具屋.mp3"},
+        {name:'NameSetting',path:API_RESOURCE+'Sound/Bgm/NameSetting.mp3'},
+        {name:'无限音轨',path:API_RESOURCE+"Sound/Bgm/无限音轨.mp3"},
+        {name:'TownTheme',path:API_RESOURCE+"Sound/Bgm/TownTheme.mp3"},
+        {name:'Town',path:API_RESOURCE+"Sound/Bgm/Town.mp3"},
+        {name:'BossFight',path:API_RESOURCE+"Sound/Bgm/BossFight.mp3"},
+        {name:'BattleTheme',path:API_RESOURCE+"Sound/Bgm/BattleTheme.mp3"},
+        {name:'战车恰恰悠扬激进版',path:API_RESOURCE+"Sound/Bgm/战车恰恰悠扬激进版.mp3"},
+        {name:'7mm机关炮',path:API_RESOURCE+"Sound/Bgm/7mm机关炮.mp3"},
+        {name:'商队',path:API_RESOURCE+"Sound/Bgm/商队.mp3"},
+        {name:'消逝的过去',path:API_RESOURCE+"Sound/Bgm/消逝的过去.mp3"},
+        {name:'迪加',path:API_RESOURCE+"Sound/Bgm/迪加.mp3"},
+        {name:'山洞',path:API_RESOURCE+"Sound/Bgm/山洞.mp3"},
+        {name:'未知荒野',path:API_RESOURCE+"Sound/Bgm/未知荒野.mp3"},
+        {name:'战车恰恰',path:API_RESOURCE+"Sound/Bgm/战车恰恰.mp3"},
+        {name:'流浪',path:API_RESOURCE+"Sound/Bgm/流浪.mp3"},
+        {name:'道具屋',path:API_RESOURCE+"Sound/Bgm/道具屋.mp3"},
 
-        {name:'GunAct',path:"/Asset/Sound/Sfx/GunAct.mp3"},
-        {name:'boom',path:"/Asset/Sound/Sfx/boom.mp3"},
-        {name:'Fail',path:"/Asset/Sound/Sfx/Fail.mp3"},
-        {name:'Winning',path:"/Asset/Sound/Sfx/Winning.mp3"},
-        {name:'Select',path:"/Asset/Sound/Sfx/Select.wav"},
-        {name:'JumpStage',path:"/Asset/Sound/Sfx/JumpStage.wav"},
-        {name:'StartBattle',path:"/Asset/Sound/Sfx/enemy.mp3"},
-        {name:'获得物品',path:"/Asset/Sound/Sfx/获得物品.wav"},
-        {name:'交易',path:"/Asset/Sound/Sfx/交易.wav"},
-        {name:'出现',path:"/Asset/Sound/Sfx/出现.wav"},
-        {name:'睡觉',path:"/Asset/Sound/Sfx/睡觉.mp3"},
-        {name:'逃跑',path:"/Asset/Sound/Sfx/逃跑.wav"},
-        {name:'按钮',path:"/Asset/Sound/Sfx/按钮.wav"},
-        {name:'普通攻击',path:"/Asset/Sound/Sfx/普通攻击.wav"},
-        {name:'普通攻击End',path:"/Asset/Sound/Sfx/普通攻击End.wav"},
+        {name:'GunAct',path:API_RESOURCE+"Sound/Sfx/GunAct.mp3"},
+        {name:'boom',path:API_RESOURCE+"Sound/Sfx/boom.mp3"},
+        {name:'Fail',path:API_RESOURCE+"Sound/Sfx/Fail.mp3"},
+        {name:'Winning',path:API_RESOURCE+"Sound/Sfx/Winning.mp3"},
+        {name:'Select',path:API_RESOURCE+"Sound/Sfx/Select.wav"},
+        {name:'JumpStage',path:API_RESOURCE+"Sound/Sfx/JumpStage.wav"},
+        {name:'StartBattle',path:API_RESOURCE+"Sound/Sfx/enemy.mp3"},
+        {name:'获得物品',path:API_RESOURCE+"Sound/Sfx/获得物品.wav"},
+        {name:'交易',path:API_RESOURCE+"Sound/Sfx/交易.wav"},
+        {name:'出现',path:API_RESOURCE+"Sound/Sfx/出现.wav"},
+        {name:'睡觉',path:API_RESOURCE+"Sound/Sfx/睡觉.mp3"},
+        {name:'逃跑',path:API_RESOURCE+"Sound/Sfx/逃跑.wav"},
+        {name:'按钮',path:API_RESOURCE+"Sound/Sfx/按钮.wav"},
+        {name:'普通攻击',path:API_RESOURCE+"Sound/Sfx/普通攻击.wav"},
+        {name:'普通攻击End',path:API_RESOURCE+"Sound/Sfx/普通攻击End.wav"},
 
     ];
 
@@ -178,53 +178,53 @@ function main(){
     imgData.push({type:"js",path:"./js/GameSocket.js?ver="+VER});
 
     //game other img
-    imgData.push({name: "empty", path: "/Asset/事件/empty.png" });
-    imgData.push({name: "箱子", path: "/Asset/事件/箱子.png" });
-    imgData.push({name: "通缉令-戈麦斯", path: "/Asset/事件/通缉令-戈麦斯.png" });
+    imgData.push({name: "empty", path: API_RESOURCE+"事件/empty.png" });
+    imgData.push({name: "箱子", path: API_RESOURCE+"事件/箱子.png" });
+    imgData.push({name: "通缉令-戈麦斯", path: API_RESOURCE+"事件/通缉令-戈麦斯.png" });
 
 	//人物行走图
-    imgData.push({name:"猎人",path:"/Asset/人物行走图/猎人.png"});
-    imgData.push({name:"机械师",path:"/Asset/人物行走图/机械师.png"});
-    imgData.push({name:"战士",path:"/Asset/人物行走图/战士.png"});
-    imgData.push({name:"护士",path:"/Asset/人物行走图/护士.png"});
-    imgData.push({name:"蕾娜",path:"/Asset/人物行走图/蕾娜.png"});
-	imgData.push({name:"姐姐",path:"/Asset/人物行走图/姐姐.png"});
-    imgData.push({name:"老爹",path:"/Asset/人物行走图/老爹.png"});
-    imgData.push({name:"重甲猎人",path:"/Asset/人物行走图/重甲猎人.png"});
-    imgData.push({name:"穷猎人",path:"/Asset/人物行走图/穷猎人.png"});
-    imgData.push({name:"商人妹子",path:"/Asset/人物行走图/商人妹子.png"});
-    imgData.push({name:"交易员",path:"/Asset/人物行走图/交易员.png"});
-    imgData.push({name:"大姐姐",path:"/Asset/人物行走图/大姐姐.png"});
-    imgData.push({name:"明奇",path:"/Asset/人物行走图/明奇.png"});
-    imgData.push({name:"路人",path:"/Asset/人物行走图/路人.png"});
-    imgData.push({name:"士兵",path:"/Asset/人物行走图/士兵.png"});
-    imgData.push({name:"喽啰move",path:"/Asset/人物行走图/喽啰.png"});
+    imgData.push({name:"猎人",path:API_RESOURCE+"人物行走图/猎人.png"});
+    imgData.push({name:"机械师",path:API_RESOURCE+"人物行走图/机械师.png"});
+    imgData.push({name:"战士",path:API_RESOURCE+"人物行走图/战士.png"});
+    imgData.push({name:"护士",path:API_RESOURCE+"人物行走图/护士.png"});
+    imgData.push({name:"蕾娜",path:API_RESOURCE+"人物行走图/蕾娜.png"});
+	imgData.push({name:"姐姐",path:API_RESOURCE+"人物行走图/姐姐.png"});
+    imgData.push({name:"老爹",path:API_RESOURCE+"人物行走图/老爹.png"});
+    imgData.push({name:"重甲猎人",path:API_RESOURCE+"人物行走图/重甲猎人.png"});
+    imgData.push({name:"穷猎人",path:API_RESOURCE+"人物行走图/穷猎人.png"});
+    imgData.push({name:"商人妹子",path:API_RESOURCE+"人物行走图/商人妹子.png"});
+    imgData.push({name:"交易员",path:API_RESOURCE+"人物行走图/交易员.png"});
+    imgData.push({name:"大姐姐",path:API_RESOURCE+"人物行走图/大姐姐.png"});
+    imgData.push({name:"明奇",path:API_RESOURCE+"人物行走图/明奇.png"});
+    imgData.push({name:"路人",path:API_RESOURCE+"人物行走图/路人.png"});
+    imgData.push({name:"士兵",path:API_RESOURCE+"人物行走图/士兵.png"});
+    imgData.push({name:"喽啰move",path:API_RESOURCE+"人物行走图/喽啰.png"});
 
     //战车行走图
-    imgData.push({name:"M1战车MMR",path:"/Asset/战车行走图/MMR/M1战车MMR.png"});
-    imgData.push({name:"救护车MMR",path:"/Asset/战车行走图/MMR/救护车MMR.png"});
-    imgData.push({name:"红狼战车MMR",path:"/Asset/战车行走图/MMR/红狼战车MMR.png"});
-    imgData.push({name:"黑色战车MMR",path:"/Asset/战车行走图/MMR/黑色战车MMR.png"});
-    imgData.push({name:"毁灭战车move",path:"/Asset/战车行走图/Boss/毁灭战车.png"});
+    imgData.push({name:"M1战车MMR",path:API_RESOURCE+"战车行走图/MMR/M1战车MMR.png"});
+    imgData.push({name:"救护车MMR",path:API_RESOURCE+"战车行走图/MMR/救护车MMR.png"});
+    imgData.push({name:"红狼战车MMR",path:API_RESOURCE+"战车行走图/MMR/红狼战车MMR.png"});
+    imgData.push({name:"黑色战车MMR",path:API_RESOURCE+"战车行走图/MMR/黑色战车MMR.png"});
+    imgData.push({name:"毁灭战车move",path:API_RESOURCE+"战车行走图/Boss/毁灭战车.png"});
 
     //FightPic
-    imgData.push({name:"野战炮",path:"/Asset/战斗/MMR/野战炮.png"});
-    imgData.push({name:"加农炮",path:"/Asset/战斗/MMR/加农炮.png"});
-    imgData.push({name:"巨炮",path:"/Asset/战斗/MMR/巨炮.png"});
-    imgData.push({name:"亡灵士兵",path:"/Asset/战斗/MMR/亡灵士兵.png"});
-    imgData.push({name:"喽啰",path:"/Asset/战斗/MMR/喽啰.png"});
-    imgData.push({name:"毁灭战车",path:"/Asset/战斗/MMR/毁灭战车.png"});
-    imgData.push({name:"戈麦斯",path:"/Asset/战斗/MMR/戈麦斯.png"});
-    imgData.push({name:"沙漠之舟",path:"/Asset/战斗/MMR/沙漠之舟.png"});
+    imgData.push({name:"野战炮",path:API_RESOURCE+"战斗/MMR/野战炮.png"});
+    imgData.push({name:"加农炮",path:API_RESOURCE+"战斗/MMR/加农炮.png"});
+    imgData.push({name:"巨炮",path:API_RESOURCE+"战斗/MMR/巨炮.png"});
+    imgData.push({name:"亡灵士兵",path:API_RESOURCE+"战斗/MMR/亡灵士兵.png"});
+    imgData.push({name:"喽啰",path:API_RESOURCE+"战斗/MMR/喽啰.png"});
+    imgData.push({name:"毁灭战车",path:API_RESOURCE+"战斗/MMR/毁灭战车.png"});
+    imgData.push({name:"戈麦斯",path:API_RESOURCE+"战斗/MMR/戈麦斯.png"});
+    imgData.push({name:"沙漠之舟",path:API_RESOURCE+"战斗/MMR/沙漠之舟.png"});
 
     //face
-    imgData.push({name:"face猎人",path:"/Asset/头像/女猎人.png"});
-    imgData.push({name:"face机械师",path:"/Asset/头像/女机械师.png"});
-    imgData.push({name:"face战士",path:"/Asset/头像/女战士.png"});
-    imgData.push({name:"face雷娜",path:"/Asset/头像/雷娜.png"});
+    imgData.push({name:"face猎人",path:API_RESOURCE+"头像/女猎人.png"});
+    imgData.push({name:"face机械师",path:API_RESOURCE+"头像/女机械师.png"});
+    imgData.push({name:"face战士",path:API_RESOURCE+"头像/女战士.png"});
+    imgData.push({name:"face雷娜",path:API_RESOURCE+"头像/雷娜.png"});
 
 	//effect
-    imgData.push({name: "220Animation", path: "/Asset/战斗/动画/220Animation.png" });
+    imgData.push({name: "220Animation", path: API_RESOURCE+"战斗/动画/220Animation.png" });
 
     loadingLayer = new LoadingSample3();
 	addChild(loadingLayer);	

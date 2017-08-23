@@ -13,11 +13,11 @@
  *
  */
 //根目录
-const API = '/';
+const API = 'http://zregs.com/';
 //资源根目录
-const API_RESOURCE = '/Asset/';
+const API_RESOURCE = './Asset/';
 //地图
-const API_MAP = '/Asset/地图/';
+const API_MAP = API_RESOURCE+'地图/';
 
 //扩展send方法
 WebSocket.prototype.wlSend = function (type,content={}) {
