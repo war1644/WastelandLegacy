@@ -40,7 +40,7 @@ const
     gap = 10,
     VER = 'V20170823.1',
     //根目录
-API = 'http://zregs.com/',
+API = '/',
 //资源根目录
 API_RESOURCE = './Asset/',
 //地图

@@ -551,7 +551,7 @@ let Fight = {
     },
 
     bossFight: (enemyId,lv) => {
-        socket.wlSend('inBattle',{'enemy':enemyId,'lv':lv});
+        socket.wlSend('inBattle',{'enemy':enemyId,'lv':lv,'stageId':stage.id});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
@@ -575,7 +575,7 @@ let Fight = {
         }
     },
     normalFight: (enemyId,lv) => {
-        socket.wlSend('inBattle',{'enemy':enemyId,'lv':lv});
+        socket.wlSend('inBattle',{'enemy':enemyId,'lv':lv,'stageId':stage.id});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
