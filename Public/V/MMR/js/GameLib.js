@@ -12,12 +12,7 @@
  * v2016/12/9 初版
  *
  */
-//根目录
-const API = 'http://zregs.com/';
-//资源根目录
-const API_RESOURCE = './Asset/';
-//地图
-const API_MAP = API_RESOURCE+'地图/';
+
 
 //扩展send方法
 WebSocket.prototype.wlSend = function (type,content={}) {
@@ -340,14 +335,15 @@ function addNpc(npcObj){
             npc.px = Number(npcObj.x);
             npc.py = Number(npcObj.y);
             if(npcObj.type === 'player'){
-                netPlayer[npcObj['name']] = npc;
                 npc.name = npcObj.name;
                 npc.netType = 1;
                 let text = UI.simpleText(npc.name,10);
                 text.width = text.getWidth()>>0;
                 text.x = ((STEP - text.getWidth())>>1);
                 text.y = -(text.getHeight()>>0)-5;
+                text.name = 'nickNameText';
                 npc.addChild(text);
+                netPlayer[npcObj['name']] = npc;
             }else{
                 npc.name = npcObj.img;
             }

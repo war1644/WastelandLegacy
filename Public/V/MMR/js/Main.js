@@ -38,7 +38,14 @@ const
     UP = 3,
     //间隙
     gap = 10,
-    VER = 'V20170818.13';
+    VER = 'V20170823.1',
+    //根目录
+API = 'http://zregs.com/',
+//资源根目录
+API_RESOURCE = './Asset/',
+//地图
+API_MAP = API_RESOURCE+'地图/',
+WS_HOST = 'zregs.com';
 
 let
     //游戏初始宽
@@ -308,7 +315,7 @@ function gameInit(){
     LGlobal.setDebug(true);
     //数据初始化优先于显示部分的初始化
     LGlobal.aspectRatio = PORTRAIT;
-    Lib.bgm('战车恰恰悠扬激进版',true);
+    Lib.bgm('迪加',true);
     //游戏层显示初始化
     gameLayerInit();
     //游戏全局数据初始化

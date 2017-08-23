@@ -25,7 +25,7 @@ let GameSocket = {
         if(socket){
             socket.wlSend('getSave');
         }else {
-            socket = new WebSocket('ws://'+location.host+':8886');
+            socket = new WebSocket('ws://'+WS_HOST+':8886');
         }
 
         socket.onopen = function () {
@@ -82,13 +82,17 @@ let GameSocket = {
                 break;
             case "addUser":
                 if(value.content.stageId != stage.id) return;
-                if(value.name === playerName) return;
+                if(value.name == playerName) return;
                 value.content.name = value.name;
                 addNpc(value.content);
                 break;
             case "move":
                 if(value.content.stageId != stage.id) return;
                 moveNetNpc(value["name"], value.content);
+                break;
+            case "inBattle":
+                if(value.content.stageId != stage.id) return;
+                Fight.addNetBattle(value);
                 break;
             case "action":
                 break;

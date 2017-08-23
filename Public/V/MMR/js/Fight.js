@@ -54,6 +54,17 @@ let Fight = {
     time:false,
 
     /**
+     * 网络战斗状态
+     */
+    addNetBattle:(data)=>{
+        let fighter = netPlayer[data.name];
+        if(!fighter) return false;
+        fighter.inBattle = true;
+        let text = fighter.getChildByName('nickNameText');
+        text.color = '#f00';
+    },
+
+    /**
      * 战斗初始化
      */
     startFight: (enemyTeam, playerTeam) => {
@@ -540,6 +551,7 @@ let Fight = {
     },
 
     bossFight: (enemyId,lv) => {
+        socket.wlSend('inBattle',{'enemy':enemyId,'lv':lv});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
@@ -563,6 +575,7 @@ let Fight = {
         }
     },
     normalFight: (enemyId,lv) => {
+        socket.wlSend('inBattle',{'enemy':enemyId,'lv':lv});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
