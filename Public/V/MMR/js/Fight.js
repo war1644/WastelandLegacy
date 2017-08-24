@@ -116,21 +116,35 @@ let Fight = {
     /**
      * 添加一个作战单位到战场
      *
-     * */
-    addDrawFighters:(hero,x,y,dir=1)=>{
+     **/
+    addDrawFighters:(hero,x,y,dir=1,anim=false)=>{
         let bitmapData = new LBitmapData(assets[hero.fightPic]);
         let col = hero.col || 4;
         let row = hero.row || 4;
         let chara = new Fighter(bitmapData, row, col);
         chara.changeDir(dir);
-        chara.move = false;
         if(hero.alive){
             chara.x = x;
             chara.y = y;
             hero.fighter = chara;
             Fight.layer.addChild(chara);
+            if(anim) Fight.supportAnimation(chara,x-60);
         }
+
         return chara;
+    },
+
+    /**
+     * 支援动画
+     *
+     * */
+    supportAnimation:(hero,x,dir=1)=>{
+        LTweenLite.to(hero,2,{x:x,onStart:()=>{
+            Lib.bgm('支援');
+        },onComplete:()=>{
+            hero.move = false;
+        }});
+
     },
 
     /**
@@ -181,6 +195,7 @@ let Fight = {
 
         hpText = UI.simpleText(hero1.Hp,10);
         if(j){
+            chara.move = false;
             hpText.x = x-2*gap-3*hpText.getWidth();
             chara.x = x-3*chara.getWidth();
         } else {
