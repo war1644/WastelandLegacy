@@ -60,11 +60,11 @@ let Fight = {
         let fighter = netPlayer[data.name];
         if(!fighter) return false;
         if(data.content.type==1){
-            fighter.inBattle = false;
+            fighter.state = 1;
             let text = fighter.getChildByName('nickNameText');
             text.color = '#fff';
         }else {
-            fighter.inBattle = true;
+            fighter.state = 2;
             let text = fighter.getChildByName('nickNameText');
             text.color = '#0f0';
         }
