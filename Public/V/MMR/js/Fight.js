@@ -59,7 +59,7 @@ let Fight = {
     addNetBattle:(data)=>{
         let fighter = netPlayer[data.name];
         if(!fighter) return false;
-        if(data.type==1){
+        if(data.content.type==1){
             fighter.inBattle = false;
             let text = fighter.getChildByName('nickNameText');
             text.color = '#fff';
