@@ -97,6 +97,7 @@ let GameSocket = {
             case "support":
                 window.netTeam = RPG.beget(PlayerTeam);
                 window.netTeam.addHero(value.content.jobId, value.content.lv, value.content.name);
+                mainTeam.support = true;
                 // console.log(value);
                 Fight.addSupportBattle(window.netTeam);
                 break;

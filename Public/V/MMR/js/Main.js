@@ -40,12 +40,12 @@ const
     gap = 10,
     VER = 'V20170824.1',
     //根目录
-API = 'http://zregs.com/',
-//资源根目录
-API_RESOURCE = './Asset/',
-//地图
-API_MAP = API_RESOURCE+'地图/',
-WS_HOST = 'zregs.com';
+    API = 'http://zregs.com/',
+    //资源根目录
+    API_RESOURCE = './Asset/',
+    //地图
+    API_MAP = API_RESOURCE+'地图/',
+    WS_HOST = 'zregs.com';
 
 let
     //游戏初始宽

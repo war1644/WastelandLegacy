@@ -57,13 +57,14 @@ let Fight = {
      * 加入支援战斗
      */
     addSupportBattle: (data)=>{
-        console.log('1');
         let y = 0;
         if (2 == mainTeam.state){
             for (let key in data.heroList){
                 let hero = data.heroList[key];
+                console.log(hero);
                 y += 2*gap;
-                Fight.addDrawFighters(hero, WIDTH, y);
+                Fight.addDrawFighters(hero, WIDTH, y, 1, true);
+                Fight.infoCommand(hero.nickName + '进入战场');
             }
         } else if (1 == mainTeam.state){
             Fight.startFight();
@@ -147,9 +148,15 @@ let Fight = {
             chara.y = y;
             hero.fighter = chara;
             Fight.layer.addChild(chara);
-            if(anim) Fight.supportAnimation(chara,x-60);
+            if(anim) {
+                Fight.supportAnimation(chara,x-60);
+                let hpText = UI.simpleText(hero.Hp,10);
+                hpText.x = x-2*gap-2*hpText.getWidth();
+                y = y + chara.getHeight() + 5;
+                hpText.y = y;
+                Fight.layer.addChild(hpText);
+            }
         }
-
         return chara;
     },
 
@@ -161,6 +168,7 @@ let Fight = {
         LTweenLite.to(hero,2,{x:x,onStart:()=>{
             Lib.bgm('支援');
         },onComplete:()=>{
+            console.log("支援");
             hero.move = false;
         }});
 
