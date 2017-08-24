@@ -59,6 +59,8 @@ let Fight = {
     addNetBattle:(data)=>{
         let fighter = netPlayer[data.name];
         if(!fighter) return false;
+        console.log(data.content);
+        if (fighter.name === playerName) return false;
         if(data.content.type==1){
             fighter.state = 1;
             let text = fighter.getChildByName('nickNameText');
@@ -67,6 +69,7 @@ let Fight = {
             fighter.state = 2;
             let text = fighter.getChildByName('nickNameText');
             text.color = '#0f0';
+            RPG.netEnemyTeam = data.content;
         }
 
     },
@@ -179,9 +182,11 @@ let Fight = {
         hpText = UI.simpleText(hero1.Hp,10);
         if(j){
             chara.move = false;
-            hpText.x = x-gap;
+            hpText.x = x-gap-3*hpText.getWidth();
+            chara.x = x-3*chara.getWidth();
         } else {
             hpText.x = x+gap;
+
         }
         hpText.y = y;
         Fight.layer.addChild(hpText);
