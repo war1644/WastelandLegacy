@@ -165,6 +165,7 @@ function main(){
         {name:'按钮',path:API_RESOURCE+"Sound/Sfx/按钮.wav"},
         {name:'普通攻击',path:API_RESOURCE+"Sound/Sfx/普通攻击.wav"},
         {name:'普通攻击End',path:API_RESOURCE+"Sound/Sfx/普通攻击End.wav"},
+        {name:'支援',path:API_RESOURCE+"Sound/Sfx/支援.mp3"},
 
     ];
 
