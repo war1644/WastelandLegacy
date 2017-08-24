@@ -16,6 +16,8 @@ let PlayerTeam = {
 	inTank:false,
     //钱钱
     money: 1000,
+    //状态 1 正常  2 战斗
+    stage:1,
 	init: function (){
 		this.itemList=[];
 		this.heroList=[];

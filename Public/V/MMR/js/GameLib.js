@@ -342,8 +342,16 @@ function addNpc(npcObj){
                 text.x = ((STEP - text.getWidth())>>1);
                 text.y = -(text.getHeight()>>0)-5;
                 text.name = 'nickNameText';
+                if(npcObj.state==1){
+                    npc.state = 1;
+                    text.color = '#fff';
+                }else {
+                    npc.state = 2;
+                    text.color = '#0f0';
+                }
                 npc.addChild(text);
                 netPlayer[npcObj['name']] = npc;
+
             }else{
                 npc.name = npcObj.img;
             }

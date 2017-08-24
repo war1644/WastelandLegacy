@@ -481,7 +481,7 @@ Character.prototype.changeDirAlt = function (dirs){
 		if(self.isHero) {
 			self.checkMap(dir);
 		}
-        socket.wlSend('move',{type:'player',img:player.img,stageId:stage.id,x:player.px,y:player.py,dir:dir});
+        socket.wlSend('move',{type:'player',img:player.img,stageId:stage.id,x:player.px,y:player.py,dir:dir,state:mainTeam.state});
 		//如果可以移动，则开始移动
 		self.move = true;
 		if(RPG.fight) player.tmp ++;

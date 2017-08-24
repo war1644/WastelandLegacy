@@ -352,7 +352,7 @@ function initScript(x,y,dir=0){
     Lib.bgm(stage.music,true);
     socket.wlSend(
         'addUser',
-        {stageId:stage.id,type:'player',img:player.img,x:player.px, y:player.py, dir:player.direction}
+        {stageId:stage.id,type:'player',img:player.img,x:player.px, y:player.py, dir:player.direction,state:mainTeam.state}
     );
     //弹出刚才的等待状态，这样人物才会动
 

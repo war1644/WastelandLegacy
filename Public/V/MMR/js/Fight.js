@@ -59,9 +59,16 @@ let Fight = {
     addNetBattle:(data)=>{
         let fighter = netPlayer[data.name];
         if(!fighter) return false;
-        fighter.inBattle = true;
-        let text = fighter.getChildByName('nickNameText');
-        text.color = '#f00';
+        if(data.type==1){
+            fighter.inBattle = false;
+            let text = fighter.getChildByName('nickNameText');
+            text.color = '#fff';
+        }else {
+            fighter.inBattle = true;
+            let text = fighter.getChildByName('nickNameText');
+            text.color = '#0f0';
+        }
+
     },
 
     /**
@@ -329,13 +336,11 @@ let Fight = {
 
                     // 然后判断胜负
                     if (Fight.checkFight()) {
-                        Menu.closeMenu();
+                        // Menu.closeMenu();
                         // //显示战斗结果
-                        // Fight.showResult();
+                        Fight.showResult(1);
                         // Fight.endCallback();
                         return;
-                    }else {
-                        Fight.nextFighter();
                     }
                 }
                 break;
@@ -472,16 +477,6 @@ let Fight = {
                                     if (Fight.checkFight()) {
                                         //显示战斗结果
                                         Fight.showResult();
-                                        // switch(Fight.state){
-                                        //     case 1:
-                                        //         Fight.endCallback();
-                                        //         break;
-                                        //     case 2:
-                                        //         break;
-                                        //     default:
-                                        //         break;
-                                        // }
-
                                         return;
                                     }
                                     // 下一个
@@ -551,7 +546,9 @@ let Fight = {
     },
 
     bossFight: (enemyId,lv) => {
-        socket.wlSend('inBattle',{'enemy':enemyId,'lv':lv,'stageId':stage.id});
+        //设置团队状态为战斗
+        mainTeam.state = 2;
+        socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,type:2});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
@@ -575,7 +572,9 @@ let Fight = {
         }
     },
     normalFight: (enemyId,lv) => {
-        socket.wlSend('inBattle',{'enemy':enemyId,'lv':lv,'stageId':stage.id});
+        //设置团队状态为战斗
+        mainTeam.state = 2;
+        socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,type:2});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
@@ -654,7 +653,7 @@ let Fight = {
     /**
      * 显示战斗结果
      */
-    showResult: () => {
+    showResult: (type=0) => {
         RPG.curBGMObj.close();
         if (Fight.state === Fight.WIN) {
             Lib.bgm('Winning');
@@ -710,11 +709,16 @@ let Fight = {
                 hero1.fighter.changeDir(0);
                 hero1.fighter.x = menuWidth / 2 - hero1.fighter.getWidth() / 2;
             }
-            FightMenu.setFormation('我方团灭，别说忘了存档');
+            if(type){
+                FightMenu.setFormation('我方狼狈逃蹿！');
+            }else {
+                FightMenu.setFormation('我方团灭，别说忘了存档');
+            }
         }
         Lib.bgm(stage.music,true);
+        mainTeam.state = 1;
+        socket.wlSend('inBattle',{stageId:stage.id,type:1});
         setTimeout(Menu.closeMenu,3000);
-
     },
 
     //计算团队的平均速度
