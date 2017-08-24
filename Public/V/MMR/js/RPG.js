@@ -384,7 +384,6 @@ let RPG = {
     // 新游戏初始化信息
     newGame: function () {
         //初始化玩家队伍
-
         mainTeam = RPG.beget(PlayerTeam);
         //向玩家队伍增加人物（人物索引，人物等级)
         mainTeam.addHero(Lib.userInfo.jobId, Lib.userInfo.level, Lib.userInfo.name);

@@ -101,7 +101,6 @@ let GameSocket = {
                 Fight.addSupportBattle(window.netTeam);
                 break;
             case "action":
-
                 break;
             case "setSave":
                 if (value.content) {

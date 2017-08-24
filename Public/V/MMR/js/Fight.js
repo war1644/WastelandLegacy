@@ -236,7 +236,6 @@ let Fight = {
             } else {
                 Fight.drawFighters(j+1,0,y);
             }
-
             return;
         },500);
     },

@@ -278,7 +278,6 @@ let Talk = {
                 if (npc.px == tx && npc.py == ty){
                     if (npc.rpgEvent) {
                         // 首先转身
-
                         npc.anime.setAction(3- player.direction);
                         npc.anime.onframe();
                         // 然后执行指令
