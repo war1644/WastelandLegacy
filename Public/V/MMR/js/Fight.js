@@ -115,6 +115,21 @@ let Fight = {
 
     },
 
+    addNetPlayerinFighters:(fightHero, dir, x, y)=>{
+        let bitmapData = new LBitmapData(assets[fightHero.fightPic]);
+        let col = fightHero.col || 4;
+        let row = fightHero.row || 4;
+        let chara = new Fighter(bitmapData, row, col);
+        chara.changeDir(dir);
+        chara.x = x;
+        chara.y = y;
+        fightHero.fighter = chara;
+        if (chara.alive) {
+            Fight.layer.addChild(chara);
+        }
+        return chara;
+    },
+
     /**
      * 绘制战斗场景
      */
@@ -146,10 +161,11 @@ let Fight = {
         }
         Lib.bgm('出现');
         hero1 = team[i];
-        bitmapData = new LBitmapData(assets[hero1.fightPic]);
-        col = hero1.col || 4;
-        row = hero1.row || 4;
-        chara = new Fighter(bitmapData, row, col);
+
+        // bitmapData = new LBitmapData(assets[hero1.fightPic]);
+        // col = hero1.col || 4;
+        // row = hero1.row || 4;
+        // chara = new Fighter(bitmapData, row, col);
         if (!hero1.alive) {
             y = y + chara.getHeight() + 30;
             Fight.time = setTimeout(()=>{
@@ -162,18 +178,19 @@ let Fight = {
             },500);
             return;
         }
-        chara.changeDir(dir);
-        chara.x = x;
-        chara.y = y;
-        Fight.layer.addChild(chara);
+        // chara.changeDir(dir);
+        // chara.x = x;
+        // chara.y = y;
+        // Fight.layer.addChild(chara);
 
-        hero1.fighter = chara;
+        // hero1.fighter = chara;
+        chara = Fight.addNetPlayerinFighters(hero1, dir, x, y);
         y = y + chara.getHeight() + 5;
 
         hpText = UI.simpleText(hero1.Hp,10);
         if(j){
             chara.move = false;
-            hpText.x = x-gap-3*hpText.getWidth();
+            hpText.x = x-2*gap-3*hpText.getWidth();
             chara.x = x-3*chara.getWidth();
         } else {
             hpText.x = x+gap;
