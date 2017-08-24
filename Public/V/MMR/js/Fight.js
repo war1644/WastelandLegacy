@@ -67,7 +67,7 @@ let Fight = {
                 Fight.infoCommand(hero.nickName + '进入战场');
             }
         } else if (1 == mainTeam.state){
-            Fight.startFight();
+            Fight.normalFight(RPG.netEnemyTeam.enemy, RPG.netEnemyTeam.lv);
         }
 
     },
