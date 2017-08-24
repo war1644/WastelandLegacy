@@ -57,10 +57,9 @@ let Fight = {
      * 网络战斗状态
      */
     addNetBattle:(data)=>{
+        if (data.name == playerName) return false;
         let fighter = netPlayer[data.name];
         if(!fighter) return false;
-        console.log(data.content);
-        if (fighter.name === playerName) return false;
         if(data.content.type==1){
             fighter.state = 1;
             let text = fighter.getChildByName('nickNameText');
@@ -118,12 +117,13 @@ let Fight = {
      * 添加一个作战单位到战场
      *
      * */
-    addDrawFighters:(hero,x,y,dir)=>{
+    addDrawFighters:(hero,x,y,dir=1)=>{
         let bitmapData = new LBitmapData(assets[hero.fightPic]);
         let col = hero.col || 4;
         let row = hero.row || 4;
         let chara = new Fighter(bitmapData, row, col);
         chara.changeDir(dir);
+        chara.move = false;
         if(hero.alive){
             chara.x = x;
             chara.y = y;
@@ -164,7 +164,7 @@ let Fight = {
         }
         Lib.bgm('出现');
         hero1 = team[i];
-        chara = Fight.addDrawFighters(hero1,x,y);
+        chara = Fight.addDrawFighters(hero1,x,y,dir);
         if (!hero1.alive) {
             y = y + chara.getHeight() + 30;
             Fight.time = setTimeout(()=>{
@@ -181,8 +181,7 @@ let Fight = {
 
         hpText = UI.simpleText(hero1.Hp,10);
         if(j){
-            chara.move = false;
-            hpText.x = x-gap-3*hpText.getWidth();
+            hpText.x = x-2*gap-3*hpText.getWidth();
             chara.x = x-3*chara.getWidth();
         } else {
             hpText.x = x+gap;
