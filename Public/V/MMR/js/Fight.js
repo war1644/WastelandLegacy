@@ -111,6 +111,24 @@ let Fight = {
 
 
     },
+    /**
+     * 添加一个作战单位到战场
+     *
+     * */
+    addDrawFighters:(hero,x,y,dir)=>{
+        let bitmapData = new LBitmapData(assets[hero.fightPic]);
+        let col = hero.col || 4;
+        let row = hero.row || 4;
+        let chara = new Fighter(bitmapData, row, col);
+        chara.changeDir(dir);
+        if(hero.alive){
+            chara.x = x;
+            chara.y = y;
+            hero.fighter = chara;
+            Fight.layer.addChild(chara);
+        }
+        return chara;
+    },
 
     /**
      * 绘制战斗场景
@@ -143,10 +161,7 @@ let Fight = {
         }
         Lib.bgm('出现');
         hero1 = team[i];
-        bitmapData = new LBitmapData(assets[hero1.fightPic]);
-        col = hero1.col || 4;
-        row = hero1.row || 4;
-        chara = new Fighter(bitmapData, row, col);
+        chara = Fight.addDrawFighters(hero1,x,y);
         if (!hero1.alive) {
             y = y + chara.getHeight() + 30;
             Fight.time = setTimeout(()=>{
@@ -159,12 +174,6 @@ let Fight = {
             },500);
             return;
         }
-        chara.changeDir(dir);
-        chara.x = x;
-        chara.y = y;
-        Fight.layer.addChild(chara);
-
-        hero1.fighter = chara;
         y = y + chara.getHeight() + 5;
 
         hpText = UI.simpleText(hero1.Hp,10);

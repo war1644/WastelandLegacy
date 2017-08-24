@@ -345,7 +345,7 @@ function addNpc(npcObj){
                 if(npcObj.state==1){
                     npc.state = 1;
                     text.color = '#fff';
-                }else {
+                }else{
                     npc.state = 2;
                     text.color = '#0f0';
                 }

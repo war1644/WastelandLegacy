@@ -94,6 +94,10 @@ let GameSocket = {
                 if(value.content.stageId != stage.id) return;
                 Fight.addNetBattle(value);
                 break;
+            case "joinBattle":
+                if(value.content.stageId != stage.id) return;
+                Fight.addNetBattle(value);
+                break;
             case "action":
                 break;
             case "setSave":
