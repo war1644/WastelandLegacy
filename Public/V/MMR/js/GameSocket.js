@@ -94,6 +94,12 @@ let GameSocket = {
                 if(value.content.stageId != stage.id) return;
                 Fight.addNetBattle(value);
                 break;
+            case "support":
+                window.netTeam = RPG.beget(PlayerTeam);
+                window.netTeam.addHero(value.content.jobId, value.content.lv, value.content.name);
+                // console.log(value);
+                Fight.addSupportBattle(window.netTeam);
+                break;
             case "action":
                 break;
             case "setSave":
@@ -130,7 +136,7 @@ let GameSocket = {
                         //     mainTeam.unuseTankList[i] = saveData.unuseTankList[i];
                         // }
                     }
-
+                    socket.wlSend('netTeam', {jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level,name:playerName});
                     RPG.initSwitch();
                     RPG.extend(RPG.SWITCH, saveData.swt);
                     gameStageInit(Number(saveData.stageId), Number(saveData.px), Number(saveData.py));

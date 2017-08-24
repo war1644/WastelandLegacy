@@ -283,8 +283,31 @@ let Talk = {
                         // 然后执行指令
                         npc.rpgEvent(npc);
                         return;
+                    }else if (1 == npc.netType) {
+                        if (2 == npc.state){
+
+                            Talk.startTalk([
+                                {msg:'请选择你要支援的对象：',option:[
+                                    {text:'支援玩家',action:()=>{
+                                        socket.wlSend('support',{jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level, name:playerName});
+                                        Talk.closeTalk();
+                                        //Fight.normalFight(RPG.netEnemyTeam.enemy,RPG.netEnemyTeam.lv);
+
+                                    }},
+                                    {text:'支援怪物',action:()=>{
+                                        Talk.closeTalk();
+
+                                    }},
+                                    {text:'取消',action:()=>{
+                                        Talk.closeTalk();
+                                    }},
+                                ]}
+                            ]);
+                        }
                     }
+
                 }
+
                 //隔着障碍物有npc，则开始对话
                 if ((!player.move && (npc.px == x && npc.py == y))){
                     if (npc.rpgEvent) {

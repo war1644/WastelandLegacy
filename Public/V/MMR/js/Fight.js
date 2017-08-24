@@ -54,13 +54,31 @@ let Fight = {
     time:false,
 
     /**
+     * 加入支援战斗
+     */
+    addSupportBattle: (data)=>{
+        console.log('1');
+        let y = 0;
+        if (2 == mainTeam.state){
+            for (let key in data.heroList){
+                let hero = data.heroList[key];
+                y += 2*gap;
+                Fight.addDrawFighters(hero, WIDTH, y);
+            }
+        } else if (1 == mainTeam.state){
+            Fight.startFight();
+        }
+
+    },
+
+
+    /**
      * 网络战斗状态
      */
     addNetBattle:(data)=>{
+        if (data.name == playerName) return false;
         let fighter = netPlayer[data.name];
         if(!fighter) return false;
-        console.log(data.content);
-        if (fighter.name === playerName) return false;
         if(data.content.type==1){
             fighter.state = 1;
             let text = fighter.getChildByName('nickNameText');
@@ -101,12 +119,12 @@ let Fight = {
         Fight.eTeam = enemyTeam;
         Fight.pTeam = playerTeam;
         // if(!Fight.textObj){
-            Fight.textObj = UI.simpleText('',12);
-            Fight.textObj.x = gap;
-            Fight.textObj.y = HEIGHT-Fight.infoHeight + gap;
-            Fight.textObj.setWordWrap(true,20);
-            FightMenu.showFightInfo();
-            FightMenu.layer.addChildAt(Fight.textObj,1);
+        Fight.textObj = UI.simpleText('',12);
+        Fight.textObj.x = gap;
+        Fight.textObj.y = HEIGHT-Fight.infoHeight + gap;
+        Fight.textObj.setWordWrap(true,20);
+        FightMenu.showFightInfo();
+        FightMenu.layer.addChildAt(Fight.textObj,1);
         // }
         // Fight.infoCommand('遭遇战，敌我力量悬殊，敌方士气大减');
         Fight.drawFighters();
@@ -114,20 +132,38 @@ let Fight = {
 
 
     },
-
-    addNetPlayerinFighters:(fightHero, dir, x, y)=>{
-        let bitmapData = new LBitmapData(assets[fightHero.fightPic]);
-        let col = fightHero.col || 4;
-        let row = fightHero.row || 4;
+    /**
+     * 添加一个作战单位到战场
+     *
+     **/
+    addDrawFighters:(hero,x,y,dir=1,anim=false)=>{
+        let bitmapData = new LBitmapData(assets[hero.fightPic]);
+        let col = hero.col || 4;
+        let row = hero.row || 4;
         let chara = new Fighter(bitmapData, row, col);
         chara.changeDir(dir);
-        chara.x = x;
-        chara.y = y;
-        fightHero.fighter = chara;
-        if (chara.alive) {
+        if(hero.alive){
+            chara.x = x;
+            chara.y = y;
+            hero.fighter = chara;
             Fight.layer.addChild(chara);
+            if(anim) Fight.supportAnimation(chara,x-60);
         }
+
         return chara;
+    },
+
+    /**
+     * 支援动画
+     *
+     * */
+    supportAnimation:(hero,x,dir=1)=>{
+        LTweenLite.to(hero,2,{x:x,onStart:()=>{
+            Lib.bgm('支援');
+        },onComplete:()=>{
+            hero.move = false;
+        }});
+
     },
 
     /**
@@ -161,11 +197,7 @@ let Fight = {
         }
         Lib.bgm('出现');
         hero1 = team[i];
-
-        // bitmapData = new LBitmapData(assets[hero1.fightPic]);
-        // col = hero1.col || 4;
-        // row = hero1.row || 4;
-        // chara = new Fighter(bitmapData, row, col);
+        chara = Fight.addDrawFighters(hero1,x,y,dir);
         if (!hero1.alive) {
             y = y + chara.getHeight() + 30;
             Fight.time = setTimeout(()=>{
@@ -178,13 +210,6 @@ let Fight = {
             },500);
             return;
         }
-        // chara.changeDir(dir);
-        // chara.x = x;
-        // chara.y = y;
-        // Fight.layer.addChild(chara);
-
-        // hero1.fighter = chara;
-        chara = Fight.addNetPlayerinFighters(hero1, dir, x, y);
         y = y + chara.getHeight() + 5;
 
         hpText = UI.simpleText(hero1.Hp,10);
@@ -510,7 +535,7 @@ let Fight = {
                 }});
 
 
-                }
+            }
             }
         )
     },
@@ -596,7 +621,7 @@ let Fight = {
     normalFight: (enemyId,lv) => {
         //设置团队状态为战斗
         mainTeam.state = 2;
-        socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,type:2});
+        socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,playerId:player.id, type:2});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
@@ -640,26 +665,26 @@ let Fight = {
 
             // for (let i = 0; i < Fight.eTeam.heroList.length; i++) {
             //     hero2 = Fight.eTeam.heroList[i];
-                // 基本经验
+            // 基本经验
 
-                // b1 = (hero2.Level - hero1.Level) * 2;
-                // // if (b1 > 16) {
-                // //     b1 = 16;
-                // // } else if (b1 < 0) {
-                // //     b1 = 0;
-                // // }
-                // // 奖励经验
-                // if (hero2.Level > hero1.Level) {
-                //     b2 = 32;
-                // } else {
-                //     b2 = 64 / (hero1.Level - hero2.Level + 2);
-                // }
-                // a = a + b1;
-                // if (i === 0) {
-                //     // 第一敌人，有额外的奖励经验
-                //     a = a + b2;
-                // }
-                // a += hero1.Hp;
+            // b1 = (hero2.Level - hero1.Level) * 2;
+            // // if (b1 > 16) {
+            // //     b1 = 16;
+            // // } else if (b1 < 0) {
+            // //     b1 = 0;
+            // // }
+            // // 奖励经验
+            // if (hero2.Level > hero1.Level) {
+            //     b2 = 32;
+            // } else {
+            //     b2 = 64 / (hero1.Level - hero2.Level + 2);
+            // }
+            // a = a + b1;
+            // if (i === 0) {
+            //     // 第一敌人，有额外的奖励经验
+            //     a = a + b2;
+            // }
+            // a += hero1.Hp;
             // }
             if (!hero1.alive) {
                 // 战场阵亡，经验减半
@@ -702,7 +727,7 @@ let Fight = {
             yy = yy + STEP + 20;
 
             // 获得物品
-			if (Fight.trophy) {
+            if (Fight.trophy) {
                 // for (let j = 0; j < Fight.eTeam.itemList.length; j++) {
                 //     item1 = Fight.eTeam.itemList[j];
                 //     // 获得敌队的物品
@@ -949,13 +974,4 @@ let Fight = {
 
 
 };
-
-
-
-
-
-
-
-
-
 
