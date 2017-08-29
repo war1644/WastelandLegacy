@@ -223,7 +223,7 @@ let PlayerTeam = {
     /**
      * 向队伍增加怪物
      * @param id {int} 序号
-     * @param lv  {int} 等级
+     * @param lv {int} 等级
      * @returns
      */
     addEnemy: function (id, lv){

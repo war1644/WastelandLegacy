@@ -30,7 +30,7 @@ let Fight = {
     WIN:1,//胜利
     LOST:2,//失败
     FIGHTING:3,//战斗中
-    // 战斗队伍：敌方/玩家方
+    // 战斗队伍：所有方/敌方/玩家方
     eTeam:[],
     pTeam:[],
     // 战斗状态：0=暂停中；1=自动进行中
@@ -54,20 +54,68 @@ let Fight = {
     time:false,
 
     /**
+     * 更新战斗数据
+     */
+    updateFightData: (data)=>{
+        if (data.name == playerName) return ;
+        for (let key in Fight.pTeam.heroList){
+            let hero = Fight.pTeam.heroList[key];
+            if (hero.nickName == data.content.heroName){
+                hero.hpText.text = data.content.heroHp;
+                hero.Hp = data.content.heroHp;
+                //console.log(Fight.pTeam.heroList[key]);
+                return ;
+            }
+        }
+        for (let key in Fight.eTeam.heroList){
+            let hero = Fight.eTeam.heroList[key];
+            if (hero.nickName == data.content.heroName){
+                hero.hpText.text = data.content.heroHp;
+                hero.Hp = data.content.heroHp;
+                //console.log(data);
+                return ;
+            }
+        }
+    },
+    /**
      * 加入支援战斗
      */
-    addSupportBattle: (data)=>{
+    addSupportBattle: (data, name)=>{
         let y = 0;
-        if (2 == mainTeam.state){
+        let i = 0;
+        if (!mainTeam.support){
+            console.log("被支援方");
             for (let key in data.heroList){
                 let hero = data.heroList[key];
-                console.log(hero);
                 y += 2*gap;
-                Fight.addDrawFighters(hero, WIDTH, y, 1, true);
+                if (i < 1){
+                    Fight.addDrawFighters(hero, WIDTH, y, 1, true);
+                }else{
+                    Fight.addDrawFighters(hero, WIDTH, y+50, 1, true);
+                }
                 Fight.infoCommand(hero.nickName + '进入战场');
+                Fight.pTeam.heroList.push(hero);
+                Fight.queue.push(hero);
+                i++;
             }
-        } else if (1 == mainTeam.state){
+        } else if (mainTeam.support){
+            if (name != playerName) return;
+            console.log("支援方");
             Fight.normalFight(RPG.netEnemyTeam.enemy, RPG.netEnemyTeam.lv);
+            for (let key in data.heroList){
+                let hero = data.heroList[key];
+                if (hero.nickName == playerName) continue;
+                y += 2*gap;
+                if (i < 1){
+                    Fight.addDrawFighters(hero, WIDTH, y, 1, true);
+                }else{
+                    Fight.addDrawFighters(hero, WIDTH, y+50, 1, true);
+                }
+                Fight.infoCommand(hero.nickName + '进入战场');
+                Fight.pTeam.heroList.push(hero);
+                Fight.queue.push(hero);
+                i++;
+            }
         }
 
     },
@@ -133,6 +181,7 @@ let Fight = {
 
 
     },
+
     /**
      * 添加一个作战单位到战场
      *
@@ -155,6 +204,7 @@ let Fight = {
                 y = y + chara.getHeight() + 5;
                 hpText.y = y;
                 Fight.layer.addChild(hpText);
+                hero.hpText = hpText;
             }
         }
         return chara;
@@ -168,7 +218,6 @@ let Fight = {
         LTweenLite.to(hero,2,{x:x,onStart:()=>{
             Lib.bgm('支援');
         },onComplete:()=>{
-            console.log("支援");
             hero.move = false;
         }});
 
@@ -185,7 +234,7 @@ let Fight = {
             return;
         }
         // 战斗窗口基本站位
-        let hero1, chara, bitmapData, col,row, team, hpText, dir;
+        let hero1, chara, team, hpText, dir;
         //绘制敌我两队到战场
         if(j){
             if(mainTeam.inTank){
@@ -223,11 +272,11 @@ let Fight = {
         hpText = UI.simpleText(hero1.Hp,10);
         if(j){
             chara.move = false;
+            hpText.x = x-2*gap-2*hpText.getWidth();
             hpText.x = x-2*gap-3*hpText.getWidth();
-            chara.x = x-3*chara.getWidth();
+            chara.x = x-3*chara.getWidth()-7;
         } else {
             hpText.x = x+gap;
-
         }
         hpText.y = y;
         Fight.layer.addChild(hpText);
@@ -250,7 +299,6 @@ let Fight = {
 
     /**
      * 开始队列处理
-     *
      * */
     starQueue:()=>{
         Fight.currentFighter = Fight.queue[Fight.queueIndex];
@@ -504,6 +552,7 @@ let Fight = {
                     effect.play(1, function () {
                         // 刷新数据
                         Fight.infoCommand(toHero.nickName + '损伤 ' + ret);
+                        socket.wlSend("action", {heroName:toHero.nickName, heroHp:toHero.Hp, name:playerName});
                         toHero.hpText.text = toHero.Hp;
                         if (toHero && !toHero.alive) {
                             toHero.fighter.visible = false;
@@ -600,6 +649,33 @@ let Fight = {
         // }
     },
 
+    supportFight: (enemyId, lv, data) => {
+        mainTeam.state = 2;
+        //socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,type:2});
+        let enemyTeam = RPG.beget(PlayerTeam);
+        enemyTeam.clear();
+        for (let i = 0; i < enemyId.length; i++) {
+            let id = enemyId[i];
+            enemyTeam.addEnemy(id, lv);
+        }
+        Lib.bgm('bossFight',true);
+        let supportedTeam = RPG.beget(PlayerTeam);
+        supportedTeam.heroList.push(data.heroList[0]);
+        Fight.startFight(enemyTeam, data);
+        //战斗结束后回调
+        if(!Menu.callback){
+            Menu.waitMenu(()=>{
+                RPG.popState();
+                if (Fight.state === Fight.WIN) {
+                } else if (Fight.state === Fight.LOST) {
+                    //战败
+                } else {
+                    // 不胜不败，并不可能
+                }
+            });
+        }
+    },
+
     bossFight: (enemyId,lv) => {
         //设置团队状态为战斗
         mainTeam.state = 2;
@@ -610,8 +686,8 @@ let Fight = {
             let id = enemyId[i];
             enemyTeam.addEnemy(id, lv);
         }
+        //console.log(enemyTeam);
         Lib.bgm('BossFight',true);
-
         Fight.startFight(enemyTeam, mainTeam);
         //战斗结束后回调
         if(!Menu.callback){
@@ -637,7 +713,6 @@ let Fight = {
             enemyTeam.addEnemy(id, lv);
         }
         Lib.bgm('BattleTheme',true);
-
         Fight.startFight(enemyTeam, mainTeam);
         //战斗结束后回调
         if(!Menu.callback){
@@ -772,6 +847,7 @@ let Fight = {
         }
         Lib.bgm(stage.music,true);
         mainTeam.state = 1;
+        mainTeam.support = false;
         socket.wlSend('inBattle',{stageId:stage.id,type:1});
         setTimeout(Menu.closeMenu,3000);
     },

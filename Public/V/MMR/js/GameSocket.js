@@ -95,13 +95,16 @@ let GameSocket = {
                 Fight.addNetBattle(value);
                 break;
             case "support":
-                window.netTeam = RPG.beget(PlayerTeam);
+                console.log(window.netTeam);
+                if (window.netTeam == null) {
+                    window.netTeam = RPG.beget(PlayerTeam);
+                    window.netTeam.clear();
+                }
                 window.netTeam.addHero(value.content.jobId, value.content.lv, value.content.name);
-                mainTeam.support = true;
-                // console.log(value);
-                Fight.addSupportBattle(window.netTeam);
+                Fight.addSupportBattle(window.netTeam, value.content.name);
                 break;
             case "action":
+                Fight.updateFightData(value);
                 break;
             case "setSave":
                 if (value.content) {

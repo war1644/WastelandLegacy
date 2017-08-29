@@ -385,9 +385,10 @@ let RPG = {
     newGame: function () {
         //初始化玩家队伍
         mainTeam = RPG.beget(PlayerTeam);
+        mainTeam.support = false;
         //向玩家队伍增加人物（人物索引，人物等级)
         mainTeam.addHero(Lib.userInfo.jobId, Lib.userInfo.level, Lib.userInfo.name);
-        socket.wlSend('netTeam', {jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level, name:playerName});
+        socket.wlSend('netTeam', {jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level,name:playerName});
         // mainTeam.addHero(2, Lib.userInfo.level, '废土机械师小伙伴');
         // mainTeam.addHero(3, Lib.userInfo.level, '废土战士小伙伴');
 

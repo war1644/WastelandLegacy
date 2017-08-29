@@ -289,10 +289,9 @@ let Talk = {
                             Talk.startTalk([
                                 {msg:'请选择你要支援的对象：',option:[
                                     {text:'支援玩家',action:()=>{
-                                        socket.wlSend('support',{target: npc.name, jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level, name:playerName});
+                                        mainTeam.support = true;
+                                        socket.wlSend('support',{target: npc.name, jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level,name:playerName});
                                         Talk.closeTalk();
-                                        //Fight.normalFight(RPG.netEnemyTeam.enemy,RPG.netEnemyTeam.lv);
-
                                     }},
                                     {text:'支援怪物',action:()=>{
                                         Talk.closeTalk();
