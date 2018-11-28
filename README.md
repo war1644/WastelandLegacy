@@ -1,6 +1,20 @@
 WastelandLegacy (废土战记)
 ======
 每一个程序员的浪漫里应该都有一个游戏梦吧？我正在为自己的梦想努力着！联机，打怪，城镇，荒野，一样不少。有后台管理系统，可开放给玩家自己DIY剧情，换装，拼新地图，造新大陆等等。
+## 环境说明
+```shell
+# 本地 hosts
+sudo echo '127.0.0.1 mmr.game.com' >> /etc/hosts 
+
+# 拉取镜像
+docker pull registry.cn-beijing.aliyuncs.com/dxq_docker/nginx_php7:mmr
+
+# run
+docker run --restart unless-stopped --name mmr -itd -p 9001:9001 -p 80:80 registry.cn-beijing.aliyuncs.com/dxq_docker/nginx_php7:mmr
+
+# 浏览器开启模拟手机模式，横屏，然后访问 mmr.game.com
+# 源码在容器的 /var/www/ 目录下
+```
 
 ## 游戏大概玩法
 * 常规的重装机兵游戏内容：做任务，打怪，升级，赚钱，换装备，收集战车
@@ -39,16 +53,3 @@ WastelandLegacy (废土战记)
 * 玩家在大地图的数据同步
 * 其他
 
-## 环境说明
-```shell
-# 本地 hosts
-sudo echo '127.0.0.1 mmr.game.com' >> /etc/hosts 
-
-# 拉取镜像
-docker pull registry.cn-beijing.aliyuncs.com/dxq_docker/nginx_php7:mmr
-
-# run
-docker run --restart unless-stopped --name mmr -itd -p 9001:9001 -p 80:80 registry.cn-beijing.aliyuncs.com/dxq_docker/nginx_php7:mmr
-
-# 浏览器开启模拟手机模式，横屏，然后访问 mmr.game.com
-```
