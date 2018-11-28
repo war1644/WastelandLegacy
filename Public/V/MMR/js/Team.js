@@ -15,7 +15,7 @@ let PlayerTeam = {
 	//是否在战车内
 	inTank:false,
     //钱钱
-    money: 1000,
+    money: 100,
     //状态 1 正常  2 战斗
     state:1,
 	init: function (){
@@ -120,49 +120,42 @@ let PlayerTeam = {
 			this.itemList= this.itemList.slice(0, itemId).concat(this.itemList.slice(itemId+ 1));
 		}
 
-		switch (item1.type){
-			case '1':
-                // 装配类
-                switch (item1.position) {
-                    case '1':
+		switch (Number(item1.type)){
+			case 1:
+                // 人
+                switch (Number(item1.position)) {
+                    case 1:
                         this.addItem(hero1.changeWeapon(item1.id), 1);
                         break;
-                    case '2':
+                    case 2:
+                        this.addItem(hero1.changeCloth(item1.id), 1);
+                        break;
+                    case 3:
                         this.addItem(hero1.changeArmor(item1.id), 1);
-                        break;
-                    case '3':
-                        this.addItem(hero1.changeHand(item1.id), 1);
-                        break;
-                    case '4':
-                        this.addItem(hero1.changeFoot(item1.id), 1);
-                        break;
-                    case '5':
-                        this.addItem(hero1.changeHead(item1.id), 1);
                         break;
                 }
                 break;
-			case '3':
-                // 装配类
-                switch (item1.position) {
-                    case '1':
+			case 2:
+                // 车
+                switch (Number(item1.position)) {
+                    case 1:
                         hero1.addItem(hero1.changeMainCannon(itemId), 1);
                         break;
-                    case '2':
+                    case 2:
                         hero1.addItem(hero1.changeSubCannon(itemId), 1);
                         break;
-                    case '3':
+                    case 3:
                         hero1.addItem(hero1.changeSE(itemId), 1);
                         break;
-                    case '4':
+                    case 4:
                         hero1.addItem(hero1.changeCUnit(itemId), 1);
                         break;
-                    case '5':
+                    case 5:
                         hero1.addItem(hero1.changeEngine(itemId), 1);
                         break;
                 }
                 break;
-			case '2':
-			case '4':
+			default :
                 // 使用类
                 if (item1.effect){
                     item1.effect = eval(item1.effect);

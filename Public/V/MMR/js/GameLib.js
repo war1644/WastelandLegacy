@@ -17,6 +17,7 @@
 //扩展send方法
 WebSocket.prototype.wlSend = function (type,content={}) {
     let s = this;
+    if(s.readyState !== 1) return;
     let params = {};
     params.type = type;
     params.name = playerName;
@@ -24,20 +25,43 @@ WebSocket.prototype.wlSend = function (type,content={}) {
     s.send(JSON.stringify(params));
 };
 
-function MyListChildView(i){
+
+
+function MyListChildView(parma){
     let self = this;
     base(self,LListChildView,[]);
-    let rand = Math.random();
-    self.graphics.drawRect(1, "#000", [0, 0, 100, 30],true,rand < 0.33?"#90EE90":(rand < 0.66 ? "#F4A460":"#E6E6FA"));
-    let t = new LTextField();
-    t.text = "点击删除"+i;
-    t.x = t.y = 5;
+    self.graphics.drawRect(2, "#000", [0, 0, 100, 30],true,"rgb(188,188,188)");
+    let t = UI.simpleText(parma[0],14,'#111');
+    t.x = 10;
+    t.y = 5;
+    self.callback = eval(parma[1]);
     self.addChild(t);
 }
 MyListChildView.prototype.onClick = function(event){
-    event.currentTarget.deleteChildView(event.target);
+    //event.currentTarget.deleteChildView(event.target);
+    event.target.callback();
 };
-
+function listViewInit(x,y,w,h,l,count){
+    let listView = new LListView();
+    // layer.addChild(listView);
+    listView.maxPerLine = l;
+    listView.cellWidth = w;
+    listView.cellHeight = h;
+    let cw = listView.cellWidth*listView.maxPerLine;
+    let ch = listView.cellHeight*Math.ceil(count/3);
+    listView.resize(cw,ch);
+    listView.arrangement = LListView.Direction.Horizontal;
+    listView.movement = LListView.Direction.Vertical;
+    listView.x = x;
+    listView.y = y+5;
+    UI.drawBorder(listView,'#384048',cw,-2,2,y);
+    // listView.graphics.drawRect(1, "rgb(188,188,188)", [0, 0, listView.clipping.width,listView.clipping.height]);
+    return listView;
+}
+function addListChildView(listView,parma){
+    let child = new MyListChildView(parma);
+    listView.insertChildView(child);
+}
 
 function rand(n) {
     return (Math.random() * n) >> 0;
@@ -48,13 +72,15 @@ function rangeRand(min,max) {
 }
 
 //走到触发型 场景跳转
-function checkTrigger(boundary=false){
+let checkTrigger = (boundary=false)=>{
     let events = stage.triggerEvents;
     let triggerEvent;
+
     for(let i=0;i<events.length;i++){
         triggerEvent = events[i];
         if (triggerEvent.visible && !triggerEvent.visible()) continue;
         if (!triggerEvent.img){
+
             if(boundary && ( (triggerEvent.y==0) && (triggerEvent.x==0) )){
                 //获取该场景脚本数据
                 if (triggerEvent.action){
@@ -64,7 +90,7 @@ function checkTrigger(boundary=false){
                     return;
                 }
             }
-            if(boundary=='up' && (triggerEvent.y==0)){
+            if(boundary==='up' && (triggerEvent.y==0)){
                 //获取该场景脚本数据
                 if (triggerEvent.action){
                     // 一旦触发事件，按键取消
@@ -73,7 +99,7 @@ function checkTrigger(boundary=false){
                     return;
                 }
             }
-            if(boundary=='down' && (triggerEvent.y==999)){
+            if(boundary==='down' && (triggerEvent.y==999)){
                 //获取该场景脚本数据
                 if (triggerEvent.action){
                     // 一旦触发事件，按键取消
@@ -82,7 +108,7 @@ function checkTrigger(boundary=false){
                     return;
                 }
             }
-            if(boundary=='left' && (triggerEvent.x==0)){
+            if(boundary==='left' && (triggerEvent.x==0)){
                 //获取该场景脚本数据
                 if (triggerEvent.action){
                     // 一旦触发事件，按键取消
@@ -91,7 +117,7 @@ function checkTrigger(boundary=false){
                     return;
                 }
             }
-            if(boundary=='right' && (triggerEvent.y==999)){
+            if(boundary==='right' && (triggerEvent.y==999)){
                 //获取该场景脚本数据
                 if (triggerEvent.action){
                     // 一旦触发事件，按键取消
@@ -149,25 +175,32 @@ function checkTouch(){
 /**
  * 检测自动触发型事件
  */
-function checkAuto(){
-    let events = stage.autoEvents;
-    let autoEvent;
-    for(let i=0;i<events.length;i++){
-        autoEvent = events[i];
-        if (autoEvent.type==="auto"){
-            if (autoEvent.visible && autoEvent.visible()){
-                if (autoEvent.action){
-                    Talk.setTalkPos("middle");
-                    // 一旦触发事件，按键取消
-                    isKeyDown= false;
-                    autoEvent.action();
-                    Talk.setTalkPos("bottom");
-                    return;
+let checkAuto = ()=>{
+    if('autoEvents' in stage && Object.keys(stage.autoEvents).length) {
+        RPG.setSwitch('autoing', 1);
+        let events = [];
+        let autoEvent;
+        let len = stage.autoEvents.length;
+        for (let i = 0; i < len; i++) {
+            autoEvent = stage.autoEvents.pop();
+            if (autoEvent.type === "auto") {
+                if (autoEvent.visible && autoEvent.visible()) {
+                    if (autoEvent.action) {
+                        // Talk.setTalkPos("middle");
+                        // 一旦触发事件，按键取消
+                        isKeyDown = false;
+                        autoEvent.action();
+                        Talk.setTalkPos("bottom");
+                    }
+                } else {
+                    events.push(autoEvent);
                 }
             }
         }
+        stage.autoEvents = events;
+        RPG.setSwitch('autoing', 0);
     }
-}
+};
 
 /**
  * 检测战斗事件
@@ -215,10 +248,10 @@ let jumpStage = function(x, y, dir=0){
     }
 
     for(let i=0;i<len;i++){
-        if(events[i].action){
+        if(events[i].action && (typeof events[i].action === 'string')){
             events[i].action = eval(events[i].action);
         }
-        if(events[i].visible){
+        if(events[i].visible && (typeof events[i].visible === 'string')){
             events[i].visible = eval(events[i].visible);
         }
         if(events[i].img){
@@ -265,16 +298,22 @@ let loadStage = function () {
 function drawImgMap(map) {
     //得到地图图层
     let bitmapData = new LBitmapData(assets[stage.fileName+'_0']);
-    let bitmapDataUp = new LBitmapData(assets[stage.fileName+'_1']);
     let bitmap = new LBitmap(bitmapData);
-    let bitmapUp = new LBitmap(bitmapDataUp);
-    let len = map.layers.length;
-    CurrentMapEvents = map.layers[len-1];
-    // 行动控制层
-    CurrentMapMove = map.layers[len-2];
     mapLayer.removeAllChild();
     upLayer.removeAllChild();
-    upLayer.addChild(bitmapUp);
+    let len = map.layers.length;
+    //未使用
+    // CurrentMapEvents = map.layers[len-1];
+    if(!map.isWorld){
+        let bitmapDataUp = new LBitmapData(assets[stage.fileName+'_1']);
+        let bitmapUp = new LBitmap(bitmapDataUp);
+        // 行动控制层（碰撞）
+        CurrentMapMove = map.layers[len-2];
+        upLayer.addChild(bitmapUp);
+    }else{
+        // 行动控制层（碰撞）
+        CurrentMapMove = map.layers[len-1];
+    }
     mapLayer.addChild(bitmap);
 }
 
@@ -319,23 +358,24 @@ function addNpc(npcObj){
     let npc,valid;
     //加入npcObj
     if (npcObj.img){
-        if (!npcObj.visible){
-            // 未定义必然可见
-            valid= true;
-        } else {
-            valid= npcObj.visible();
-        }
-        if (valid){
+
+        // if (valid){
             let row= npcObj.row || 4;
             let col= npcObj.col || 4;
             let imgData = new LBitmapData(assets[npcObj.img]);
-            npc = new Character(false,npcObj.move,imgData, row, col, 3, npcObj.action);
+            npc = new Character(false,npcObj.move,imgData, row, col, 8, npcObj.action);
             npc.x = npcObj.x * STEP- (npc.pw- STEP)/2;
             npc.y = npcObj.y * STEP- (npc.ph- STEP);
             npc.px = Number(npcObj.x);
             npc.py = Number(npcObj.y);
+            npc.name = npcObj.name;
+
+            if(typeof npcObj.visible ==='function'){
+                npc.visible = npcObj.visible();
+                npc.visibleFucntion = npcObj.visible;
+            }
+
             if(npcObj.type === 'player'){
-                npc.name = npcObj.name;
                 npc.netType = 1;
                 let text = UI.simpleText(npc.name,10);
                 text.width = text.getWidth()>>0;
@@ -352,8 +392,6 @@ function addNpc(npcObj){
                 npc.addChild(text);
                 netPlayer[npcObj['name']] = npc;
 
-            }else{
-                npc.name = npcObj.img;
             }
             //碰撞型事件
             if (npcObj.type === "touch") npc.touch= true;
@@ -361,21 +399,21 @@ function addNpc(npcObj){
             if (npcObj.preSet) npcObj.preSet(npc);
             // 如果是情节人物，则进入情节列表
             if (npcObj.story){
-
                 stage.storyList[npcObj.story] = npc;
-                npc.visible = false;
+                // if(!npcObj.visible())
+                //     npc.visible = false;
             }
             if('dir' in npcObj){
                 npc.anime.setAction(Number(npcObj.dir));
                 npc.anime.onframe();
             }
             charaLayer.addChild(npc);
-        }
+        // }
     }
 }
 
 //移动NPC
-let moveNpc = function(npc, stepArr ,callback){
+let moveNpc = (npc, stepArr ,callback)=>{
     npc.moveMode = 2;
     npc.stepArray = stepArr;
     if (npc.stepArray.length> 0){
@@ -390,14 +428,36 @@ let moveNetNpc = function(name, content ,callback){
     if(npc.px !== content.x || npc.py !== content.y){
         npc.setCoordinate(content.x,content.y,content.dir);
     }
-    npc.moveMode = 3;
-    npc.changeDir(content.dir);
-
-
+    // npc.moveMode = 3;
+    // npc.changeDir(content.dir);
 };
 let Lib = {
     userInfo:null,
-
+    /**
+     * 获取日期
+     * @returns {string}
+     */
+    getDate:()=>{
+        let now = new Date(),
+            year = now.getFullYear(),       //年
+            month = now.getMonth() + 1,     //月
+            day = now.getDate(),            //日
+            hh = now.getHours(),            //时
+            mm = now.getMinutes(),          //分
+            clock = year + "-";
+        if(month < 10)
+            clock += "0";
+        clock += month + "-";
+        if(day < 10)
+            clock += "0";
+        clock += day + " ";
+        if(hh < 10)
+            clock += "0";
+        clock += hh + ":";
+        if (mm < 10) clock += '0';
+        clock += mm;
+        return(clock);
+    },
     setCamera:(x,y)=>{
         if (x === null) return;
         let w1= (WIDTH/STEP)>>1,
@@ -463,8 +523,9 @@ let Lib = {
     },
     showInfo:(text)=>{
         if (text) {
-            let content = "<li>" + text + "</li>" + $('.information').html();
-            $('.information').html(content);
+            if(gameInfo.innerHTML.length>2000) gameInfo.innerHTML='';
+            let content = "<li>" + text + "</li>" + gameInfo.innerHTML;
+            gameInfo.innerHTML = content;
         }
     },
 
@@ -489,226 +550,36 @@ let Lib = {
     },
     login:function () {
         playerName = prompt("游戏昵称","");
-        // let pwd = prompt("注册时的密码","");
-        if(playerName){
-            GameSocket.onLink(playerName);
-        }else{
-            playerName = false;
+        if(!playerName){
             return false;
+        } else {
+            GameSocket.onLink();
         }
     },
     //计算地图坐标
-    gridPos:function (x,y) {
+    gridPos: (x,y) =>{
         let px = ((x-mapLayer.x)/STEP)>>0;
         let py = ((y-mapLayer.y)/STEP)>>0;
         return [px,py];
     },
+    customStringify: (v) =>{
+        const cache = new Set();
+        return JSON.stringify(v, function (key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (cache.has(value)) {
+                    // Circular reference found, discard key
+                    return;
+                }
+                // Store value in our set
+                cache.add(value);
+            }
+            return value;
+        });
+    }
 
 };
 
 let UI = {
-
-    msgBox :function (obj) {
-        let titleBar = UI.drawColorWindow(false,0,0,HEIGHT-2*gap,30,0.8,'#384048');
-        titleBar.addEventListener(LMouseEvent.MOUSE_DOWN, onBarDown);
-        let onBarDown = function (event) {
-            var s = event.clickTarget.parent;
-            s.bar.addEventListener(LMouseEvent.MOUSE_UP, s._onBarUp);
-            s.startDrag(event.touchPointID);
-        };
-        UI.diyButton(0,0,HEIGHT-2*gap,30,'exit',function () {
-
-        });
-
-            //遮罩
-            let translucent = UI.drawColorWindow(LGlobal.stage,0,0,LGlobal.width, LGlobal.height,0.8,'#002');
-            //拦截所有事件
-            translucent.addEventListener(LMouseEvent.MOUSE_UP, function (e) {
-            });
-            translucent.addEventListener(LMouseEvent.MOUSE_DOWN, function (e) {
-            });
-            translucent.addEventListener(LMouseEvent.MOUSE_MOVE, function (e) {
-            });
-            translucent.addEventListener(LMouseEvent.MOUSE_OVER, function (e) {
-            });
-            translucent.addEventListener(LMouseEvent.MOUSE_OUT, function (e) {
-            });
-
-
-            // let myWindow = new LWindow(obj.width, obj.height, obj.title);
-            // myWindow.x = (LGlobal.width - myWindow.getWidth())>>1;
-            // myWindow.y = (LGlobal.height - myWindow.getHeight())>>1;
-            // LGlobal.stage.addChild(myWindow);
-            // myWindow.addEventListener(LWindow.CLOSE, function (e) {
-            //     translucent.die();
-            //     translucent.remove();
-            // });
-            // if (obj.displayObject) {
-            //     myWindow.layer.addChild(obj.displayObject);
-            //     return;
-            // }
-            let msgLabel = UI.simpleText(obj.message,obj.size);
-            msgLabel.width = obj.width - 100;
-            msgLabel.setWordWrap(true, obj.textHeight);
-            msgLabel.x = (obj.width - msgLabel.getWidth())>>1;
-            msgLabel.y = (obj.height - myWindow.bar.getHeight() - msgLabel.getHeight())>>1;
-            myWindow.layer.addChild(msgLabel);
-
-    },
-
-    window:function() {
-        function MyWindow() {
-            let s = this;
-            LExtends(s, LSprite, []);
-            s.type = "MyWindow";
-            var style;
-            if (typeof arguments[0] == "object") {
-                style = arguments[0];
-            } else {
-                style = {width: arguments[0], height: arguments[1], title: arguments[2]};
-            }
-            s.style = style;
-            s.w = style.width;
-            s.h = style.height;
-            s.bar = new LSprite();
-            style.header = s.bar;
-            s.bar.alpha = 0.7;
-            s.barColor = "#384048";
-            s.bar.w = s.w;
-            s.bar.h = 30;
-            //画关闭按钮
-            var barGrd = LGlobal.canvas.createLinearGradient(0, -s.bar.h * 0.5, 0, s.bar.h * 2);
-            barGrd.addColorStop(0, "#FFFFFF");
-            barGrd.addColorStop(1, s.barColor);
-            s.bar.graphics.drawRoundRect(1, s.barColor, [0, 0, s.bar.w, s.bar.h, s.bar.h * 0.1], true, barGrd);
-
-            s.addChild(s.bar);
-            s.bar.addEventListener(LMouseEvent.MOUSE_DOWN, s._onBarDown);
-            if (style.title && typeof style.title == "object" && style.title.type == "LTextField") {
-                s.title = style.title;
-            } else {
-                s.title = new LTextField();
-                if (style.font) {
-                    s.title.font = style.font;
-                }
-                s.title.size = style.size ? style.size : 16;
-                s.title.color = style.color ? style.color : "#eee";
-                s.title.text = style.title ? style.title : "";
-            }
-            s.title.x = s.title.getHeight() * 0.5;
-            s.title.y = (s.bar.h - s.title.getHeight()) * 0.5;
-            s.bar.addChild(s.title);
-            if (style.closeButton) {
-                if (style.closeButton.type == "LBitmapData") {
-                    var bitmapClose = new LBitmap(style.closeButton);
-                    var closeButton = new LSprite();
-                    closeButton.addChild(bitmapClose);
-                    s.closeObj = closeButton;
-                } else {
-                    s.closeObj = style.closeButton;
-                }
-                s.closeObj.x = s.w - s.closeObj.getWidth();
-            } else {
-                s.closeObj = new LSprite();
-                style.closeButton = s.closeObj;
-                s.closeObj.w = 50;
-                s.closeObj.h = 25;
-                s.closeObj.x = s.w - s.closeObj.w;
-                var closeGrd = LGlobal.canvas.createLinearGradient(0, -s.closeObj.h * 0.5, 0, s.closeObj.h * 2);
-                closeGrd.addColorStop(0, "#FFFFFF");
-                closeGrd.addColorStop(1, "#800000");
-                s.closeObj.graphics.drawRoundRect(1, "#800000", [0, 0, s.closeObj.w, s.closeObj.h, s.closeObj.h * 0.1], true, '#000020');
-                s.closeObj.graphics.drawLine(4, "#FFFFFF", [15, 5, s.closeObj.w - 15, s.closeObj.h - 5]);
-                s.closeObj.graphics.drawLine(4, "#FFFFFF", [15, s.closeObj.h - 5, s.closeObj.w - 15, 5]);
-            }
-            s.addChild(s.closeObj);
-            s.closeObj.addEventListener(LMouseEvent.MOUSE_UP, s._onClose);
-            s.layer = new LSprite();
-            s.layer.y = s.bar.h;
-
-            s.layerColor = "#002";
-            s.layer.h = s.h - s.bar.h;
-            style.background = UI.drawColorWindow(s,0,s.bar.h,s.w, s.layer.h,0.9,'#002');
-            s.addChild(s.layer);
-            let g = new LGraphics();
-            g.rect(0, 0, s.w, s.layer.h);
-            s.layer.mask = g;
-            s.addEventListener(LMouseEvent.MOUSE_UP, function (e) {
-            });
-            s.addEventListener(LMouseEvent.MOUSE_DOWN, function (e) {
-            });
-            s.addEventListener(LMouseEvent.MOUSE_MOVE, function (e) {
-            });
-            s.addEventListener(LMouseEvent.MOUSE_OVER, function (e) {
-            });
-            s.addEventListener(LMouseEvent.MOUSE_OUT, function (e) {
-            });
-        }
-
-        MyWindow.CLOSE = "close";
-        MyWindow.prototype._onClose = function (event) {
-            event.clickTarget.parent.close();
-        };
-        MyWindow.prototype.close = function () {
-            var s = this;
-            s.dispatchEvent(MyWindow.CLOSE);
-            s.parent.removeChild(s);
-        };
-        MyWindow.prototype._onBarDown = function (event) {
-            var s = event.clickTarget.parent;
-            s.bar.addEventListener(LMouseEvent.MOUSE_UP, s._onBarUp);
-            s.startDrag(event.touchPointID);
-        };
-        MyWindow.prototype._onBarUp = function (event) {
-            var s = event.clickTarget.parent;
-            s.stopDrag();
-            s.bar.removeEventListener(LMouseEvent.MOUSE_UP, s._onBarUp);
-        };
-        return MyWindow;
-
-},
-    contentWindow:function () {
-        let myWindow = new LWindow({width: WIDTH, height: HEIGHT, title: "登录注册"});
-        myWindow.x = 0;
-        myWindow.y = 0;
-        infoLayer.addChild(myWindow);
-
-        let nameLabel = UI.simpleText("用户名：");
-        nameLabel.x = 80;
-        nameLabel.y = 70;
-        myWindow.layer.addChild(nameLabel);
-        let name = new LTextField();
-        name.x = 150;
-        name.y = 70;
-        name.setWordWrap(true);
-        name.setType(LTextFieldType.INPUT);
-        myWindow.layer.addChild(name);
-        name.focus();
-        let passLabel = UI.simpleText("密码：");
-        passLabel.x = 80;
-        passLabel.y = 110;
-        myWindow.layer.addChild(passLabel);
-        let pass = new LTextField();
-        pass.x = 150;
-        pass.y = 110;
-        pass.displayAsPassword = true;
-        pass.setType(LTextFieldType.INPUT);
-        myWindow.layer.addChild(pass);
-
-        let button01 = UI.diyButton(0,0,100,150,"登录",function () {
-            UI.msgBox({
-                title: "消息",
-                message: "点击了登陆按钮"
-            });
-            GameSocket.onLink();
-
-        },20);
-        myWindow.layer.addChild(button01);
-        // button01.addEventListener(LMouseEvent.MOUSE_UP, );
-        let button02 = UI.diyButton(0,0,200,150,"注册",false,20);
-        myWindow.layer.addChild(button02);
-    },
-
     /**
      * 纯色背景
      */
@@ -721,20 +592,7 @@ let UI = {
         if (layer) layer.addChild(colorWindow);
         return colorWindow;
     },
-    /**
-     * 纯色图片背景
-     */
-    drawImgColor: function(layer, x, y, w, h) {
-        let bitmapData = new LBitmapData(assets["focus"]);
-        let bitmap = new LBitmap(bitmapData);
-        bitmap.scaleX = w/ bitmap.width;
-        bitmap.scaleY = h/ bitmap.height;
-        bitmap.x = x;
-        bitmap.y = y;
-        bitmap.alpha = 0.5;
-        layer.addChild(bitmap);
-        return bitmap;
-    },
+
     /**
      * 纯色背景带边框
      */
@@ -765,7 +623,7 @@ let UI = {
     /**
      * 对话文本，会自动折行
      */
-    text:(text,x,y,size=14,color='#fff')=>{
+    text:(text,x,y,size=10,color='#fff')=>{
         let textObj = new LTextField();
         if (text) textObj.setWordWrap(true,20);
         textObj.width = menuWidth-2*gap;
@@ -779,7 +637,7 @@ let UI = {
     /**
      * 普通文本
      */
-    simpleText:(text,size=14,color='#eee',x=0,y=0)=>{
+    simpleText:(text,size=10,color='#eee',x=0,y=0)=>{
         let textObj = new LTextField();
         // textObj.setWordWrap(true,20);
         // textObj.width = menuWidth-2*gap;
@@ -877,8 +735,8 @@ let UI = {
             effectLayer.removeAllChild();
         }, 2000);
     },
-    // 显示获得物品
-    showInfo:(text)=>{
+    // 显示系统提示
+    showInfo:(text,callback=false)=>{
         let obj = UI.simpleText(text,18);
         obj.setWordWrap(true,20);
         obj.width = menuWidth-2*gap;
@@ -889,23 +747,29 @@ let UI = {
         let x = (WIDTH - w)>>1;
         let showWinow = UI.drawBorderWindow(infoLayer,x,HEIGHT>>1,w, h);
         showWinow.addChild(obj);
-        setTimeout(function(){
+        setTimeout(()=>{
             infoLayer.removeAllChild();
+            if(callback) callback();
         }, 2000);
     },
 
-    showImg:(img,callback)=>{
+    showImg:(img,callback=false)=>{
         let bitmapData = new LBitmapData(assets[img]);
         let bitmap = new LBitmap(bitmapData);
         bitmap.x = (WIDTH-bitmap.getWidth())>>1;
         bitmap.y = (HEIGHT-bitmap.getHeight())>>1;
         infoLayer.addChild(bitmap);
-        setTimeout(function () {
+        setTimeout( ()=>{
             infoLayer.removeAllChild();
             if(callback) callback();
         },3000)
     },
 
+    /**
+     * 切换纸娃娃
+     * @param npc
+     * @param img
+     */
     changeDress:(npc,img)=>{
         npc.lastBitmapData = npc.anime.childList[0].bitmapData.clone();
         if(mainTeam.inTank){
@@ -946,10 +810,42 @@ let UI = {
         downState.scaleY = 0.8;
 
         let button01 = new LButton(upState,null,downState);
-        button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+        button01.addEventListener(LMouseEvent.MOUSE_DOWN, ()=>{
             RPG.currentButton = button01;
         });
-        button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
+        button01.addEventListener(LMouseEvent.MOUSE_UP, ()=>{
+            if (RPG.currentButton === button01) {
+                Lib.bgm('按钮');
+                if (callback) callback();
+            }
+        });
+        return button01;
+    },
+
+    /**
+     * diy按钮 简单的边框+文字组成
+     */
+    diyCenterButton : (x,y,text,callback=false,size=12)=>{
+        //绘制文本
+        let title = UI.simpleText(text,size),
+        //绘制边框
+            w = title.getWidth()+gap,
+            h = title.getHeight()+gap;
+        if(!x) x = (WIDTH>>1)-(w>>1);
+        let upState = UI.drawBorder(false,'#384048',x,y,w,h);
+        title.x = ((upState.getWidth() - title.getWidth())>>1);
+        title.y = ((upState.getHeight() - title.getHeight())>>1);
+        upState.addChild(title);
+
+        let downState = upState.clone();
+        downState.scaleX = 0.8;
+        downState.scaleY = 0.8;
+
+        let button01 = new LButton(upState,null,downState);
+        button01.addEventListener(LMouseEvent.MOUSE_DOWN, ()=>{
+            RPG.currentButton = button01;
+        });
+        button01.addEventListener(LMouseEvent.MOUSE_UP, ()=>{
             if (RPG.currentButton === button01) {
                 Lib.bgm('按钮');
                 if (callback) callback();
@@ -1033,10 +929,10 @@ let UI = {
         button01.scaleY = 0.8;
         button01.x = x;
         button01.y = y;
-        button01.addEventListener(LMouseEvent.MOUSE_DOWN, function() {
+        button01.addEventListener(LMouseEvent.MOUSE_DOWN, ()=>{
             RPG.currentButton = button01;
         });
-        button01.addEventListener(LMouseEvent.MOUSE_UP, function () {
+        button01.addEventListener(LMouseEvent.MOUSE_UP, ()=>{
             if (RPG.currentButton === button01) {
                 if (callback) callback();
             }

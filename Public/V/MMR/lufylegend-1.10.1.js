@@ -477,7 +477,7 @@ var LGlobal = ( function () {
     LGlobal.width = 0;
     LGlobal.height = 0;
     LGlobal.box2d = null;
-    LGlobal.speed = 50;
+    LGlobal.speed = 60;
     LGlobal.IS_MOUSE_DOWN = false;
     LGlobal.stopPropagation = false;
     LGlobal.preventDefault = true;
@@ -569,7 +569,7 @@ var LGlobal = ( function () {
         LGlobal.id = id;
         LGlobal.object = document.getElementById(id);
         LGlobal.object.innerHTML = '<div style="position:absolute;margin:0;padding:0;overflow:visible;-webkit-transform: translateZ(0);z-index:0;">' +
-            '<canvas id="' + LGlobal.id + '_canvas" style="margin:0;padding:0;width:' + w + 'px;height:' + h + 'px;">' +
+            '<canvas id="' + LGlobal.id + '_canvas" style="margin:0;padding:0;width:' + w + 'px;height:' + h + 'px;display:block;">' +
             '<div id="noCanvas">' +
             "<p>Hey there, it looks like you're using Microsoft's Internet Explorer. Microsoft hates the Web and doesn't support HTML5 :(</p>" +
             '</div>' +
@@ -1517,9 +1517,9 @@ function addChild (o) {
 function removeChild (o) {
     LGlobal.stage.removeChild(o);
 }
+//入口函数，帧循环等
 function init (s, c, w, h, f, t) {
-    LGlobal.speed = s;
-    var _f = function () {
+    let _f = ()=>{
         if (LGlobal.canTouch && LGlobal.aspectRatio == LANDSCAPE && window.innerWidth < window.innerHeight) {
             LGlobal.horizontalError();
         } else if (LGlobal.canTouch && LGlobal.aspectRatio == PORTRAIT && window.innerWidth > window.innerHeight) {
@@ -1529,29 +1529,33 @@ function init (s, c, w, h, f, t) {
         }
         LGlobal.startTimer = (new Date()).getTime();
     };
-    var loop;
-    if(typeof s == "function"){
-        LGlobal.setCanvas(c, w, h);
-        _f();
-        loop = function(){
-            s(loop);
+    LGlobal.setCanvas(c, w, h);
+    _f();
+    //设置主循环
+    window._requestAF = (()=>{
+        return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame
+    })();
+    LGlobal.speed = s;
+    let lastTime,then=0;
+    let gameLoop = ()=>{
+        let now = Date.now();
+        lastTime = now - then;
+        if (lastTime>s){
             LGlobal.onShow();
-        };
-        LGlobal.speed = 1000 / 60;
-    }else{
-        loop = function(){
-            LGlobal.frameRate = setInterval(function () {
-                LGlobal.onShow();
-            }, s);
-            LGlobal.setCanvas(c, w, h);
-            _f();
-        };
-    }
+            then = now - (lastTime%s);
+        }
+        window._requestAF(gameLoop);
+    };
+
     if (document.readyState === "complete") {
-        loop();
+        gameLoop();
     }else{
         LEvent.addEventListener(window, "load", function () {
-            loop();
+            gameLoop();
         });
     }
 }
@@ -2832,27 +2836,29 @@ var LWebAudio = (function () {
     var p = {
         getWebAudio : function () {
             var data;
-            if(LWebAudio.containerCount > 0){
-                data = LWebAudio.container.shift();
-            } else {
-                if (typeof AudioContext !== UNDEFINED) {
-                    try {
-                        data = new AudioContext();
-                    } catch (e) {
-                        LWebAudio.containerCount = LWebAudio.container.length;
-                        data = LWebAudio.container.shift();
-                    }
-                } else if (typeof webkitAudioContext !== UNDEFINED) {
-                    try {
-                        data = new webkitAudioContext();
-                    } catch (e) {
-                        LWebAudio.containerCount = LWebAudio.container.length;
-                        data = LWebAudio.container.shift();
-                    }
-                } else {
-                    throw "AudioContext not supported. :(";
-                }
-            }
+            data = new (window.AudioContext || window.webkitAudioContext)();
+
+            // if(LWebAudio.containerCount > 0){
+            //     data = LWebAudio.container.shift();
+            // } else {
+            //     if (typeof AudioContext !== UNDEFINED) {
+            //         try {
+            //             data = new (window.AudioContext || window.webkitAudioContext)();
+            //         } catch (e) {
+            //             LWebAudio.containerCount = LWebAudio.container.length;
+            //             data = LWebAudio.container.shift();
+            //         }
+            //     } else if (typeof webkitAudioContext !== UNDEFINED) {
+            //         try {
+            //             data = new webkitAudioContext();
+            //         } catch (e) {
+            //             LWebAudio.containerCount = LWebAudio.container.length;
+            //             data = LWebAudio.container.shift();
+            //         }
+            //     } else {
+            //         throw "AudioContext not supported. :(";
+            //     }
+            // }
             if(!data.createGainNode){
                 data.createGainNode = data.createGain;
             }
@@ -2892,8 +2898,12 @@ var LWebAudio = (function () {
                     if(!s.data){
                         s.data = s.getWebAudio();
                     }
-                    s.data.decodeAudioData(u, s.onload.bind(s), function (error) {
-                        throw "AudioContext decodeAudioData error : " + error.toString();
+                    s.data.decodeAudioData(u, s.onload.bind(s), function (e) {
+                        // throw "AudioContext decodeAudioData error : " + e.err;
+                        if(e == null) return;
+                        console.log(e);
+
+                        throw e.err;
                     });
                 }
                 return;
@@ -2984,7 +2994,8 @@ var LWebAudio = (function () {
             s.bufferSource = s.data.createBufferSource();
             s.bufferSource.buffer = s.buffer;
             s.volumeNode = s.data.createGainNode();
-            s.volumeNode.gain.value = s.volume;
+            s.volumeNode.gain.setValueAtTime(s.volume,0);
+            // s.volumeNode.gain.value = s.volume;
             s.volumeNode.connect(s.data.destination);
             s.bufferSource.connect(s.volumeNode);
             s.currentSave = s.data.currentTime;
@@ -8873,12 +8884,10 @@ var LString = {
         return s.join(".");
     },
     isString:function (s){
-        var p=/^([a-z]|[A-Z])+$/;
-        return p.exec(s);
+        return Object.prototype.toString.apply(s) == "[object String]";
     },
     isNumber:function (s){
-        var p=/^\d+\.\d+$/;
-        return p.exec(s);
+        return Object.prototype.toString.apply(s) == "[object Number]";
     },
     isInt:function (s){
         var p=/^\d+$/;

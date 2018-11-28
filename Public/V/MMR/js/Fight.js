@@ -13,10 +13,27 @@
  */
 
 let Fight = {
-    gameMenus : ['背包','乘降','强度','存档','任务','返回'],
-    fightMenus : ['攻击','阵形','道具','防御','逃跑','总攻'],
-
-// 最大HP，用于对比显示，给一个最小的参考值，一场战斗一旦确定则不再改变
+    humanMenu : [
+        // ['总攻',"()=>{Fight.menuCmd(0);}"],
+        ['攻击',"()=>{Fight.menuCmd(1);}"],
+        ['道具',"()=>{Fight.menuCmd(2);}"],
+        ['乘降',"()=>{Fight.menuCmd(3);}"],
+        ['防御',"()=>{Fight.menuCmd(4);}"],
+        ['保护',"()=>{Fight.menuCmd(5);}"],
+        ['逃跑',"()=>{Fight.menuCmd(6);}"]
+    ],
+    tankMenu : [
+        // ['总攻',"()=>{Fight.menuCmd(0);}"],
+        ['主炮',"()=>{Fight.menuCmd(1,'mainCannon');}"],
+        ['副炮',"()=>{Fight.menuCmd(1,'subCannon');}"],
+        ['S-E',"()=>{Fight.menuCmd(1,'SE');}"],
+        ['道具',"()=>{Fight.menuCmd(2);}"],
+        ['乘降',"()=>{Fight.menuCmd(3);}"],
+        ['防御',"()=>{Fight.menuCmd(4);}"],
+        ['保护',"()=>{Fight.menuCmd(5);}"],
+        ['逃跑',"()=>{Fight.menuCmd(6);}"]
+    ],
+    // 最大HP，用于对比显示，给一个最小的参考值，一场战斗一旦确定则不再改变
     maxHpAll: 1000,
     maxMpAll: 100,
     //战利品和经验获得
@@ -47,11 +64,13 @@ let Fight = {
     option:-1,
     textObj:null,
     textArr:[],
-    infoHeight:110,
+    infoHeight:90,
     tmpTeam:null,
     layer:new LSprite(),
     touchLayer:new LSprite(),
     time:false,
+    //第几次攻击
+    actionCount:0,
 
     /**
      * 更新战斗数据
@@ -63,7 +82,6 @@ let Fight = {
             if (hero.nickName == data.content.heroName){
                 hero.hpText.text = data.content.heroHp;
                 hero.Hp = data.content.heroHp;
-                //console.log(Fight.pTeam.heroList[key]);
                 return ;
             }
         }
@@ -72,7 +90,6 @@ let Fight = {
             if (hero.nickName == data.content.heroName){
                 hero.hpText.text = data.content.heroHp;
                 hero.Hp = data.content.heroHp;
-                //console.log(data);
                 return ;
             }
         }
@@ -138,7 +155,6 @@ let Fight = {
             text.color = '#0f0';
             RPG.netEnemyTeam = data.content;
         }
-
     },
 
     /**
@@ -167,18 +183,16 @@ let Fight = {
         enemyTeam.fullHeal();
         Fight.eTeam = enemyTeam;
         Fight.pTeam = playerTeam;
-        // if(!Fight.textObj){
         Fight.textObj = UI.simpleText('',12);
-        Fight.textObj.x = gap;
+        Fight.textObj.x = WIDTH>>1;
         Fight.textObj.y = HEIGHT-Fight.infoHeight + gap;
         Fight.textObj.setWordWrap(true,20);
+
         FightMenu.showFightInfo();
         FightMenu.layer.addChildAt(Fight.textObj,1);
-        // }
         // Fight.infoCommand('遭遇战，敌我力量悬殊，敌方士气大减');
         Fight.drawFighters();
         // socket.wlSend('fight',{});
-
 
     },
 
@@ -220,7 +234,6 @@ let Fight = {
         },onComplete:()=>{
             hero.move = false;
         }});
-
     },
 
     /**
@@ -302,13 +315,6 @@ let Fight = {
      * */
     starQueue:()=>{
         Fight.currentFighter = Fight.queue[Fight.queueIndex];
-        // if(!Fight.currentFighter && Fight.queueIndex){
-        //     Fight.queueIndex++;
-        //     if(Fight.queueIndex>=Fight.queue.length){
-        //         Fight.queueIndex = 0;
-        //     }
-        //     Fight.starQueue();
-        // } else {
         if(Fight.currentFighter.isHero) {
             Fight.drawActButton();
         } else {
@@ -321,14 +327,11 @@ let Fight = {
 
             for (let i = 0; i < pteam.length; i++) {
                 if(pteam[i].alive){
-                    // let randIndex = rand(Fight.tmpTeam.length-1);
                     Fight.currentToFighter = pteam[i];
                     setTimeout(Fight.actionAttack,1000);
                     return;
                 }
-
             }
-
         }
 
     },
@@ -339,50 +342,55 @@ let Fight = {
     drawActButton: () => {
         // 控制按钮
         let x0, y0;
-        x0 = gap*2;
-        y0 = HEIGHT - Fight.infoHeight - 30;
-        let atk = {};
-        if(mainTeam.inTank){
-            atk = {label:"攻击",list:[
-                {label:"主炮",click:()=>{Fight.menuCmd(1,'mainCannon')}},
-                {label:"副炮",click:()=>{Fight.menuCmd(1,'subCannon')}},
-                {label:"S-E",click:()=>{Fight.menuCmd(1,'SE')}},
-            ]};
-
-        }else {
-            atk = {label:"攻击",list:[
-                {label:"攻击",click:()=>{Fight.menuCmd(1)}},
-            ]};
-        }
-        let list = [
-            atk,
-            {label:"防御",list:[
-                {label:"防御",click:()=>{ Fight.menuCmd(3);}},
-            ]},
-            {label:"物品",list:[
-                {label:"物品",click:()=>{Fight.menuCmd(2)}},
-            ]},
-            {label:"乘降",list:[
-                {label:"乘降",click:()=>{ Fight.menuCmd(4)}},
-            ]},
-            {label:"逃跑",list:[
-                {label:"逃跑",click:()=>{Fight.menuCmd(5)}},
-            ]},
-        ];
-        Fight.menu = new LMenubar(list,{textSize:14,textColor:"#000",lineColor:"#000",backgroundColor:"#eee"});
-        Fight.menu.x = x0;
-        Fight.menu.y = y0;
-        Fight.menu.name = 'fightMenu';
-        talkLayer.addChild(Fight.menu);
-        Fight.endCallback = ()=>{
-            Fight.menu.visible = true;
-            console.log(Fight.menu);
-        };
+        x0 = gap;
+        y0 = HEIGHT - Fight.infoHeight + gap;
+        // let atk = {};
+        // if(mainTeam.inTank){
+        //     atk = {label:"攻击",list:[
+        //         {label:"主炮",click:()=>{Fight.menuCmd(1,'mainCannon')}},
+        //         {label:"副炮",click:()=>{Fight.menuCmd(1,'subCannon')}},
+        //         {label:"S-E",click:()=>{Fight.menuCmd(1,'SE')}},
+        //     ]};
+        // }else {
+        //     atk = {label:"攻击",list:[
+        //         {label:"攻击",click:()=>{Fight.menuCmd(1)}},
+        //         {label:"总攻",click:()=>{Fight.menuCmd(1)}},
+        //     ]};
+        // }
+        // let list = [
+        //     atk,
+        //     {label:"防御",list:[
+        //         {label:"防御",click:()=>{ Fight.menuCmd(3);}},
+        //         {label:"保护",click:()=>{ Fight.menuCmd(3);}},
+        //     ]},
+        //     {label:"物品",list:[
+        //         {label:"物品",click:()=>{Fight.menuCmd(2)}},
+        //     ]},
+        //     {label:"乘降",list:[
+        //         {label:"乘降",click:()=>{ Fight.menuCmd(4)}},
+        //     ]},
+        //     {label:"逃跑",list:[
+        //         {label:"逃跑",click:()=>{Fight.menuCmd(5)}},
+        //     ]},
+        // ];
+        // Fight.menu = new LMenubar(list,{textSize:14,textColor:"#000",lineColor:"#000",backgroundColor:"#eee"});
+        // Fight.menu.x = x0;
+        // Fight.menu.y = y0;
+        // Fight.menu.name = 'fightMenu';
+        // talkLayer.addChild(Fight.menu);
+        // Fight.endCallback = ()=>{
+        //     Fight.menu.visible = true;
+        //     console.log(Fight.menu);
+        // };
     },
 
     menuCmd:(type,weapon=false)=>{
-        Fight.menu.visible = false;
+        // Fight.menu.visible = false;
         switch(type){
+            case 0://总攻
+                Fight.infoCommand('程序完善中...');
+                Fight.nextFighter();
+                break;
             case 1://攻击
                 Fight.showEnemyList(weapon);
                 break;
@@ -390,12 +398,16 @@ let Fight = {
                 Menu.trade = 'use';
                 Menu.fightShowItems();
                 break;
-            case 3://防御
+            case 4://防御
                 Fight.infoCommand(Fight.currentFighter.nickName+'防御中...');
                 Fight.nextFighter();
                 break;
-            case 4://乘降
-                Fight.infoCommand('没设计好');
+            case 3://乘降
+                Fight.infoCommand('程序完善中...');
+                Fight.nextFighter();
+                break;
+            case 6://保护
+                Fight.infoCommand('程序完善中...');
                 Fight.nextFighter();
                 break;
             case 5://逃跑
@@ -405,7 +417,6 @@ let Fight = {
                  C为本次战斗中逃跑方已经尝试过的逃跑次数，包括正在进行的这一次逃跑。
                  若F大于255，则逃跑成功。否则在0到255之间生成一個随机数D。若D小于F则逃跑成功，否则逃跑失败。
                  若使用道具或某些特性逃跑必定成功*/
-                //hero.speed;
                 if(Fight.isSneak()) {
                     Fight.infoCommand('敌方速度过快,'+Fight.currentFighter.nickName +'逃离失败');
                     Fight.nextFighter();
@@ -450,7 +461,7 @@ let Fight = {
         }
         // 行动结束后，再显示菜单
         Fight.afterStop = ()=>{
-            Fight.menu.visible = true;
+            // Fight.menu.visible = true;
         };
 
     },
@@ -470,7 +481,7 @@ let Fight = {
             }});
         }
         optionList.push({text:"否",action:()=>{
-            Fight.menu.visible = true;
+            // Fight.menu.visible = true;
             Talk.closeTalk();
         }});
         let select = {msg: Fight.currentFighter.nickName+" 攻击谁？",option:optionList};
@@ -552,7 +563,7 @@ let Fight = {
                     effect.play(1, function () {
                         // 刷新数据
                         Fight.infoCommand(toHero.nickName + '损伤 ' + ret);
-                        socket.wlSend("action", {heroName:toHero.nickName, heroHp:toHero.Hp, name:playerName});
+                        // socket.wlSend("action", {heroName:toHero.nickName, heroHp:toHero.Hp, name:playerName});
                         toHero.hpText.text = toHero.Hp;
                         if (toHero && !toHero.alive) {
                             toHero.fighter.visible = false;
@@ -590,8 +601,6 @@ let Fight = {
                         )
                     });
                 }});
-
-
             }
             }
         )
@@ -651,14 +660,14 @@ let Fight = {
 
     supportFight: (enemyId, lv, data) => {
         mainTeam.state = 2;
-        //socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,type:2});
+        socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,type:2});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
             let id = enemyId[i];
             enemyTeam.addEnemy(id, lv);
         }
-        Lib.bgm('bossFight',true);
+        // Lib.bgm('bossFight',true);
         let supportedTeam = RPG.beget(PlayerTeam);
         supportedTeam.heroList.push(data.heroList[0]);
         Fight.startFight(enemyTeam, data);
@@ -679,7 +688,7 @@ let Fight = {
     bossFight: (enemyId,lv) => {
         //设置团队状态为战斗
         mainTeam.state = 2;
-        socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,type:2});
+        socket.wlSend('inBattle',{stageId:stage.id,type:2});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
@@ -687,7 +696,7 @@ let Fight = {
             enemyTeam.addEnemy(id, lv);
         }
         //console.log(enemyTeam);
-        Lib.bgm('BossFight',true);
+        // Lib.bgm('BossFight',true);
         Fight.startFight(enemyTeam, mainTeam);
         //战斗结束后回调
         if(!Menu.callback){
@@ -705,14 +714,15 @@ let Fight = {
     normalFight: (enemyId,lv) => {
         //设置团队状态为战斗
         mainTeam.state = 2;
-        socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,playerId:player.id, type:2});
+        // socket.wlSend('inBattle',{enemy:enemyId,lv:lv,stageId:stage.id,playerId:player.id, type:2});
+        socket.wlSend('inBattle',{stageId:stage.id, type:2});
         let enemyTeam = RPG.beget(PlayerTeam);
         enemyTeam.clear();
         for (let i = 0; i < enemyId.length; i++) {
             let id = enemyId[i];
             enemyTeam.addEnemy(id, lv);
         }
-        Lib.bgm('BattleTheme',true);
+        // Lib.bgm('BattleTheme',true);
         Fight.startFight(enemyTeam, mainTeam);
         //战斗结束后回调
         if(!Menu.callback){
@@ -745,30 +755,6 @@ let Fight = {
             hero1 = Fight.pTeam.heroList[j];
             a = 0;
             a += hero1.Hp;
-
-            // for (let i = 0; i < Fight.eTeam.heroList.length; i++) {
-            //     hero2 = Fight.eTeam.heroList[i];
-            // 基本经验
-
-            // b1 = (hero2.Level - hero1.Level) * 2;
-            // // if (b1 > 16) {
-            // //     b1 = 16;
-            // // } else if (b1 < 0) {
-            // //     b1 = 0;
-            // // }
-            // // 奖励经验
-            // if (hero2.Level > hero1.Level) {
-            //     b2 = 32;
-            // } else {
-            //     b2 = 64 / (hero1.Level - hero2.Level + 2);
-            // }
-            // a = a + b1;
-            // if (i === 0) {
-            //     // 第一敌人，有额外的奖励经验
-            //     a = a + b2;
-            // }
-            // a += hero1.Hp;
-            // }
             if (!hero1.alive) {
                 // 战场阵亡，经验减半
                 a = a / 2;
@@ -784,7 +770,7 @@ let Fight = {
      * 显示战斗结果
      */
     showResult: (type=0) => {
-        RPG.curBGMObj.close();
+        // RPG.curBGMObj.close();
         if (Fight.state === Fight.WIN) {
             Lib.bgm('Winning');
             // 胜利，获得经验及奖励物品
@@ -811,15 +797,6 @@ let Fight = {
 
             // 获得物品
             if (Fight.trophy) {
-                // for (let j = 0; j < Fight.eTeam.itemList.length; j++) {
-                //     item1 = Fight.eTeam.itemList[j];
-                //     // 获得敌队的物品
-                //     Fight.pTeam.addItem(item1.id, item1.num);
-                //     // 图片
-                //     // 物品数量
-                //     text = UI.text(item1.num, xx, yy + j * 30 + 5);
-                //     Fight.layer.addChild(text);
-                // }
                 for (let j = 0; j < Fight.eTeam.heroList.length; j++) {
                     let enemy = Fight.eTeam.heroList[j];
                     // 获得敌队的物品
@@ -842,10 +819,10 @@ let Fight = {
             if(type){
                 FightMenu.setFormation('我方狼狈逃蹿！');
             }else {
-                FightMenu.setFormation('我方团灭，别说忘了存档');
+                FightMenu.setFormation('我方团灭');
             }
         }
-        Lib.bgm(stage.music,true);
+        // Lib.bgm(stage.music,true);
         mainTeam.state = 1;
         mainTeam.support = false;
         socket.wlSend('inBattle',{stageId:stage.id,type:1});
@@ -959,7 +936,7 @@ let Fight = {
      * @param heroDef  {object} 防御方
      * @returns
      */
-    physicalTankAttack:(heroAtk, heroDef,weapon)=>{
+    physicalTankAttack:(heroAtk, heroDef, weapon)=>{
         let atk, def;
         let weaponAttack = 1;
         let armorDefend = 1;
@@ -1047,7 +1024,7 @@ let Fight = {
     },
 
     infoCommand:function (text) {
-        if(Fight.textArr.length>=5){
+        if(Fight.textArr.length>4){
             Fight.textArr.pop();
             Fight.textArr.pop();
             Fight.textArr.pop();

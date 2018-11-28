@@ -85,7 +85,8 @@ let RPG = {
 // ==========================================================
 
     /**
-     * // ECMAScript5 compatibility based on: http://www.nczonline.net/blog/2012/12/11/are-your-mixins-ecmascript-5-compatible/
+     * // ECMAScript5 compatibility based on:
+     * http://www.nczonline.net/blog/2012/12/11/are-your-mixins-ecmascript-5-compatible/
      *
      * */
     extend: function (obj, source) {
@@ -107,11 +108,13 @@ let RPG = {
     },
 
     /**
-     * based on https://github.com/documentcloud/underscore/blob/bf657be243a075b5e72acc8a83e6f12a564d8f55/underscore.js#L767
+     * based on
+     * https://github.com/documentcloud/underscore/blob/bf657be243a075b5e72acc8a83e6f12a564d8f55/underscore.js#L767
      *
-     * beget继承方法
-     *
-     * */
+     * 静态类继承
+     * @param o
+     * @returns {F}
+     */
     beget: function (o) {
         let F = function () {
         };
@@ -123,50 +126,6 @@ let RPG = {
         return G;
     },
 
-
-    Serialize: function (obj) {
-        switch (obj.constructor) {
-            case Object:
-                var str = "{";
-                for (var o in obj) {
-                    var tmp = RPG.Serialize(obj[o]);
-                    if (tmp) {
-                        str += o + ":" + tmp + ",";
-                    }
-                }
-                if (str.substr(str.length - 1) == ",")
-                    str = str.substr(0, str.length - 1);
-                return str + "}";
-                break;
-            case Array:
-                var str = "[";
-                for (var o in obj) {
-                    var tmp = RPG.Serialize(obj[o]);
-                    if (tmp) {
-                        str += tmp + ",";
-                    }
-                }
-                if (str.substr(str.length - 1) == ",")
-                    str = str.substr(0, str.length - 1);
-                return str + "]";
-                break;
-            case Boolean:
-                return "\"" + obj.toString() + "\"";
-                break;
-            case Date:
-                return "\"" + obj.toString() + "\"";
-                break;
-            case Function:
-                break;
-            case Number:
-                return "\"" + obj.toString() + "\"";
-                break;
-            case String:
-                return "\"" + obj.toString() + "\"";
-                break;
-        }
-    },
-
     setState: function (state) {
         RPG.stateStack = [];
         RPG.pushState(state);
@@ -175,7 +134,7 @@ let RPG = {
         RPG.stateStack.push(state);
         RPG.state = state;
     },
-    popState: function () {
+    popState: ()=>{
         RPG.stateStack.pop();
         RPG.state = RPG.stateStack[RPG.stateStack.length - 1];
     },
@@ -199,7 +158,7 @@ let RPG = {
     setSwitch: function (k, v = true) {
         RPG.SWITCH[k] = v;
     },
-    checkSwitch: function (k) {
+    checkSwitch: (k)=>{
         if (RPG.SWITCH[k]) {
             return Boolean(RPG.SWITCH[k]);
         } else {
@@ -234,10 +193,10 @@ let RPG = {
     /**
      * 点击地图处理
      **/
-    dealNormal: function (x, y) {
+    clickMap: (x, y)=>{
         // 根据点击位置，判断移动方向
         if (player) {
-            console.log('clickPos',Lib.gridPos(x, y));
+            // console.log('clickPos',Lib.gridPos(x, y));
             //获取移动方向
             let ret = RPG.getMoveDir(x, y);
             if (ret.length === 0) {
@@ -283,24 +242,7 @@ let RPG = {
             return result;
         }
     },
-    getDateTimeStr: function () {
-        if(RPG.checkSwitch('费雷塔任务')){
 
-        }
-        let myDate = new Date();
-        let hh = myDate.getHours();
-        let mm = myDate.getMinutes();
-        //myDate.getFullYear()+ "-"
-        let result = ""
-            + (myDate.getMonth() + 1) + "-"
-            + myDate.getDate() + " "
-            + (hh < 10 ? "0" : "")
-            + hh + ":"
-            + (mm < 10 ? "0" : "")
-            + mm
-        ;
-        return result;
-    },
     howToUse: function () {
         Talk.startTalk([
             {img: "face雷娜", name: "游戏美工04", msg: "程序设计：[路漫漫]，[7。]，[问道中情]"},
@@ -308,14 +250,16 @@ let RPG = {
             {img: "face雷娜", name: "游戏美工04", msg: "好了，不废话，开始你的废土捡破烂生活吧"},
         ]);
     },
+    /**
+     * 游戏标题界面
+     */
     drawCover: function () {
-
         // 封面图
         RPG.setState(RPG.IN_COVER);
         let sLayer = effectLayer;
         sLayer.removeAllChild();
 
-        let title = UI.simpleText('废土战纪',30);
+        let title = UI.simpleText('废土战纪',18);
         title.x = WIDTH-title.getWidth()>>1;
         title.y = HEIGHT>>3;
         sLayer.addChild(title);
@@ -324,24 +268,31 @@ let RPG = {
         ver.y = title.y+title.getHeight()+20;
         sLayer.addChild(ver);
 
-
         // 新的开始
-        let button01 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, HEIGHT>>1, "进入废土", function () {
+        let button01 = UI.diyCenterButton(0,(HEIGHT>>1)+0,"进入废土", ()=>{
             // 按钮被透过窗口点击
             if (RPG.checkState(RPG.IN_COVER)) {
-                if(!playerName){
-                    // Lib.userInfo = JSON.parse(localStorage.getItem('wlUserInfo'));
-                    // if(!Lib.userInfo){
-                        Lib.login();
-                    // }else {
-                    //     playerName = Lib.userInfo.name;
-                    //     GameSocket.onLink();
-                    // }
+                let save = JSON.parse(localStorage.getItem('wlSaveData'));
+                if(!save){
+                    Lib.login();
+                    RPG.newGame();
                 } else {
-                    GameSocket.onLink();
+                    RPG.loadGame(save);
                 }
             }
-        },18);
+        });
+        // let button01 = UI.diyButton(0, 0, (WIDTH - 160) >> 1, HEIGHT>>1, "进入废土", function () {
+        //     // 按钮被透过窗口点击
+        //     if (RPG.checkState(RPG.IN_COVER)) {
+        //         let save = JSON.parse(localStorage.getItem('wlSaveData'));
+        //         if(!save){
+        //             Lib.login();
+        //             RPG.newGame();
+        //         } else {
+        //             RPG.loadGame(save);
+        //         }
+        //     }
+        // },14);
         sLayer.addChild(button01);
 
         // 继续
@@ -353,13 +304,18 @@ let RPG = {
         // button02.setState(LButton.STATE_DISABLE);
         // sLayer.addChild(button02);
 
-        // 关于
-        let button03 = UI.diyButton(160, 40, (WIDTH - 160) >> 1, (HEIGHT>>1)+60, "关于", function () {
+        // 关于游戏
+        let button03 = UI.diyCenterButton(0,(HEIGHT>>1)+30,"关于游戏", ()=>{
             if (RPG.checkState(RPG.IN_COVER)) {
                 RPG.howToUse();
             }
-        },18);
-        sLayer.addChild(button03);
+        });
+        // let button03 = UI.diyButton(0, 0, (WIDTH - 160) >> 1, (HEIGHT>>1)+60, "关于", function () {
+        //     if (RPG.checkState(RPG.IN_COVER)) {
+        //         RPG.howToUse();
+        //     }
+        // },14);
+        // sLayer.addChild(button03);
 
         if (window.localStorage) {
             let saveList = JSON.parse(window.localStorage.getItem("WLSaveList"));
@@ -383,14 +339,16 @@ let RPG = {
 
     // 新游戏初始化信息
     newGame: function () {
+        if(!playerName) playerName = 'boy';
+        Lib.userInfo = {'id':0,'jobId': 1,'level':5,'mapDir': RIGHT,'mapId':19,'mapX': 5,'mapY':8,'name':playerName};
         //初始化玩家队伍
         mainTeam = RPG.beget(PlayerTeam);
         mainTeam.support = false;
         //向玩家队伍增加人物（人物索引，人物等级)
         mainTeam.addHero(Lib.userInfo.jobId, Lib.userInfo.level, Lib.userInfo.name);
-        socket.wlSend('netTeam', {jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level,name:playerName});
+        // socket.wlSend('netTeam', {jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level,name:playerName});
         // mainTeam.addHero(2, Lib.userInfo.level, '废土机械师小伙伴');
-        // mainTeam.addHero(3, Lib.userInfo.level, '废土战士小伙伴');
+        mainTeam.addHero(3, Lib.userInfo.level, '废土战士小伙伴');
 
         RPG.initSwitch();
         //进入地图控制状态
@@ -402,7 +360,7 @@ let RPG = {
         // mainTeam.addItem()
     },
 
-// 初始化敌人战斗队的数据
+    // 初始化敌人战斗队的数据
     initEnemyTeam: function () {
         let team1;
         // A队=0
@@ -459,7 +417,7 @@ let RPG = {
 
     saveGame: function (slot) {
         RPG.saveList[slot].name = stage.name;
-        RPG.saveList[slot].date = RPG.getDateTimeStr();
+        RPG.saveList[slot].date = Lib.getDate();
         if (window.localStorage) {
             window.localStorage.setItem("WLSaveList", JSON.stringify(RPG.saveList));
             let tmp = [];
@@ -470,6 +428,7 @@ let RPG = {
                 }
             }
             let saveData = {
+                name: playerName,
                 px: player.px,
                 py: player.py,
                 itemList: mainTeam.itemList,
@@ -479,18 +438,51 @@ let RPG = {
                 stageId: stage.id,
                 swt: RPG.SWITCH
             };
-            socket.wlSend('setSave',saveData);
-
+            localStorage.setItem("wlSaveData", JSON.stringify(saveData));
+            // socket.wlSend('setSave',saveData);
             if(tmp.length>0){
                 for (let i = 0; i < tmp.length; i++) {
                     mainTeam.unuseTankList[i].chara = tmp[i];
                 }
             }
-
         }
     },
 
     loadGame: function (content) {
+        let saveData = content;
+        playerName = saveData.name;
+        if(!socket) {
+            GameSocket.onLink();
+        } else {
+            // socket.wlSend('removeUser',{stageId:stage.id});
+        }
+        mainTeam = RPG.beget(PlayerTeam);
+        if(saveData.itemList) {
+            for (let i = 0; i < saveData.itemList.length; i++) {
+                mainTeam.addItem(saveData.itemList[i].id, saveData.itemList[i].num);
+            }
+        }
+        for (let i = 0; i < saveData.heroList.length; i++) {
+            mainTeam.addHero(saveData.heroList[i].id, saveData.heroList[i].Level);
+            RPG.extend(mainTeam.heroList[i], saveData.heroList[i]);
+        }
+        if(saveData.tankList && saveData.tankList.length>0){
+            mainTeam.tankList = saveData.tankList;
+            mainTeam.inTank = true;
+        }
+        if(saveData.unuseTankList  && saveData.unuseTankList.length>0){
+            mainTeam.unuseTankList = saveData.unuseTankList;
+        }
+        // socket.wlSend('netTeam', {jobId:Lib.userInfo.jobId, lv:Lib.userInfo.level,name:playerName});
+        RPG.initSwitch();
+        RPG.extend(RPG.SWITCH, saveData.swt);
+        gameStageInit(Number(saveData.stageId), Number(saveData.px), Number(saveData.py));
+        // gameStageInit(0, Number(saveData.px), Number(saveData.py));
+        // 进入地图控制状态
+        RPG.setState(RPG.MAP_CONTROL);
+    },
+
+    /*loadGame: function (content) {
         let saveData = content;
         console.log('load saveData',saveData);
         mainTeam = RPG.beget(PlayerTeam);
@@ -506,7 +498,7 @@ let RPG = {
         gameStageInit(saveData.stageId, Number(saveData.px), Number(saveData.py));
         // 进入地图控制状态
         RPG.setState(RPG.MAP_CONTROL);
-    },
+    },*/
 
     /**
      * 载入特效
@@ -535,7 +527,7 @@ let RPG = {
             }
         )
     },
-    // 屏幕黑白闪速
+    // 屏幕黑白闪烁 遇怪
     flickerAnimation: function(callback,teamId,level=0) {
         Lib.bgm('StartBattle');
         effectLayer.removeAllChild();
@@ -547,7 +539,7 @@ let RPG = {
         },1000)
     },
     // 屏幕渐变黑
-    blackEffect: function(callback) {
+    blackEffect: (callback)=>{
         effectLayer.removeAllChild();
         let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 0.1);
         LTweenLite.to(bmp, 2,
@@ -557,6 +549,7 @@ let RPG = {
             }
         )
     },
+    // 屏幕渐变白
     whiteEffect: function(callback) {
         effectLayer.removeAllChild();
         let bmp = UI.drawColorWindow(effectLayer, 0, 0, WIDTH, HEIGHT, 1);

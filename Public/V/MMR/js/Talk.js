@@ -199,7 +199,7 @@ let Talk = {
             }
 
             //对话背景
-            let talkWinow = UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
+            UI.drawBorderWindow(talkLayer, Talk.LEFT, Talk.TOP, Talk.WIDTH, Talk.HEIGHT);
             //对话头像
             if (talkObject.img) {
                 let imgData = new LBitmapData(assets[talkObject.img]);
@@ -285,7 +285,6 @@ let Talk = {
                         return;
                     }else if (1 == npc.netType) {
                         if (2 == npc.state){
-
                             Talk.startTalk([
                                 {msg:'请选择你要支援的对象：',option:[
                                     {text:'支援玩家',action:()=>{
@@ -302,6 +301,7 @@ let Talk = {
                                     }},
                                 ]}
                             ]);
+                            UI.showInfo('该功能完善中，暂不开放')
                         }
                     }
 

@@ -8,7 +8,7 @@
  * @param speed 人物速度
  * @param actEvent 执行事件
  **/
-function Character(isHero=false,move=3,data,row=4,col=4,speed=3, actEvent=false){
+function Character(isHero=false,move=3,data,row=4,col=4,speed=8, actEvent=false){
 	base(this,LSprite,[]);
 	let self = this;
 	self.isHero = isHero;
@@ -38,10 +38,13 @@ function Character(isHero=false,move=3,data,row=4,col=4,speed=3, actEvent=false)
 /**
  * 循环事件 
  **/
-Character.prototype.onframe = function (){
+Character.prototype.onframe =  function(){
 	// 仅在地图状态下动作
 	if (!RPG.checkState(RPG.UNDER_MAP)) return;
     let self = this;
+    if((!self.visible) && (typeof self.visibleFucntion === 'function')){
+        self.visible = self.visibleFucntion();
+    }
     // 不可见的对象不移动
     if (!self.visible) return;
     //人物动作速度控制
@@ -67,7 +70,7 @@ Character.prototype.onframe = function (){
 	if(self.move){
         //人物动画播放
         self.anime.onframe();
-		if (self.isHero){
+		if (self.isHero && self.moveMode !== 2){
 			self.playerMove();
 		}else{
             if (self.moveMode === 2) {
@@ -153,13 +156,18 @@ Character.prototype.npcMove = function (){
 		if (self.moveMode === 2) {
 			// 指定路径移动型，直接进入下一步
 			self.stepArray = self.stepArray.slice(1);
-			console.log(self.stepArray);
 			if (self.stepArray.length> 0){
 				self.changeDir(self.stepArray[0]);
 			} else {
 				//移动完成后触发回调
 				self.move= false;
 				if (self.callback) self.callback();
+                self.callback = null;
+                if(self.isHero){
+                	self.moveMode=3;
+                } else {
+                    self.moveMode=1;
+				}
 			}
 		} else if  (self.moveMode === 1) {
 			// 对于随机移动的类型，进行预占位
@@ -250,7 +258,6 @@ Character.prototype.playerMove = function (){
 			self.anime.setAction(self.direction);
 		}
         self.anime.onframe();
-
 		// 继续移动情况下，重新计算移动方向
 		if (isKeyDown){
 			let ret= RPG.getMoveDir(mouseX, mouseY);
@@ -344,6 +351,7 @@ Character.prototype.checkRoad = function (dir){
 	//目的地为障碍，则不可移动
     let tileId = Number(CurrentMapMove.data[toY*CurrentMap.width+ toX]);
     switch (tileId-1){
+        case 4:
 		case 219:
 		case 8:
             return false;
@@ -400,9 +408,10 @@ Character.prototype.setCoordinate = function (x,y,frame){
 	//根据人物坐标，计算人物显示位置
 	self.px= x;
 	self.py= y;
-	self.anime.setAction(frame);
 	self.x = x*STEP- ((self.pw- STEP)>>1);
 	self.y = y*STEP- (self.ph- STEP);
+    self.anime.setAction(frame);
+    self.anime.onframe();
 };
 /**
  * 获取人物坐标
@@ -481,7 +490,7 @@ Character.prototype.changeDirAlt = function (dirs){
 		if(self.isHero) {
 			self.checkMap(dir);
 		}
-        socket.wlSend('move',{type:'player',img:player.img,stageId:stage.id,x:player.px,y:player.py,dir:dir,state:mainTeam.state});
+
 		//如果可以移动，则开始移动
 		self.move = true;
 		if(RPG.fight) player.tmp ++;

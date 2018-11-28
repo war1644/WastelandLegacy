@@ -105,7 +105,7 @@ let Menu = {
         // 所有物品画在一张图片上
         let maskObj = new LSprite();
         // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
-        let maskHeight = menuHeight- 144- 40;
+        let maskHeight = menuHeight- 100- 40;
         maskObj.graphics.drawRect(0, "#000", [0, 40, menuWidth, maskHeight]);
         if (!Menu.listLayer) {
             Menu.listLayer= new LSprite();
@@ -121,7 +121,7 @@ let Menu = {
         RPG.descLayer.removeAllChild();
         RPG.descLayer.x = gap;
         // 保留144的物品描述即够用
-        RPG.descLayer.y = menuHeight - 144;
+        RPG.descLayer.y = menuHeight - 100;
         ctrlLayer.addChild(RPG.descLayer);
 
         // 物品列表
@@ -187,7 +187,7 @@ let Menu = {
         // 所有物品画在一张图片上
         let maskObj = new LSprite();
         // 144= 物品使用及信息区域 + 底部按钮区域；40= 上方区域
-        let maskHeight = menuHeight- 144- 40;
+        let maskHeight = menuHeight- 100- 40;
         maskObj.graphics.drawRect(0, "#000", [0, 40, menuWidth, maskHeight]);
         Menu.listLayer.removeAllChild();
         Menu.listLayer.x= 0;
@@ -197,8 +197,8 @@ let Menu = {
         Menu.maxScrollHeight= Menu.currentItemList.length* 30- maskHeight;
         RPG.descLayer.removeAllChild();
         RPG.descLayer.x = gap;
-        // 保留144的空间即够用
-        RPG.descLayer.y = menuHeight - 144;
+        // 保留100的空间
+        RPG.descLayer.y = menuHeight - 100;
         Menu.layer.addChild(RPG.descLayer);
 
         // 物品列表
@@ -438,7 +438,7 @@ let Menu = {
         }
 
         // 显示持有物品 武器 防具 饰物
-        let showedItems=["weapon","armor","ornament",'hand','foot','head'];
+        let showedItems=["weapon","armor","cloth"];
         let text = UI.simpleText('装备：');
         text.x = 2*gap;
         text.y = topPos+textGap;
@@ -521,7 +521,7 @@ let Menu = {
             ctrlLayer.addChild(obj.obj);
         }
 
-        // 显示持有物品 武器 防具 饰物
+        // 显示持有物品
         let showedItems=["mainCannon","subCannon","SE",'CUnit','engine'];
         let text = UI.simpleText('装备：');
         text.x = 2*gap;
@@ -592,8 +592,8 @@ let Menu = {
         ctrlLayer.addChild(text);
     },
 
-    menuShowSave: function(isSelect) {
-        Menu.menuPage= 4;
+    /*menuShowSave: function(isSelect) {
+        Menu.menuPage = 4;
         ctrlLayer.removeAllChild();
         let text = UI.simpleText("保存进度",18);
         text.x = menuWidth-text.getWidth()>>1;
@@ -625,22 +625,68 @@ let Menu = {
             text.y = i* 30+ 5;
             Menu.listLayer.addChild(text);
         }
-        // let exitButton = UI.diyButton(60, 30, gap*2, menuHeight- 90, "删除", function(){
-        //     Menu.closeMenu();
-        //     RPG.drawCover();
-        // });
-        let saveButton = UI.diyButton(60, 30, gap*2, menuHeight>>1, "保存", function(){
+        let exitButton = UI.diyButton(60, 30, gap*2, menuHeight- 90, "删除", ()=>{
+            Menu.closeMenu();
+            RPG.drawCover();
+        });
+        let saveButton = UI.diyButton(60, 30, gap*2, menuHeight>>1, "保存", ()=>{
             RPG.saveGame(Menu.saveSlot);
             Menu.menuShowSave(false);
         });
         ctrlLayer.addChild(saveButton);
-        let loadSave= UI.diyButton(60, 30, gap*2 + 70, menuHeight>>1, "载入", function(e){
+        let loadSave= UI.diyButton(60, 30, gap*2 + 70, menuHeight>>1, "载入", ()=>{
             Menu.closeMenu();
             if(RPG.saveList[0].name !== '空记录') socket.wlSend('getSave');
         });
         ctrlLayer.addChild(loadSave);
-    },
+    },*/
+    systemMenu: function() {
+        Menu.menuPage = 4;
+        ctrlLayer.removeAllChild();
+        let text = UI.simpleText("保存进度",18);
+        text.x = menuWidth-text.getWidth()>>1;
+        text.y = 2*gap;
+        ctrlLayer.addChild(text);
+        // 可用存档槽
+        if (!Menu.listLayer) {
+            Menu.listLayer= new LSprite();
+        } else {
+            Menu.listLayer.removeAllChild();
+        }
+        Menu.listLayer.x= 0;
+        Menu.listLayer.y= 60;
+        ctrlLayer.addChild(Menu.listLayer);
+        Menu.listLayer.mask = null;
+        //高亮条
+        Menu.listFocus= UI.drawColorWindow(Menu.listLayer, gap, 0, menuWidth- gap* 2, 25,0.5,'#eee');
+        Menu.saveSlot= 0;
 
+        for (let i= 0; i< RPG.MaxSaveSlot; i++){
+            // 存档名称
+            text = UI.simpleText(RPG.showSaveSlot(i));
+            text.x = menuWidth>>3;
+            text.y = i* 30+ 5;
+            Menu.listLayer.addChild(text);
+        }
+        // let exitButton = UI.diyButton(60, 30, gap*2, menuHeight- 90, "删除", ()=>{
+        //     Menu.closeMenu();
+        //     RPG.drawCover();
+        // });
+        let saveButton = UI.diyButton(60, 30, gap*2, menuHeight>>1, "保存", ()=>{
+            RPG.saveGame(Menu.saveSlot);
+            Menu.systemMenu();
+        });
+        ctrlLayer.addChild(saveButton);
+        let loadSave= UI.diyButton(60, 30, gap*2 + 70, menuHeight>>1, "载入", ()=>{
+            Menu.closeMenu();
+            let save = JSON.parse(localStorage.getItem('wlSaveData'));
+            if(save){
+                RPG.loadGame(save);
+            }
+                // socket.wlSend('getSave');
+        });
+        ctrlLayer.addChild(loadSave);
+    },
     menuShowLoad: function() {
         Menu.menuPage= 5;
         ctrlLayer.removeAllChild();
@@ -660,7 +706,7 @@ let Menu = {
         Menu.listLayer.mask = null;
         // 选择高亮条
         Menu.listFocus= UI.drawColorWindow(Menu.listLayer, gap, 0, menuWidth-gap*2, 25,0.5,'#eee');
-        Menu.saveSlot= 0;
+        Menu.saveSlot = 0;
         //
         for (let i= 0; i< RPG.MaxSaveSlot; i++){
             // 存档名称
@@ -762,7 +808,7 @@ let Menu = {
                     Menu.tankState();
                     break;
                 case 4:
-                    Menu.menuShowSave(true);
+                    Menu.systemMenu(true);
                     break;
             }
         }
@@ -855,12 +901,12 @@ let Menu = {
                 break;
             case 4:
             case 5:
-                // 选择存档槽
-                cc = ((ay- Menu.listLayer.y)/30)<<0;
-                if (cc>= 0 && cc< 5) {
-                    Menu.listFocus.y= cc* 30;
-                    Menu.saveSlot= cc;
-                }
+                // // 选择存档槽
+                // cc = ((ay- Menu.listLayer.y)/30)<<0;
+                // if (cc>= 0 && cc< 5) {
+                //     Menu.listFocus.y= cc* 30;
+                //     Menu.saveSlot= cc;
+                // }
                 break;
         }
     },

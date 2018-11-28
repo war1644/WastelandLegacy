@@ -26,7 +26,7 @@
             {name: "费雷塔", msg: "我们明天讨伐的讨伐目标就是他了。你先去镇子里的旅馆休息一下吧。"},
     	],
         雷娜:
-            Talk.waitTalk(function () {
+            `Talk.waitTalk(function () {
                 let x = player.px,y=player.py;
                 player.setCoordinate(x+1, y, 0);
                 RPG.nightAndDay(function () {
@@ -49,7 +49,7 @@
                         ]);
                     }}
                 ]},
-            ]),
+            ])`,
 		gameAbout:[
             {index:0,img: "face雷娜", name: "游戏美工04", msg: ""},
             {index:1,img: "face雷娜", name: "游戏美工04", msg: ""},

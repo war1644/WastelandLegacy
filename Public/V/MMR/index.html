@@ -2,14 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>废土战纪</title>
+    <title>废土战记</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <meta name="description" content="废土战纪">
+    <meta name="description" content="废土战记">
     <meta name="author" content="路漫漫">
     <script type="text/javascript" src="./lufylegend-1.10.1.js"></script>
     <script type="text/javascript" src="./lufylegend.ui-0.14.1.min.js"></script>
-    <script type="text/javascript" src="./jquery.min.js"></script>
-    <script type="text/javascript" src="./js/Main.js?ver=V20170824.1"></script>
+    <script type="text/javascript" src="./js/Main.js?ver=V20180127.1"></script>
 </head>
 <style>
     *{
@@ -19,7 +18,6 @@
         -moz-user-select:none;/*火狐*/
         -ms-user-select:none; /*IE10*/
         user-select:none;
-        /*pointer-events:none;*/
         touch-callout:none;
     }
     input,textarea {
@@ -27,6 +25,11 @@
         margin: 0;
         padding: 0;
         outline: none;
+    }
+    #send , #clear{
+        color: #fff;
+        border: 1px solid #fff;
+        background: #000;
     }
     #box{
         width:50px;
@@ -40,6 +43,8 @@
         overflow: hidden;
         z-index: 9999;
         font-size: 18px;
+        right: 0;
+        top: 20%;
     }
     .gameMsg{
         color: #fff;
@@ -50,8 +55,6 @@
     }
 
     .information{
-        overflow: auto;
-        /*width: 235px;*/
         height: 200px;
         background-color: white;
         border: 1px solid #CCCCEE;
@@ -67,19 +70,18 @@
         height: 30px;
     }
 </style>
-<body style="margin:0px;padding:0px;">
-<div id="box">
+<body style="margin:0px;padding:0px;" onselectstart="return false">
+<div id="box" style="display: none">
     <div class="gameMsg" data-num="0">消息</div>
     <div class="information" style="display: none">
-
     </div>
     <div class="footBtn" style="display: none">
-        <input type="text" id="userMsg" onkeydown="if(event.keyCode==13){GameSocket.sendMsg();}">
+        <input type="text" id="userMsg" onkeydown="if(event.keyCode===13){GameSocket.sendMsg();}">
         <button id="send" >发送</button>
         <button id="clear">清屏</button>
     </div>
 
 </div>
-<div id="mylegend">loading……</div>
+<div id="game">loading……</div>
 </body>
 </html>

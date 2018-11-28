@@ -6,8 +6,26 @@ let TankList= [
         movePic: "黑色战车MMR",
         id: "1",
         name: "黑色战车",
-        weight:9.6,
+        weight:13.0,
         defend:200,
+    },
+    {
+        description: "我的最爱，1代蓝色战车",
+        fightPic: "M1战车MM1",
+        movePic: "M1战车MM1",
+        id: "2",
+        name: "M1战车MM1",
+        weight:10.5,
+        defend:120,
+    },
+    {
+        description: "最初的战车，轻型坦克",
+        fightPic: "59式战车",
+        movePic: "59式战车",
+        id: "3",
+        name: "59式战车",
+        weight:5,
+        defend:60,
     },
 
 ];

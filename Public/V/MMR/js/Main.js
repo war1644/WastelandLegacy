@@ -12,25 +12,12 @@
  * v2017/07/29 初版
  */
 
-window._requestAF = (function() {
-    return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        function(callback) {
-            window.setTimeout(callback, 1000/30);
-        };
-})();
-
 LGlobal.aspectRatio = LANDSCAPE;//提示只支持横屏
 window.onload = function(){
-    LInit(window._requestAF,"mylegend",WIDTH,HEIGHT,main);
+    LInit(~~(1000/60),"game",WIDTH,HEIGHT,main);
 };
 
 const
-    // 瓦片大小
-	STEP = 24,
     //方向变量
     DOWN = 0,
     LEFT = 1,
@@ -38,21 +25,21 @@ const
     UP = 3,
     //间隙
     gap = 10,
-    VER = 'V20170824.1',
+    VER = 'V20181125.1',
     //根目录
-    API = 'http://zregs.com/',
+    API = '／',
     //资源根目录
-    API_RESOURCE = './Asset/',
+    RESOURCE = './Asset/',
     //地图
-    API_MAP = API_RESOURCE+'地图/',
-    WS_HOST = 'zregs.com';
+    MAP_PATH = RESOURCE+'地图/',
+    WS_HOST = '127.0.0.1';
 
 let
+    //瓦片大小
+    STEP = 24,
     //游戏初始宽
-	WIDTH= 480,
+	WIDTH= 320,
     sound={},
-    sound2={},
-audioContext,
 	tempLength= 0;
 if (window.innerHeight>=window.innerWidth){
     tempLength= window.innerWidth* WIDTH/window.innerHeight;
@@ -62,18 +49,15 @@ if (window.innerHeight>=window.innerWidth){
 let tempCells= (tempLength/ STEP)>>0;
 let HEIGHT= tempCells* STEP;
 // 高度太低没法玩
-if (HEIGHT < 320) {
-	HEIGHT= 320;
+if (HEIGHT < 240) {
+	HEIGHT= 240;
 	tempLength= HEIGHT/window.innerHeight *window.innerWidth;
 	tempCells= (tempLength/ STEP)>>0;
 	WIDTH = tempCells* STEP;
 }
 
 let menuWidth = WIDTH - gap * 2,
-menuHeight = HEIGHT - gap * 2;
-
-// window.innerWidth, window.innerHeight
-// init(1000/30,"mylegend",WIDTH,HEIGHT,main);
+    menuHeight = HEIGHT - gap * 2;
 
 /**层变量*/
 //显示进度条所用层
@@ -117,12 +101,12 @@ let loadingLayer,
     CurrentMapEvents,
 //图片path数组
  	imgData = [],
- 	stage,//当前场景
+ 	stage={},//当前场景
 	assets;//读取完的图片数组
 
 function main(){
 	LGlobal.preventDefault = false;
-    LGlobal.speed = 1000/30;
+    // LGlobal.speed = 1000/30;
 
     if(LGlobal.mobile){
         LGlobal.align = LStageAlign.TOP_LEFT;
@@ -133,43 +117,43 @@ function main(){
 	//准备读取资源
 	//BGM SFX
     imgData = [
-        {name:'NameSetting',path:API_RESOURCE+'Sound/Bgm/NameSetting.mp3'},
-        {name:'无限音轨',path:API_RESOURCE+"Sound/Bgm/无限音轨.mp3"},
-        {name:'TownTheme',path:API_RESOURCE+"Sound/Bgm/TownTheme.mp3"},
-        {name:'Town',path:API_RESOURCE+"Sound/Bgm/Town.mp3"},
-        {name:'BossFight',path:API_RESOURCE+"Sound/Bgm/BossFight.mp3"},
-        {name:'BattleTheme',path:API_RESOURCE+"Sound/Bgm/BattleTheme.mp3"},
-        {name:'战车恰恰悠扬激进版',path:API_RESOURCE+"Sound/Bgm/战车恰恰悠扬激进版.mp3"},
-        {name:'7mm机关炮',path:API_RESOURCE+"Sound/Bgm/7mm机关炮.mp3"},
-        {name:'商队',path:API_RESOURCE+"Sound/Bgm/商队.mp3"},
-        {name:'消逝的过去',path:API_RESOURCE+"Sound/Bgm/消逝的过去.mp3"},
-        {name:'迪加',path:API_RESOURCE+"Sound/Bgm/迪加.mp3"},
-        {name:'山洞',path:API_RESOURCE+"Sound/Bgm/山洞.mp3"},
-        {name:'未知荒野',path:API_RESOURCE+"Sound/Bgm/未知荒野.mp3"},
-        {name:'战车恰恰',path:API_RESOURCE+"Sound/Bgm/战车恰恰.mp3"},
-        {name:'流浪',path:API_RESOURCE+"Sound/Bgm/流浪.mp3"},
-        {name:'道具屋',path:API_RESOURCE+"Sound/Bgm/道具屋.mp3"},
+        {name:'NameSetting',path:RESOURCE+'Sound/Bgm/NameSetting.mp3'},
+        {name:'无限音轨',path:RESOURCE+"Sound/Bgm/无限音轨.mp3"},
+        {name:'TownTheme',path:RESOURCE+"Sound/Bgm/TownTheme.mp3"},
+        {name:'Town',path:RESOURCE+"Sound/Bgm/Town.mp3"},
+        {name:'BossFight',path:RESOURCE+"Sound/Bgm/BossFight.mp3"},
+        {name:'BattleTheme',path:RESOURCE+"Sound/Bgm/BattleTheme.mp3"},
+        // {name:'战车恰恰悠扬激进版',path:RESOURCE+"Sound/Bgm/战车恰恰悠扬激进版.mp3"},
+        {name:'7mm机关炮',path:RESOURCE+"Sound/Bgm/7mm机关炮.mp3"},
+        {name:'商队',path:RESOURCE+"Sound/Bgm/商队.mp3"},
+        {name:'消逝的过去',path:RESOURCE+"Sound/Bgm/消逝的过去.mp3"},
+        // {name:'迪加',path:RESOURCE+"Sound/Bgm/迪加.mp3"},
+        {name:'山洞',path:RESOURCE+"Sound/Bgm/山洞.mp3"},
+        {name:'未知荒野',path:RESOURCE+"Sound/Bgm/未知荒野.mp3"},
+        {name:'战车恰恰',path:RESOURCE+"Sound/Bgm/战车恰恰.mp3"},
+        {name:'流浪',path:RESOURCE+"Sound/Bgm/流浪.mp3"},
+        {name:'道具屋',path:RESOURCE+"Sound/Bgm/道具屋.mp3"},
 
-        {name:'GunAct',path:API_RESOURCE+"Sound/Sfx/GunAct.mp3"},
-        {name:'boom',path:API_RESOURCE+"Sound/Sfx/boom.mp3"},
-        {name:'Fail',path:API_RESOURCE+"Sound/Sfx/Fail.mp3"},
-        {name:'Winning',path:API_RESOURCE+"Sound/Sfx/Winning.mp3"},
-        {name:'Select',path:API_RESOURCE+"Sound/Sfx/Select.wav"},
-        {name:'JumpStage',path:API_RESOURCE+"Sound/Sfx/JumpStage.wav"},
-        {name:'StartBattle',path:API_RESOURCE+"Sound/Sfx/enemy.mp3"},
-        {name:'获得物品',path:API_RESOURCE+"Sound/Sfx/获得物品.wav"},
-        {name:'交易',path:API_RESOURCE+"Sound/Sfx/交易.wav"},
-        {name:'出现',path:API_RESOURCE+"Sound/Sfx/出现.wav"},
-        {name:'睡觉',path:API_RESOURCE+"Sound/Sfx/睡觉.mp3"},
-        {name:'逃跑',path:API_RESOURCE+"Sound/Sfx/逃跑.wav"},
-        {name:'按钮',path:API_RESOURCE+"Sound/Sfx/按钮.wav"},
-        {name:'普通攻击',path:API_RESOURCE+"Sound/Sfx/普通攻击.wav"},
-        {name:'普通攻击End',path:API_RESOURCE+"Sound/Sfx/普通攻击End.wav"},
-        {name:'支援',path:API_RESOURCE+"Sound/Sfx/支援.mp3"},
-
+        {name:'GunAct',path:RESOURCE+"Sound/Sfx/GunAct.mp3"},
+        {name:'boom',path:RESOURCE+"Sound/Sfx/boom.mp3"},
+        {name:'Fail',path:RESOURCE+"Sound/Sfx/Fail.mp3"},
+        {name:'Winning',path:RESOURCE+"Sound/Sfx/Winning.mp3"},
+        {name:'Select',path:RESOURCE+"Sound/Sfx/Select.wav"},
+        {name:'JumpStage',path:RESOURCE+"Sound/Sfx/JumpStage.wav"},
+        {name:'StartBattle',path:RESOURCE+"Sound/Sfx/enemy.mp3"},
+        {name:'获得物品',path:RESOURCE+"Sound/Sfx/获得物品.wav"},
+        {name:'交易',path:RESOURCE+"Sound/Sfx/交易.wav"},
+        {name:'出现',path:RESOURCE+"Sound/Sfx/出现.wav"},
+        {name:'睡觉',path:RESOURCE+"Sound/Sfx/睡觉.mp3"},
+        {name:'逃跑',path:RESOURCE+"Sound/Sfx/逃跑.wav"},
+        {name:'按钮',path:RESOURCE+"Sound/Sfx/按钮.wav"},
+        {name:'普通攻击',path:RESOURCE+"Sound/Sfx/普通攻击.wav"},
+        {name:'普通攻击End',path:RESOURCE+"Sound/Sfx/普通攻击End.wav"},
+        // {name:'支援',path:RESOURCE+"Sound/Sfx/支援.mp3"},
     ];
 
 	//js
+    imgData.push({type:"js",path:"./js/StageData.js?ver="+VER});
     imgData.push({type:"js",path:"./js/GameLib.js?ver="+VER});
 	imgData.push({type:"js",path:"./js/Talk.js?ver="+VER});
 	imgData.push({type:"js",path:"./js/Character.js?ver="+VER});
@@ -186,53 +170,68 @@ function main(){
     imgData.push({type:"js",path:"./js/GameSocket.js?ver="+VER});
 
     //game other img
-    imgData.push({name: "empty", path: API_RESOURCE+"事件/empty.png" });
-    imgData.push({name: "箱子", path: API_RESOURCE+"事件/箱子.png" });
-    imgData.push({name: "通缉令-戈麦斯", path: API_RESOURCE+"事件/通缉令-戈麦斯.png" });
+    imgData.push({name: "empty", path: RESOURCE+"事件/empty.png" });
+    imgData.push({name: "箱子", path: RESOURCE+"事件/箱子.png" });
+    imgData.push({name: "通缉令-戈麦斯", path: RESOURCE+"事件/通缉令-戈麦斯.png" });
 
 	//人物行走图
-    imgData.push({name:"猎人",path:API_RESOURCE+"人物行走图/猎人.png"});
-    imgData.push({name:"机械师",path:API_RESOURCE+"人物行走图/机械师.png"});
-    imgData.push({name:"战士",path:API_RESOURCE+"人物行走图/战士.png"});
-    imgData.push({name:"护士",path:API_RESOURCE+"人物行走图/护士.png"});
-    imgData.push({name:"蕾娜",path:API_RESOURCE+"人物行走图/蕾娜.png"});
-	imgData.push({name:"姐姐",path:API_RESOURCE+"人物行走图/姐姐.png"});
-    imgData.push({name:"老爹",path:API_RESOURCE+"人物行走图/老爹.png"});
-    imgData.push({name:"重甲猎人",path:API_RESOURCE+"人物行走图/重甲猎人.png"});
-    imgData.push({name:"穷猎人",path:API_RESOURCE+"人物行走图/穷猎人.png"});
-    imgData.push({name:"商人妹子",path:API_RESOURCE+"人物行走图/商人妹子.png"});
-    imgData.push({name:"交易员",path:API_RESOURCE+"人物行走图/交易员.png"});
-    imgData.push({name:"大姐姐",path:API_RESOURCE+"人物行走图/大姐姐.png"});
-    imgData.push({name:"明奇",path:API_RESOURCE+"人物行走图/明奇.png"});
-    imgData.push({name:"路人",path:API_RESOURCE+"人物行走图/路人.png"});
-    imgData.push({name:"士兵",path:API_RESOURCE+"人物行走图/士兵.png"});
-    imgData.push({name:"喽啰move",path:API_RESOURCE+"人物行走图/喽啰.png"});
+    imgData.push({name:"猎人",path:RESOURCE+"人物行走图/猎人.png"});
+    imgData.push({name:"机械师",path:RESOURCE+"人物行走图/机械师.png"});
+    imgData.push({name:"战士",path:RESOURCE+"人物行走图/战士.png"});
+    imgData.push({name:"护士",path:RESOURCE+"人物行走图/护士.png"});
+    imgData.push({name:"蕾娜",path:RESOURCE+"人物行走图/蕾娜.png"});
+	imgData.push({name:"姐姐",path:RESOURCE+"人物行走图/姐姐.png"});
+    imgData.push({name:"老爹",path:RESOURCE+"人物行走图/老爹.png"});
+    imgData.push({name:"重甲猎人",path:RESOURCE+"人物行走图/重甲猎人.png"});
+    imgData.push({name:"穷猎人",path:RESOURCE+"人物行走图/穷猎人.png"});
+    imgData.push({name:"商人妹子",path:RESOURCE+"人物行走图/商人妹子.png"});
+    imgData.push({name:"交易员",path:RESOURCE+"人物行走图/交易员.png"});
+    imgData.push({name:"大姐姐",path:RESOURCE+"人物行走图/大姐姐.png"});
+    imgData.push({name:"明奇",path:RESOURCE+"人物行走图/明奇.png"});
+    imgData.push({name:"路人",path:RESOURCE+"人物行走图/路人.png"});
+    imgData.push({name:"士兵",path:RESOURCE+"人物行走图/士兵.png"});
+    imgData.push({name:"喽啰move",path:RESOURCE+"人物行走图/穷猎人.png"});
 
     //战车行走图
-    imgData.push({name:"M1战车MMR",path:API_RESOURCE+"战车行走图/MMR/M1战车MMR.png"});
-    imgData.push({name:"救护车MMR",path:API_RESOURCE+"战车行走图/MMR/救护车MMR.png"});
-    imgData.push({name:"红狼战车MMR",path:API_RESOURCE+"战车行走图/MMR/红狼战车MMR.png"});
-    imgData.push({name:"黑色战车MMR",path:API_RESOURCE+"战车行走图/MMR/黑色战车MMR.png"});
-    imgData.push({name:"毁灭战车move",path:API_RESOURCE+"战车行走图/Boss/毁灭战车.png"});
+    imgData.push({name:"M1战车MMR",path:RESOURCE+"战车行走图/MMR/M1战车MMR.png"});
+    imgData.push({name:"59式战车",path:RESOURCE+"战车行走图/Etc/59式战车.png"});
+    imgData.push({name:"M1战车MM1",path:RESOURCE+"战车行走图/MetalMax/M1战车MM1.png"});
+    imgData.push({name:"救护车MMR",path:RESOURCE+"战车行走图/MMR/救护车MMR.png"});
+    imgData.push({name:"红狼战车MMR",path:RESOURCE+"战车行走图/MMR/红狼战车MMR.png"});
+    imgData.push({name:"黑色战车MMR",path:RESOURCE+"战车行走图/MMR/黑色战车MMR.png"});
+    imgData.push({name:"毁灭战车move",path:RESOURCE+"战车行走图/Boss/毁灭战车.png"});
 
     //FightPic
-    imgData.push({name:"野战炮",path:API_RESOURCE+"战斗/MMR/野战炮.png"});
-    imgData.push({name:"加农炮",path:API_RESOURCE+"战斗/MMR/加农炮.png"});
-    imgData.push({name:"巨炮",path:API_RESOURCE+"战斗/MMR/巨炮.png"});
-    imgData.push({name:"亡灵士兵",path:API_RESOURCE+"战斗/MMR/亡灵士兵.png"});
-    imgData.push({name:"喽啰",path:API_RESOURCE+"战斗/MMR/喽啰.png"});
-    imgData.push({name:"毁灭战车",path:API_RESOURCE+"战斗/MMR/毁灭战车.png"});
-    imgData.push({name:"戈麦斯",path:API_RESOURCE+"战斗/MMR/戈麦斯.png"});
-    imgData.push({name:"沙漠之舟",path:API_RESOURCE+"战斗/MMR/沙漠之舟.png"});
+    imgData.push({name:"巨蚁",path:RESOURCE+"战斗/敌人/L01_巨蚁.png"});
+    imgData.push({name:"杀人虫",path:RESOURCE+"战斗/敌人/L02_杀人虫.png"});
+    imgData.push({name:"野战炮",path:RESOURCE+"战斗/MMR/野战炮.png"});
+    imgData.push({name:"加农炮",path:RESOURCE+"战斗/MMR/加农炮.png"});
+    imgData.push({name:"巨炮",path:RESOURCE+"战斗/MMR/巨炮.png"});
+    imgData.push({name:"亡灵士兵",path:RESOURCE+"战斗/MMR/亡灵士兵.png"});
+    imgData.push({name:"喽啰",path:RESOURCE+"战斗/MMR/喽啰.png"});
+    imgData.push({name:"毁灭战车",path:RESOURCE+"战斗/MMR/毁灭战车.png"});
+    imgData.push({name:"戈麦斯",path:RESOURCE+"战斗/MMR/戈麦斯.png"});
+    imgData.push({name:"沙漠之舟",path:RESOURCE+"战斗/MMR/沙漠之舟.png"});
 
     //face
-    imgData.push({name:"face猎人",path:API_RESOURCE+"头像/女猎人.png"});
-    imgData.push({name:"face机械师",path:API_RESOURCE+"头像/女机械师.png"});
-    imgData.push({name:"face战士",path:API_RESOURCE+"头像/女战士.png"});
-    imgData.push({name:"face雷娜",path:API_RESOURCE+"头像/雷娜.png"});
+    imgData.push({name:"face猎人",path:RESOURCE+"头像/女猎人.png"});
+    imgData.push({name:"face机械师",path:RESOURCE+"头像/女机械师.png"});
+    imgData.push({name:"face战士",path:RESOURCE+"头像/女战士.png"});
+    imgData.push({name:"face雷娜",path:RESOURCE+"头像/雷娜.png"});
 
 	//effect
-    imgData.push({name: "220Animation", path: API_RESOURCE+"战斗/动画/220Animation.png" });
+    imgData.push({name: "220Animation", path: RESOURCE+"战斗/动画/220Animation.png" });
+
+    //map
+    let maps = ['主角家1楼','主角家2楼','传送屋','商人营地','帐篷','库莱勒','德西多镇','旅馆二楼','旅馆','明奇博士家','河畔镇','猎人中心','猎人商店','白蚁树林入口','酒吧'];
+    maps.forEach((v)=>{
+        imgData.push({name:v+"_0",path:MAP_PATH+v+"_0.png"});
+        imgData.push({name:v+"_1",path:MAP_PATH+v+"_1.png"});
+        imgData.push({type:'text',name:v,path:MAP_PATH+v+".json"});
+    });
+    imgData.push({name:"MMR_0",path:MAP_PATH+"MMR.png"});
+    imgData.push({type:'text',name:"MMR",path:MAP_PATH+"MMR.json"});
+
 
     loadingLayer = new LoadingSample3();
 	addChild(loadingLayer);	
@@ -257,7 +256,7 @@ function onDown(event) {
     	Menu.dealMenu(event.offsetX<<0, event.offsetY<<0);
     } else if(RPG.checkState(RPG.MAP_CONTROL)) {
         // 地图状态下可以进行移动和弹出菜单的操作
-    	RPG.dealNormal(event.offsetX<<0, event.offsetY<<0);
+    	RPG.clickMap(event.offsetX<<0, event.offsetY<<0);
     } else if(RPG.checkState(RPG.IN_TALKING)) {
     	Talk.startTalk();
     } else if(RPG.checkState(RPG.IN_FIGHTMENU)){
@@ -271,6 +270,7 @@ function onUp(event){
 	    if (RPG.checkState(RPG.UNDER_MENU)) {
     		Menu.dealMenuUp(event.offsetX>>0, event.offsetY>>0);
     	} else if(RPG.checkState(RPG.MAP_CONTROL)) {
+	        if(player) socket.wlSend('move',{type:'player',img:player.img,stageId:stage.id,x:player.px,y:player.py,dir:player.direction,state:mainTeam.state});
             Talk.addTalk();
 		}
 	}
@@ -283,10 +283,13 @@ function onMove(event){
         }
     }
 }
+
 /**
  * 循环
- * */
+ */
+let frameTime = 0;
 function onFrame(){
+    frameTime++;
 	for(let i=0;i<charaLayer.childList.length;i++) {
 		if (charaLayer.childList[i].onframe) {
 			charaLayer.childList[i].onframe();
@@ -299,6 +302,10 @@ function onFrame(){
                 obj[i].onframe();
             }
         }
+    }
+    if(!RPG.checkSwitch('autoing') && frameTime>60){
+        frameTime=0;
+        checkAuto();
     }
 	// if (RPG.descLayer && RPG.descLayer.childList){
 	// 	for(let i=0;i<RPG.descLayer.childList.length;i++){
@@ -316,12 +323,11 @@ function gameInit(){
     LGlobal.setDebug(true);
     //数据初始化优先于显示部分的初始化
     LGlobal.aspectRatio = PORTRAIT;
-    Lib.bgm('迪加',true);
+    Lib.bgm('NameSetting',true);
     //游戏层显示初始化
     gameLayerInit();
     //游戏全局数据初始化
-    gameDataInit();
-
+    // gameDataInit();
     //添加帧事件，开始游戏循环
     backLayer.addEventListener(LEvent.ENTER_FRAME,onFrame);
     //添加点击控制事件
@@ -341,26 +347,24 @@ function gameInit(){
  **/
 function initScript(x,y,dir=0){
     //效果层初始化
-    // effectLayer.removeAllChild();
+    effectLayer.removeAllChild();
     //对话层初始化
     talkLayer.removeAllChild();
     //默认对话位置居中
     Talk.setTalkPos("bottom");
-
     setHero(x,y,dir);
     // 绘制地图
     drawImgMap(CurrentMap);
-    Lib.bgm(stage.music,true);
+    // Lib.bgm(stage.music,true);
+    //弹出刚才的等待状态，这样人物才会动
+    if(RPG.checkState(RPG.MAP_WAITING)) RPG.popState();
+    //恢复检查
+    RPG.setSwitch('autoing', 0);
     socket.wlSend(
         'addUser',
         {stageId:stage.id,type:'player',img:player.img,x:player.px, y:player.py, dir:player.direction,state:mainTeam.state}
     );
-    //弹出刚才的等待状态，这样人物才会动
 
-    if(RPG.checkState(RPG.MAP_WAITING)) RPG.popState();
-    //
-    // 立即检测自动动作
-    checkAuto();
 }
 
 /**
@@ -388,15 +392,15 @@ function gameLayerInit() {
     //信息层
     infoLayer = new LSprite();
     backLayer.addChild(infoLayer);
-
+    // addChild(new FPS());
 }
 
 /**
- * 各图层初始化
+ * 初始化
  **/
 function gameDataInit() {
     //ItemList
-    $.getJSON(API+'Public/getItem?callback=?',{},function (e) {
+    /*$.getJSON(API+'Public/getItem?callback=?',{},function (e) {
         if(typeof e === 'object'){
             ItemList = e;
         } else {
@@ -422,35 +426,62 @@ function gameDataInit() {
                 gameDataInit();
             }
         }
-    });
+    });*/
 
 }
+function gameStageInit(stageId,x,y,dir=3,callback=false) {
+    RPG.pushState(RPG.MAP_WAITING);
+    RPG.blackEffect();
+    if(stage && socket) socket.wlSend('removeUser',{stageId:stage.id});
+    stage = StageData[stageId];
+    // let downMap = stage.fileName+'_0',upMap = stage.fileName+'_1';
+    stage.map = JSON.parse(assets[stage.fileName]);
+    if(stage.fileName == "MMR"){
+        stage.map.isWorld = true;
+        STEP=32;
+    } else {
+        STEP=24;
+    }
 
-function gameStageInit(stageId,x,y,dir=3) {
+    // LLoadManage.load ([
+    //     {name:downMap,path:MAP_PATH+downMap+'.png'},
+    //     {name:upMap,path:MAP_PATH+upMap+'.png'},
+    //    {type:'text',name:stage.fileName,path:MAP_PATH+stage.fileName+'.json'},
+    //],false,function (e) {
+    //     stage.map = JSON.parse(e[stage.fileName]);
+    //     assets[downMap] = e[downMap];
+    //     assets[upMap] = e[upMap];
+        RPG.whiteEffect(callback);
+        jumpStage(x,y,dir);
+    // });
+
+}
+/*function gameStageInit(stageId,x,y,dir=3) {
     if(!RPG.checkState(RPG.MAP_WAITING))RPG.pushState(RPG.MAP_WAITING);
     RPG.blackEffect();
-    $.getJSON(API+'Public/getMyData?callback=?',{id:stageId},function (e) {
-        if('stage' in e){
-            if(stage) socket.wlSend('removeUser',{stageId:stage.id});
-            stage = e.stage;
-            stage.map = JSON.parse(stage.map);
+    // $.getJSON(API+'Public/getMyData?callback=?',{id:stageId},function (e) {
+    //     if('stage' in e){
+    //         if(stage) socket.wlSend('removeUser',{stageId:stage.id});
+            stage = StageData[stageId];
             let downMap = stage.fileName+'_0',upMap = stage.fileName+'_1';
             LLoadManage.load ([
                 {name:downMap,path:API_MAP+downMap+'.png'},
                 {name:upMap,path:API_MAP+upMap+'.png'},
+                {name:stage.fileName,path:API_MAP+stage.fileName+'.json'},
             ],false,function (e) {
+                stage.map = e[stage.fileName];
                 assets[downMap] = e[downMap];
                 assets[upMap] = e[upMap];
                 RPG.whiteEffect();
                 jumpStage(x,y,dir);
             });
-        } else {
-            if(confirm('游戏数据初始化错误，点击确认重试')){
-                gameStageInit(stageId,x,y,dir);
-            }
-        }
-    });
-}
+        // } else {
+        //     if(confirm('游戏数据初始化错误，点击确认重试')){
+        //         gameStageInit(stageId,x,y,dir);
+        //     }
+        // }
+    // });
+}*/
 // let waitCharPos = function (npc, x, y, callback){
 //     if (npc.px !== x || npc.py !== y) {
 //         setTimeout(function(){waitCharPos(npc, x, y, callback);}, 500);

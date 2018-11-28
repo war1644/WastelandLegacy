@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="./lufylegend-1.10.1.js"></script>
+    <script type="text/javascript" src="./js/path.js"></script>
+</head>
+<body>
+<div id="game"></div>
+</body>
+<script>
+    init(30,"game",800,400,main);
+    let mapLayer,hero,query,roadLayer;
+    function main(){
+        LGlobal.setDebug(true);
+        mapLayer = new LSprite();
+        mapLayer.graphics.drawRect(1,"#000000",[0,0,800,400]);
+        addChild(mapLayer);
+
+        roadLayer = new LSprite();
+        addChild(roadLayer);
+
+        hero = new LSprite();
+        hero.graphics.drawRect(0,"#FF0000",[0,0,10,10],true,"#FF0000");
+        addChild(hero);
+        let map = [];
+        //随机地图
+        for(let i=0;i<40;i++){
+            let childData = [];
+            for(let j=0;j<80;j++){
+                childData.push(Math.random() > 0.2 ? 0:1);
+            }
+            map.push(childData);
+        }
+        //初始化寻路类
+        query = new StarQuery();
+        query._map = [];
+        query._w = map[0].length;
+        query._h = map.length;
+        //初始化寻路类的地图
+        for (let y=0; y<query._h; y++) {
+            query._map.push([]);
+            for (let x=0; x<query._w; x++) {
+                query._map[y].push(new Node(x,y,map[y][x]));
+            }
+        }
+
+        //绘制地图
+        let c = LGlobal.canvas;
+        mapLayer.graphics.add(function(){
+            c.beginPath();
+            c.fillStyle = "#000000";
+            for (let y=0; y<query._h; y++) {
+                c.moveTo(0,y*10);
+                c.lineTo(800,y*10);
+            }
+            for (let x=0; x<query._w; x++) {
+                c.moveTo(x*10,0);
+                c.lineTo(x*10,400);
+            }
+            for (let y=0; y<query._h; y++) {
+                for (let x=0; x<query._w; x++) {
+                    if(!map[y][x])continue;
+                    c.fillRect(x*10,y*10,10,10);
+                }
+            }
+            c.stroke();
+        });
+        //给地图添加点击事件
+        mapLayer.addEventListener(LMouseEvent.MOUSE_UP,mouseUp);
+    }
+    function mouseUp(e){
+        let mx = Math.floor(mouseX/10);
+        let my = Math.floor(mouseY/10);
+        let sx = Math.floor(hero.x/10);
+        let sy = Math.floor(hero.y/10);
+        let startTime = (new Date()).getTime();
+        let returnList = query.queryPath(new LPoint(sx,sy),new LPoint(mx,my));
+        let endTime = (new Date()).getTime();
+        trace("寻路耗时="+(endTime - startTime)+"毫秒");
+        roadLayer.graphics.clear();
+        if(returnList.length == 0){
+            trace("无路可走");
+            return;
+        }
+        for(let i=0;i<returnList.length;i++){
+            let nodeChild = returnList[i];
+            roadLayer.graphics.drawRect(0,"#00FF00",[nodeChild.x*10,nodeChild.y*10,10,10],true,"#00FF00");
+        }
+        hero.x = mx*10;
+        hero.y = my*10;
+    }
+</script>
+</html>

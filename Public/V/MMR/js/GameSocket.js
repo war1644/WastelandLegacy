@@ -4,36 +4,31 @@
  * Date: 2017/7/23 13:26
  *
  */
-let socket,gameInfo = $(".information");
+let socket;
 let GameSocket = {
-
-    sendMsg:(text)=> {
-        if (socket.readyState === WebSocket.OPEN) {
-            let value = $('#userMsg').val();
+    sendMsg:()=>{
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            let value = document.querySelector('#userMsg').value;
             if (value) {
-                $('#userMsg').val('');
-                // Lib.showInfo(value);
+                document.querySelector('#userMsg').value = '';
             }
-            // let to = document.getElementById("to").value;
             socket.wlSend('talk', {target: 'all', msg: value});
         } else {
             alert('连接服务器失败。');
         }
     },
 
-    onLink:(name,pwd=false)=> {
-        if(socket){
-            socket.wlSend('getSave');
-        }else {
-            socket = new WebSocket('ws://'+WS_HOST+':8886?key=1');
+    onLink:()=> {
+        if(!socket){
+            socket = new WebSocket('ws://'+WS_HOST+':9001?key=666');
         }
-
         socket.onopen = function () {
-            Lib.showInfo('握手成功');
             if (socket.readyState === 1) {
-                socket.wlSend('login',{pwd:pwd});
+                Lib.showInfo('连接服务器成功');
+                socket.wlSend('login');
+                msgBox.setAttribute('style','display:block');
             } else {
-                Lib.showInfo('握手失败');
+                Lib.showInfo('连接服务器失败');
             }
         };
         socket.onmessage = function (e) {
@@ -46,24 +41,24 @@ let GameSocket = {
         socket.onclose = function (e) {
             Lib.showInfo('服务器断开');
         };
-        Lib.showInfo('连接服务器成功');
     },
 
     haveMsg:(value)=> {
         switch (value["type"]) {
+            case "ht":
+                socket.wlSend('ht',1);
+                break;
             case "error":
                 Lib.showInfo(value["error"]);
                 break;
             case "login":
-                Lib.showInfo('正在初始化数据...');
-                if('code' in value.content){
-                    playerName = false;
-                    alert(value.content.msg);
-                    return false;
-                }
-                Lib.userInfo = value.content;
-                console.log('set',Lib.userInfo);
-                RPG.newGame();
+                Lib.showInfo('已登录');
+                // if('code' in value.content){
+                //     playerName = false;
+                //     alert(value.content.msg);
+                //     return false;
+                // }
+                // RPG.newGame();
                 break;
             case "talk":
                 Lib.showInfo(value.content.msg);
@@ -73,12 +68,6 @@ let GameSocket = {
                 let npc = netPlayer[value.name];
                 charaLayer.removeChild(npc);
                 delete netPlayer[value.name];
-                break;
-            case "setUserList":
-                // let list = value["list"];
-                // for (let i in list) {
-                //     addNpc(list[i]);
-                // }
                 break;
             case "addUser":
                 if(value.content.stageId != stage.id) return;
@@ -95,8 +84,7 @@ let GameSocket = {
                 Fight.addNetBattle(value);
                 break;
             case "support":
-                console.log(window.netTeam);
-                if (window.netTeam == null) {
+                if (!window.netTeam) {
                     window.netTeam = RPG.beget(PlayerTeam);
                     window.netTeam.clear();
                 }
@@ -155,29 +143,35 @@ let GameSocket = {
     }
 
 };
-$(".gameMsg").click(function(){
-    if($(this).data("num")){
-        $(this).data("num" , 0);
-        $("#box").css({"width":"50px","height":"25px"});
-        $(".information").hide();
-        $(".footBtn").hide();
-    }else {
-        $(this).data("num" , 1);
-        $("#box").css({"width":"300px","height":"316px"});
-        $(".information").show();
-        $(".footBtn").show();
+
+let gameMsg = document.querySelector(".gameMsg"),
+    gameInfo = document.querySelector(".information"),
+    msgBox = document.querySelector('#box');
+
+gameMsg.onclick = function(){
+    if(this.dataset.num == 1){
+        this.dataset.num = 0;
+        msgBox.setAttribute('style','width:50px;height:25px');
+        gameInfo.setAttribute('style','display:none');
+        document.querySelector(".footBtn").setAttribute('style','display:none');
+    } else {
+        this.dataset.num = 1;
+        msgBox.setAttribute('style','width:300px;height:316px');
+        gameInfo.setAttribute('style','display:block');
+        document.querySelector(".footBtn").setAttribute('style','display:block');
     }
-});
+};
 
-$('#send').click(function () {
+document.querySelector('#send').onclick = function () {
     GameSocket.sendMsg();
-});
+};
 
-$('#clear').click(function () {
-    $(".information").html('');
-});
+document.querySelector('#clear').onclick = function () {
+    gameInfo.innerHTML = '';
+};
 
-$("#box").on("mousedown touchstart" , function (ev) {
+/*
+msgBox.on("mousedown touchstart" , function (ev) {
     let box,leftMouse,topMouse;
     ev = ev || event;
     box = ev.currentTarget;
@@ -209,6 +203,6 @@ $("#box").on("mousedown touchstart" , function (ev) {
     })
 });
 
-$("#box").on("mouseup touchend" , function(){
+msgBox.on("mouseup touchend" , function(){
     $(document).off("mousemove touchmove" , null);
-});
+});*/

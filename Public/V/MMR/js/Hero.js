@@ -1,26 +1,209 @@
 // 游戏玩家职业信息
 let JobList= [
-
+        {
+            id: "1",
+            name: "猎人",
+            description: "战车驾驶技术一流，还会修理，肉搏也不弱，这不就是主角光环么？",
+            movePic: "猎人",
+            fightPic: "猎人",
+            maxExpCurve: "(210 * Math.sqrt(lv) - 100 * lv + 50 * lv * lv - 110)>>0",
+            maxHpCurve: "(200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv + 200)>>0",
+            attackCurve: "(100 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0",
+            defendCurve: "(44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0",
+            driveCurve: "(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0",
+            speedCurve: "(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0",
+            face: "face猎人"
+        },
+        {
+            id: "2",
+            name: "机械师",
+            description: "修理MAX，还能战场修理，还能改造战车，绝对的辅助一把手",
+            movePic: "机械师",
+            fightPic: "机械师",
+            maxExpCurve: "(210 * Math.sqrt(lv) - 100 * lv + 50 * lv * lv - 110)>>0",
+            maxHpCurve: "(200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv + 200)>>0",
+            attackCurve: "(60 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0",
+            defendCurve: "(44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0",
+            driveCurve: "(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0",
+            speedCurve: "(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0",
+            face: "face机械师"
+        },
+        {
+            id: "3",
+            name: "战士",
+            description: "肉搏强悍，但是也不可能与战车匹敌的，各种人武器玩的666.",
+            movePic: "战士",
+            fightPic: "战士",
+            maxExpCurve: "(210 * Math.sqrt(lv) - 100 * lv + 50 * lv * lv - 110)>>0",
+            maxHpCurve: "(200 * Math.sqrt(lv) - 1 * lv + 1 * lv * lv + 200)>>0",
+            attackCurve: "(60 * Math.sqrt(lv) - 0.5 * lv + 0.1 * lv * lv - 60)>>0",
+            defendCurve: "(44 * Math.sqrt(lv) - 0.09 * lv + 0.1 * lv * lv - 44)>>0",
+            driveCurve: "(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0",
+            speedCurve: "(1 * Math.sqrt(lv) - 0.1 * lv + 0.1 * lv * lv - 1)>>0",
+            face: "face战士"
+        }
 ];
 let EnemyList= [
-
+    {
+        id: "11",
+        price: "10",
+        name: "巨蚁",
+        skill: "",
+        item: [21],
+        row: "1",
+        col: "1",
+        fightPic: "巨蚁",
+        isBoss: "0",
+        inTank: "1",
+        description: "大破坏后，核变生物，具有较强攻击性。"
+    },
+    {
+        id: "12",
+        price: "10",
+        name: "杀人虫",
+        skill: "",
+        item: [21],
+        row: "1",
+        col: "1",
+        fightPic: "杀人虫",
+        isBoss: "0",
+        inTank: "1",
+        description: "大破坏后，核变生物，猎杀人类是其爱好。"
+    },
+        {
+            id: "1",
+            price: "10",
+            name: "加农炮",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "加农炮",
+            isBoss: "0",
+            inTank: "1",
+            description: "大破坏前，军方常规大炮"
+        },
+        {
+            id: "2",
+            price: "10",
+            name: "野战炮",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "野战炮",
+            isBoss: "0",
+            inTank: "1",
+            description: ""
+        },
+        {
+            id: "3",
+            price: "2000",
+            name: "巨炮",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "巨炮",
+            isBoss: "1",
+            inTank: "1",
+            description: "大破坏前，军方防御型阵地大炮"
+        },
+        {
+            id: "4",
+            price: "100",
+            name: "喽啰",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "喽啰",
+            isBoss: "0",
+            inTank: "1",
+            description: ""
+        },
+        {
+            id: "6",
+            price: "35",
+            name: "亡灵士兵",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "亡灵士兵",
+            isBoss: "0",
+            inTank: "1",
+            description: ""
+        },
+        {
+            id: "7",
+            price: "1000",
+            name: "毁灭战车",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "毁灭战车",
+            isBoss: "0",
+            inTank: "1",
+            description: ""
+        },
+        {
+            id: "8",
+            price: "2000",
+            name: "戈麦斯",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "戈麦斯",
+            isBoss: "1",
+            inTank: "1",
+            description: ""
+        },
+        {
+            id: "9",
+            price: "10000",
+            name: "沙漠之舟",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "沙漠之舟",
+            isBoss: "1",
+            inTank: "1",
+            description: "移动碉堡，强悍的防御和攻击让人生畏，但速度和智商感人"
+        },
+        {
+            id: "10",
+            price: "100",
+            name: "老爹",
+            skill: "",
+            item: "",
+            row: "1",
+            col: "1",
+            fightPic: "人物行走图/老爹",
+            isBoss: "1",
+            inTank: "1",
+            description: "主角老爹"
+        }
 ];
 let HeroPlayer = {
     isHero: true,
     //角色昵称
     nickName:'',
     // 各种战斗信息
-    Hp: 100,
+    Hp: 80,
     Sp: 0,
     maxSp:0,
     Level: 1,
     // 升级经验值
     Exp: 0,
     alive: true,
-    // 装备：武器、防具、装饰
+    // 装备：武器、衣服、防具
     weapon: -1,
+    cloth: -1,
     armor: -1,
-    ornament: -1,
     hand:-1,
     foot:-1,
     head:-1,
@@ -113,10 +296,10 @@ let HeroPlayer = {
 		this.armor= id;
 		return Number(a);
 	},
-	// 更换装饰
-	changeOrn:function(id){
-		let a= this.ornament;
-		this.ornament= id;
+	// 更换衣服
+	changeCloth:function(id){
+		let a = this.cloth;
+		this.cloth = id;
 		return Number(a);
 	},
     // 更换手
@@ -143,7 +326,7 @@ let HeroPlayer = {
 	getArmor:function(){
 		return ItemList[this.armor-1];
 	},
-    getOrn:function(){
+    getCloth:function(){
         return ItemList[this.ornament-1];
     },
     getHand:function(){
