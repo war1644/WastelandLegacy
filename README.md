@@ -11,9 +11,13 @@ WastelandLegacy (废土战记)
     * 不会同步钱，物品呀，存档呀什么的，这个弱联网基本只是增加玩家的交互
 
 ## 项目说明
+* 请无视master分支，最新代码都在dev分支
 * 运行流程图：浏览器调用Public/V/MMR/index.html-->载入js ->main.js-->window.onload->main.js下main方法-->载入各种资源-->初始化-->连接workerman服务器
 * docker镜像版就是直接运行的/var/www/mmr/index.html
+* 由于ajax不支持file://，所以请用本地域名访问index.html哦
+* Public/V/MMR/Asset（dev分支）下有大概的剧本／对话之类的
 
+* 下面这些就是无聊
 * github这个是包含了事件编辑器版本的,游戏内容编辑／管理（想着应该没人跑去用网页编辑游戏脚本等，就整合了docker镜像版）
 * docker镜像版里自带源码，路径／var/www/
 * github版 = docker镜像版 + 游戏内容编辑／管理器
