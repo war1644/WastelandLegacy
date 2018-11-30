@@ -30,8 +30,8 @@ docker run --restart unless-stopped --name mmr -itd -p 9001:9001 -p 80:80 regist
 * docker镜像版就是直接运行的/var/www/mmr/index.html
 * 由于ajax不支持file://，所以请用本地域名访问index.html哦
 * Public/V/MMR/Asset（dev分支）下有大概的剧本／对话之类的
-
-* 下面这些就是无聊
+* ------下面这些喜欢看就看吧------
+* 如果你要编辑地图，下载https://www.mapeditor.org/，打开地图的tmx或者json后缀的文件
 * github这个是包含了事件编辑器版本的,游戏内容编辑／管理（想着应该没人跑去用网页编辑游戏脚本等，就整合了docker镜像版）
 * docker镜像版里自带源码，路径／var/www/
 * github版 = docker镜像版 + 游戏内容编辑／管理器
