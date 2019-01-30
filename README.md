@@ -10,7 +10,7 @@ WastelandLegacy (废土战记)
 
 ## install 
 * git clone https://github.com/war1644/WastelandLegacy
-* ***need localhost or host operation mode run index.html / 需要以域名方式访问index.html***
+* ***need localhost or domain operation mode run index.html / 需要以localhost或域名方式访问index.html***
 
 ## 游戏大概玩法
 * 常规的重装机兵游戏内容：做任务，打怪，升级，赚钱，换装备，收集战车
