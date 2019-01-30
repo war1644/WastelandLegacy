@@ -1691,7 +1691,7 @@
                 eventMapId: "21",
                 x: "999",
                 y: "-1",
-                visible: "()=>{return false;}"
+                visible: "()=>{return RPG.checkSwitch('住宿');}"
             },
             {
                 id: "75",
@@ -1708,6 +1708,22 @@
                 y: "0",
                 story: "",
                 visible: "()=>{return !RPG.checkSwitch('住宿');}"
+            },
+            {
+                id: "",
+                type: "jump",
+                img: "",
+                name: "德西多上／下边界事件",
+                row: "0",
+                col: "0",
+                dir: "0",
+                action: "(npc)=>{ gameStageInit(0, 89, 239, DOWN);RPG.fight=true; }",
+                move: "0",
+                eventMapId: "21",
+                x: "0",
+                y: "0",
+                story: "",
+                visible: "()=>{return (RPG.checkSwitch('费雷塔加入') && RPG.checkSwitch('No1入手'));}"
             },
             {
                 id: "79",
