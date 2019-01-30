@@ -4,7 +4,7 @@ WastelandLegacy (废土战记)
 ## 环境说明
 ```shell
 # 本地 hosts，windows用户其他方法自行修改hosts
-sudo echo '127.0.0.1 mmr.game.com' >> /etc/hosts 
+echo '127.0.0.1 mmr.game.com' >> /etc/hosts 
 
 # 拉取镜像
 docker pull registry.cn-beijing.aliyuncs.com/dxq_docker/nginx_php7:mmr
@@ -30,17 +30,9 @@ docker run --restart unless-stopped --name mmr -itd -p 9001:9001 -p 80:80 regist
 * 运行流程图：浏览器调用/index.html-->载入js ->main.js-->window.onload->main.js下main方法-->载入各种资源-->初始化-->连接workerman服务器
 * 由于ajax不支持file://，所以请用本地域名访问index.html哦
 * /Asset/下有大概的剧本、对话之类的
-
-* ------下面这些喜欢看就看吧------
 * 如果你要编辑地图，下载 https://www.mapeditor.org/ 打开/Asset/下的地图的tmx或者json后缀的文件
-* github这个是包含了事件编辑器版本的,游戏内容编辑／管理（想着应该没人跑去用网页编辑游戏脚本等，就整合了docker镜像版）
-* docker镜像版里自带源码，路径／var/www/
-* github版 = docker镜像版 + 游戏内容编辑／管理器
-* github版dev分支游戏脚本内容是从本地js文件里获取（方便开发）
-* github版master分支游戏脚本内容是从后端的api里获取（方便上线后，在线修改游戏内容）
 
 ## 游戏说明
-
 * 战斗系统
 * 人车系统
 * 装备系统
