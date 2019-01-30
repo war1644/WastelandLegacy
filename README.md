@@ -1,6 +1,7 @@
 WastelandLegacy (废土战记)
 ======
 ## Game Screenhost
+![Game Screen Host](Asset/其他/宣传图.bmp)
 ![Game Screen Host](Asset/ScreenHost/1.png)
 ![Game Screen Host](Asset/ScreenHost/2.png)
 ![Game Screen Host](Asset/ScreenHost/3.png)

@@ -440,6 +440,7 @@ function gameStageInit(stageId,x,y,dir=3,callback=false) {
         stage.map.isWorld = true;
         STEP=32;
     } else {
+        stage.map.isWorld = false;
         STEP=24;
     }
 
